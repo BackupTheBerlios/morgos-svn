@@ -1,0 +1,6 @@
+19-10-2005	Nathan Samson nathansamson AT gmail <DOT> com
+	* added trunk/index.php, trunk/core/databases.class.php, 
+	  trunk/core/config.class.php, trunk/core/uimanager.class.php, 
+	  trunk/core/databases/mysql.database.php, 
+	  trunk/core/databases/postgresql.php: First code import
+
