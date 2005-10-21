@@ -54,11 +54,11 @@ class config {
 	/** \fn addConfigItem ($configName,$value,$type,$password = NULL)
 	 * adds an item in the config tree
 	 *
-	 * \param string $configName the complete name of the config where in must be put	
+	 * \param $configName (string) the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
-	 * \param mixed $value the value of the configitem
-	 * \param int $type the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
-	 * \param string $password if you wants to protect the value of this configItem you 
+	 * \param $value (mixed) the value of the configitem
+	 * \param $type (int) the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
+	 * \param $password (string) if you wants to protect the value of this configItem you 
 	 	can give your password here, the standard is NULL (not protected)
 	 * \return bool
 	*/
@@ -91,13 +91,13 @@ class config {
 	/** \fn addConfigItemFromArray ($array,$arrayKey,$configName,$type,  $password = NULL)
 	 * adds an item in the config tree, from an array.
 	 *
-	 * \@param array $array the array where the current value lives (for ex. $_COOKIE)
-	 * @param string $arrayKey the key in the array where the current value lives
-	 * @param string $configName the complete name of the config where in must be put	
+	 * \param $array (mixed array) the array where the current value lives (for ex. $_COOKIE)
+	 * \param $arrayKey (string) the key in the array where the current value lives
+	 * \param $configName (string) the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
-	 * @param int $type the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
-	 * @param string $password if you wants to protect the value of this configItem you can give your password here, the standard is NULL (not protected)
-	 * @return bool
+	 * \param $type (int) the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
+	 * \param $password (string) if you wants to protect the value of this configItem you can give your password here, the standard is NULL (not protected)
+	 * \return bool
 	*/
 	/*public*/ function addConfigItemFromArray ( $array,  $arrayKey,  $configName, $type,  $password = NULL) {
 		return $this->addConfigItem ($configName,$array[$arrayKey],$type,$password);
@@ -106,12 +106,12 @@ class config {
 	/** \fn getConfigItem ($configName,$type = TYPE_FLEXIBLE,$password = NULL)
 	 * gets the value from the configtree.
 	 *
-	 * @param string $configName the complete name of the config where in must be put	
+	 * \param $configName (string) the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
-	 * @param int $type the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
-	 * @param string $password if you wants to protect the value of this configItem you 
+	 * \param $type (int) the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
+	 * \param $password (string) if you wants to protect the value of this configItem you 
 	 	can give your password here, the standard is NULL (not protected)
-	 * @return mixed
+	 * \return mixed
 	*/
 	/*public*/ function getConfigItem ( $configName,  $type = TYPE_FLEXIBLE,  $password = NULL) {
 		if ($this->exists ($configName)) {
@@ -146,8 +146,8 @@ class config {
 		
 	/** \fn convertType (&$value,$type)
 	 * converts the value into type $type. If $value could not be converted it returns false
-	 * \param mixed $value the value to convert
-	 * \param int $type the type to convert to
+	 * \param $value (mixed) the value to convert
+	 * \param $type (int) the type to convert to
 	 * \return bool false if convertion is not possible
 	 * \private
 	*/
@@ -170,7 +170,7 @@ class config {
 	/** \fn typeToString ($type)
 	 * converts a type integer into a string.
 	 *
-	 * \param mixed $value the value
+	 * \param $value (mixed) the value
 	 * \private
 	 * \return string
 	*/
@@ -189,7 +189,7 @@ class config {
 	/** \fn isType ($value)
 	 * see for a value what the type is.
 	 *
-	 * \param mixed $value
+	 * \param $value (mixed)
 	 * \private
 	 * \return int the type of the value
 	*/

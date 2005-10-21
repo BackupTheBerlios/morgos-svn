@@ -50,7 +50,7 @@ class UIManager {
 	/** \fn getGenericDB ()
 	 * returns the generic DB class
 	 *
-	 * @return class
+	 * \return class
 	*/
 	/*public*/ function &getGenericDB () {
 		return $this->genDB;
@@ -59,7 +59,7 @@ class UIManager {
 	/** \fn getConfigClass ()
 	 * returns the configclass
 	 *
-	 * @return class
+	 * \return class
 	*/
 	/*public*/ function &getConfigClass () {
 		return $this->config;
