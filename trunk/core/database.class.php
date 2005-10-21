@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/**
+/** \file database.class.php
  * File that take care of the database SubSystem
  *
  * @package database
@@ -27,12 +27,12 @@ function checkDatabase ($database, $tables) {
 	return true;
 }
 
-/**
- * interface that take care off the generic database SubSystem
+/** \interface iDatabase
+ * interface that take care off the generic database subsystem. All Database-Modules must follow this API
  *
- * @version 0.1svn
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \version 0.1svn
+ * \author Nathan Samson
+ * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 /*interface iDatabase {
 	/* why does this API not follow the normal coding standards?
@@ -49,12 +49,12 @@ function checkDatabase ($database, $tables) {
 	public function get_all_tables (string $DBName);
 }*/
 
-/**
+/** \class genericDatabase
  * Class that take care off the database SubSystem
  *
- * @version 0.1svn
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \version 0.1svn
+ * \author Nathan Samson
+ * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 class genericDatabase {
 	/*private $loadedDatabase = NULL;

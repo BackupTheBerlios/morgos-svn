@@ -15,22 +15,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/**
+/** \file uimanager.class.php
  * File that take care of the main UI layer, extensionhandling and HTML output
  *
- * @package ui
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \package ui
+ * \author Nathan Samson
+ * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 include_once ('core/database.class.php');
 include_once ('core/user.class.php');
 include_once ('core/config.class.php');
-/**
+/** \class UIManager
  * class that take care of the main UI layer, extensionhandling and HTML output
  *
- * @author Nathan Samson
- * @version 0.1svn
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \author Nathan Samson
+ * \version 0.1svn
+ * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 class UIManager {
 	/*private $DBManager;
@@ -50,7 +50,7 @@ class UIManager {
 		$this->user = new user ($this->genDB);
 	}
 	
-	/**
+	/** \fn getGenericDB ()
 	 * returns the generic DB class
 	 *
 	 * @return class
@@ -59,7 +59,7 @@ class UIManager {
 		return $this->genDB;
 	}
 	
-	/**
+	/** \fn getConfigClass ()
 	 * returns the configclass
 	 *
 	 * @return class

@@ -19,29 +19,29 @@ define ('TYPE_STRING',1);
 define ('TYPE_NUMERIC',2);
 define ('TYPE_BOOL',3);
 define ('TYPE_FLEXIBLE',0);
-/**
+/** \file config.class.php
  * File that take care of the config subsystem
  *
- * @package config
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \package config
+ * \author Nathan Samson
+ * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
-/**
- * class that take care of the config implementation
+/** \class config
+ * class that take care of the config implementation.
  *
- * @version 0.1svn
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @todo implement isType
+ * \version 0.1svn
+ * \author Nathan Samson
+ * \license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \todo implement isType
 */
 class config {
-	/**
+	/** \var
 	 * the configtree is an array, each path or configItem has a place in the array
 	 * the content of an item has different items
-	 * 1) the value
-	 * 2) the type
-	 * 3) maybe a password
+	 *  -the value
+	 *  -the type
+	 *  -maybe a password
 	*/
 	/*private $configTree;*/
 
@@ -53,16 +53,16 @@ class config {
 		$this->configTree = array ();
 	}
 	
-	/**
+	/** \fn addConfigItem ($configName,$value,$type,$password = NULL)
 	 * adds an item in the config tree
 	 *
-	 * @param string $configName the complete name of the config where in must be put	
+	 * \param string $configName the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
-	 * @param mixed $value the value of the configitem
-	 * @param int $type the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
-	 * @param string $password if you wants to protect the value of this configItem you 
+	 * \param mixed $value the value of the configitem
+	 * \param int $type the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
+	 * \param string $password if you wants to protect the value of this configItem you 
 	 	can give your password here, the standard is NULL (not protected)
-	 * @return bool
+	 * \return bool
 	*/
 	/*public*/ function addConfigItem ( $configName,  $value,  $type,  $password = NULL) {
 		$dirs = explode ('/',$configName);
@@ -90,10 +90,10 @@ class config {
 		return true;
 	}
 	
-	/**
-	 * adds an item in the config tree, from an array
+	/** \fn addConfigItemFromArray ($array,$arrayKey,$configName,$type,  $password = NULL)
+	 * adds an item in the config tree, from an array.
 	 *
-	 * @param array $array the array where the current value lives (for ex. $_COOKIE)
+	 * \@param array $array the array where the current value lives (for ex. $_COOKIE)
 	 * @param string $arrayKey the key in the array where the current value lives
 	 * @param string $configName the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
@@ -105,9 +105,9 @@ class config {
 		return $this->addConfigItem ($configName,$array[$arrayKey],$type,$password);
 	}
 	
-	/**
-	 * gets the value from the configtree
-	 
+	/** \fn getConfigItem ($configName,$type = TYPE_FLEXIBLE,$password = NULL)
+	 * gets the value from the configtree.
+	 *
 	 * @param string $configName the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
 	 * @param int $type the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
@@ -146,13 +146,11 @@ class config {
 	}
 	
 		
-	/**
-	 * converts the value into type $type
-	 *
-	 * if $value could not be converted it returns false
-	 * @param mixed $value the value to convert
-	 * @param int $type the type to convert to
-	 * @return bool false if convertion is not possible
+	/** \fn convertType (&$value,$type)
+	 * converts the value into type $type. If $value could not be converted it returns false
+	 * \param mixed $value the value to convert
+	 * \param int $type the type to convert to
+	 * \return bool false if convertion is not possible
 	*/
 	/*private*/ function convertType ( &$value,  $type) {
 		if ($type != TYPE_FLEXIBLE) {
@@ -170,15 +168,13 @@ class config {
 		return true;
 	}
 	
-	/**
-	 * converts a type integer into a string
+	/** \fn typeToString ($type)
+	 * converts a type integer into a string.
 	 *
-	 * @param mixed $value the value
-	 * @return string
+	 * \param mixed $value the value
+	 * \return string
 	*/
 	/*private*/ function typeToString ($type) {
-	//print_r (debug_backtrace());
-	echo $type;
 		if ($type == TYPE_STRING) {
 			return 'string';
 		} elseif ($type == TYPE_BOOL) {
@@ -190,11 +186,11 @@ class config {
 		}
 	}
 	
-	/**
-	 * see for a value what the type is
+	/** \fn isType ($value)
+	 * see for a value what the type is.
 	 *
-	 * @param mixed $value
-	 * @return int the type of the value
+	 * \param mixed $value
+	 * \return int the type of the value
 	*/
 	/*private*/ function isType ($value) {
 		return TYPE_STRING;
