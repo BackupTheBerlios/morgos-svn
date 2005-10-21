@@ -17,7 +17,7 @@ function insertuser($name, $email, $pass)
 function getuser($id)
 	{
 	  $query = mysql_query("SELECT * FROM users WHERE id = $id");
-	  $getuser = mysql_fetch_array($query);
+	  return mysql_fetch_array($query);
 	}	
 
 function updateuser($name, $email , $pass, $id)
