@@ -1,5 +1,5 @@
 <?php
-class useroptions {
+class user {
 function login()
 {
 
