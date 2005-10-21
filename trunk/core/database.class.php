@@ -50,6 +50,7 @@ function checkDatabase ($database, $tables) {
 /** \class genericDatabase
  * Class that take care off the database SubSystem
  *
+ * \namespace database
  * \version 0.1svn
  * \author Nathan Samson
 */

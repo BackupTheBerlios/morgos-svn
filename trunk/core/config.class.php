@@ -29,6 +29,7 @@ define ('TYPE_FLEXIBLE',0);
 /** \class config
  * class that take care of the config implementation.
  *
+ * \namespace config
  * \version 0.1svn
  * \author Nathan Samson
  * \todo implement isType

@@ -32,9 +32,8 @@ if (array_search ('postgreSQLDatabase', $supported, true)) {
 /** \class postgreSQLDatabase
  * class that take care of the database (PostgreSQL) SubSystem
  *
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @todo if no database connection exists at query-time, try to reconnect and try to redo the query
+ * \author Nathan Samson
+ * \todo if no database connection exists at query-time, try to reconnect and try to redo the query
 */
 class postgreSQLDatabase /*implements iDatabase*/ {
 	function __construct () {
