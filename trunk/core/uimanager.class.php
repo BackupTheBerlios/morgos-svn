@@ -22,24 +22,32 @@
  * @author Nathan Samson
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
-include_once ('database.class.php');
+include_once ('core/database.class.php');
+include_once ('core/user.class.php');
+include_once ('core/config.class.php');
 /**
  * class that take care of the main UI layer, extensionhandling and HTML output
  *
  * @author Nathan Samson
+ * @version 0.1svn
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 class UIManager {
 	/*private $DBManager;
-	private $genDB;*/
+	private $genDB;
+	private $config
+	private $user*/
 
 	function UIManager () {
 		$this->__construct ();
 	}
 
 	function __construct () {
+		$this->config = new config ();
+		$this->config->addConfigItem ('/database/type','MySQL 4.x',TYPE_STRING);
 		$this->DBManager = new genericDatabase ();
-		$this->genDB = $this->DBManager->load ('MySQL 4.x');
+		$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type',TYPE_STRING));
+		$this->user = new user ($this->genDB);
 	}
 	
 	/**
@@ -47,8 +55,17 @@ class UIManager {
 	 *
 	 * @return class
 	*/
-	/*public*/ function getGenericDB () {
+	/*public*/ function &getGenericDB () {
 		return $this->genDB;
+	}
+	
+	/**
+	 * returns the configclass
+	 *
+	 * @return class
+	*/
+	/*public*/ function &getConfigClass () {
+		return $this->config;
 	}
 }
 

@@ -27,6 +27,14 @@ define ('TYPE_FLEXIBLE',0);
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
+/**
+ * class that take care of the config implementation
+ *
+ * @version 0.1svn
+ * @author Nathan Samson
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @todo implement isType
+*/
 class config {
 	/**
 	 * the configtree is an array, each path or configItem has a place in the array
@@ -35,7 +43,7 @@ class config {
 	 * 2) the type
 	 * 3) maybe a password
 	*/
-	private $configTree;
+	/*private $configTree;*/
 
 	function config () {
 		$this->__construct ();
@@ -56,10 +64,14 @@ class config {
 	 	can give your password here, the standard is NULL (not protected)
 	 * @return bool
 	*/
-	/*public*/ function addConfigItem ( $configName,  $value,  $type,  $password) {
+	/*public*/ function addConfigItem ( $configName,  $value,  $type,  $password = NULL) {
 		$dirs = explode ('/',$configName);
 		$curPath = NULL;
 		foreach ($dirs as $dir) {
+			if ($dir == NULL) {
+				// normally this is only when you have double '/' or at the beginning of the configName
+				continue;
+			}
 			$curPath .= '/' . $dir;
 			if ($this->exists ($curPath)) {
 				if (! $this->isDir ($curPath)) {
@@ -69,8 +81,8 @@ class config {
 				$this->configTree[$curPath] = 'PATH';
 			}
 		}
-		if ($this->convertType ($value, $type)) {
-			$this->configtree[$curPath] = array ('value' => $value,'type' => $type,'password' => $password);
+		if ($this->isType ($value) == $type) {
+			$this->configTree[$configName] = array ('value' => $value,'type' => $type,'password' => $password);
 		} else {
 			trigger_error ('Type is not correct', E_USER_ERROR);
 			trigger_error ('Type is: ' . $this->typeToString ($this->isType ($value)). ', needs to be: ' . $this->typeToString ($type),E_USER_NOTICE);
@@ -104,6 +116,17 @@ class config {
 	 * @return mixed
 	*/
 	/*public*/ function getConfigItem ( $configName,  $type = TYPE_FLEXIBLE,  $password = NULL) {
+		if ($this->exists ($configName)) {
+			if (($this->configTree[$configName]['type'] == $type) or ($type = TYPE_FLEXIBLE)) {
+				return $this->configTree[$configName]['value'];
+			} else {
+				echo $this->configTree[$configName];
+				trigger_error ('Type is: ' . $this->typeToString ($this->configTree[$configName]['type']). ', needs to be: ' . $this->typeToString ($type),E_USER_NOTICE);
+				trigger_error ('Type is not correct', E_USER_ERROR);
+			}
+		} else {
+			trigger_error ('Config doesn\' exists',E_USER_ERROR);
+		}
 	}
 	
 	/*private | public*/ function exists ($configName) {
@@ -120,6 +143,61 @@ class config {
 		} else {
 			return false;
 		}
+	}
+	
+		
+	/**
+	 * converts the value into type $type
+	 *
+	 * if $value could not be converted it returns false
+	 * @param mixed $value the value to convert
+	 * @param int $type the type to convert to
+	 * @return bool false if convertion is not possible
+	*/
+	/*private*/ function convertType ( &$value,  $type) {
+		if ($type != TYPE_FLEXIBLE) {
+			if ($type == TYPE_STRING) {
+				$value = (string) $value;
+			} elseif ($type == TYPE_BOOL) {
+				$value = (boolean) $value;
+			} elseif ($type == TYPE_NUMERIC) {
+				$value = (integer) $vaue;
+			} else {
+				trigger_error ('Type is not recognized',E_USER_NOTICE);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * converts a type integer into a string
+	 *
+	 * @param mixed $value the value
+	 * @return string
+	*/
+	/*private*/ function typeToString ($type) {
+	//print_r (debug_backtrace());
+	echo $type;
+		if ($type == TYPE_STRING) {
+			return 'string';
+		} elseif ($type == TYPE_BOOL) {
+			return 'bool';
+		} elseif ($type == TYPE_NUMERIC) {
+			return 'numeric';
+		} else {
+			return 'flexible';
+		}
+	}
+	
+	/**
+	 * see for a value what the type is
+	 *
+	 * @param mixed $value
+	 * @return int the type of the value
+	*/
+	/*private*/ function isType ($value) {
+		return TYPE_STRING;
 	}
 }
 ?>

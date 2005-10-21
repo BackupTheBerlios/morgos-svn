@@ -30,7 +30,7 @@ function checkDatabase ($database, $tables) {
 /**
  * interface that take care off the generic database SubSystem
  *
- * @version 0.4cvs
+ * @version 0.1svn
  * @author Nathan Samson
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
@@ -52,7 +52,7 @@ function checkDatabase ($database, $tables) {
 /**
  * Class that take care off the database SubSystem
  *
- * @version 0.4cvs
+ * @version 0.1svn
  * @author Nathan Samson
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
