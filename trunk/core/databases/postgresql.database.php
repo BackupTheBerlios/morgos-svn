@@ -18,7 +18,6 @@
 /**
  * File that take care of the database (PostgreSQL) SubSystem
  *
- * \namescpace database
  * \author Nathan Samson
 */
 

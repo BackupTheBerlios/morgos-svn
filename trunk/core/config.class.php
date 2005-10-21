@@ -22,14 +22,12 @@ define ('TYPE_FLEXIBLE',0);
 /** \file config.class.php
  * File that take care of the config subsystem
  *
- * \namespace config
  * \author Nathan Samson
 */
 
 /** \class config
  * class that take care of the config implementation.
  *
- * \namespace config
  * \version 0.1svn
  * \author Nathan Samson
  * \todo implement isType
@@ -38,9 +36,10 @@ class config {
 	/** \var $configTree
 	 * the configtree is an array, each path or configItem has a place in the array
 	 * the content of an item has different items
-	 *  -the value
-	 *  -the type
-	 *  -maybe a password
+	 *  \li the value
+	 *  \li the type
+	 *  \li maybe a password
+	 * \private
 	*/
 	/*private*/ var $configTree;
 
@@ -150,6 +149,7 @@ class config {
 	 * \param mixed $value the value to convert
 	 * \param int $type the type to convert to
 	 * \return bool false if convertion is not possible
+	 * \private
 	*/
 	/*private*/ function convertType ( &$value,  $type) {
 		if ($type != TYPE_FLEXIBLE) {
@@ -171,6 +171,7 @@ class config {
 	 * converts a type integer into a string.
 	 *
 	 * \param mixed $value the value
+	 * \private
 	 * \return string
 	*/
 	/*private*/ function typeToString ($type) {
@@ -189,6 +190,7 @@ class config {
 	 * see for a value what the type is.
 	 *
 	 * \param mixed $value
+	 * \private
 	 * \return int the type of the value
 	*/
 	/*private*/ function isType ($value) {

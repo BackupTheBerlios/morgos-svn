@@ -18,7 +18,6 @@
 /** \file database.class.php
  * File that take care of the database SubSystem
  *
- * \namespace database
  * \author Nathan Samson
 */
 function checkDatabase ($database, $tables) {
@@ -50,7 +49,6 @@ function checkDatabase ($database, $tables) {
 /** \class genericDatabase
  * Class that take care off the database SubSystem
  *
- * \namespace database
  * \version 0.1svn
  * \author Nathan Samson
 */

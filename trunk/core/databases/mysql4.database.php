@@ -18,7 +18,6 @@
 /**
  * File that take care of the database (MySQL) SubSystem
  *
- * \namespace database
  * \author Nathan Samson
 */
 
@@ -35,7 +34,6 @@ if (array_search ('MySQLDatabase', $supported, true)) {
 /** \class MySQLDatabase
  * class that take care of the database (MySQL) SubSystem
  *
- * \namespace database
  * \author Nathan Samson
  * \todo if no database connection exists at query-time, try to reconnect and try to redo the query
 */

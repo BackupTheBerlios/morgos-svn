@@ -18,7 +18,6 @@
 /** \file uimanager.class.php
  * File that take care of the main UI layer, extensionhandling and HTML output
  *
- * \namespace ui
  * \author Nathan Samson
 */
 include_once ('core/database.class.php');
@@ -27,7 +26,6 @@ include_once ('core/config.class.php');
 /** \class UIManager
  * class that take care of the main UI layer, extensionhandling and HTML output.
  *
- * \namespace ui
  * \author Nathan Samson
  * \version 0.1svn
 */
