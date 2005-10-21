@@ -18,19 +18,17 @@
 /** \file uimanager.class.php
  * File that take care of the main UI layer, extensionhandling and HTML output
  *
- * \package ui
+ * \namespace ui
  * \author Nathan Samson
- * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 include_once ('core/database.class.php');
 include_once ('core/user.class.php');
 include_once ('core/config.class.php');
 /** \class UIManager
- * class that take care of the main UI layer, extensionhandling and HTML output
+ * class that take care of the main UI layer, extensionhandling and HTML output.
  *
  * \author Nathan Samson
  * \version 0.1svn
- * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 class UIManager {
 	/*private $DBManager;

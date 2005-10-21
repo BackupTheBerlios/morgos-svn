@@ -22,9 +22,8 @@ define ('TYPE_FLEXIBLE',0);
 /** \file config.class.php
  * File that take care of the config subsystem
  *
- * \package config
+ * \namespace config
  * \author Nathan Samson
- * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
 /** \class config
@@ -32,18 +31,17 @@ define ('TYPE_FLEXIBLE',0);
  *
  * \version 0.1svn
  * \author Nathan Samson
- * \license http://opensource.org/licenses/gpl-license.php GNU Public License
  * \todo implement isType
 */
 class config {
-	/** \var
+	/** \var $configTree
 	 * the configtree is an array, each path or configItem has a place in the array
 	 * the content of an item has different items
 	 *  -the value
 	 *  -the type
 	 *  -maybe a password
 	*/
-	/*private $configTree;*/
+	/*private*/ var $configTree;
 
 	function config () {
 		$this->__construct ();

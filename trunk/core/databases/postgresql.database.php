@@ -18,9 +18,8 @@
 /**
  * File that take care of the database (PostgreSQL) SubSystem
  *
- * @package database
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \namescpace database
+ * \author Nathan Samson
 */
 
 if (function_exists ('pg_connect')) {
@@ -30,7 +29,7 @@ if (function_exists ('pg_connect')) {
 }
 
 if (array_search ('postgreSQLDatabase', $supported, true)) {
-/**
+/** \class postgreSQLDatabase
  * class that take care of the database (PostgreSQL) SubSystem
  *
  * @author Nathan Samson

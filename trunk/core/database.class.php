@@ -18,9 +18,8 @@
 /** \file database.class.php
  * File that take care of the database SubSystem
  *
- * @package database
- * @author Nathan Samson
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * \namespace database
+ * \author Nathan Samson
 */
 function checkDatabase ($database, $tables) {
 	// TODO
@@ -32,7 +31,6 @@ function checkDatabase ($database, $tables) {
  *
  * \version 0.1svn
  * \author Nathan Samson
- * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 /*interface iDatabase {
 	/* why does this API not follow the normal coding standards?
@@ -54,7 +52,6 @@ function checkDatabase ($database, $tables) {
  *
  * \version 0.1svn
  * \author Nathan Samson
- * \license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 class genericDatabase {
 	/*private $loadedDatabase = NULL;
