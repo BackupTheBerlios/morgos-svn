@@ -37,6 +37,10 @@ class config {
 	*/
 	private $configTree;
 
+	function config () {
+		$this->__construct ();
+	}
+
 	function __construct () {
 		$this->configTree = array ();
 	}
@@ -52,7 +56,26 @@ class config {
 	 	can give your password here, the standard is NULL (not protected)
 	 * @return bool
 	*/
-	public function addConfigItem (string $configName, mixed $value, int $type, string $password) {
+	/*public*/ function addConfigItem ( $configName,  $value,  $type,  $password) {
+		$dirs = explode ('/',$configName);
+		$curPath = NULL;
+		foreach ($dirs as $dir) {
+			$curPath .= '/' . $dir;
+			if ($this->exists ($curPath)) {
+				if (! $this->isDir ($curPath)) {
+					trigger_error ('Problem with config path',E_USER_ERROR);
+				}
+			} else {
+				$this->configTree[$curPath] = 'PATH';
+			}
+		}
+		if ($this->convertType ($value, $type)) {
+			$this->configtree[$curPath] = array ('value' => $value,'type' => $type,'password' => $password);
+		} else {
+			trigger_error ('Type is not correct', E_USER_ERROR);
+			trigger_error ('Type is: ' . $this->typeToString ($this->isType ($value)). ', needs to be: ' . $this->typeToString ($type),E_USER_NOTICE);
+		}
+		return true;
 	}
 	
 	/**
@@ -66,7 +89,8 @@ class config {
 	 * @param string $password if you wants to protect the value of this configItem you can give your password here, the standard is NULL (not protected)
 	 * @return bool
 	*/
-	public function addConfigItemFromArray (array $array, string $arrayKey, string $configName,int $type, string $password = NULL) {
+	/*public*/ function addConfigItemFromArray ( $array,  $arrayKey,  $configName, $type,  $password = NULL) {
+		return $this->addConfigItem ($configName,$array[$arrayKey],$type,$password);
 	}
 	
 	/**
@@ -79,7 +103,23 @@ class config {
 	 	can give your password here, the standard is NULL (not protected)
 	 * @return mixed
 	*/
-	public function getConfigItem (string $configName, int $type = TYPE_FLEXIBLE, string $password = NULL) {
+	/*public*/ function getConfigItem ( $configName,  $type = TYPE_FLEXIBLE,  $password = NULL) {
+	}
+	
+	/*private | public*/ function exists ($configName) {
+		if ($this->configTree[$configName] != NULL) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/*private | public*/ function isDir ($configName) {
+		if ($this->configTree[$configName] == 'PATH') {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>
