@@ -41,7 +41,7 @@ class config {
 	 *  \li maybe a password
 	 * \private
 	*/
-	/*private*/ var $configTree;
+	var $configTree;
 
 	function config () {
 		$this->__construct ();
@@ -127,6 +127,12 @@ class config {
 		}
 	}
 	
+	/** \fn exists ($configName)
+	 * Checks if a config item exists.
+	 *
+	 * \param configName (string) the name of the config item
+	 * \return bool
+	*/
 	/*private | public*/ function exists ($configName) {
 		if ($this->configTree[$configName] != NULL) {
 			return true;
@@ -135,6 +141,12 @@ class config {
 		}
 	}
 	
+	/** \fn isDir ($configName)
+	 * Checks if a config item is a dir. If it doesn't exists it returns false;
+	 *
+	 * \param configName (string) the name of the config item
+	 * \return bool
+	*/
 	/*private | public*/ function isDir ($configName) {
 		if ($this->configTree[$configName] == 'PATH') {
 			return true;
@@ -170,7 +182,7 @@ class config {
 	/** \fn typeToString ($type)
 	 * converts a type integer into a string.
 	 *
-	 * \param $value (mixed) the value
+	 * \param $type (mixed) the value
 	 * \private
 	 * \return string
 	*/

@@ -63,7 +63,11 @@ class genericDatabase {
 	function __construct () {
 		$this->getAllSupportedDatabases ();
 	}
-
+	/** \fn getAllSupportedDatabases ()
+	 * It returns an array with as key the type of the database. The value of the array is the name of the class
+	 * where the implementation lives, this shouldn't be used public
+	 * \return array (string)
+	*/
 	/*public*/ function getAllSupportedDatabases () {
 		if ($this->supported == NULL) {
 			$supported = array ();
@@ -81,7 +85,14 @@ class genericDatabase {
 		return $this->supported;
 	}
 
-	/*public*/ function load ($type) {
+	/** \fn &load ($type)
+	 * Loads a database implementation
+	 *
+	 * \param $type (string) the database type you wish to load, make sure it exists otherwise we will
+	 * throw an error.
+	 * \return class
+	*/
+	/*public*/ function &load ($type) {
 		if (array_key_exists ($type, $this->supported)) {
 			$className = $this->supported[$type];
 			$this->loadedDatabase = new $className ();

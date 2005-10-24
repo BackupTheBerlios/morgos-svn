@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/**
+/** \file postgresql.database.php
  * File that take care of the database (PostgreSQL) SubSystem
  *
  * \author Nathan Samson
@@ -28,6 +28,7 @@ if (function_exists ('pg_connect')) {
 }
 
 if (array_search ('postgreSQLDatabase', $supported, true)) {
+isset (false); // this is here only to trick Doxygen
 /** \class postgreSQLDatabase
  * class that take care of the database (PostgreSQL) SubSystem
  *

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/**
+/** \file mysql4.database.php
  * File that take care of the database (MySQL) SubSystem
  *
  * \author Nathan Samson
@@ -31,10 +31,12 @@ if (function_exists ('mysqli_connect')) {
 }
 
 if (array_search ('MySQLDatabase', $supported, true)) {
+isset (false); // this is here only to trick Doxygen
 /** \class MySQLDatabase
- * class that take care of the database (MySQL) SubSystem
+ * class that take care of the database (MySQL) SubSystem.
  *
  * \author Nathan Samson
+ * \version 0.1svn
  * \todo if no database connection exists at query-time, try to reconnect and try to redo the query
 */
 class MySQLDatabase /*implements iDatabase*/ {
