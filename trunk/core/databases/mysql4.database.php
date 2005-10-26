@@ -31,7 +31,7 @@ if (function_exists ('mysqli_connect')) {
 }
 
 if (array_search ('MySQLDatabase', $supported, true)) {
-isset (false); // this is here only to trick Doxygen
+gettype ($supported); // this is here only to trick Doxygen
 /** \class MySQLDatabase
  * class that take care of the database (MySQL) SubSystem.
  *

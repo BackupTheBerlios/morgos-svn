@@ -28,7 +28,7 @@ if (function_exists ('pg_connect')) {
 }
 
 if (array_search ('postgreSQLDatabase', $supported, true)) {
-isset (false); // this is here only to trick Doxygen
+gettype ($supported); // this is here only to trick Doxygen
 /** \class postgreSQLDatabase
  * class that take care of the database (PostgreSQL) SubSystem
  *

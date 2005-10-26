@@ -19,6 +19,7 @@ define ('TYPE_STRING',1);
 define ('TYPE_NUMERIC',2);
 define ('TYPE_BOOL',3);
 define ('TYPE_FLEXIBLE',0);
+define ('TYPE_GUESS',-1); // use this only for addConfigItemsFromFile ()
 /** \file config.class.php
  * File that take care of the config subsystem
  *
@@ -30,7 +31,7 @@ define ('TYPE_FLEXIBLE',0);
  *
  * \version 0.1svn
  * \author Nathan Samson
- * \todo implement isType
+ * \todo test this class, especially isType ()
 */
 class config {
 	/** \var $configTree
@@ -75,6 +76,7 @@ class config {
 				if (! $this->isDir ($curPath)) {
 					trigger_error ('Problem with config path',E_USER_ERROR);
 				}
+				break;
 			} else {
 				$this->configTree[$curPath] = 'PATH';
 			}
@@ -101,6 +103,31 @@ class config {
 	*/
 	/*public*/ function addConfigItemFromArray ( $array,  $arrayKey,  $configName, $type,  $password = NULL) {
 		return $this->addConfigItem ($configName,$array[$arrayKey],$type,$password);
+	}
+	
+	/** \fn addConfigItemsFromFile ($file,$globalType = -1,$globalPassword = NULL)
+	 * adds all items in from a configfile. The configfile is based on an array with the name config.
+	 * the keys of that arrays are the pathnames of that item, the value is the value of the item. The type is
+	 * guessed (never TYPE_FLEXIBLE), or if you have set the $type parameter it is always that type (can be TYPE_FLEXIBLE)
+	 *
+	 * \todo implments a method to have a different type for each var, without guessing it
+	 * \param $file (string) the filename
+	 * \param $type (integer) which type all vars needs to be, if not set it is guessed for each type
+	 * \param $password (string) protect all items with this password, standard is not protected
+	*/
+	/*public*/ function addConfigItemsFromFile ($file,$globalType = -1,$globalPassword = NULL) {
+		global $config;
+		// empty the current $config
+		unset ($config);
+		include ($file);
+		foreach ($config as $path => $item) {
+			if ($globalType = TYPE_GUESS) {
+				$type = $this->isType ($item);
+			} else {
+				$type = $globalType;
+			}
+			addConfigItem ($path, $item, $type, $globalPassword);
+		}
 	}
 	
 	/** \fn getConfigItem ($configName,$type = TYPE_FLEXIBLE,$password = NULL)
@@ -206,7 +233,15 @@ class config {
 	 * \return int the type of the value
 	*/
 	/*private*/ function isType ($value) {
-		return TYPE_STRING;
+		if (is_bool ($value)) {
+			return TYPE_BOOL;
+		} elseif (is_numeric ($value)) {
+			return TYPE_NUMERIC;
+		} elseif (is_string ($value)) {
+			return TYPE_STRING;
+		} else {
+			return TYPE_FLEXIBLE;
+		}
 	}
 }
 ?>
