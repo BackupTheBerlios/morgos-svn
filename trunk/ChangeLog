@@ -1,6 +1,91 @@
-19-10-2005	Nathan Samson nathansamson AT gmail <DOT> com
-	* added trunk/index.php, trunk/core/databases.class.php, 
-	  trunk/core/config.class.php, trunk/core/uimanager.class.php, 
-	  trunk/core/databases/mysql.database.php, 
-	  trunk/core/databases/postgresql.php: First code import
+2005-10-28 21:40  nathansamson
+
+	* trunk/core/uimanager.class.php: First skinnable output is
+	  created whohoo
+
+2005-10-26 19:10  nathansamson
+
+	* trunk/core/config.class.php,
+	  trunk/core/databases/mysql4.database.php,
+	  trunk/core/databases/postgresql.database.php: config class is
+	  fully implemented, made databases modules parse again
+
+2005-10-24 16:25  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/databases/mysql4.database.php,
+	  trunk/core/databases/postgresql.database.php: only the user
+	  class needs to be documented now
+
+2005-10-21 21:50  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/uimanager.class.php:
+	  more fixing things
+
+2005-10-21 21:38  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/databases/mysql4.database.php,
+	  trunk/core/databases/postgresql.database.php,
+	  trunk/core/uimanager.class.php: last update
+
+2005-10-21 21:34  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/databases/mysql4.database.php,
+	  trunk/core/databases/postgresql.database.php,
+	  trunk/core/uimanager.class.php: last update
+
+2005-10-21 21:31  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/databases/mysql4.database.php,
+	  trunk/core/databases/postgresql.database.php,
+	  trunk/core/uimanager.class.php: more updates on documented code
+
+2005-10-21 21:21  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/uimanager.class.php: Updating CodeDocs to fit with
+	  Doxygen
+
+2005-10-21 18:09  nathansamson
+
+	* trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/uimanager.class.php: more basic implementation, work
+	  on the config class
+
+2005-10-21 15:38  samheijens
+
+	* trunk/core/user.class.php: 
+
+2005-10-21 15:34  samheijens
+
+	* trunk/core/user.class.php: 
+
+2005-10-21 15:32  samheijens
+
+	* trunk/core/user.class.php: 
+
+2005-10-21 15:15  samheijens
+
+	* trunk/core/user.class.php: 
+
+2005-10-21 14:49  samheijens
+
+	* trunk/core/user.class.php: 
+
+2005-10-21 14:47  nathansamson
+
+	* trunk/core/config.class.php: Config class basic implementation
+
+2005-10-19 18:18  nathansamson
+
+	* psapi.dll, tools, tools/codingstandards.odt, trunk,
+	  trunk/.project.screem, trunk/ChangeLog, trunk/NEWS, trunk/core,
+	  trunk/core/config.class.php, trunk/core/database.class.php,
+	  trunk/core/databases, trunk/core/databases/mysql4.database.php,
+	  trunk/core/databases/postgresql.database.php,
+	  trunk/core/uimanager.class.php, trunk/docs, trunk/index.php:
+	  import comment
 

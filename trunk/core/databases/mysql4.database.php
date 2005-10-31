@@ -68,6 +68,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 			$sql = $this->sql2mysql ($sql);
 			$result = mysql_query ($sql, $this->connection);
 			if ($result == false) {
+				echo $query;
 				if ($fatal == true) {
 					trigger_error ('Query not executed', E_USER_ERROR);
 					trigger_error ($this->error, E_USER_NOTICE);

@@ -25,19 +25,22 @@ switch ($phase) {
 		readfile ('install/license.html');
 		break;
 	case 'check':
-		readfile ('install/check.html');
+		include ('install/check.php');
 		break;
 	case 'config':
-		readfile ('install/config.html');
+		include ('install/config.php');
 		break;
 	case 'checkdbconn':
 		readfile ('install/checkdbconn.html');
 		break;
 	case 'install':
-		readfile ('install/installing.html');
+		include ('install/installing.php');
 		break;
 	case 'done':
 		readfile ('install/done.html');
+		break;
+	default:
+		readfile ('install/license.html');
 		break;
 }
 ?>

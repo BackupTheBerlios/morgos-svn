@@ -32,6 +32,7 @@ define ('MORGOS_VERSION','0.1');
  * \bug not compatible with PHP lower than 4.1  (use of version_compare)
  * \bug not compatible with PHP 4.0.4 and lower (use of array_search)
  * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
+ * \todo change the dir in __construct to install in place of DOT install
 */
 class UIManager {
 	/*private $DBManager;
@@ -44,14 +45,18 @@ class UIManager {
 	}
 
 	function __construct () {
-		$this->config = new config ();
-		$this->config->addConfigItem ('/database/type','MySQL 4.x',TYPE_STRING);
-		$this->DBManager = new genericDatabase ();
-		$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type',TYPE_STRING));
-		$this->user = new user ($this->genDB);
-		
-		$this->loadSkin ('MorgOS Default');
-		$this->loadPage ('index.html');
+		if (! is_dir ('.install/')) {
+			$this->config = new config ();
+			$this->config->addConfigItem ('/database/type','MySQL 4.x', TYPE_STRING);
+			$this->DBManager = new genericDatabase ();
+			$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
+			$this->user = new user ($this->genDB);	
+
+			$this->loadSkin ('MorgOS Default');
+			$this->loadPage ('index.html');
+		} else {
+			trigger_error ('Remove the dir install before you continue', E_USER_ERROR);
+		}
 	}
 	
 	/** \fn getGenericDB ()
