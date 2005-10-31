@@ -126,7 +126,7 @@ class config {
 			} else {
 				$type = $globalType;
 			}
-			addConfigItem ($path, $item, $type, $globalPassword);
+			$this->addConfigItem ($path, $item, $type, $globalPassword);
 		}
 	}
 	

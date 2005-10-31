@@ -23,6 +23,7 @@
 include_once ('core/database.class.php');
 include_once ('core/user.class.php');
 include_once ('core/config.class.php');
+include_once ('core/compatible.php');
 define ('MORGOS_VERSION','0.1');
 /** \class UIManager
  * class that take care of the main UI layer, extensionhandling and HTML output.
@@ -45,17 +46,20 @@ class UIManager {
 	}
 
 	function __construct () {
-		if (! is_dir ('.install/')) {
+		if (is_readable ('site.config.php')) {
+			if (is_dir ('.install')) {
+				trigger_error ('Remove dir install.php and than continue');
+			}
 			$this->config = new config ();
-			$this->config->addConfigItem ('/database/type','MySQL 4.x', TYPE_STRING);
+			$this->config->addConfigItemsFromFile ('site.config.php');
 			$this->DBManager = new genericDatabase ();
 			$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 			$this->user = new user ($this->genDB);	
-
+			
 			$this->loadSkin ('MorgOS Default');
 			$this->loadPage ('index.html');
 		} else {
-			trigger_error ('Remove the dir install before you continue', E_USER_ERROR);
+			header ('Location: install.php');
 		}
 	}
 	
@@ -85,7 +89,7 @@ class UIManager {
 	*/ 
 	/*public*/ function loadPage ($pageName,$authorized = false,$authorizedAsAdmin = false) {
 		// User code needs to be implemented first
-		readfile ($this->skinPath . '/' . $pageName);
+		echo $this->parse ($pageName);
 	}
 	 
 	/** \fn loadSkin ($skinName)
@@ -119,6 +123,27 @@ class UIManager {
 		} else {
 			$this->skinPath = $skinPaths[$key];
 		}
+	}
+	
+	/** \fn parse ($fileName)
+	 * Parses a file and replaces all, what needs to be replaced.
+	 *
+	 * \param $fileName (string) the name of the file you want to be parsed
+	 * \return string
+	*/
+	/*private*/ function parse ($fileName) {
+		$output = file_get_contents ($this->skinPath . $fileName);
+		$this->replaceAllVars ($output);
+		return $output;
+	}
+	
+	/** \fn replaceAllVars (&$string) 
+	 * Replaces all system and exstension vars
+	 *
+	 * \param $string (string) the input (and also the output)
+	*/
+	/*private*/ function replaceAllVars (&$string) {
+		$string = ereg_replace ('SITE_TITLE', $this->config->getConfigItem ('/general/sitename', TYPE_STRING), $string);
 	}
 }
 ?>

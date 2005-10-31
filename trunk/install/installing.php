@@ -3,6 +3,7 @@
 		<form action='./install.php?phase=done' method='post'>
 			<div>
 				<?php
+					include_once ('core/compatible.php');
 					define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
 				
 					// write the config file out
@@ -29,13 +30,11 @@
 					
 					// create the database
 					// TODO: add prefix config
-					include ('core/database.class.php');
+					include_once ('core/database.class.php');
 					$DBMan = new genericDatabase ();
 					$DB = $DBMan->load ($_POST['database-type']);
 					$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password'], $_POST['database-name']);
-					$fHandler = fopen ('install/sql/news.sql', 'r');
-					$SQL = fread ($fHandler, filesize('install/sql/news.sql'));
-					fclose ($fHandler);
+					$SQL = file_get_contents ('install/sql/news.sql');
 					$SQL = ereg_replace ('%prefix%', 'morgos_', $SQL);
 					
 					$arrayOfSQL = explode (';', $SQL);

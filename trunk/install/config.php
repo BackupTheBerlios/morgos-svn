@@ -8,7 +8,8 @@
 				Database type: 
 					<select name="database-type">
 						<?php
-							include ('core/database.class.php');
+							include_once ('core/compatible.php');
+							include_once ('core/database.class.php');
 							$DBMan = new genericDatabase ();
 							$types = $DBMan->getAllSupportedDatabases ();
 							foreach ($types as $key => $type) {

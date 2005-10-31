@@ -20,7 +20,8 @@
 			</p>
 			<p>Databases available: <br />
 			<?php
-				include ('core/database.class.php');
+				include ('core/compatible.php');
+				include_once ('core/database.class.php');
 				$DBMan = new genericDatabase ();
 				$supported = $DBMan->getAllSupportedDatabases ();
 				$db = false;
