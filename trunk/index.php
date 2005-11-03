@@ -17,4 +17,5 @@
 */
 include ('core/uimanager.class.php');
 $UI = new UIManager ();
+$UI->loadPage ('index.html');
 ?>

@@ -150,7 +150,30 @@ class config {
 				trigger_error ('Type is not correct', E_USER_ERROR);
 			}
 		} else {
-			trigger_error ('Config doesn\' exists',E_USER_ERROR);
+			echo $configName;
+			trigger_error ('Config doesn\'t exists',E_USER_ERROR);
+		}
+	}
+	
+	/** \fn changeValueConfigItem ($configName, $newValue, $password = NULL)
+	 * changes the value into a new value
+	 * \warning This function doesn't check on types
+	 *
+	 * \param $configName (string) the config item you want to change
+	 * \param $newValue (mixed) the new value of the configitem
+	 * \param $passWord (string) the password of the configitem, fill not in if the configitem is not protected
+	 * \bug If the type of $newValue is not the same as the original the configTree uses the old one, 
+	 *  we assume that you don't want to change the type of the value
+	*/
+	function changeValueConfigItem ($configName, $newValue, $password = NULL) {
+		if ($this->exists ($configName)) {
+			if (! $this->isDir ($configName)) {
+				if ($this->configTree[$configName]['password'] == $password) {
+					$this->configTree[$configName]['value'] = $newValue;
+			 	} else {
+					trigger_error ('Acess denied, password is wrong');
+				}
+			}
 		}
 	}
 	

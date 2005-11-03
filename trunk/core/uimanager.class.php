@@ -23,6 +23,7 @@
 include_once ('core/database.class.php');
 include_once ('core/user.class.php');
 include_once ('core/config.class.php');
+include_once ('core/language.class.php');
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION','0.1');
 /** \class UIManager
@@ -55,9 +56,11 @@ class UIManager {
 			$this->DBManager = new genericDatabase ();
 			$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 			$this->user = new user ($this->genDB);	
-			
+			$this->i10nMan = new languages ();
+			if (! $this->i10nMan->loadLanguage ('nederlands')) {
+				trigger_error ('Couldn\'t init internationalization.');
+			}
 			$this->loadSkin ('MorgOS Default');
-			$this->loadPage ('index.html');
 		} else {
 			header ('Location: install.php');
 		}
@@ -91,7 +94,49 @@ class UIManager {
 		// User code needs to be implemented first
 		echo $this->parse ($pageName);
 	}
-	 
+	
+	/** \fn saveAdmin ($array, $configItems)
+	 * It saves site.config.php with all values.
+	 *
+	 * \param $array (mixed array) the array where the changed configItems live in
+	 * \param $configItems (string) all configItems
+	*/
+	/*public*/ function saveAdmin ($array, $configItems) {
+		for ($i = 1; $i < func_num_args (); $i++) {
+			$arg = func_get_arg ($i);
+			if (array_key_exists ($arg, $array)) {
+				$this->config->changeValueConfigItem ($arg, $array[$arg]);
+			} else {
+				trigger_error ('Configuration not saved, new value is empty');
+			}
+		}
+		define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
+				
+		// write the config file out
+		$output = '<?php ' . NEWLINE;
+		$output .= '	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */' . NEWLINE;
+		$output .= '	$config[\'/general/sitename\'] = \'' . $this->config->getConfigItem ('/general/sitename', TYPE_STRING) ."';" . NEWLINE;
+		$output .= '	$config[\'/database/type\'] = \'' . $this->config->getConfigItem ('/database/type', TYPE_STRING) .'\';' . NEWLINE;
+		$output .= '	$config[\'/database/name\'] = \'' . $this->config->getConfigItem ('/database/name', TYPE_STRING) .'\';' . NEWLINE;
+		$output .= '	$config[\'/database/host\'] = \'' . $this->config->getConfigItem ('/database/host', TYPE_STRING) .'\';' . NEWLINE;
+		$output .= '	$config[\'/database/user\'] = \'' . $this->config->getConfigItem ('/database/user', TYPE_STRING) .'\';' . NEWLINE ;
+		$output .= '	$config[\'/database/password\'] = \'' . $this->config->getConfigItem ('/database/password', TYPE_STRING) .'\';' . NEWLINE;
+		$output .= '?>';
+		$fHandler = @fopen ('site.config.php', 'w');
+		if ($fHandler !== false) {
+			fwrite ($fHandler, $output);
+			fclose ($fHandler);
+			return true;
+		} else {
+			echo '<h2>Save the folowing text in the file "site.config.php" in the directory where MorgOS is installed, then continue.</h2>';
+			$output =  htmlentities ($output);
+			$output = nl2br ($output);
+			echo $output;
+			echo '<h2>End of the content of site.config.php</h2>';
+			return false;
+		}
+	}
+	
 	/** \fn loadSkin ($skinName)
 	 * Loads all skin options
 	 *
@@ -127,6 +172,7 @@ class UIManager {
 	
 	/** \fn parse ($fileName)
 	 * Parses a file and replaces all, what needs to be replaced.
+	 * \warning Do not callthis function before you called loadSkin
 	 *
 	 * \param $fileName (string) the name of the file you want to be parsed
 	 * \return string
@@ -134,16 +180,69 @@ class UIManager {
 	/*private*/ function parse ($fileName) {
 		$output = file_get_contents ($this->skinPath . $fileName);
 		$this->replaceAllVars ($output);
+		$this->replaceAllFunctions ($output);
 		return $output;
 	}
 	
 	/** \fn replaceAllVars (&$string) 
 	 * Replaces all system and exstension vars
+	 * \warning Do not callthis function before you called loadSkin
+	 *
+	 * \param $string (string) the input (and also the output)
+	 * \bug If one var is part of another and the first part is defined before the longer one we have a big problem
+	*/
+	/*private*/ function replaceAllVars (&$string) {
+		include_once ('uimanager.vars.php');
+		foreach ($vars as $varName=> $varValue) {
+			$string = str_replace ($varName, $varValue, $string);
+		}
+	}
+	
+	/** \fn replaceAllFunctions (&$string) 
+	 * Replaces all system functions
+	 * \warning Do not callthis function before you called loadSkin
 	 *
 	 * \param $string (string) the input (and also the output)
 	*/
-	/*private*/ function replaceAllVars (&$string) {
-		$string = ereg_replace ('SITE_TITLE', $this->config->getConfigItem ('/general/sitename', TYPE_STRING), $string);
+	/*private*/ function replaceAllFunctions (&$string) {
+		$skinIni = parse_ini_file ($this->skinPath . 'skin.ini', true);
+		include_once ('uimanager.functions.php');
+		foreach ($functions as $funcKey => $function) {
+			if (count ($function['params']) != 0) {
+				$regExp = '/\s' . $function['name'] .' \(([\w-\W][^)]*)\)/';
+			} else {
+				$regExp = '/\s' . $function['name'] .' \(()\)/';
+			}
+			preg_match_all ($regExp, $string, $matches);
+			foreach ($matches[0] as $key => $match) {
+				$funcParams = explode (',', $matches[1][$key]);
+				$replace = $skinIni['functions'][$funcKey];
+				foreach ($function['params'] as $number => $name) {
+					$replace = str_replace ($name, ltrim (rtrim ($funcParams[$number])), $replace);
+				}
+				$string = str_replace ($match, $replace, $string);
+			}
+		}
+	}
+	 
+	/** \fn getAdminNavigation ()
+	 * It returns the HTML code for the admin navigation
+	 *
+	 * \return (string)
+	*/
+	/*private*/ function getAdminNavigator () {
+		$pages = array ();
+		$pages[] = array ('name' => 'TEXT_ADMIN_INDEX', 'link' => 'ADMIN_LINK_INDEX');
+		$pages[] = array ('name' => 'TEXT_ADMIN_GENERAL', 'link' => 'ADMIN_LINK_GENERAL');
+		$pages[] = array ('name' => 'TEXT_ADMIN_DATABASE', 'link' => 'ADMIN_LINK_DATABASE');
+		$HTML = 'ADMIN_NAVIGATION_OPEN ()';
+		foreach ($pages as $page) {
+			if ($page['link'] != 'TO IMPLEMENT') {
+				$HTML .= ' ADMIN_NAVIGATION_ITEM (' .$page['name']. ', ' .$page['link']. ')';
+			}
+		}
+		$HTML .= ' ADMIN_NAVIGATION_CLOSE ()';
+		return $HTML;
 	}
 }
 ?>
