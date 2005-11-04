@@ -20,7 +20,7 @@ $UI = new UIManager ();
 
 switch ($_GET['module']) {
 	case 'database':
-		$UI->loadPage ('admin/database.html', true, true);
+		$UI->loadModule ('admin/database.html', true, true);
 		break;
 	case 'databasesave':
 		if ($_POST['submit'] == $UI->vars['ADMIN_DATABASE_FORM_INSTALL_NEW_DATABASE']) {
@@ -30,13 +30,13 @@ switch ($_GET['module']) {
 			header ('Location: admin.php?module=database');
 		}
 	case 'users':
-		$UI->loadPage ('admin/users.html', true, true);
+		$UI->loadModule ('admin/users.html', true, true);
 		break;
 	case 'news':
-		$UI->loadPage ('admin/news.html', true, true);
+		$UI->loadModule ('admin/news.html', true, true);
 		break;
 	case 'general':
-		$UI->loadPage ('admin/general.html', true, true);
+		$UI->loadModule ('admin/general.html', true, true);
 		break;
 	case 'generalsave':
 		if ($UI->saveAdmin ($_POST, '/general/sitename')) {
@@ -44,12 +44,12 @@ switch ($_GET['module']) {
 		}
 		break;
 	case 'pages':
-		$UI->loadPage ('admin/pages.html', true, true);
+		$UI->loadModule ('admin/pages.html', true, true);
 		break;
 	case 'index':
 		// do the default one
 	default:
-		$UI->loadPage ('admin/index.html', true, true);
+		$UI->loadModule ('admin/index.html', true, true);
 		break;
 }
 ?>

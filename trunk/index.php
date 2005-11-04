@@ -17,5 +17,17 @@
 */
 include ('core/uimanager.class.php');
 $UI = new UIManager ();
-$UI->loadPage ('index.html');
+
+if (array_key_exists ('module', $_GET)) {
+	$choosenModule = $_GET['module'];
+} else {
+	$choosenModule = 'index.html';
+}
+
+$availableModules = $UI->getAllAvailableModules ();
+if (in_array ($choosenModule, $availableModules)) {
+	$UI->loadModule ($choosenModule);
+} else {
+	trigger_error ('Can\'t load this page, doesn\'t exists', E_USER_ERROR);
+}
 ?>

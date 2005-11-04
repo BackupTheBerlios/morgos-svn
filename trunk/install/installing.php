@@ -35,11 +35,13 @@
 					$DB = $DBMan->load ($_POST['database-type']);
 					$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password'], $_POST['database-name']);
 					$SQL = file_get_contents ('install/sql/news.sql');
+					$SQL .= file_get_contents ('install/sql/pages.sql');
 					$SQL = ereg_replace ('%prefix%', 'morgos_', $SQL);
 					
 					$arrayOfSQL = explode (';', $SQL);
 					foreach ($arrayOfSQL as $query) {
-						if ($query == NULL) {
+						$query = trim ($query);
+						if (empty ($query)) {
 							continue;
 						}
 						$result = $DB->query ($query);
