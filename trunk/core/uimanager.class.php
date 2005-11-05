@@ -50,25 +50,27 @@ class UIManager {
 		if (is_readable ('site.config.php')) {
 			if (is_dir ('.install')) {
 				trigger_error ('Remove dir install.php and than continue');
+			} else {
+				$this->config = new config ();
+				$this->config->addConfigItemsFromFile ('site.config.php');
+				$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
+				$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
+				define ('TBL_PREFIX', 'morgos_');
+				define ('TBL_MODULES', TBL_PREFIX . 'modules');
+				define ('TBL_PAGES', TBL_PREFIX . 'userpages');
+						
+				$this->DBManager = new genericDatabase ();
+				$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
+				$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
+					$this->config->getConfigItem ('/database/password', TYPE_STRING));
+				$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
+				$this->user = new user ($this->genDB);	
+				$this->i10nMan = new languages ();
+				if (! $this->i10nMan->loadLanguage ('nederlands')) {
+					trigger_error ('Couldn\'t init internationalization.');
+				}
+				$this->loadSkin ('MorgOS Default');
 			}
-			$this->config = new config ();
-			$this->config->addConfigItemsFromFile ('site.config.php');
-			$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
-			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
-			define ('TBL_PREFIX', 'morgos_');
-			define ('TBL_MODULES', TBL_PREFIX . 'modules');
-			define ('TBL_PAGES', TBL_PREFIX . 'userpages');
-			
-			$this->DBManager = new genericDatabase ();
-			$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
-			$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
-				$this->config->getConfigItem ('/database/password', TYPE_STRING), $this->config->getConfigItem ('/database/name', TYPE_STRING));
-			$this->user = new user ($this->genDB);	
-			$this->i10nMan = new languages ();
-			if (! $this->i10nMan->loadLanguage ('nederlands')) {
-				trigger_error ('Couldn\'t init internationalization.');
-			}
-			$this->loadSkin ('MorgOS Default');
 		} else {
 			header ('Location: install.php');
 		}
@@ -209,7 +211,7 @@ class UIManager {
 		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language'";
 		$query = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($query)) {
-			$HTML .= ' NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['name'].')';
+			$HTML .= ' NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
 		}
 		$HTML .= ' NAVIGATION_CLOSE ()';
 		$HTML = $this->parse ($HTML);
@@ -249,6 +251,29 @@ class UIManager {
 				$needAuthorize = 'no';
 			}
 			$SQL = "INSERT into " . TBL_MODULES . " (module,needauthorized) VALUES ('$module','$needAuthorize')";
+			$result = $this->genDB->query ($SQL);
+			if ($result !== false) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	/** \fn addPage ($module, $language, $name, $content)
+	 * adds a page
+	 *
+	 * \param $module (string)
+	 * \param $language (string)
+	 * \param $name (string)
+	 * \param $content (string)
+	 * \return (bool) 
+	*/
+	/*public*/ function addPage ($module, $language, $name, $content) {
+		if (array_key_exists ($language, $this->getAllAvailableLanguagesFromModule ($language))) {
+			return false;
+		} else {
+			$SQL = "INSERT into " . TBL_PAGES . " (module,name,language,content) VALUES ('$module','$name','$language','$content')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;
@@ -366,7 +391,12 @@ class UIManager {
 		return $HTML;
 	}
 	
-	function getAllAvailableLanguagesFromModule ($module) {
+	/** \fn getAllAvailableLanguagesFromModule ($module)
+	 * Returns the language of all pages with a specified module
+	 *
+	 * \return (string array)
+	*/
+	/*private*/ function getAllAvailableLanguagesFromModule ($module) {
 		$available = array ();
 		$SQL = "SELECT language FROM ". TBL_PAGES . " WHERE module='$module'";
 		$result = $this->genDB->query ($SQL);

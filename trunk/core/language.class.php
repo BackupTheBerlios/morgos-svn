@@ -70,8 +70,11 @@ class languages {
 		if (in_array ($language, $this->supported)) {
 			unset ($this->stringTree);
 			unset ($strings);
-			include ('languages/' . $language . '.language.php');
-			$this->stringTree = $strings;
+			$this->stringTree = array ();
+			if ($language != 'english') {
+				include ('languages/' . $language . '.language.php');
+				$this->stringTree = $strings;
+			}
 			return true;
 		} else {
 			return false;

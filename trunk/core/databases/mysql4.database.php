@@ -30,7 +30,7 @@ if (function_exists ('mysqli_connect')) {
 	//$supported['MySQLi 5.x'] = 'Database_mysqli';
 }
 
-if (array_search ('MySQLDatabase', $supported, true)) {
+if ((array_search ('MySQLDatabase', $supported, true) and  (! class_exists ('MySQLDatabase')))) {
 gettype ($supported); // this is here only to trick Doxygen
 /** \class MySQLDatabase
  * class that take care of the database (MySQL) SubSystem.
@@ -43,17 +43,23 @@ class MySQLDatabase /*implements iDatabase*/ {
 	function __construct () {
 	}
 
-	/*public*/ function connect ( $host,  $user,  $password,  $database) {
-		$this->connection = mysql_connect ($host, $user, $password, $database);
+	/*public*/ function connect ( $host,  $user,  $password) {
+		$this->connection = mysql_connect ($host, $user, $password);
 		if ($this->connection == false) {
+			trigger_error ($this->error, E_USER_NOTICE);
+			trigger_error ('Couldn\'t connect with database', E_USER_ERROR);
 		} else {
-			$succeed = mysql_select_db ($database, $this->connection);
-			if ($succeed == true) {
-				return true;
-			} else {
-				trigger_error ('Couldn\'t connect with database', E_USER_ERROR);
-				trigger_error ($this->error, E_USER_NOTICE);
-			}
+			return true;
+		}
+	}
+	
+	/*public*/ function select_db ($database) {
+		$succeed = mysql_select_db ($database, $this->connection);
+		if ($succeed == true) {
+			return true;
+		} else {
+			trigger_error ($this->error, E_USER_NOTICE);
+			trigger_error ('Couldn\'t open database', E_USER_ERROR);
 		}
 	}
 

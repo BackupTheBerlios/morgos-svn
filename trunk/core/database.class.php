@@ -38,7 +38,8 @@ function checkDatabase ($database, $tables) {
 	 * Maybe
 	
 	public function __construct ();
-	public function connect (string $host, string $user, string $password, string $database);
+	public function connect (string $host, string $user, string $password);
+	public function select_db (string $database);
 	public function close ();
 	public function query (string $sql, bool $fatal = false);
 	public function fetch_array (resource $result);
@@ -77,7 +78,7 @@ class genericDatabase {
 			while (false !== ($file = readdir ($handler))) {
 				// starts with a letter, then you have whatever you want and it ends with '.database.php'
 				if ((preg_match ('/^\w.*\.database\.php$/i', $file) == 1) and (is_file ('core/databases/' . $file))) {
-					include_once ('core/databases/' . $file);
+					include ('core/databases/' . $file);
 				}
 			}
 			$this->supported = $supported;

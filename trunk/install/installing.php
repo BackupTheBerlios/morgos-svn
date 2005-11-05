@@ -15,7 +15,7 @@
 					$output .= '	$config[\'/database/host\'] = \'' . $_POST['database-host'] ."';" . NEWLINE;
 					$output .= '	$config[\'/database/user\'] = \'' . $_POST['database-user'] ."';" . NEWLINE ;
 					$output .= '	$config[\'/database/password\'] = \'' . $_POST['database-password'] ."';" . NEWLINE;
-					$output .= "?> \n";
+					$output .= "?>";
 					$fHandler = @fopen ('site.config.php', 'w');
 					if ($fHandler !== false) {
 						fwrite ($fHandler, $output);
@@ -33,7 +33,12 @@
 					include_once ('core/database.class.php');
 					$DBMan = new genericDatabase ();
 					$DB = $DBMan->load ($_POST['database-type']);
-					$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password'], $_POST['database-name']);
+					$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password']);
+					
+					$SQL = "CREATE DATABASE IF NOT EXISTS " . $_POST['database-name'];
+					$DB->query ($SQL);
+					$DB->select_db ($_POST['database-name']);
+					
 					$SQL = file_get_contents ('install/sql/news.sql');
 					$SQL .= file_get_contents ('install/sql/pages.sql');
 					$SQL = ereg_replace ('%prefix%', 'morgos_', $SQL);
@@ -50,6 +55,16 @@
 						} else {
 							echo '<p class="error">' .$query . '</p>';
 						}
+					}
+					
+					include_once ('core/uimanager.class.php');
+					$UI = new UIManager ();
+					$UI->addModule ('index.html', false);
+					$i10nMan = &$UI->i10nMan;
+					$languages = $i10nMan->getAllSupportedLanguages ();
+					foreach ($languages as $language) {
+						$i10nMan->loadLanguage ($language);
+						$UI->addPage ('index.html', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
 					}
 					// create the admin user TODO
 				?>

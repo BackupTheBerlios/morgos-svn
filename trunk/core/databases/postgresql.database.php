@@ -27,7 +27,7 @@ if (function_exists ('pg_connect')) {
 	$supported['PostgreSQL 8.x'] = 'postgreSQLDatabase';
 }
 
-if (array_search ('postgreSQLDatabase', $supported, true)) {
+if ((array_search ('postgreSQLDatabase', $supported, true)) and (! class_exists ('postgreSQLDatabase'))) {
 gettype ($supported); // this is here only to trick Doxygen
 /** \class postgreSQLDatabase
  * class that take care of the database (PostgreSQL) SubSystem
