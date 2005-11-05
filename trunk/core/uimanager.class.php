@@ -54,7 +54,9 @@ class UIManager {
 			$this->config = new config ();
 			$this->config->addConfigItemsFromFile ('site.config.php');
 			$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
 			define ('TBL_PREFIX', 'morgos_');
+			define ('TBL_MODULES', TBL_PREFIX . 'modules');
 			define ('TBL_PAGES', TBL_PREFIX . 'userpages');
 			
 			$this->DBManager = new genericDatabase ();
@@ -90,18 +92,24 @@ class UIManager {
 		return $this->config;
 	}
 	
-	/** \fn loadModule ($pageName,$authorized = false,$authorizedAsAdmin = false) 
+	/** \fn loadPage ($moduleName, $language,$authorized = false,$authorizedAsAdmin = false) 
 	 * Echo a page with moduule $moduleName. If the user needs to be logged in to view this page (and he isn't) 
 	 * an error is triggered, if he needs to be admin and he isn't als an error is triggered
 	 *
 	 * \param $moduleName (string)
+	 * \param $language (string)
 	 * \param $authorized (bool) standard false
 	 * \param $authorizedAsAsdmin (bool) standard false
 	 * \todo trigger errors if user is not logged in, but userclass needs to be written first
 	*/ 
-	/*public*/ function loadModule ($moduleName, $authorized = false, $authorizedAsAdmin = false) {
+	/*public*/ function loadPage ($moduleName, $language = NULL, $authorized = false, $authorizedAsAdmin = false) {
 		// User code needs to be implemented first
 		$this->module = $moduleName;
+		if (! $language) {
+			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+		} else {
+			$this->config->changeValueConfigItem ('/userinterface/contentlanguage', $language);
+		}
 		if (preg_match ('/.html$/', $moduleName)) {
 			$output = file_get_contents ($this->skinPath . $moduleName);
 		} else {
@@ -153,37 +161,36 @@ class UIManager {
 		}
 	}
 	
-	/** \fn getAllAvailableModules ($language = NULL)
-	 * Returns an array of all available modules in one language
+	/** \fn getAllAvailableModules ()
+	 * Returns an array of all available modules
 	 *
-	 * \param $language (mixed) if it is NULL it is the current user language (standard) if it is false it are all languages if a string it is the lanugage in the string
 	 * \return (string array)
 	*/
-	/*public*/ function getAllAvailableModules ($language = NULL) {
-		$SQL = 'SELECT module FROM ' . TBL_PAGES;
-		if ($language === NULL) {
-			 $SQL .= ' WHERE language=\'' . $this->config->getConfigItem ('/userinterface/language', TYPE_STRING) . '\'';
-		} elseif (is_string ($language)) {
-			 $SQL .= ' WHERE language=\'' . $language . '\'';
-		}
+	/*public*/ function getAllAvailableModules () {
+		$SQL = 'SELECT * FROM ' . TBL_MODULES;
 		$available = array ();
 		$result = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($result)) {
-			$available[] = $row['module'];
+			$available[$row['module']] = $row;
 		}
 		return $available;
 	}
 	
-	/** \fn getModuleContent ($module = NULL)
+	/** \fn getModuleContent ($module = NULL, $language = NULL)
 	 * Returns the content of a module
 	 *
+	 * \param $module (string) the name of the module, is standard the loaded module
+	 * \param $language (string) the language is standard the contentlanguage
 	 * \return (string)
 	*/
-	/*public*/ function getModuleContent ($module = NULL) {
+	/*public*/ function getModuleContent ($module = NULL, $language = NULL) {
 		if (! $module) {
 			$module = $this->module;
 		}
-		$SQL = 'SELECT content FROM ' . TBL_PAGES . ' WHERE language=\'' . $this->config->getConfigItem ('/userinterface/language', TYPE_STRING). '\'';
+		if (! $language) {
+			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+		}
+		$SQL = 'SELECT content FROM ' . TBL_PAGES . ' WHERE module=\''. $module . '\'  AND language=\'' . $language . '\'';
 		$result = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($result)) {
 			return $row['content'];
@@ -198,14 +205,57 @@ class UIManager {
 	*/
 	/*public*/ function getNavigator () {
 		$HTML = ' NAVIGATION_OPEN ()';
-		$SQL = 'SELECT name,link FROM ' . TBL_PAGES;
+		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language'";
 		$query = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($query)) {
-			$HTML .= ' NAVIGATION_ITEM ('.$row['name'].', '.$row['link'].')';
+			$HTML .= ' NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['name'].')';
 		}
 		$HTML .= ' NAVIGATION_CLOSE ()';
 		$HTML = $this->parse ($HTML);
 		return $HTML;
+	}
+	
+	/** \fn changeSettingsModule ($module, $needAuthorize)
+	 * changes the settings for a module
+	 *
+	 * \param $module (string)
+	 * \param $needAuthorize (bool) 
+	*/
+	/*public*/ function changeSettingsModule ($module, $needAuthorize) {
+		if ($needAuthorize) {
+			$needAuthorize = 'yes';
+		} else {
+			$needAuthorize = 'no';
+		}
+		$SQL = "UPDATE " . TBL_MODULES . " SET needauthorized='$needAuthorize' WHERE module='$module'";
+		$this->genDB->query ($SQL);
+	}
+	
+	/** \fn addModule ($module, $needAuthorize)
+	 * adds a module,
+	 *
+	 * \param $module (string)
+	 * \param $needAuthorize (bool)
+	 * \return (bool) 
+	*/
+	/*public*/ function addModule ($module, $needAuthorize) {
+		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
+			return false;
+		} else {
+			if ($needAuthorize) {
+				$needAuthorize = 'yes';
+			} else {
+				$needAuthorize = 'no';
+			}
+			$SQL = "INSERT into " . TBL_MODULES . " (module,needauthorized) VALUES ('$module','$needAuthorize')";
+			$result = $this->genDB->query ($SQL);
+			if ($result !== false) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 	
 	/** \fn loadSkin ($skinName)
@@ -235,7 +285,7 @@ class UIManager {
 		// needs to be 3 = (===) because the key can be 0 and than it is the same as false
 		// to be compatible with PHP <= 4.2 we need to have === NULL
 		if (($key === false) or ($key === NULL)) {
-			trigger_error ('Couldn\'t load skin, unsupported skin',E_USER_ERROR);
+			trigger_error ('Couldn\'t load skin, unsupported skin', E_USER_ERROR);
 		} else {
 			$this->skinPath = $skinPaths[$key];
 		}
@@ -288,7 +338,7 @@ class UIManager {
 				$funcParams = explode (',', $matches[1][$key]);
 				$replace = $this->parse ($skinIni['functions'][$funcKey]);
 				foreach ($function['params'] as $number => $name) {
-					$replace = str_replace ($name, ltrim (rtrim ($funcParams[$number])), $replace);
+					$replace = str_replace ($name, trim ($funcParams[$number]), $replace);
 				}
 				$string = str_replace ($match, $replace, $string);
 			}
@@ -316,16 +366,14 @@ class UIManager {
 		return $HTML;
 	}
 	
-	function getPageNameFromModule () {
-		return 'The name';
-	}
-	
-	function needAuthorizeFromModule () {
-		return true;
-	}
-	
-	function getLanguageFromModule () {
-		return 'english';
+	function getAllAvailableLanguagesFromModule ($module) {
+		$available = array ();
+		$SQL = "SELECT language FROM ". TBL_PAGES . " WHERE module='$module'";
+		$result = $this->genDB->query ($SQL);
+		while ($page = $this->genDB->fetch_array ($result)) {
+			$available[] = $page['language'];
+		}
+		return $available;
 	}
 }
 ?>

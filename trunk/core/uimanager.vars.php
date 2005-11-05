@@ -42,26 +42,39 @@ $this->vars['VAR_ADMIN_NAVIGATION'] = $this->getAdminNavigator ();
 $this->vars['VAR_ADMIN_LINK_INDEX'] = 'admin.php';
 $this->vars['VAR_ADMIN_LINK_GENERAL'] = 'admin.php?module=general';
 
-$pages = ' VAR_ADMIN_PAGES_OPEN';
-$pages = $this->parse ($pages);
+$pages = ' VAR_ADMIN_MODULES_OPEN';
 foreach ($this->getAllAvailableModules (false) as $module) {
-	$pageName = $this->getPageNameFromModule ($module);
-	if ($this->needAuthorizeFromModule ($module)) {
-		$authorizedOnly .= ' ADMIN_PAGE_FORM_NEEDAUTHORIZE (' . $module .')';
+	if ($module['needauthorized'] == 'yes') {
+		$authorizedOnly = ' ADMIN_MODULES_FORM_NEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
 	} else {
-		$authorizedOnly .= ' ADMIN_PAGE_FORM_NONEEDAUTHORIZE (' . $module .')';
+		$authorizedOnly = ' ADMIN_MODULES_FORM_NONEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
 	}
 	$authorizedOnly = $this->parse ($authorizedOnly);
 	
-	$language = $this->getLanguageFromModule ($module);
-	$link = 'index.php?module=' . $module . '&contentlanguage=' . $language;
-	$pages .= ' ADMIN_PAGE_ITEM ('.$module . ', ' . $authorizedOnly .', '. $language . ', '. $link .')';
+	$languages = $this->getAllAvailableLanguagesFromModule ($module['module']);
+	$textLang = ' VAR_ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES';
+	foreach ($languages as $language) {
+		$textLang .= $this->parse (' ADMIN_MODULES_FORM_ITEM_AVAILABLE_LANGUAGES ('. $language .')');
+	}
+	$textLang .= ' VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES';
+	$submitName = 'VIEW_PAGE' . $module['module'];
+	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .')';
 }
-$pages .= ' VAR_ADMIN_PAGES_CLOSE';
-$this->vars['VAR_ADMIN_PAGES'] = $pages;
+$pages .= ' VAR_ADMIN_MODULES_CLOSE';
+$this->vars['VAR_ADMIN_MODULES'] = $pages;
 
 $this->vars['VAR_ADMIN_LINK_DATABASE'] = 'admin.php?module=database';
 $this->vars['VAR_ADMIN_LINK_PAGES'] = 'admin.php?module=pages';
+$this->vars['VAR_ADMIN_FORM_MODULES_ACTION'] = 'admin.php?module=pagessave';
+$this->vars['VAR_ADMIN_FORM_MODULES_SUBMIT'] = 'submit';
+$this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NAME'] = 'NEW_MODULE_NAME';
+$this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NEEDAUTHORIZE'] = 'NEW_MODULE_NEEDAUTHORIZE';
+$iniFile = parse_ini_file ($this->skinPath . 'skin.ini', true);
+$this->vars['VAR_ADMIN_MODULES_OPEN'] = $this->parse ($iniFile['variable']['admin_modules_open']);
+$this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($iniFile['variable']['admin_modules_close']);
+$this->vars['VAR_SKIN_LICENSE'] = $this->parse ($iniFile['variable']['license']);
+$this->vars['VAR_ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_open_available_languages']);
+$this->vars['VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_close_available_languages']);
 $this->vars['VAR_PAGE_CONTENT'] = $this->getModuleContent ();
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
@@ -77,16 +90,16 @@ $this->vars['TEXT_DATABASE_HOST'] = $this->i10nMan->translate ('Database host');
 $this->vars['TEXT_DATABASE_DBNAME'] = $this->i10nMan->translate ('Database name');
 $this->vars['TEXT_DATABASE_USER'] = $this->i10nMan->translate ('Database username');
 $this->vars['TEXT_DATABASE_PASSWORD'] = $this->i10nMan->translate ('Database password');
-$this->vars['TEXT_ADMIN_MODULE_NAME'] = $this->i10nMan->translate ('Module name');
-$this->vars['TEXT_ADMIN_MODULE_AUTHORIZED_ONLY'] = $this->i10nMan->translate ('Registerd users only');
-$this->vars['TEXT_ADMIN_MODULE_LANGUAGES'] = $this->i10nMan->translate ('Available languages');
-$this->vars['TEXT_ADMIN_MODULE_VISIT'] = $this->i10nMan->translate ('View');
-$this->vars['TEXT_ADMIN_MODULE_VIEW'] = $this->i10nMan->translate ('View module');
+$this->vars['TEXT_ADMIN_MODULES_NAME'] = $this->i10nMan->translate ('Module name');
+$this->vars['TEXT_ADMIN_MODULES_AUTHORIZED_ONLY'] = $this->i10nMan->translate ('Registerd users only');
+$this->vars['TEXT_ADMIN_MODULES_LANGUAGES'] = $this->i10nMan->translate ('Available languages');
+$this->vars['TEXT_ADMIN_MODULES_VISIT'] = $this->i10nMan->translate ('View');
+$this->vars['TEXT_ADMIN_MODULES_VIEW_PAGE'] = $this->i10nMan->translate ('View page');
+$this->vars['TEXT_ADD_MODULE'] = $this->i10nMan->translate ('Add module');
+$this->vars['TEXT_MANAGE_MODULES'] = $this->i10nMan->translate ('Manage modules');
+$this->vars['TEXT_WARNING_CHANGES_LOST'] = $this->i10nMan->translate ('If you add a module, changes in other modules are lost!');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
 // the skin defined vars
-$iniFile = parse_ini_file ($this->skinPath . 'skin.ini', true);
-$this->vars['VAR_ADMIN_PAGES_OPEN'] = $this->parse ($iniFile['variable']['admin_pages_open']);
-$this->vars['VAR_ADMIN_PAGES_CLOSE'] = $this->parse ($iniFile['variable']['admin_pages_close']);
-$this->vars['VAR_SKIN_LICENSE'] = $this->parse ($iniFile['vars']['license']);
+
 ?>

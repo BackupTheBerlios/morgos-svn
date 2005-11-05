@@ -20,7 +20,7 @@ $UI = new UIManager ();
 
 switch ($_GET['module']) {
 	case 'database':
-		$UI->loadModule ('admin/database.html', true, true);
+		$UI->loadPage ('admin/database.html', NULL, true, true);
 		break;
 	case 'databasesave':
 		if ($_POST['submit'] == $UI->vars['ADMIN_DATABASE_FORM_INSTALL_NEW_DATABASE']) {
@@ -30,13 +30,13 @@ switch ($_GET['module']) {
 			header ('Location: admin.php?module=database');
 		}
 	case 'users':
-		$UI->loadModule ('admin/users.html', true, true);
+		$UI->loadPage ('admin/users.html', NULL, true, true);
 		break;
 	case 'news':
-		$UI->loadModule ('admin/news.html', true, true);
+		$UI->loadPage ('admin/news.html', NULL, true, true);
 		break;
 	case 'general':
-		$UI->loadModule ('admin/general.html', true, true);
+		$UI->loadPage ('admin/general.html', NULL, true, true);
 		break;
 	case 'generalsave':
 		if ($UI->saveAdmin ($_POST, '/general/sitename')) {
@@ -44,12 +44,42 @@ switch ($_GET['module']) {
 		}
 		break;
 	case 'pages':
-		$UI->loadModule ('admin/pages.html', true, true);
+		$UI->loadPage ('admin/pages.html', NULL, true, true);
+		break;
+	case 'pagessave':
+		if (! array_key_exists ('submit', $_POST)) {
+			foreach ($_POST as $key => $value) {
+				if (substr ($key, 0, 9) == 'VIEW_PAGE') {
+					$language = $_POST['LANGUAGE_' . substr ($key, 9)];
+					$module = str_replace ('_html', '.html', substr ($key, 9));
+					$UI->loadPage ($module, $language);
+				}
+			}
+		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Add module')) {
+			$UI->addModule ($_POST['NEW_MODULE_NAME'], $_POST['NEW_MODULE_NEEDAUTHORIZE']);
+			header ('Location: admin.php?module=pages');
+		} elseif ($_POST['submit'] == 'EDIT_PAGE') {
+		} elseif ($_POST['submit'] == 'ADD_PAGE') {
+		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Save settings')) {
+			foreach ($UI->getAllAvailableModules () as $module) {
+				$module['module'] = str_replace ('.html', '_html', $module['module']);
+				if ($_POST['NEED_AUTHORIZE' . $module['module']] == 'on') {
+					$needAuthorize = true;
+				} else {
+					$needAuthorize = false;
+				}
+				$module['module'] = str_replace ('_html', '.html', $module['module']);
+				$UI->changeSettingsModule ($module['module'], $needAuthorize);
+			}
+			header ('Location: admin.php?module=pages');
+		} else {
+			header ('Location: admin.php?module=pages');
+		}
 		break;
 	case 'index':
 		// do the default one
 	default:
-		$UI->loadModule ('admin/index.html', true, true);
+		$UI->loadPage ('admin/index.html', NULL, true, true);
 		break;
 }
 ?>

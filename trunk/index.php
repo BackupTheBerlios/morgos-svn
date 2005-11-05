@@ -25,8 +25,8 @@ if (array_key_exists ('module', $_GET)) {
 }
 
 $availableModules = $UI->getAllAvailableModules ();
-if (in_array ($choosenModule, $availableModules)) {
-	$UI->loadModule ($choosenModule);
+if (array_key_exists ($choosenModule, $availableModules)) {
+	$UI->loadPage ($choosenModule);
 } else {
 	trigger_error ('Can\'t load this page, doesn\'t exists', E_USER_ERROR);
 }
