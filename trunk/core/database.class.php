@@ -70,7 +70,7 @@ class genericDatabase {
 	 * \return array (string)
 	*/
 	/*public*/ function getAllSupportedDatabases () {
-		if ($this->supported == NULL) {
+		if (! isset ($this->supported)) {
 			$supported = array ();
 			$handler = opendir ('core/databases/');
 			// $files = scandir ('core/databases/'); PHP5 only :( 

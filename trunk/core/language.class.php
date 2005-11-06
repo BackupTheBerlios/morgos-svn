@@ -42,7 +42,7 @@ class languages {
 	 * \return (string array)
 	*/
 	/*public*/ function getAllSupportedLanguages () {
-		if ($this->supported == NULL) {
+		if (! isset ($this->supported)) {
 			$supported = array ();
 			$supported[] = 'english';
 			$handler = opendir ('languages/');

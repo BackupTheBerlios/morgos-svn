@@ -184,7 +184,7 @@ class config {
 	 * \return bool
 	*/
 	/*private | public*/ function exists ($configName) {
-		if ($this->configTree[$configName] != NULL) {
+		if (array_key_exists ($configName, $this->configTree)) {
 			return true;
 		} else {
 			return false;

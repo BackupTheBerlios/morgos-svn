@@ -75,6 +75,7 @@ $this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($iniFile['variable']['adm
 $this->vars['VAR_SKIN_LICENSE'] = $this->parse ($iniFile['variable']['license']);
 $this->vars['VAR_ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_open_available_languages']);
 $this->vars['VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_close_available_languages']);
+$this->vars['VAR_ADMIN_DATABASE_FORM_SUBMIT'] = 'submit';
 $this->vars['VAR_PAGE_CONTENT'] = $this->getModuleContent ();
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);

@@ -20,6 +20,7 @@
  *
  * \author Nathan Samson
 */
+error_reporting (E_ALL);
 include_once ('core/database.class.php');
 include_once ('core/user.class.php');
 include_once ('core/config.class.php');
@@ -363,7 +364,11 @@ class UIManager {
 				$funcParams = explode (',', $matches[1][$key]);
 				$replace = $this->parse ($skinIni['functions'][$funcKey]);
 				foreach ($function['params'] as $number => $name) {
-					$replace = str_replace ($name, trim ($funcParams[$number]), $replace);
+					if (array_key_exists ($number, $funcParams)) {
+						$replace = str_replace ($name, trim ($funcParams[$number]), $replace);
+					} else {
+						$replace = str_replace ($name, '', $replace);
+					}
 				}
 				$string = str_replace ($match, $replace, $string);
 			}

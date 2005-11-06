@@ -18,12 +18,18 @@
 include ('core/uimanager.class.php');
 $UI = new UIManager ();
 
-switch ($_GET['module']) {
+if (array_key_exists ('module', $_GET)) {
+	$module = $_GET['module']; 
+} else {
+	$module = 'index';
+}
+
+switch ($module) {
 	case 'database':
 		$UI->loadPage ('admin/database.html', NULL, true, true);
 		break;
 	case 'databasesave':
-		if ($_POST['submit'] == $UI->vars['ADMIN_DATABASE_FORM_INSTALL_NEW_DATABASE']) {
+		if ($_POST['submit'] == 'ADMIN_DATABASE_FORM_INSTALL_NEW_DATABASE') {
 			// install the database again (and maybe copy from the old one)
 		}
 		if ($UI->saveAdmin ($_POST, '/database/type', '/database/host', '/database/name', '/database/user', '/database/password')) {
@@ -63,7 +69,7 @@ switch ($_GET['module']) {
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Save settings')) {
 			foreach ($UI->getAllAvailableModules () as $module) {
 				$module['module'] = str_replace ('.html', '_html', $module['module']);
-				if ($_POST['NEED_AUTHORIZE' . $module['module']] == 'on') {
+				if (array_key_exists ('NEED_AUTHORIZE' . $module['module'], $_POST)) {
 					$needAuthorize = true;
 				} else {
 					$needAuthorize = false;
