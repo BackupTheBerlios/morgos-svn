@@ -59,13 +59,15 @@ switch ($module) {
 					$language = $_POST['LANGUAGE_' . substr ($key, 9)];
 					$module = str_replace ('_html', '.html', substr ($key, 9));
 					$UI->loadPage ($module, $language);
+				} elseif (substr ($key, 0, 8) == 'ADD_PAGE') {
+					$module = str_replace ('_html', '.html', substr ($key, 8));
+					header ('Location: admin.php?module=addpage&tomodule=' . $module);
 				}
 			}
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Add module')) {
 			$UI->addModule ($_POST['NEW_MODULE_NAME'], $_POST['NEW_MODULE_NEEDAUTHORIZE']);
 			header ('Location: admin.php?module=pages');
 		} elseif ($_POST['submit'] == 'EDIT_PAGE') {
-		} elseif ($_POST['submit'] == 'ADD_PAGE') {
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Save settings')) {
 			foreach ($UI->getAllAvailableModules () as $module) {
 				$module['module'] = str_replace ('.html', '_html', $module['module']);
@@ -81,6 +83,15 @@ switch ($module) {
 		} else {
 			header ('Location: admin.php?module=pages');
 		}
+		break;
+	case 'addpage':
+		// we need some global variables here to make the vars in core/uimanager.vars.class.php correct
+		$addToModule = $_GET['tomodule'];
+		$UI->loadPage ('admin/addpage.html', NULL, true, true);
+		break;
+	case 'addpagesave':
+		$UI->addPage ($_POST['module'], $_POST['language'], $_POST['name'], $_POST['content']);
+		header ('Location: admin.php?module=pages');
 		break;
 	case 'index':
 		// do the default one

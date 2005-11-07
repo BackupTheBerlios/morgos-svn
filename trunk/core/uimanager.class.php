@@ -26,7 +26,7 @@ include_once ('core/user.class.php');
 include_once ('core/config.class.php');
 include_once ('core/language.class.php');
 include_once ('core/compatible.php');
-define ('MORGOS_VERSION','0.1');
+define ('MORGOS_VERSION', '0.1');
 /** \class UIManager
  * class that take care of the main UI layer, extensionhandling and HTML output.
  *
@@ -279,6 +279,7 @@ class UIManager {
 			if ($result !== false) {
 				return true;
 			} else {
+				trigger_error ('Cant add page' , E_USER_ERROR);
 				return false;
 			}
 		}

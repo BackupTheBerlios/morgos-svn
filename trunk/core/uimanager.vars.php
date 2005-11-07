@@ -58,7 +58,8 @@ foreach ($this->getAllAvailableModules (false) as $module) {
 	}
 	$textLang .= ' VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES';
 	$submitName = 'VIEW_PAGE' . $module['module'];
-	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .')';
+	$addPage = 'ADD_PAGE' . $module['module'];
+	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .')';
 }
 $pages .= ' VAR_ADMIN_MODULES_CLOSE';
 $this->vars['VAR_ADMIN_MODULES'] = $pages;
@@ -76,6 +77,17 @@ $this->vars['VAR_SKIN_LICENSE'] = $this->parse ($iniFile['variable']['license'])
 $this->vars['VAR_ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_open_available_languages']);
 $this->vars['VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_close_available_languages']);
 $this->vars['VAR_ADMIN_DATABASE_FORM_SUBMIT'] = 'submit';
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_ACTION'] = 'admin.php?module=addpagesave';
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_SUBMIT'] = 'submit';
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_LANGUAGE'] = 'language';
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_CONTENT'] = 'content';
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_MODULE'] = 'module';
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_NAME'] = 'name';
+global  $addToModule;
+if (! isset ($addToModule)) {
+	$addToModule = NULL;
+}
+$this->vars['VAR_ADMIN_FORM_ADDPAGE_VALUE_MODULE'] = $addToModule;
 $this->vars['VAR_PAGE_CONTENT'] = $this->getModuleContent ();
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
@@ -97,8 +109,13 @@ $this->vars['TEXT_ADMIN_MODULES_LANGUAGES'] = $this->i10nMan->translate ('Availa
 $this->vars['TEXT_ADMIN_MODULES_VISIT'] = $this->i10nMan->translate ('View');
 $this->vars['TEXT_ADMIN_MODULES_VIEW_PAGE'] = $this->i10nMan->translate ('View page');
 $this->vars['TEXT_ADD_MODULE'] = $this->i10nMan->translate ('Add module');
+$this->vars['TEXT_ADMIN_MODULES_ADD_PAGE'] = $this->i10nMan->translate ('Add translation to module');
 $this->vars['TEXT_MANAGE_MODULES'] = $this->i10nMan->translate ('Manage modules');
 $this->vars['TEXT_WARNING_CHANGES_LOST'] = $this->i10nMan->translate ('If you add a module, changes in other modules are lost!');
+$this->vars['TEXT_ADD_PAGE'] = $this->i10nMan->translate ('Add page');
+$this->vars['TEXT_ADMIN_ADD_PAGE_INTRODUCTION'] = $this->i10nMan->translate ('Here you can add a page to a module.');
+$this->vars['TEXT_YOU_HAVE_CHOSEN_TO_ADD_PAGE_TO_MODULE'] = $this->i10nMan->translate ('You have chosen to add a page to module %1', $addToModule);
+$this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
 // the skin defined vars
