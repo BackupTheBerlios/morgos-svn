@@ -21,10 +21,6 @@
  * \author Nathan Samson
 */
 error_reporting (E_ALL);
-include_once ('core/database.class.php');
-include_once ('core/user.class.php');
-include_once ('core/config.class.php');
-include_once ('core/language.class.php');
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
 /** \class UIManager
@@ -53,6 +49,7 @@ class UIManager {
 			if (is_dir ('.install')) {
 				trigger_error ('Remove dir install.php and than continue');
 			} else {
+				include_once ('core/config.class.php');
 				$this->config = new config ();
 				$this->config->addConfigItemsFromFile ('site.config.php');
 				$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
@@ -60,7 +57,9 @@ class UIManager {
 				define ('TBL_PREFIX', 'morgos_');
 				define ('TBL_MODULES', TBL_PREFIX . 'modules');
 				define ('TBL_PAGES', TBL_PREFIX . 'userpages');
-						
+				include_once ('core/database.class.php');
+				include_once ('core/user.class.php');
+				include_once ('core/language.class.php');
 				$this->DBManager = new genericDatabase ();
 				$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 				$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),

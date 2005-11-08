@@ -1,6 +1,10 @@
 <?php
 	$canrun = true;
-	if ($_POST['agree'] == 'no') {
+	if (array_key_exists ('agree', $_POST)) {
+		if ($_POST['agree'] == 'no') {
+			header ('Location: ./install.php');
+		}
+	} else {
 		header ('Location: ./install.php');
 	}
 ?>
@@ -40,6 +44,7 @@
 			<?php
 				if ($canrun == true) { ?>
 					<form action='./install.php?phase=config' method='post'>
+						<input type='hidden' name='canrun' value='yes' value='Next' />
 						<input type='submit' value='Next' />
 					</form>
 			<?php
@@ -48,6 +53,7 @@
 				}
 			?>
 			<form action='./install.php?phase=check' method='post'>
+				<input type='hidden' value='yes' name='agree'>
 				<input type='submit' value='Check again' />
 			</form>
 		</div>

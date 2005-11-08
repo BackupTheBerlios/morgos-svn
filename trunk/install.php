@@ -15,6 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
+error_reporting (E_ALL);
 if (array_key_exists ('phase', $_GET) == false) {
 	$phase = 'start';
 } else {
@@ -22,7 +23,7 @@ if (array_key_exists ('phase', $_GET) == false) {
 }
 switch ($phase) {
 	case 'start':
-		readfile ('install/license.html');
+		include ('install/license.php');
 		break;
 	case 'check':
 		include ('install/check.php');
@@ -31,16 +32,13 @@ switch ($phase) {
 		include ('install/config.php');
 		break;
 	case 'checkdbconn':
-		readfile ('install/checkdbconn.html');
+		include ('install/checkdbconn.php');
 		break;
 	case 'install':
 		include ('install/installing.php');
 		break;
-	case 'done':
-		readfile ('install/done.html');
-		break;
 	default:
-		readfile ('install/license.html');
+		include ('install/license.php');
 		break;
 }
 ?>

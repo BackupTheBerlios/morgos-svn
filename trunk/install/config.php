@@ -1,3 +1,12 @@
+<?php
+	if (array_key_exists ('canrun', $_POST)) {
+		if ($_POST['canrun'] == 'no') {
+			header ('Location: ./install.php?phase=check');
+		}
+	} else {
+		header ('Location: ./install.php?phase=check');
+	}
+?>
 <html>
 	<body>
 		<form action='./install.php?phase=install' method='post'>
