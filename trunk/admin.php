@@ -62,10 +62,24 @@ switch ($module) {
 				} elseif (substr ($key, 0, 8) == 'ADD_PAGE') {
 					$module = str_replace ('_html', '.html', substr ($key, 8));
 					header ('Location: admin.php?module=addpage&tomodule=' . $module);
+				} elseif (substr ($key, 0, 11) == 'DELETE_PAGE')  {
+					$module = str_replace ('_html', '.html', substr ($key, 11));
+					$UI->deletePage ($module, $_POST['LANGUAGE_' . substr ($key, 11)]);
+					header ('Location: admin.php?module=pages');
+				} elseif (substr ($key, 0, 13) == 'DELETE_MODULE')  {
+					$module = str_replace ('_html', '.html', substr ($key, 13));
+					$UI->deleteModule ($module);
+					header ('Location: admin.php?module=pages');
 				}
 			}
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Add module')) {
-			$UI->addModule ($_POST['NEW_MODULE_NAME'], $_POST['NEW_MODULE_NEEDAUTHORIZE']);
+		 	// The post item is only created when it is checked
+			if (array_key_exists ('NEW_MODULE_NEEDAUTHORIZE', $_POST)) {
+				$needAuthorize = true;
+			} else {
+				$needAuthorize = false;
+			}
+			$UI->addModule ($_POST['NEW_MODULE_NAME'], $needAuthorize);
 			header ('Location: admin.php?module=pages');
 		} elseif ($_POST['submit'] == 'EDIT_PAGE') {
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Save settings')) {

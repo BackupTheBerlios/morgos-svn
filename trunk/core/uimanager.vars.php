@@ -52,14 +52,16 @@ foreach ($this->getAllAvailableModules (false) as $module) {
 	$authorizedOnly = $this->parse ($authorizedOnly);
 	
 	$languages = $this->getAllAvailableLanguagesFromModule ($module['module']);
-	$textLang = ' VAR_ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES';
+	$textLang = $this->parse (' ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES (LANGUAGE_'.$module['module'] .')');
 	foreach ($languages as $language) {
 		$textLang .= $this->parse (' ADMIN_MODULES_FORM_ITEM_AVAILABLE_LANGUAGES ('. $language .')');
 	}
-	$textLang .= ' VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES';
+	$textLang .= $this->parse (' ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES ()');
 	$submitName = 'VIEW_PAGE' . $module['module'];
 	$addPage = 'ADD_PAGE' . $module['module'];
-	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .')';
+	$deletePage = 'DELETE_PAGE' . $module['module'];
+	$deleteModule = 'DELETE_MODULE' . $module['module'];
+	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .')';
 }
 $pages .= ' VAR_ADMIN_MODULES_CLOSE';
 $this->vars['VAR_ADMIN_MODULES'] = $pages;
@@ -74,8 +76,6 @@ $iniFile = parse_ini_file ($this->skinPath . 'skin.ini', true);
 $this->vars['VAR_ADMIN_MODULES_OPEN'] = $this->parse ($iniFile['variable']['admin_modules_open']);
 $this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($iniFile['variable']['admin_modules_close']);
 $this->vars['VAR_SKIN_LICENSE'] = $this->parse ($iniFile['variable']['license']);
-$this->vars['VAR_ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_open_available_languages']);
-$this->vars['VAR_ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES'] = $this->parse ($iniFile['variable']['admin_modules_form_close_available_languages']);
 $this->vars['VAR_ADMIN_DATABASE_FORM_SUBMIT'] = 'submit';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_ACTION'] = 'admin.php?module=addpagesave';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_SUBMIT'] = 'submit';
@@ -115,6 +115,8 @@ $this->vars['TEXT_WARNING_CHANGES_LOST'] = $this->i10nMan->translate ('If you ad
 $this->vars['TEXT_ADD_PAGE'] = $this->i10nMan->translate ('Add page');
 $this->vars['TEXT_ADMIN_ADD_PAGE_INTRODUCTION'] = $this->i10nMan->translate ('Here you can add a page to a module.');
 $this->vars['TEXT_YOU_HAVE_CHOSEN_TO_ADD_PAGE_TO_MODULE'] = $this->i10nMan->translate ('You have chosen to add a page to module %1', $addToModule);
+$this->vars['TEXT_ADMIN_MODULES_DELETE_PAGE'] = $this->i10nMan->translate ('Delete page');
+$this->vars['TEXT_ADMIN_MODULES_DELETE_MODULE'] = $this->i10nMan->translate ('Delete module');
 $this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');

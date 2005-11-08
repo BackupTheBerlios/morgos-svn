@@ -35,6 +35,7 @@ define ('MORGOS_VERSION', '0.1');
  * \bug not compatible with PHP lower than 4.1  (use of version_compare)
  * \bug not compatible with PHP 4.0.4 and lower (use of array_search)
  * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
+ * \bug If a module is deleted but not all pages are deleted this pages are not deleted
  * \todo change the dir in __construct to install in place of DOT install
 */
 class UIManager {
@@ -282,6 +283,32 @@ class UIManager {
 				trigger_error ('Cant add page' , E_USER_ERROR);
 				return false;
 			}
+		}
+	}
+	
+	/** \fn deletePage ($module, $language)
+	 * deletes a page
+	*/
+	/*pulbic*/ function deletePage ($module, $language) {
+		$SQL = "DELETE FROM " . TBL_PAGES . " WHERE module='$module' AND language='$language'";
+		$result = $this->genDB->query ($SQL);
+		if ($result !== false) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/** \fn deleteModule ($module)
+	 * deletes a module
+	*/
+	/*pulbic*/ function deleteModule ($module) {
+		$SQL = "DELETE FROM " . TBL_MODULES . " WHERE module='$module'"; 
+		$result = $this->genDB->query ($SQL);
+		if ($result !== false) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 	
