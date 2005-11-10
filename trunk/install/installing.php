@@ -5,7 +5,7 @@
 
 	include_once ('core/compatible.php');
 	define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
-	
+	echo 'config';
 	// write the config file out
 	$output = "<?php \n";
 	$output .= "	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */\n";
@@ -21,7 +21,7 @@
 		fwrite ($fHandler, $output);
 		fclose ($fHandler);
 	}
-
+	echo 'DB';
 	// create the database
 	// TODO: add prefix config
 	include_once ('core/database.class.php');
@@ -29,6 +29,7 @@
 	$DB = $DBMan->load ($_POST['database-type']);
 	$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password']);
 
+	echo 'CREATE DBNAME';
 	$SQL = "CREATE DATABASE IF NOT EXISTS " . $_POST['database-name'];
 	$DB->query ($SQL);
 	$DB->select_db ($_POST['database-name']);
@@ -38,6 +39,7 @@
 	$SQL .= file_get_contents ('install/sql/users.sql');
 	$SQL = ereg_replace ('%prefix%', 'morgos_', $SQL);
 
+	echo 'QUERYING';
 	$arrayOfSQL = explode (';', $SQL);
 	foreach ($arrayOfSQL as $query) {
 		$query = trim ($query);
@@ -52,6 +54,7 @@
 		}
 	}
 
+	echo 'CREATE ADMIN';
 	include_once ('core/uimanager.class.php');
 	$UI = new UIManager ();
 	$UI->addModule ('index.html', false);
@@ -63,6 +66,7 @@
 	}
 
 	$UI->user->insertUser ($_POST['admin-account'], $_POST['admin-email'], $_POST['admin-password'], true);
+	echo 'DONE';
 ?>
 <html>
 	<body>
