@@ -46,7 +46,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 	/*public*/ function connect ( $host,  $user,  $password) {
 		$this->connection = mysql_connect ($host, $user, $password);
 		if ($this->connection == false) {
-			trigger_error ($this->error, E_USER_NOTICE);
+			trigger_error ($this->error (), E_USER_NOTICE);
 			trigger_error ('Couldn\'t connect with database', E_USER_ERROR);
 		} else {
 			return true;
@@ -58,7 +58,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 		if ($succeed == true) {
 			return true;
 		} else {
-			trigger_error ($this->error, E_USER_NOTICE);
+			trigger_error ($this->error (), E_USER_NOTICE);
 			trigger_error ('Couldn\'t open database', E_USER_ERROR);
 		}
 	}
