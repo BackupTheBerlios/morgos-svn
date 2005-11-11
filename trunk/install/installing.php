@@ -54,7 +54,7 @@
 
 	include_once ('core/uimanager.class.php');
 	$UI = new UIManager ();
-	$UI->addModule ('index.html', false);
+	$UI->addModule ('index', false);
 	$i10nMan = &$UI->i10nMan;
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {

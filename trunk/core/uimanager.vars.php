@@ -61,7 +61,8 @@ foreach ($this->getAllAvailableModules (false) as $module) {
 	$addPage = 'ADD_PAGE' . $module['module'];
 	$deletePage = 'DELETE_PAGE' . $module['module'];
 	$deleteModule = 'DELETE_MODULE' . $module['module'];
-	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .')';
+	$editPage = 'EDIT_PAGE' . $module['module'];
+	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .', '. $editPage . ')';
 }
 $pages .= ' VAR_ADMIN_MODULES_CLOSE';
 $this->vars['VAR_ADMIN_MODULES'] = $pages;
@@ -83,6 +84,19 @@ $this->vars['VAR_ADMIN_FORM_ADDPAGE_LANGUAGE'] = 'language';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_CONTENT'] = 'content';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_MODULE'] = 'module';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_NAME'] = 'name';
+$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE'] = 'language';
+$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CONTENT'] = 'newcontent';
+$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE'] = 'language';
+$this->vars['VAR_ADMIN_FORM_EDITPAGE_ACTION'] = './admin.php?module=pagessave';
+$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_PAGENAME'] = 'newname';
+global $editPageModule, $editPageLanguage;
+if (isset ($editPageModule)) {
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURLANGUAGE'] = $editPageLanguage;
+	$this->vars['VAR_ADMIN_FORM_EDITPAGE_SUBMIT'] = 'EDIT_PAGE_SAVE' . $editPageModule;
+	$page = $this->getPageInfo ($editPageModule, $editPageLanguage);
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURPAGENAME'] = $page['name'];
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURCONTENT'] = $page['content']; 
+}
 global  $addToModule;
 if (! isset ($addToModule)) {
 	$addToModule = NULL;
@@ -114,9 +128,16 @@ $this->vars['TEXT_MANAGE_MODULES'] = $this->i10nMan->translate ('Manage modules'
 $this->vars['TEXT_WARNING_CHANGES_LOST'] = $this->i10nMan->translate ('If you add a module, changes in other modules are lost!');
 $this->vars['TEXT_ADD_PAGE'] = $this->i10nMan->translate ('Add page');
 $this->vars['TEXT_ADMIN_ADD_PAGE_INTRODUCTION'] = $this->i10nMan->translate ('Here you can add a page to a module.');
+$this->vars['TEXT_EDIT_PAGE_INTRODUCTION'] = $this->i10nMan->translate ('Here you can edit a page.');
 $this->vars['TEXT_YOU_HAVE_CHOSEN_TO_ADD_PAGE_TO_MODULE'] = $this->i10nMan->translate ('You have chosen to add a page to module %1', $addToModule);
 $this->vars['TEXT_ADMIN_MODULES_DELETE_PAGE'] = $this->i10nMan->translate ('Delete page');
 $this->vars['TEXT_ADMIN_MODULES_DELETE_MODULE'] = $this->i10nMan->translate ('Delete module');
+$this->vars['TEXT_EDIT_PAGE'] = $this->i10nMan->translate ('Edit page');
+$this->vars['TEXT_DELETE_PAGE'] = $this->i10nMan->translate ('Delete page');
+$this->vars['TEXT_DELETE_MODULE'] = $this->i10nMan->translate ('Delete module');
+$this->vars['TEXT_LANGUAGE'] = $this->i10nMan->translate ('Language');
+$this->vars['TEXT_PAGENAME'] = $this->i10nMan->translate ('Name');
+$this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');

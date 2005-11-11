@@ -113,8 +113,9 @@ class UIManager {
 		} else {
 			$this->config->changeValueConfigItem ('/userinterface/contentlanguage', $language);
 		}
-		if (preg_match ('/.html$/', $moduleName)) {
-			$output = file_get_contents ($this->skinPath . $moduleName);
+
+		if (file_exists ($this->skinPath . $moduleName . '.html')) {
+			$output = file_get_contents ($this->skinPath . $moduleName . '.html');
 		} else {
 			// it is a module living in the database
 			$output = file_get_contents ($this->skinPath . 'usermodule.html');
@@ -305,9 +306,51 @@ class UIManager {
 		$SQL = "DELETE FROM " . TBL_MODULES . " WHERE module='$module'"; 
 		$result = $this->genDB->query ($SQL);
 		if ($result !== false) {
-			return false;
-		} else {
 			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/** \fn getPageInfo ($module = NULL, $language = NULL)
+	 * get all the page info
+	 *
+	 * \param $module (string) the module standard is the current loaded module
+	 * \param $language (string) the language standard is the current contentlanguagez
+	 * \return (bool | string array)
+	*/
+	/*pulbic*/ function getPageInfo ($module = NULL, $language = NULL) {
+		if (! $module) {
+			$module = $this->module;
+		}
+		if (! $language) {
+			$language = $this->config->getConfigByName ('/userinterface/contentlanguage', TYPE_STRING);
+		}
+		$SQL = "SELECT * FROM " . TBL_PAGES . " WHERE module='$module' AND language='$language'"; 
+		$result = $this->genDB->query ($SQL);
+		if ($result !== false) {
+			return $this->genDB->fetch_array ($result);
+		} else {
+			return false;
+		}
+	}
+	
+	/** \fn editPage ($module, $language, $newName, $newContent)
+	 * edit the page
+	 *
+	 * \param $module (string)
+	 * \param $language (string)
+	 * \param $newName (string)
+	 * \param $newContent (string)
+	 * \return (bool)
+	*/
+	/*pulbic*/ function editPage ($module, $language, $newName, $newContent) {
+		$SQL = "UPDATE " . TBL_PAGES . " SET name='$newName', content='$newContent' WHERE module='$module' AND language='$language'"; 
+		$result = $this->genDB->query ($SQL);
+		if ($result !== false) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
