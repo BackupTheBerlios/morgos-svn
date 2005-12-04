@@ -37,8 +37,8 @@ if (! function_exists ('file_get_contents')) {
 			while (! feof ($fHandler)) {
 				$buffer .= fread ($fHandler, 4096); // we do not use filesize () because filesize doesn't search in include path
 			}
-			return $buffer;
 			fclose ($fHandler);
+			return $buffer;
 		} else {
 			return false;
 		}

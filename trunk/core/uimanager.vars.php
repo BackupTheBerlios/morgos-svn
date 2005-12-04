@@ -105,6 +105,27 @@ $this->vars['VAR_ADMIN_FORM_ADDPAGE_VALUE_MODULE'] = $addToModule;
 $this->vars['VAR_PAGE_CONTENT'] = $this->getModuleContent ();
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
+$this->vars['VAR_ERRORS'] = NULL;
+$this->vars['VAR_WARNINGS'] = NULL;
+$this->vars['VAR_NOTICES'] = NULL;
+$this->vars['VAR_DEBUGGING'] = NULL;
+foreach ($this->notices as $val) {
+	if (($val["type"] == "INTERNAL_ERROR") or ($val['type' == "ERROR"])) {
+		$this->vars['VAR_ERRORS'] .= $this->parse (' ERROR (' . $val['error'] . ')');
+	} elseif ($val["type"] == "NOTICE") {
+		$this->vars['VAR_NOTICES'] .= $this->parse (' NOTICE (' . $val['error'] . ')');
+	} elseif ($val["type"] == "WARNING") {
+		$this->vars['VAR_WARNINGS'] .= $this->parse (' WARNING (' . $val['error'] . ')');
+	} elseif ($val["type"] == "DEBUG") {
+		$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
+	}
+/*	if ($val["die"] == true) {
+		echo "DIED";
+		die (); // FIX: Do a clean die ();
+	}*/
+}
+
+
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
 $this->vars['TEXT_ADMIN_INDEX'] = $this->i10nMan->translate ('Admin Home');
@@ -141,6 +162,11 @@ $this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
-// the skin defined vars
 
+// the skin defined vars
+foreach ($iniFile['variable'] as $key => $skinVar) {
+	if (! array_key_exists (strtoupper ($key), $this->vars)) {
+		$this->vars[strtoupper ($key)] = $this->parse ($skinVar);
+	}
+}
 ?>

@@ -59,7 +59,7 @@
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {
 		$i10nMan->loadLanguage ($language);
-		$UI->addPage ('index.html', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
+		$UI->addPage ('index', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
 	}
 
 	$UI->user->insertUser ($_POST['admin-account'], $_POST['admin-email'], $_POST['admin-password'], true);

@@ -21,13 +21,13 @@ $UI = new UIManager ();
 if (array_key_exists ('module', $_GET)) {
 	$choosenModule = $_GET['module'];
 } else {
-	$choosenModule = 'index.html';
+	$choosenModule = 'index';
 }
 
 $availableModules = $UI->getAllAvailableModules ();
 if (array_key_exists ($choosenModule, $availableModules)) {
 	$UI->loadPage ($choosenModule);
 } else {
-	trigger_error ('Can\'t load this page, doesn\'t exists', E_USER_ERROR);
+	trigger_error ('ERROR: Can\'t load this page, doesn\'t exists');
 }
 ?>

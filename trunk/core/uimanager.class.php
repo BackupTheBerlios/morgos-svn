@@ -45,9 +45,12 @@ class UIManager {
 	}
 
 	function __construct () {
+		$this->notices = array ();
+		$this->running = false;
+		set_error_handler (array ($this, "errorHandler"), E_USER_NOTICE);
 		if (is_readable ('site.config.php')) {
 			if (is_dir ('.install')) {
-				trigger_error ('Remove dir install.php and than continue');
+				trigger_error ('ERROR: Remove dir install.php and than continue');
 			} else {
 				include_once ('core/config.class.php');
 				$this->config = new config ();
@@ -63,13 +66,14 @@ class UIManager {
 				$this->DBManager = new genericDatabase ();
 				$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 				$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
-					$this->config->getConfigItem ('/database/password', TYPE_STRING));
+				$this->config->getConfigItem ('/database/password', TYPE_STRING));
 				$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
 				$this->user = new user ($this->genDB);	
 				$this->i10nMan = new languages ();
 				if (! $this->i10nMan->loadLanguage ('nederlands')) {
-					trigger_error ('Couldn\'t init internationalization.');
+					trigger_error ('ERROR: Couldn\'t init internationalization.');
 				}
+
 				$this->loadSkin ('MorgOS Default');
 			}
 		} else {
@@ -120,6 +124,7 @@ class UIManager {
 			// it is a module living in the database
 			$output = file_get_contents ($this->skinPath . 'usermodule.html');
 		}
+		$this->running = true;
 		echo $this->parse ($output);
 	}
 	
@@ -135,7 +140,7 @@ class UIManager {
 			if (array_key_exists ($arg, $array)) {
 				$this->config->changeValueConfigItem ($arg, $array[$arg]);
 			} else {
-				trigger_error ('Configuration not saved, new value is empty');
+				trigger_error ('ERROR: Configuration not saved, new value is empty');
 			}
 		}
 		define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
@@ -280,7 +285,7 @@ class UIManager {
 			if ($result !== false) {
 				return true;
 			} else {
-				trigger_error ('Cant add page' , E_USER_ERROR);
+				trigger_error ('INTERNAL_ERROR: Can\'t add page');
 				return false;
 			}
 		}
@@ -353,6 +358,18 @@ class UIManager {
 			return false;
 		}
 	}
+		
+	/** \fn appendNotice ($notice, $type, $die)
+	 * append an error/notice/warning in the output
+	 * \warning the notice will not always be showed, it depends on the user configuration
+	 *
+	 * \param $notice (string) the notice
+	 * \param $type (string) the type (INTERNAL_ERROR | DEBUG | NOTICE | ERROR)
+	 * \param $die (bool) if this is true the output stops after this error
+	*/
+	/*public*/ function appendNotice ($error, $type, $die) {
+		$this->notices[] = array ("error" => $error, "type" => $type, "die" => $die);
+	}
 	
 	/** \fn loadSkin ($skinName)
 	 * Loads all skin options
@@ -381,7 +398,7 @@ class UIManager {
 		// needs to be 3 = (===) because the key can be 0 and than it is the same as false
 		// to be compatible with PHP <= 4.2 we need to have === NULL
 		if (($key === false) or ($key === NULL)) {
-			trigger_error ('Couldn\'t load skin, unsupported skin', E_USER_ERROR);
+			trigger_error ('ERROR: Couldn\'t load skin, unsupported skin');
 		} else {
 			$this->skinPath = $skinPaths[$key];
 		}
@@ -395,6 +412,9 @@ class UIManager {
 	 * \return string
 	*/
 	/*private*/ function parse ($string) {
+		if ($this->running == false) {
+			return;
+		}
 		$this->replaceAllVars ($string);
 		$this->replaceAllFunctions ($string);
 		return $string;
@@ -479,6 +499,36 @@ class UIManager {
 			$available[] = $page['language'];
 		}
 		return $available;
+	}
+	
+	/** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)
+	 * the error handler
+	*/
+	/*private*/ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
+		$pos = strpos ($errStr, ": ");
+		$type = substr ($errStr, 0, $pos);
+		$error = substr ($errStr, $pos + 2);
+		switch ($type) {
+			case "INTERNAL_ERROR":
+				$die = true;
+				break;
+			case "DEBUG":
+				$die = false;
+				break;
+			case "NOTICE":
+				$die = false;
+				break;
+			case "ERROR":
+				$die = true;
+				break;
+		}
+		if ($this->running == false) {
+			$output = file_get_contents ("skins/default/error.html");
+			echo str_replace ("VAR_ERROR", $error, $output);
+			die ();
+		} else {
+			$this->appendNotice ($error, $type, $die);
+		}
 	}
 }
 ?>

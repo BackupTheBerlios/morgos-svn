@@ -61,7 +61,6 @@ class config {
 	 * \param $type (int) the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
 	 * \param $password (string) if you wants to protect the value of this configItem you 
 	 	can give your password here, the standard is NULL (not protected)
-	 * \return bool
 	*/
 	/*public*/ function addConfigItem ( $configName,  $value,  $type,  $password = NULL) {
 		$dirs = explode ('/',$configName);
@@ -74,7 +73,7 @@ class config {
 			$curPath .= '/' . $dir;
 			if ($this->exists ($curPath)) {
 				if (! $this->isDir ($curPath)) {
-					trigger_error ('Problem with config path',E_USER_ERROR);
+					trigger_error ('INTERNAL_ERROR: Problem with config path');
 				}
 				break;
 			} else {
@@ -84,10 +83,9 @@ class config {
 		if ($this->isType ($value) == $type) {
 			$this->configTree[$configName] = array ('value' => $value,'type' => $type,'password' => $password);
 		} else {
-			trigger_error ('Type is not correct', E_USER_ERROR);
-			trigger_error ('Type is: ' . $this->typeToString ($this->isType ($value)). ', needs to be: ' . $this->typeToString ($type),E_USER_NOTICE);
+			trigger_error ('DEBUG: type is: ' . $this->valueToString ($value) . ' needs to be ' . $this->valueToString ($value));
+			trigger_error ('INTERNAL_ERROR: type is not correct');
 		}
-		return true;
 	}
 	
 	/** \fn addConfigItemFromArray ($array,$arrayKey,$configName,$type,  $password = NULL)
@@ -98,11 +96,10 @@ class config {
 	 * \param $configName (string) the complete name of the config where in must be put	
 	 *	in the configTree, you can create paths divided with '/'
 	 * \param $type (int) the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
-	 * \param $password (string) if you wants to protect the value of this configItem you can give your password here, the standard is NULL (not protected)
-	 * \return bool
+	 * \param $password (string) if you wants to protect the value of this configItem you can give your password here, the standard is NULL (not protected)
 	*/
 	/*public*/ function addConfigItemFromArray ( $array,  $arrayKey,  $configName, $type,  $password = NULL) {
-		return $this->addConfigItem ($configName,$array[$arrayKey],$type,$password);
+		$this->addConfigItem ($configName,$array[$arrayKey],$type,$password);
 	}
 	
 	/** \fn addConfigItemsFromFile ($file,$globalType = -1,$globalPassword = NULL)
@@ -116,9 +113,6 @@ class config {
 	 * \param $password (string) protect all items with this password, standard is not protected
 	*/
 	/*public*/ function addConfigItemsFromFile ($file,$globalType = -1,$globalPassword = NULL) {
-		global $config;
-		// empty the current $config
-		unset ($config);
 		include ($file);
 		foreach ($config as $path => $item) {
 			if ($globalType = TYPE_GUESS) {
@@ -138,20 +132,20 @@ class config {
 	 * \param $type (int) the type of the value (TYPE_NUMERIC, TYPE_STRING, TYPE_BOOL, TYPE_FLEXIBLE)
 	 * \param $password (string) if you wants to protect the value of this configItem you 
 	 	can give your password here, the standard is NULL (not protected)
-	 * \return mixed
+	 * \return (mixed)
 	*/
 	/*public*/ function getConfigItem ( $configName,  $type = TYPE_FLEXIBLE,  $password = NULL) {
 		if ($this->exists ($configName)) {
 			if (($this->configTree[$configName]['type'] == $type) or ($type = TYPE_FLEXIBLE)) {
 				return $this->configTree[$configName]['value'];
 			} else {
-				echo $this->configTree[$configName];
-				trigger_error ('Type is: ' . $this->typeToString ($this->configTree[$configName]['type']). ', needs to be: ' . $this->typeToString ($type),E_USER_NOTICE);
-				trigger_error ('Type is not correct', E_USER_ERROR);
+				$value = $this->configTree[$configName]['value'];
+			 	trigger_error ('DEBUG: type is: ' . $this->valueToString ($value) . ' needs to be ' . $this->valueToString ($value));
+				trigger_error ('INTERNAL_ERROR: type is not correct');
 			}
 		} else {
-			echo $configName;
-			trigger_error ('Config doesn\'t exists',E_USER_ERROR);
+			trigger_error ('DEBUG: configname is: ' . $configName);
+			trigger_error ('INTERNAL_ERROR: configname does not exists');
 		}
 	}
 	
@@ -171,8 +165,12 @@ class config {
 				if ($this->configTree[$configName]['password'] == $password) {
 					$this->configTree[$configName]['value'] = $newValue;
 			 	} else {
-					trigger_error ('Acess denied, password is wrong');
+			 		trigger_error ('DEBUG: configname is: ' . $configName);
+					trigger_error ('INTERNAL_ERROR: configname does not exists');
 				}
+			} else {
+				trigger_error ('DEBUG: configname is : ' . $configName);
+				trigger_error ('INTERNAL_ERROR: configname yet exists');
 			}
 		}
 	}
@@ -181,7 +179,7 @@ class config {
 	 * Checks if a config item exists.
 	 *
 	 * \param configName (string) the name of the config item
-	 * \return bool
+	 * \return (bool)
 	*/
 	/*private | public*/ function exists ($configName) {
 		if (array_key_exists ($configName, $this->configTree)) {
@@ -195,7 +193,7 @@ class config {
 	 * Checks if a config item is a dir. If it doesn't exists it returns false;
 	 *
 	 * \param configName (string) the name of the config item
-	 * \return bool
+	 * \return (bool)
 	*/
 	/*private | public*/ function isDir ($configName) {
 		if ($this->configTree[$configName] == 'PATH') {
@@ -222,11 +220,10 @@ class config {
 			} elseif ($type == TYPE_NUMERIC) {
 				$value = (integer) $vaue;
 			} else {
-				trigger_error ('Type is not recognized',E_USER_NOTICE);
-				return false;
+				trigger_error ('DEBUG: Type is: ' . $type);
+				trigger_error ('INTERNAL_ERROR: Type is not correct');
 			}
 		}
-		return true;
 	}
 	
 	/** \fn typeToString ($type)
@@ -234,7 +231,7 @@ class config {
 	 *
 	 * \param $type (mixed) the value
 	 * \private
-	 * \return string
+	 * \return (string)
 	*/
 	/*private*/ function typeToString ($type) {
 		if ($type == TYPE_STRING) {
@@ -253,7 +250,7 @@ class config {
 	 *
 	 * \param $value (mixed)
 	 * \private
-	 * \return int the type of the value
+	 * \return (int) the type of the value
 	*/
 	/*private*/ function isType ($value) {
 		if (is_bool ($value)) {

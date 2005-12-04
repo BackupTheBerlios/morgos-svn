@@ -99,7 +99,7 @@ class genericDatabase {
 			$this->loadedDatabase = new $className ();
 			return $this->loadedDatabase;
 		} else {
-			trigger_error ('Database type not supported.', E_USER_ERROR);
+			trigger_error ('ERROR: Database type not supported.');
 		}
 	}
 }

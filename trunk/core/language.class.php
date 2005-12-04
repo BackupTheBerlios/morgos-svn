@@ -23,6 +23,7 @@
 /** \class languages
  * Class that take care of the translatable strings
  *
+ * \bug If a language does not exists, no error is trown, and another language isn't loaded
  * \author Nathan Samson
  * \version 0.1svn
 */

@@ -86,9 +86,10 @@ class user {
 		}
 		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS);
 		$row = $this->genDB->fetch_array ($result);
-		$usernameDB = $row['name'];
+		$usernameDB = $row['name'];
+		$password = md5 ($password);
 		if ($this->genDB->num_rows ($result) != 0) {
-			trigger_error ('User already exists');
+			trigger_error ('ERROR: User already exists');
 		} else  {
 			$this->genDB->query("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
 		}
