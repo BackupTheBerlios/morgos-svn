@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>VAR_TITLE_PAGE</title>
+	</head>
+	<body>
+		<h1>TEXT_ADMIN</h1>
+		<div id="navigation">
+			VAR_ADMIN_NAVIGATION
+		</div>
+		<div id="content">
+			<p>TEXT_EDIT_PAGE_INTRODUCTION</p>
+			FORM (VAR_ADMIN_FORM_EDITPAGE_ACTION, post)
+				<h2>TEXT_EDIT_PAGE</h2>
+				TEXT_LANGUAGE: VAR_ADMIN_FORM_EDIT_PAGE_CURLANGUAGE <br />
+				
+				TEXT_PAGENAME: INPUT (text, VAR_ADMIN_FORM_EDIT_PAGE_PAGENAME, VAR_ADMIN_FORM_EDIT_PAGE_CURPAGENAME) <br />
+				TEXT_CONTENT:  <br /><textarea cols="80" rows="80" name=" VAR_ADMIN_FORM_EDIT_PAGE_CONTENT"> VAR_ADMIN_FORM_EDIT_PAGE_CURCONTENT </textarea> <br />
+				INPUT (submit, VAR_ADMIN_FORM_EDITPAGE_SUBMIT, TEXT_SAVE_PAGE)
+				INPUT (hidden, VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE, VAR_ADMIN_FORM_EDIT_PAGE_CURLANGUAGE)
+			CLOSEFORM ()
+		</div>
+	</body>
+</html>

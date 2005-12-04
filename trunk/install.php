@@ -37,6 +37,9 @@ switch ($phase) {
 	case 'install':
 		include ('install/installing.php');
 		break;
+	case 'installdb':
+		include ('install/installingdb.php');
+		break;
 	default:
 		include ('install/license.php');
 		break;

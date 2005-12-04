@@ -17,7 +17,8 @@
 */
 // MorgOS defined vars
 $DBTypeOptions = NULL;
-foreach ($this->DBManager->getAllSupportedDatabases () as $key => $supported) {
+$DBManager = new genericDatabase;
+foreach ($DBManager->getAllSupportedDatabases () as $key => $supported) {
 	if ($this->config->getConfigItem ('/database/type', TYPE_STRING) == $key) {
 		$DBTypeOptions .= ' ADMIN_DATABASE_TYPE_OPTION_SELECTED ('. $key . ')';
 	} else {

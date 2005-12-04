@@ -35,8 +35,7 @@ define ('MORGOS_VERSION', '0.1');
  * \todo change the dir in __construct to install in place of DOT install
 */
 class UIManager {
-	/*private $DBManager;
-	private $genDB;
+	/*private $genDB;
 	private $config
 	private $user*/
 
@@ -63,8 +62,8 @@ class UIManager {
 				include_once ('core/database.class.php');
 				include_once ('core/user.class.php');
 				include_once ('core/language.class.php');
-				$this->DBManager = new genericDatabase ();
-				$this->genDB = $this->DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
+				$DBManager = new genericDatabase ();
+				$this->genDB = $DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 				$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
 				$this->config->getConfigItem ('/database/password', TYPE_STRING));
 				$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));

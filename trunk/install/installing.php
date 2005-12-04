@@ -20,9 +20,6 @@
 		fwrite ($fHandler, $output);
 		fclose ($fHandler);
 	}
-
-	// create the database
-	// TODO: add prefix config
 	include_once ('core/database.class.php');
 	$DBMan = new genericDatabase ();
 	$DB = $DBMan->load ($_POST['database-type']);
@@ -30,43 +27,10 @@
 
 	$SQL = "CREATE DATABASE IF NOT EXISTS " . $_POST['database-name'];
 	$DB->query ($SQL);
-	$DB->select_db ($_POST['database-name']);
-
-	$SQL = file_get_contents ('install/sql/news.sql');
-	$SQL .= file_get_contents ('install/sql/pages.sql');
-	$SQL .= file_get_contents ('install/sql/users.sql');
-	$SQL = ereg_replace ('%prefix%', 'morgos_', $SQL);
-
-	$arrayOfSQL = explode (';', $SQL);
-	foreach ($arrayOfSQL as $query) {
-		$query = trim ($query);
-		if (empty ($query)) {
-			continue;
-		}
-		$result = $DB->query ($query);
-		if ($result !== false) {
-			//	echo '<p>' .$query . '</p>';
-		} else {
-			echo '<p class="error">' .$query . '</p>';
-		}
-	}
-
-
-	include_once ('core/uimanager.class.php');
-	$UI = new UIManager ();
-	$UI->addModule ('index', false);
-	$i10nMan = &$UI->i10nMan;
-	$languages = $i10nMan->getAllSupportedLanguages ();
-	foreach ($languages as $language) {
-		$i10nMan->loadLanguage ($language);
-		$UI->addPage ('index', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
-	}
-
-	$UI->user->insertUser ($_POST['admin-account'], $_POST['admin-email'], $_POST['admin-password'], true);
 ?>
 <html>
 	<body>
-		<form action='./index.php' method='post'>
+		<form action='./install.php?phase=installdb' method='post'>
 			<div>
 				<?php
 				if ($fHandler === false) {
@@ -77,8 +41,11 @@
 					echo '<h2>End of the content of site.config.php</h2>';
 				}
 				?>
-				Installation is done press Next to go to the site.
+				Configuration is done press Next to create the database.
 			</div>
+			<input type='hidden' name='admin-account' value='<?php $_POST['admin-account'] ?>' />
+			<input type='hidden' name='admin-email' value='<?php $_POST['admin-account'] ?>' />
+			<input type='hidden' name='admin-password' value='<?php $_POST['admin-account'] ?>' />
 			<input type='submit' value='Next' />
 		</form>
 	</body>
