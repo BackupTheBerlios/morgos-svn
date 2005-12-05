@@ -103,6 +103,13 @@ if (! isset ($addToModule)) {
 	$addToModule = NULL;
 }
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_VALUE_MODULE'] = $addToModule;
+global $saveOutput;
+if (! isset ($saveOutput)) {
+	$saveOutput = NULL;
+}
+$this->vars['VAR_SAVE_CONFIG_MANUALLY'] = $saveOutput;
+$this->vars['VAR_ADMIN_SAVECONFIG_FORM_ACTION'] = './admin';
+$this->vars['VAR_ADMIN_SAVECONFIG_FORM_SUBMIT'] = 'submit';
 $this->vars['VAR_PAGE_CONTENT'] = $this->getModuleContent ();
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
@@ -163,7 +170,8 @@ $this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
-
+$this->vars['TEXT_SAVE_MANUALLY_END'] = $this->i10nMan->translate ('End of the content of site.config.php');
+$this->vars['TEXT_SAVE_MANUALLY'] = $this->i10nMan->translate ('Save the folowing text in the file "site.config.php" in the directory where MorgOS is installed, then continue.');
 // the skin defined vars
 foreach ($iniFile['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

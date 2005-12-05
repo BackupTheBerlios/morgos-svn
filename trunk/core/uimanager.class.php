@@ -160,11 +160,10 @@ class UIManager {
 			fclose ($fHandler);
 			return true;
 		} else {
-			echo '<h2>Save the folowing text in the file "site.config.php" in the directory where MorgOS is installed, then continue.</h2>';
-			$output =  htmlentities ($output);
-			$output = nl2br ($output);
-			echo $output;
-			echo '<h2>End of the content of site.config.php</h2>';
+			global $saveOutput;
+			$saveOutput =  htmlentities ($output);
+			$saveOutput = nl2br ($saveOutput);
+			$this->loadPage ('admin/savemanually');
 			return false;
 		}
 	}
