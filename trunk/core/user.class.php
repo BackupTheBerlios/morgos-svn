@@ -22,6 +22,12 @@
  * \author Nathan Samson
 */
 define ('TBL_USERS', TBL_PREFIX . 'users');
+/** \class user
+ * class that take care of the main user system
+ *
+ * \author Sam Heijens
+ * \author Nathan Samson
+*/
 class user {
 	function user ($genDB) {
 		$this->__construct ($genDB);

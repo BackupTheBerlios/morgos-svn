@@ -12,9 +12,9 @@
 	<body>
 		<div>
 			<p>
-			PHP Version 4.1 or higher: 
+			PHP Version 4.3 or higher: 
 			<?php
-				if (version_compare (PHP_VERSION,'4.1','>=')) {
+				if (version_compare (PHP_VERSION,'4.3','>=')) {
 					echo '<span class="ok">Yes</span>';
 				} else {
 					echo '<span class="notok">No</span>';

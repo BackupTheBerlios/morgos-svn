@@ -93,14 +93,19 @@ switch ($module) {
 			header ('Location: admin.php?module=pages');
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Save settings')) {
 			foreach ($UI->getAllAvailableModules () as $module) {
-				$module['module'] = $module['module'];
 				if (array_key_exists ('NEED_AUTHORIZE' . $module['module'], $_POST)) {
 					$needAuthorize = true;
 				} else {
 					$needAuthorize = false;
 				}
-				$module['module'] = $module['module'];
-				$UI->changeSettingsModule ($module['module'], $needAuthorize);
+				
+				if (array_key_exists ('ADMIN_ONLY' . $module['module'], $_POST)) {
+					$adminOnly = true;
+				} else {
+					$adminOnly = false;
+				}
+				
+				$UI->changeSettingsModule ($module['module'], $needAuthorize, $adminOnly);
 			}
 			header ('Location: admin.php?module=pages');
 		} else {

@@ -1,6 +1,7 @@
 CREATE TABLE %prefix%modules (
   module varchar (50) NOT NULL,
   needauthorized varchar(3) DEFAULT 'no',
+  needauthorizedasadmin varchar(3) DEFAULT 'no',
   PRIMARY KEY (module)
 );
 

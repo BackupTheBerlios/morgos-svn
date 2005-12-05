@@ -52,6 +52,13 @@ foreach ($this->getAllAvailableModules (false) as $module) {
 	}
 	$authorizedOnly = $this->parse ($authorizedOnly);
 	
+	if ($module['needauthorizedasadmin'] == 'yes') {
+		$adminOnly = ' ADMIN_MODULES_FORM_ADMIN_ONLY (ADMIN_ONLY' . $module['module'] .')';
+	} else {
+		$adminOnly = ' ADMIN_MODULES_FORM_NOT_ADMIN_ONLY (ADMIN_ONLY' . $module['module'] .')';
+	}
+	$adminOnly = $this->parse ($adminOnly);
+	
 	$languages = $this->getAllAvailableLanguagesFromModule ($module['module']);
 	$textLang = $this->parse (' ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES (LANGUAGE_'.$module['module'] .')');
 	foreach ($languages as $language) {
@@ -63,7 +70,7 @@ foreach ($this->getAllAvailableModules (false) as $module) {
 	$deletePage = 'DELETE_PAGE' . $module['module'];
 	$deleteModule = 'DELETE_MODULE' . $module['module'];
 	$editPage = 'EDIT_PAGE' . $module['module'];
-	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .', '. $editPage . ')';
+	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', ' . $adminOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .', '. $editPage . ')';
 }
 $pages .= ' VAR_ADMIN_MODULES_CLOSE';
 $this->vars['VAR_ADMIN_MODULES'] = $pages;
@@ -169,6 +176,7 @@ $this->vars['TEXT_PAGENAME'] = $this->i10nMan->translate ('Name');
 $this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
+$this->vars['TEXT_ADMIN_MODULES_ADMIN_ONLY'] = $this->i10nMan->translate ('Admin only');
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
 $this->vars['TEXT_SAVE_MANUALLY_END'] = $this->i10nMan->translate ('End of the content of site.config.php');
 $this->vars['TEXT_SAVE_MANUALLY'] = $this->i10nMan->translate ('Save the folowing text in the file "site.config.php" in the directory where MorgOS is installed, then continue.');

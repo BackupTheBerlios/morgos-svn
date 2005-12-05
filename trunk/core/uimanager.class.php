@@ -28,6 +28,7 @@ define ('MORGOS_VERSION', '0.1');
  *
  * \author Nathan Samson
  * \version 0.1svn
+ * \bug not compatible with PHP lower than 4.3.0  (use of array ($this, "errorHandler"))
  * \bug not compatible with PHP lower than 4.1  (use of version_compare)
  * \bug not compatible with PHP 4.0.4 and lower (use of array_search)
  * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
@@ -106,15 +107,24 @@ class UIManager {
 	 * \param $language (string)
 	 * \param $authorized (bool) standard false
 	 * \param $authorizedAsAsdmin (bool) standard false
-	 * \todo trigger errors if user is not logged in, but userclass needs to be written first
 	*/ 
-	/*public*/ function loadPage ($moduleName, $language = NULL, $authorized = false, $authorizedAsAdmin = false) {
-		// User code needs to be implemented first
+	/*public*/ function loadPage ($moduleName, $language = NULL) {
 		$this->module = $moduleName;
 		if (! $language) {
 			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 		} else {
 			$this->config->changeValueConfigItem ('/userinterface/contentlanguage', $language);
+		}
+
+		$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_MODULES . " WHERE module='$moduleName'";
+		$query = $this->genDB->query ($SQL);
+		$module = $this->genDB->fetch_array ($query);
+		if ($module['needauthorized'] == strtolower ("YES") && $this->user->isLoggedIn () == false) {
+			trigger_error ("ERROR: You need to be logged in to access this page.");
+		}
+		
+		if ($module['needauthorizedasadmin'] == strtolower ("YES") && $this->user->isAdmin () == false) {
+			trigger_error ("ERROR: You need to be admin to access this page.");
 		}
 
 		if (file_exists ($this->skinPath . $moduleName . '.html')) {
@@ -223,30 +233,38 @@ class UIManager {
 		return $HTML;
 	}
 	
-	/** \fn changeSettingsModule ($module, $needAuthorize)
+	/** \fn changeSettingsModule ($module, $needAuthorize, $adminOnly)
 	 * changes the settings for a module
 	 *
 	 * \param $module (string)
 	 * \param $needAuthorize (bool) 
+	 * \param $adminOnly (bool) 
 	*/
-	/*public*/ function changeSettingsModule ($module, $needAuthorize) {
+	/*public*/ function changeSettingsModule ($module, $needAuthorize, $adminOnly) {
 		if ($needAuthorize) {
 			$needAuthorize = 'yes';
 		} else {
 			$needAuthorize = 'no';
 		}
-		$SQL = "UPDATE " . TBL_MODULES . " SET needauthorized='$needAuthorize' WHERE module='$module'";
+		
+		if ($adminOnly) {
+			$adminOnly = 'yes';
+		} else {
+			$adminOnly = 'no';
+		}
+		$SQL = "UPDATE " . TBL_MODULES . " SET needauthorized='$needAuthorize', needauthorizedasadmin='$adminOnly' WHERE module='$module'";
 		$this->genDB->query ($SQL);
 	}
 	
-	/** \fn addModule ($module, $needAuthorize)
+	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin)
 	 * adds a module,
 	 *
 	 * \param $module (string)
 	 * \param $needAuthorize (bool)
+	 * \param $needAuthorizeAsAdmin (bool)
 	 * \return (bool) 
 	*/
-	/*public*/ function addModule ($module, $needAuthorize) {
+	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin) {
 		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
 			return false;
 		} else {
@@ -255,7 +273,12 @@ class UIManager {
 			} else {
 				$needAuthorize = 'no';
 			}
-			$SQL = "INSERT into " . TBL_MODULES . " (module,needauthorized) VALUES ('$module','$needAuthorize')";
+			if ($needAuthorizeAsAdmin) {
+				$needAuthorizeAsAdmin = 'yes';
+			} else {
+				$needAuthorizeAsAdmin = 'no';
+			}
+			$SQL = "INSERT into " . TBL_MODULES . " (module,needauthorized,needauthorizedasadmin) VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;

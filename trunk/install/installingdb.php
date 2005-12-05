@@ -20,7 +20,14 @@
 		$result = $DB->query ($query);
 	}
 
-	$UI->addModule ('index', false);
+	$UI->addModule ('index', false, false);
+	$UI->addModule ('admin/database', false, true);
+	$UI->addModule ('admin/users', false, true);
+	$UI->addModule ('admin/news', false, true);
+	$UI->addModule ('admin/general', false, true);
+	$UI->addModule ('admin/addpage', false, true);
+	$UI->addModule ('admin/index', false, true);
+	$UI->addModule ('admin/pages', false, true);
 	$i10nMan = &$UI->i10nMan;
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {
