@@ -35,7 +35,10 @@
 		$UI->addPage ('index', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
 	}
 
-	$UI->user->insertUser ($_POST['admin-account'], $_POST['admin-email'], $_POST['admin-password'], true);
+	$username = addslashes ($_POST['admin-account']);
+	$email = addslashes ($_POST['admin-email']);
+	$password = addslashes ($_POST['admin-password']);
+	$UI->user->insertUser ($username, $email, $password, true);
 ?>
 <html>
 	<body>

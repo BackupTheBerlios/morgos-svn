@@ -43,9 +43,14 @@
 				?>
 				Configuration is done press Next to create the database.
 			</div>
-			<input type='hidden' name='admin-account' value='<?php $_POST['admin-account'] ?>' />
-			<input type='hidden' name='admin-email' value='<?php $_POST['admin-account'] ?>' />
-			<input type='hidden' name='admin-password' value='<?php $_POST['admin-account'] ?>' />
+			<?php
+				$username = addslashes ($_POST['admin-account']);
+				$email = addslashes ($_POST['admin-email']);
+				$password = addslashes ($_POST['admin-password']);
+			?>
+			<input type='hidden' name='admin-account' value='<?php echo $username ?>' />
+			<input type='hidden' name='admin-email' value='<?php echo $email ?>' />
+			<input type='hidden' name='admin-password' value='<?php echo $password ?>' />
 			<input type='submit' value='Next' />
 		</form>
 	</body>
