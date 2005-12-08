@@ -23,17 +23,27 @@
 error_reporting (E_ALL);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
+
+/** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)
+ * the error handler, this is a link to the one in UIManager (since it works otherwise not in PHP <= 4.3 )
+*/
+function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
+	global $UI;
+	$UI->errorHandler ($errNo, $errStr, $errFile, $errLine, $errContext);
+}
+
 /** \class UIManager
  * class that take care of the main UI layer, extensionhandling and HTML output.
  *
  * \author Nathan Samson
  * \version 0.1svn
- * \bug not compatible with PHP lower than 4.3.0  (use of array ($this, "errorHandler"))
  * \bug not compatible with PHP lower than 4.1  (use of version_compare)
  * \bug not compatible with PHP 4.0.4 and lower (use of array_search)
  * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
  * \todo change the dir in __construct to install in place of DOT install
+ * \todo check all input wich is outputted and from user (htmlspecialchars)
+ * \todo check for UBB hacks (when UBB is implmented)
 */
 class UIManager {
 	/*private $genDB;
@@ -47,7 +57,12 @@ class UIManager {
 	function __construct () {
 		$this->notices = array ();
 		$this->running = false;
-		set_error_handler (array ($this, "errorHandler"), E_USER_NOTICE);
+		if (version_compare (PHP_VERSION, '4.3', '>=')) {
+			$errorHandler = array ($this, "errorHandler");
+		} else {
+			$errorHandler = 'errorHandler';
+		}
+		set_error_handler ($errorHandler);
 		if (is_readable ('site.config.php')) {
 			if (is_dir ('.install')) {
 				trigger_error ('ERROR: Remove dir install.php and than continue');
@@ -97,6 +112,15 @@ class UIManager {
 	*/
 	/*public*/ function &getConfigClass () {
 		return $this->config;
+	}
+	
+	/** \fn getUserClass ()
+	 * returns the configclass
+	 *
+	 * \return class
+	*/
+	/*public*/ function &getUserClass () {
+		return $this->user;
 	}
 	
 	/** \fn loadPage ($moduleName, $language,$authorized = false,$authorizedAsAdmin = false) 
@@ -392,6 +416,16 @@ class UIManager {
 		$this->notices[] = array ("error" => $error, "type" => $type, "die" => $die);
 	}
 	
+	/** \fn setRunning ($running)
+	 * set if is running manually
+	 * \warning use this with care
+	 *
+	 * \param $running if UIManager is busy with creating output, which is important for errorhandling
+	*/
+	/*public*/ function setRunning ($running) {
+		$this->running = $running;
+	}
+	
 	/** \fn loadSkin ($skinName)
 	 * Loads all skin options
 	 *
@@ -542,6 +576,12 @@ class UIManager {
 			case "ERROR":
 				$die = true;
 				break;
+			case "WARNING":
+				$die = false;
+				break;
+			default:
+				$die = true;
+				trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
 		}
 		if ($this->running == false) {
 			$output = file_get_contents ("skins/default/error.html");

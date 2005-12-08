@@ -22,6 +22,7 @@
  * \author Nathan Samson
 */
 if (! function_exists ('file_get_contents')) {
+	gettype ($_POST); // this is here only to trick Doxygen
 	/** \fn file_get_contents ($fileName, $useIncludePath = false)
 	 * Reads the entire file into a string. It returns false on an error.
 	 * \warning It is not completely compatible with PHP 4.3 or PHP 5

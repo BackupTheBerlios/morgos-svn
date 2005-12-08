@@ -38,16 +38,23 @@ class user {
 		$this->genDB = $genDB;
 	}
 
-	function login ($password, $username) {
-		$query = $this->genDB->query ("SELECT username, pass FROM ".TBL_USERS." WHERE username = $username");
-		$user = $this->genDB ($query);
-		if (md5 ($password) == $user['pass']) {
+	function login ($username, $password) {
+		$username = addslashes ($username);
+		$query = $this->genDB->query ("SELECT username, password FROM ".TBL_USERS." WHERE username = '$username'");
+		if ($this->genDB->num_rows ($query) == 0) {
+			trigger_error ('WARNING: Username does not exists.');
+			return;
+		}
+		$user = $this->genDB->fetch_array ($query);
+		if (md5 ($password) == $user['password']) {
 			$_SESSION['username'] = $username;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$_SESSION['pass'] = md5 ($password);
 			session_register('username');
 			session_register('ip');
 			session_register('pass');
+		} else {
+			trigger_error ('WARNING: Wrong password.');
 		}
 	}
 	
@@ -97,16 +104,21 @@ class user {
 		if ($this->genDB->num_rows ($result) != 0) {
 			trigger_error ('ERROR: User already exists');
 		} else  {
+			$username = addslashes ($username);
+			$email = addslashes ($email);
+			$password = addslashes ($password);
 			$this->genDB->query("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
 		}
 	}
 	
 	function getUser ($username) {
-		$query = $genDB->query ("SELECT * FROM ".TBL_USERS." WHERE username='$username'");
-		return $genDB->fetch_array($query);
+		$username = addslashes ($username);
+		$query = $this->genDB->query ("SELECT * FROM ".TBL_USERS." WHERE username='$username'");
+		return $this->genDB->fetch_array($query);
 	}
 	
 	function updateUser ($username, $email , $pass, $id) {
+		$username = addslashes ($username);
 		$pass = md5 ($pass);
 		$this->genDB->query ("UPDATE ".TBL_USERS." SET  email='$email', pass='$pass' WHERE username='$username'");
 	}

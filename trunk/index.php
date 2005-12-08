@@ -27,6 +27,12 @@ if (array_key_exists ('module', $_GET)) {
 $availableModules = $UI->getAllAvailableModules ();
 if (array_key_exists ($choosenModule, $availableModules)) {
 	$UI->loadPage ($choosenModule);
+} elseif ($choosenModule == 'login') {
+	$user = $UI->getUserClass ();
+	$UI->setRunning (true);
+	$user->login ($_POST['loginname'], $_POST['password']);
+	$UI->setRunning (false);
+	$UI->loadPage ('index');
 } else {
 	trigger_error ('ERROR: Can\'t load this page, doesn\'t exists');
 }

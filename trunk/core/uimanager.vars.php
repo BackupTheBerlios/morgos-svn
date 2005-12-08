@@ -125,7 +125,7 @@ $this->vars['VAR_WARNINGS'] = NULL;
 $this->vars['VAR_NOTICES'] = NULL;
 $this->vars['VAR_DEBUGGING'] = NULL;
 foreach ($this->notices as $val) {
-	if (($val["type"] == "INTERNAL_ERROR") or ($val['type' == "ERROR"])) {
+	if (($val["type"] == "INTERNAL_ERROR") or ($val['type'] == "ERROR")) {
 		$this->vars['VAR_ERRORS'] .= $this->parse (' ERROR (' . $val['error'] . ')');
 	} elseif ($val["type"] == "NOTICE") {
 		$this->vars['VAR_NOTICES'] .= $this->parse (' NOTICE (' . $val['error'] . ')');
@@ -139,7 +139,12 @@ foreach ($this->notices as $val) {
 		die (); // FIX: Do a clean die ();
 	}*/
 }
-
+$this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
+$this->vars['VAR_LOGIN_FORM_METHOD'] = 'post';
+$this->vars['VAR_LOGIN_FORM_LOGINNAME_NAME'] = 'loginname';
+$this->vars['VAR_LOGIN_FORM_LOGINNAME_VALUE'] = $this->i10nMan->translate ('Loginname');
+$this->vars['VAR_LOGIN_FORM_PASSWORD_NAME'] = 'password';
+$this->vars['VAR_LOGIN_FORM_SUBMIT_NAME'] = 'submit';
 
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
@@ -180,6 +185,8 @@ $this->vars['TEXT_ADMIN_MODULES_ADMIN_ONLY'] = $this->i10nMan->translate ('Admin
 $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
 $this->vars['TEXT_SAVE_MANUALLY_END'] = $this->i10nMan->translate ('End of the content of site.config.php');
 $this->vars['TEXT_SAVE_MANUALLY'] = $this->i10nMan->translate ('Save the folowing text in the file "site.config.php" in the directory where MorgOS is installed, then continue.');
+$this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
+$this->vars['TEXT_PASSWORD'] = $this->i10nMan->translate ('Password');
 // the skin defined vars
 foreach ($iniFile['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {
