@@ -42,6 +42,9 @@ $skin['functions']['admin_database_type_option_selected'] = "<option selected='s
 $skin['functions']['admin_navigation_open'] = "<ul id='navigation'>";
 $skin['functions']['admin_navigation_close'] = "</ul>";
 $skin['functions']['admin_navigation_item'] = "<li><a href='LINK'>TEXT</a></li>";
+$skin['functions']['navigation_open'] = "<ul id='navigation'>";
+$skin['functions']['navigation_close'] = "</ul>";
+$skin['functions']['navigation_item'] = "<li><a href='LINK'>TEXT</a></li>";
 $skin['functions']['admin_modules_item'] = "<tr><td>NAME</td><td>AUTHORIZED_ONLY</td><td>ADMIN_ONLY</td><td>LANGUAGE</td><td> INPUT (submit, NSUBMIT, TEXT_ADMIN_MODULES_VIEW_PAGE)</td><td> INPUT (submit, ADDPAGE, TEXT_ADMIN_MODULES_ADD_PAGE)</td><td> INPUT (submit, EDITPAGE, TEXT_EDIT_PAGE)</td><td> INPUT (submit, DELETEPAGE, TEXT_ADMIN_MODULES_DELETE_PAGE)</td><td> INPUT (submit, DELETEMODULE, TEXT_ADMIN_MODULES_DELETE_MODULE)</td></tr>";
 $skin['functions']['admin_modules_form_needauthorize'] = "<input name='NAME'  CHECKED type='checkbox' />";
 $skin['functions']['admin_modules_form_noneedauthorize'] = "<input name='NAME' type='checkbox' />";
@@ -49,7 +52,7 @@ $skin['functions']['admin_modules_form_admin_only'] = "<input name='NAME'  CHECK
 $skin['functions']['admin_modules_form_not_admin_only'] = "<input name='NAME' type='checkbox' />";
 $skin['functions']['admin_modules_form_item_available_languages'] = "<option value='LANGUAGE'>LANGUAGE</option>";
 $skin['functions']['admin_modules_form_open_available_languages'] = "<select name='NAME'>";
-$skin['functions']['admin_modules_form_close_available_language'] = "</select>";
+$skin['functions']['admin_modules_form_close_available_languages'] = "</select>";
 $skin['functions']['warning'] = "<div class='warning'>CONTENT</div>";
 $skin['functions']['error'] = "<div class='error'>CONTENT</div>";
 $skin['functions']['notice'] = "<div class='notice'>CONTENT</div>";

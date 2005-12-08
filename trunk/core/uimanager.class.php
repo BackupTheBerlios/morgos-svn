@@ -65,7 +65,11 @@ class UIManager {
 		} else {
 			$errorHandler = 'errorHandler';
 		}
-		set_error_handler ($errorHandler);
+		if (versionCompare (PHP_VERSION, '5.0', '>=')) {
+			set_error_handler ($errorHandler, E_USER_NOTICE);
+		} else {
+			set_error_handler ($errorHandler);
+		}
 		if (is_readable ('site.config.php')) {
 			if (is_dir ('.install')) {
 				trigger_error ('ERROR: Remove dir install.php and than continue');
