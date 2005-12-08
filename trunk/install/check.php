@@ -1,4 +1,6 @@
 <?php
+	include_once ('core/compatible.php');
+	include_once ('core/database.class.php');
 	$canrun = true;
 	if (array_key_exists ('agree', $_POST)) {
 		if ($_POST['agree'] == 'no') {
@@ -12,9 +14,9 @@
 	<body>
 		<div>
 			<p>
-			PHP Version 4.1 or higher: 
+			PHP Version 4.0.1 or higher: 
 			<?php
-				if (version_compare (PHP_VERSION,'4.1','>=')) {
+				if (versionCompare (PHP_VERSION, '4.0.1', '>=')) {
 					echo '<span class="ok">Yes</span>';
 				} else {
 					echo '<span class="notok">No</span>';
@@ -24,8 +26,6 @@
 			</p>
 			<p>Databases available: <br />
 			<?php
-				include ('core/compatible.php');
-				include_once ('core/database.class.php');
 				$DBMan = new genericDatabase ();
 				$supported = $DBMan->getAllSupportedDatabases ();
 				$db = false;

@@ -45,4 +45,105 @@ if (! function_exists ('file_get_contents')) {
 		}
 	}
 }
+
+if (! function_exists ('array_search')) {
+	gettype ($_POST); // this is here only to trick Doxygen
+	/** \fn array_search ($needle, $haystack, $strict = false)
+	 * Searches the array for a given value and returns the corresponding key if successful.
+	 *
+	 * \param $needle (mixed) the value where you search for
+	 * \param $haystack (array) the array where you search in
+	 * \param $strict (bool) if true, the type is also checked
+	 * \return (bool)
+	*/
+	function array_search ($needle, $haystack, $strict = false) {
+		foreach ($haystack as $value) {
+			if ($strict == true) {
+				if ($value === $needle) {
+					return true;
+				}
+			} else {
+				if ($value == $needle) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+}
+
+/** \fn versionCompare ($version1, $version2, $operator)
+ * compares 2 version numbers. A version looks like "1.2.*" or "1.2" (which is the same)
+ * \warning this function is untested, use with care
+ * \todo test this function
+ *
+ * \param $version1 (string)
+ * \param $version2 (string)
+ * \param $operator (string) >= <= > < == !=
+ * \return (bool)
+*/
+function versionCompare ($version1, $version2, $operator) {
+	$version1 = explode ('.', $version1);
+	$version2 = explode ('.', $version2);
+	$result = 0;
+	foreach ($version1 as $key => $value) {
+		if (! array_key_exists ($key, $version2)) {
+			$result = 0;
+			break;
+		}
+		/*if (($version1[$key] == '*') or ($version2[$key] == '*')) {
+			$result = 0; 
+		} else*/if ($version1[$key] > $version2[$key]) {
+			$result = 1;
+			break;
+		} elseif ($version1[$key] < $version2[$key]) {
+			$result = -1;
+			break;
+		} else {
+			$result = 0;
+		}
+	}
+	
+	switch ($operator) {
+		case '>=':
+			if (($result == 1) or ($result == 0)) {
+				return true;
+			} else {
+				return false;
+			}
+		case '<=':
+			if (($result == -1) or ($result == 0)) {
+				return true;
+			} else {
+				return false;
+			}
+		case '>':
+			if ($result == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		case '<':
+			if ($result == -1) {
+				return true;
+			} else {
+				return false;
+			}
+		case '==':
+			if ($result == 0) {
+				return true;
+			} else {
+				return false;
+			}
+		case '!=':
+			if ($result != 0) {
+				return true;
+			} else {
+				return false;
+			}
+		default:
+			trigger_error ('ERROR: Operator doesn\'t exists.');
+			return false;
+	}
+}
 ?>

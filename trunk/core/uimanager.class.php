@@ -42,8 +42,6 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \author Nathan Samson
  * \version 0.1svn
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
- * \bug not compatible with PHP lower than 4.1  (use of version_compare)
- * \bug not compatible with PHP 4.0.4 and lower (use of array_search)
  * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
  * \todo change the dir in __construct to install in place of DOT install
@@ -62,7 +60,7 @@ class UIManager {
 	function __construct () {
 		$this->notices = array ();
 		$this->running = false;
-		if (version_compare (PHP_VERSION, '4.3', '>=')) {
+		if (versionCompare (PHP_VERSION, '4.3', '>=')) {
 			$errorHandler = array ($this, "errorHandler");
 		} else {
 			$errorHandler = 'errorHandler';
@@ -448,7 +446,7 @@ class UIManager {
 			if ((preg_match ('/^\w.*/i', $file) == 1) and (is_dir ('skins/' . $file)) and (is_file ('skins/' . $file . '/skin.php'))) {
 				unset ($skin);
 				include ('skins/' . $file . '/skin.php');
-				if (version_compare ($skin['general']['minversion'],MORGOS_VERSION,'<=') and (version_compare ($skin['general']['maxversion'],MORGOS_VERSION,'>='))) {
+				if (versionCompare ($skin['general']['minversion'],MORGOS_VERSION,'<=') and (versionCompare ($skin['general']['maxversion'],MORGOS_VERSION,'>='))) {
 					$supSkins[] = $skin['general']['name'];
 					$skinPaths[] = 'skins/' . $file . '/';
 				}
