@@ -81,10 +81,10 @@ $this->vars['VAR_ADMIN_FORM_MODULES_ACTION'] = 'admin.php?module=pagessave';
 $this->vars['VAR_ADMIN_FORM_MODULES_SUBMIT'] = 'submit';
 $this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NAME'] = 'NEW_MODULE_NAME';
 $this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NEEDAUTHORIZE'] = 'NEW_MODULE_NEEDAUTHORIZE';
-$iniFile = parse_ini_file ($this->skinPath . 'skin.ini', true);
-$this->vars['VAR_ADMIN_MODULES_OPEN'] = $this->parse ($iniFile['variable']['admin_modules_open']);
-$this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($iniFile['variable']['admin_modules_close']);
-$this->vars['VAR_SKIN_LICENSE'] = $this->parse ($iniFile['variable']['license']);
+include ($this->skinPath . 'skin.php');
+$this->vars['VAR_ADMIN_MODULES_OPEN'] = $this->parse ($skin['variable']['admin_modules_open']);
+$this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($skin['variable']['admin_modules_close']);
+$this->vars['VAR_SKIN_LICENSE'] = $this->parse ($skin['variable']['license']);
 $this->vars['VAR_ADMIN_DATABASE_FORM_SUBMIT'] = 'submit';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_ACTION'] = 'admin.php?module=addpagesave';
 $this->vars['VAR_ADMIN_FORM_ADDPAGE_SUBMIT'] = 'submit';
@@ -188,7 +188,7 @@ $this->vars['TEXT_SAVE_MANUALLY'] = $this->i10nMan->translate ('Save the folowin
 $this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
 $this->vars['TEXT_PASSWORD'] = $this->i10nMan->translate ('Password');
 // the skin defined vars
-foreach ($iniFile['variable'] as $key => $skinVar) {
+foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {
 		$this->vars[strtoupper ($key)] = $this->parse ($skinVar);
 	}

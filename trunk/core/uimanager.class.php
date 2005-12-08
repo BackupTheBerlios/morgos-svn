@@ -29,6 +29,10 @@ define ('MORGOS_VERSION', '0.1');
 */
 function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
 	global $UI;
+	if (empty ($UI)) {
+		echo 'ERROR: ' . $errStr;
+		die ();
+	}
 	$UI->errorHandler ($errNo, $errStr, $errFile, $errLine, $errContext);
 }
 
@@ -37,6 +41,7 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  *
  * \author Nathan Samson
  * \version 0.1svn
+ * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
  * \bug not compatible with PHP lower than 4.1  (use of version_compare)
  * \bug not compatible with PHP 4.0.4 and lower (use of array_search)
  * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
@@ -436,13 +441,13 @@ class UIManager {
 		$handler = opendir ('skins');
 		// $files = scandir ('skins'); PHP5 only :( 
 		// foreach ($files as $file) PHP5 only :(
+		$supSkins = array ();
+		$skinPaths = array ();
 		while (false !== ($file = readdir ($handler))) {
-			$supSkins = array ();
-			$skinPaths = array ();
 			// do not start with a point (.)
-			if ((preg_match ('/^\w.*/i', $file) == 1) and (is_dir ('skins/' . $file)) and (is_file ('skins/' . $file . '/skin.ini'))) {
+			if ((preg_match ('/^\w.*/i', $file) == 1) and (is_dir ('skins/' . $file)) and (is_file ('skins/' . $file . '/skin.php'))) {
 				unset ($skin);
-				$skin = parse_ini_file ('skins/' . $file . '/skin.ini',true);
+				include ('skins/' . $file . '/skin.php');
 				if (version_compare ($skin['general']['minversion'],MORGOS_VERSION,'<=') and (version_compare ($skin['general']['maxversion'],MORGOS_VERSION,'>='))) {
 					$supSkins[] = $skin['general']['name'];
 					$skinPaths[] = 'skins/' . $file . '/';
@@ -496,7 +501,7 @@ class UIManager {
 	 * \param $string (string) the input (and also the output)
 	*/
 	/*private*/ function replaceAllFunctions (&$string) {
-		$skinIni = parse_ini_file ($this->skinPath . 'skin.ini', true);
+		include ($this->skinPath . 'skin.php');
 		include_once ('uimanager.functions.php');
 		foreach ($this->functions as $funcKey => $function) {
 			if (count ($function['params']) != 0) {
@@ -507,7 +512,7 @@ class UIManager {
 			preg_match_all ($regExp, $string, $matches);
 			foreach ($matches[0] as $key => $match) {
 				$funcParams = explode (',', $matches[1][$key]);
-				$replace = $this->parse ($skinIni['functions'][$funcKey]);
+				$replace = $this->parse ($skin['functions'][$funcKey]);
 				foreach ($function['params'] as $number => $name) {
 					if (array_key_exists ($number, $funcParams)) {
 						$replace = str_replace ($name, trim ($funcParams[$number]), $replace);
@@ -581,7 +586,7 @@ class UIManager {
 				break;
 			default:
 				$die = true;
-				trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
+				//trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
 		}
 		if ($this->running == false) {
 			$output = file_get_contents ("skins/default/error.html");

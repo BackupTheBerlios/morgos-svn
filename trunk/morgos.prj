@@ -1,0 +1,58 @@
+<project version="Crimson Editor 3.60">
+	<category name="core" expanded="no">
+		<category name="databases" expanded="no">
+			<localfile path="C:\FoxServ\www\morgos\trunk\core\databases\mysql4.database.php" />
+			<localfile path="C:\FoxServ\www\morgos\trunk\core\databases\postgresql.database.php" />
+		</category>
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\compatible.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\config.class.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\database.class.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\language.class.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\uimanager.class.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\uimanager.functions.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\uimanager.vars.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\core\user.class.php" />
+	</category>
+	<category name="skins" expanded="yes">
+		<category name="default" expanded="yes">
+			<category name="admin" expanded="no">
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\addpage.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\database.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\editpage.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\general.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\index.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\news.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\pages.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\savemanually.html" />
+				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\users.html" />
+			</category>
+			<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\error.html" />
+			<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\index.html" />
+			<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.ini" />
+			<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.php" />
+		</category>
+	</category>
+	<category name="install" expanded="no">
+		<category name="sql" expanded="no">
+			<localfile path="C:\FoxServ\www\morgos\trunk\install\sql\news.sql" />
+			<localfile path="C:\FoxServ\www\morgos\trunk\install\sql\pages.sql" />
+			<localfile path="C:\FoxServ\www\morgos\trunk\install\sql\users.sql" />
+		</category>
+		<localfile path="C:\FoxServ\www\morgos\trunk\install\check.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\install\config.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\install\installing.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\install\installingdb.php" />
+		<localfile path="C:\FoxServ\www\morgos\trunk\install\license.php" />
+	</category>
+	<category name="languages" expanded="no">
+		<localfile path="C:\FoxServ\www\morgos\trunk\languages\nederlands.language.php" />
+	</category>
+	<category name="docs" expanded="no">
+	</category>
+</project>
+
+<workspace version="Crimson Editor 3.60">
+	<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.ini" linenum="18" placement="0:1:-1:-1:-4:-30:22:29:692:443" />
+	<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.php" linenum="32" placement="2:3:-1:-1:-4:-30:44:58:718:476" />
+</workspace>
+
