@@ -70,34 +70,38 @@ class UIManager {
 		} else {
 			set_error_handler ($errorHandler);
 		}
+		if (! file_exists ('site.config.php')) {
+			header ('Location: install.php');
+		}
 		if (is_readable ('site.config.php')) {
-			if (is_dir ('.install')) {
-				trigger_error ('ERROR: Remove dir install.php and than continue');
-			} else {
-				include_once ('core/config.class.php');
-				$this->config = new config ();
-				$this->config->addConfigItemsFromFile ('site.config.php');
-				$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
-				$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
-				define ('TBL_PREFIX', 'morgos_');
-				define ('TBL_MODULES', TBL_PREFIX . 'modules');
-				define ('TBL_PAGES', TBL_PREFIX . 'userpages');
-				include_once ('core/database.class.php');
-				include_once ('core/user.class.php');
-				include_once ('core/language.class.php');
-				$DBManager = new genericDatabase ();
-				$this->genDB = $DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
-				$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
-				$this->config->getConfigItem ('/database/password', TYPE_STRING));
-				$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
-				$this->user = new user ($this->genDB);	
-				$this->i10nMan = new languages ();
-				if (! $this->i10nMan->loadLanguage ('nederlands')) {
-					trigger_error ('ERROR: Couldn\'t init internationalization.');
+			if (file_exists ('.install')) {
+				if (is_dir ('.install')) {
+					trigger_error ('ERROR: Remove dir install.php and than continue');
 				}
-
-				$this->loadSkin ('MorgOS Default');
 			}
+		 	include_once ('core/config.class.php');
+			$this->config = new config ();
+			$this->config->addConfigItemsFromFile ('site.config.php');
+			$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
+			define ('TBL_PREFIX', 'morgos_');
+			define ('TBL_MODULES', TBL_PREFIX . 'modules');
+			define ('TBL_PAGES', TBL_PREFIX . 'userpages');
+			include_once ('core/database.class.php');
+			include_once ('core/user.class.php');
+			include_once ('core/language.class.php');
+			$DBManager = new genericDatabase ();
+			$this->genDB = $DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
+			$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
+			$this->config->getConfigItem ('/database/password', TYPE_STRING));
+			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
+			$this->user = new user ($this->genDB);	
+			$this->i10nMan = new languages ();
+			if (! $this->i10nMan->loadLanguage ('nederlands')) {
+				trigger_error ('ERROR: Couldn\'t init internationalization.');
+			}
+
+			$this->loadSkin ('MorgOS Default');
 		} else {
 			header ('Location: install.php');
 		}
@@ -490,7 +494,7 @@ class UIManager {
 	 * \bug If one var is part of another and the first part is defined before the longer one we have a big problem
 	*/
 	/*private*/ function replaceAllVars (&$string) {
-		include_once ('uimanager.vars.php');
+		include_once ('core/uimanager.vars.php');
 		foreach ($this->vars as $varName => $varValue) {
 			$string = str_replace ($varName, $varValue, $string);
 		}
@@ -504,7 +508,7 @@ class UIManager {
 	*/
 	/*private*/ function replaceAllFunctions (&$string) {
 		include ($this->skinPath . 'skin.php');
-		include_once ('uimanager.functions.php');
+		include_once ('core/uimanager.functions.php');
 		foreach ($this->functions as $funcKey => $function) {
 			if (count ($function['params']) != 0) {
 				$regExp = '/\s' . $function['name'] .' \(([\w-\W][^)]*)\)/';

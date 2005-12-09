@@ -1,5 +1,5 @@
 <project version="Crimson Editor 3.60">
-	<category name="core" expanded="no">
+	<category name="core" expanded="yes">
 		<category name="databases" expanded="no">
 			<localfile path="C:\FoxServ\www\morgos\trunk\core\databases\mysql4.database.php" />
 			<localfile path="C:\FoxServ\www\morgos\trunk\core\databases\postgresql.database.php" />
@@ -13,7 +13,7 @@
 		<localfile path="C:\FoxServ\www\morgos\trunk\core\uimanager.vars.php" />
 		<localfile path="C:\FoxServ\www\morgos\trunk\core\user.class.php" />
 	</category>
-	<category name="skins" expanded="yes">
+	<category name="skins" expanded="no">
 		<category name="default" expanded="yes">
 			<category name="admin" expanded="no">
 				<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\admin\addpage.html" />
@@ -32,7 +32,7 @@
 			<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.php" />
 		</category>
 	</category>
-	<category name="install" expanded="no">
+	<category name="install" expanded="yes">
 		<category name="sql" expanded="no">
 			<localfile path="C:\FoxServ\www\morgos\trunk\install\sql\news.sql" />
 			<localfile path="C:\FoxServ\www\morgos\trunk\install\sql\pages.sql" />
@@ -52,7 +52,6 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.ini" linenum="18" placement="0:1:-1:-1:-4:-30:22:29:692:443" />
-	<localfile path="C:\FoxServ\www\morgos\trunk\skins\default\skin.php" linenum="32" placement="2:3:-1:-1:-4:-30:44:58:718:476" />
+	<localfile path="C:\server\apache\htdocs\morgos\trunk\morgos.prj" linenum="20" placement="2:3:-1:-1:-4:-30:22:29:762:279" />
 </workspace>
 
