@@ -24,6 +24,7 @@
 define ('TBL_USERS', TBL_PREFIX . 'users');
 /** \class user
  * class that take care of the main user system
+ * \todo make login safer (max 10 logins, wait one second, password min 6 characters, ...)
  *
  * \author Sam Heijens
  * \author Nathan Samson

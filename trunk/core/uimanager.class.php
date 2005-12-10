@@ -42,7 +42,7 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \author Nathan Samson
  * \version 0.1svn
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
- * \bug not compatible with PHP 4.0.0 and lower (use of trigger_error)
+ * \bug lowest tested version is 4.1.0
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
  * \todo change the dir in __construct to install in place of DOT install
  * \todo check all input wich is outputted and from user (htmlspecialchars)
@@ -406,7 +406,7 @@ class UIManager {
 	 * \return (bool)
 	*/
 	/*pulbic*/ function editPage ($module, $language, $newName, $newContent) {
-		$SQL = "UPDATE " . TBL_PAGES . " SET name='$newName', content='$newContent' WHERE module='$module' AND language='$language'"; 
+		$SQL = "UPDATE " . TBL_PAGES . " SET name='$newName', content='$newContent' WHERE module='$module' AND language='$language' AND tm.needauthorized='yes'"; 
 		$result = $this->genDB->query ($SQL);
 		if ($result !== false) {
 			return true;
@@ -435,6 +435,27 @@ class UIManager {
 	*/
 	/*public*/ function setRunning ($running) {
 		$this->running = $running;
+	}
+
+	/** \fn getUserNavigation ()
+	 * return HTML for the usernavigation.
+	 *
+	 * \return (string)
+	*/
+	/*public*/ function getUserNavigation () {
+		$HTML = ' OPEN_USER_NAVIGATION ()';
+		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND tm.needauthorized='yes'";
+		if ($this->user->isAdmin ()) {
+			$SQL .= " OR needauthorizedasadmin='yes'";
+		}
+		$query = $this->genDB->query ($SQL);
+		while ($row = $this->genDB->fetch_array ($query)) {
+			$HTML .= ' USER_NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
+		}
+		$HTML .= ' CLOSE_USER_NAVIGATION ()';
+		$HTML = $this->parse ($HTML);
+		return $HTML;
 	}
 	
 	/** \fn loadSkin ($skinName)

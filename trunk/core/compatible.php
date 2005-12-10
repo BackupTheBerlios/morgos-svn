@@ -72,6 +72,20 @@ if (! function_exists ('array_search')) {
 	}
 }
 
+if (! function_exists ('trigger_error')) {
+	gettype ($_POST); // this is here only to trick Doxygen
+	/** \fn trigger_error ($error, $errorType = E_USER_NOTICE)
+	 * Generates a user-level error/warning/notice message
+	 *
+	 * \param $error (string) The designated error message for this error. It's limited to 1024 characters in length. Any additional characters beyond 1024 will be truncated.
+	 * \param $errorType (int) this is not used
+	 * \return (bool)
+	*/
+	function trigger_error ($error, $errorType = E_USER_NOTICE) {
+		return user_error ($error);
+	}
+}
+
 /** \fn versionCompare ($version1, $version2, $operator)
  * compares 2 version numbers. A version looks like "1.2.*" or "1.2" (which is the same)
  * \warning this function is untested, use with care
