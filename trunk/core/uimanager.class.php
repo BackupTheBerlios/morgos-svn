@@ -86,6 +86,7 @@ class UIManager {
 			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
 			define ('TBL_PREFIX', 'morgos_');
 			define ('TBL_MODULES', TBL_PREFIX . 'modules');
+			define ('TBL_INTERNAL_MODULES', TBL_PREFIX . 'internal_modules');
 			define ('TBL_PAGES', TBL_PREFIX . 'userpages');
 			include_once ('core/database.class.php');
 			include_once ('core/user.class.php');
@@ -258,7 +259,7 @@ class UIManager {
 	/*public*/ function getNavigator () {
 		$HTML = ' NAVIGATION_OPEN ()';
 		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language'";
+		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND needauthorized='no' AND needauthorizedasadmin='no'";
 		$query = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($query)) {
 			$HTML .= ' NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
@@ -291,15 +292,16 @@ class UIManager {
 		$this->genDB->query ($SQL);
 	}
 	
-	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin)
+	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $isInternal = false)
 	 * adds a module,
 	 *
 	 * \param $module (string)
 	 * \param $needAuthorize (bool)
 	 * \param $needAuthorizeAsAdmin (bool)
+	 * \param $isInternal (bool) if true (standard false) the user don't see this page
 	 * \return (bool) 
 	*/
-	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin) {
+	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $isInternal = false) {
 		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
 			return false;
 		} else {
@@ -313,7 +315,12 @@ class UIManager {
 			} else {
 				$needAuthorizeAsAdmin = 'no';
 			}
-			$SQL = "INSERT into " . TBL_MODULES . " (module,needauthorized,needauthorizedasadmin) VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin')";
+			if ($isInternal == true) {
+				$SQL = "INSERT into " . TBL_INTERNAL_MODULES;
+			} else {
+				$SQL = "INSERT into " . TBL_MODULES;
+			}
+			$SQL .= " (module,needauthorized,needauthorizedasadmin) VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;
@@ -443,17 +450,19 @@ class UIManager {
 	 * \return (string)
 	*/
 	/*public*/ function getUserNavigation () {
-		$HTML = ' OPEN_USER_NAVIGATION ()';
+		$HTML = ' USER_NAVIGATION_OPEN ()';
 		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND tm.needauthorized='yes'";
-		if ($this->user->isAdmin ()) {
-			$SQL .= " OR needauthorizedasadmin='yes'";
-		}
+		$SQL = "SELECT tm.*, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language'";
 		$query = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($query)) {
-			$HTML .= ' USER_NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
+			// do this not with SQL => get some unexpected results
+			if ($row['needauthorized'] == 'yes') {
+				$HTML .= ' USER_NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
+			} elseif (($row['needauthorizedasadmin'] == 'yes') and ($this->user->isAdmin ())) {
+				$HTML .= ' USER_NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
+			}
 		}
-		$HTML .= ' CLOSE_USER_NAVIGATION ()';
+		$HTML .= ' USER_NAVIGATION_CLOSE ()';
 		$HTML = $this->parse ($HTML);
 		return $HTML;
 	}
@@ -593,8 +602,18 @@ class UIManager {
 	*/
 	/*private*/ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
 		$pos = strpos ($errStr, ": ");
-		$type = substr ($errStr, 0, $pos);
-		$error = substr ($errStr, $pos + 2);
+		if ($errNo != E_USER_NOTICE) {
+			$type = 'PHP';
+			$error = $errStr;
+		} else {
+			if ($pos != 0) {
+				$type = substr ($errStr, 0, $pos);
+				$error = substr ($errStr, $pos + 2);
+			} else {
+				$type = 'UKNOWN';
+				$error = $errStr;
+			}
+		}	
 		switch ($type) {
 			case "INTERNAL_ERROR":
 				$die = true;
@@ -610,6 +629,13 @@ class UIManager {
 				break;
 			case "WARNING":
 				$die = false;
+				break;
+			case "PHP":
+				$die = true;
+				break;
+			case "UKNOWN";
+				$die = false;
+				trigger_error ('DEBUG: Type is not set');
 				break;
 			default:
 				$die = true;

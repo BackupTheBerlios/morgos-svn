@@ -139,6 +139,14 @@ foreach ($this->notices as $val) {
 		die (); // FIX: Do a clean die ();
 	}*/
 }
+if ($this->user->isLoggedIn ()) {
+	$userPlace = 'VAR_USER_NAVIGATION';
+} else {
+	$userPlace = 'VAR_LOGIN_FORM';
+}
+
+$this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigation ();
+$this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
 $this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
 $this->vars['VAR_LOGIN_FORM_METHOD'] = 'post';
 $this->vars['VAR_LOGIN_FORM_LOGINNAME_NAME'] = 'loginname';

@@ -30,6 +30,9 @@ $this->functions['admin_navigation_item'] = array ('name' => 'ADMIN_NAVIGATION_I
 $this->functions['navigation_open'] = array ('name' => 'NAVIGATION_OPEN', 'params' => array ());
 $this->functions['navigation_close'] = array ('name' => 'NAVIGATION_CLOSE', 'params' => array ());
 $this->functions['navigation_item'] = array ('name' => 'NAVIGATION_ITEM', 'params' => array ('TEXT', 'LINK'));
+$this->functions['user_navigation_open'] = array ('name' => 'USER_NAVIGATION_OPEN', 'params' => array ());
+$this->functions['user_navigation_close'] = array ('name' => 'USER_NAVIGATION_CLOSE', 'params' => array ());
+$this->functions['user_navigation_item'] = array ('name' => 'USER_NAVIGATION_ITEM', 'params' => array ('TEXT', 'LINK'));
 $this->functions['admin_modules_item'] = array ('name' => 'ADMIN_MODULES_ITEM', 'params' => array ('NAME', 'AUTHORIZED_ONLY', 'ADMIN_ONLY', 'LANGUAGE', 'NSUBMIT', 'ADDPAGE', 'DELETEPAGE', 'DELETEMODULE', 'EDITPAGE'));
 $this->functions['admin_modules_form_needauthorize'] = array ('name' => 'ADMIN_MODULES_FORM_NEEDAUTHORIZE', 'params' => array ('NAME'));
 $this->functions['admin_modules_form_noneedauthorize'] = array ('name' => 'ADMIN_MODULES_FORM_NONEEDAUTHORIZE', 'params' => array ('NAME'));

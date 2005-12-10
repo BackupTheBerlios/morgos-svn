@@ -21,18 +21,19 @@
 	}
 
 	$UI->addModule ('index', false, false);
-	$UI->addModule ('admin/database', false, true);
-	$UI->addModule ('admin/users', false, true);
-	$UI->addModule ('admin/news', false, true);
-	$UI->addModule ('admin/general', false, true);
-	$UI->addModule ('admin/addpage', false, true);
-	$UI->addModule ('admin/index', false, true);
-	$UI->addModule ('admin/pages', false, true);
+	$UI->addModule ('admin/database', false, true, true);
+	$UI->addModule ('admin/users', false, true, true);
+	$UI->addModule ('admin/news', false, true, true);
+	$UI->addModule ('admin/general', false, true, true);
+	$UI->addModule ('admin/addpage', false, true, true);
+	$UI->addModule ('admin/index', false, true, true);
+	$UI->addModule ('admin/pages', false, true, true);
 	$i10nMan = &$UI->i10nMan;
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {
 		$i10nMan->loadLanguage ($language);
 		$UI->addPage ('index', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
+		$UI->addPage ('viewadmin', $language, $i10nMan->translate ('View admin'), '');
 	}
 
 	$username = addslashes ($_POST['admin-account']);

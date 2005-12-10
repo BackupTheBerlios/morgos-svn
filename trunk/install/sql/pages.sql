@@ -5,6 +5,13 @@ CREATE TABLE %prefix%modules (
   PRIMARY KEY (module)
 );
 
+CREATE TABLE %prefix%internal_modules (
+  module varchar (50) NOT NULL,
+  needauthorized varchar(3) DEFAULT 'no',
+  needauthorizedasadmin varchar(3) DEFAULT 'no',
+  PRIMARY KEY (module)
+);
+
 CREATE TABLE %prefix%userpages (
   name varchar (50) NOT NULL,
   language varchar (50) NOT NULL,

@@ -89,7 +89,7 @@ switch ($module) {
 			} else {
 				$needAuthorize = false;
 			}
-			$UI->addModule ($_POST['NEW_MODULE_NAME'], $needAuthorize);
+			$UI->addModule ($_POST['NEW_MODULE_NAME'], $needAuthorize, false);
 			header ('Location: admin.php?module=pages');
 		} elseif ($_POST['submit'] == $UI->i10nMan->translate ('Save settings')) {
 			foreach ($UI->getAllAvailableModules () as $module) {
