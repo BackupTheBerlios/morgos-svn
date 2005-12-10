@@ -14,13 +14,16 @@
 	<body>
 		<div>
 			<p>
-			PHP Version 4.0.1 or higher: 
+			PHP Version 4.0.0 or higher: 
 			<?php
-				if (versionCompare (PHP_VERSION, '4.0.1', '>=')) {
+				if (versionCompare (PHP_VERSION, '4.0.0', '>=')) {
 					echo '<span class="ok">Yes</span>';
 				} else {
 					echo '<span class="notok">No</span>';
 					$canrun = false;
+				}
+				if (versionCompare (PHP_VERSION, '4.1.0', '<') and (versionCompare (PHP_VERSION, '4.0.0', '>='))) {
+					echo ' <span class="warning">MorgOS is untested on PHP lower than PHP 4.1.0, if you encouter problems please report this.</span>';
 				}
 			?>
 			</p>

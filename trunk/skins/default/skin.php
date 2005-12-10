@@ -34,7 +34,8 @@ $skin['variable']['var_login_form'] =
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";
-$skin['functions']['select'] = "<select name='NAME' EXTRA />";
+$skin['functions']['select'] = "<select name='NAME' EXTRA>";
+$skin['functions']['closeselect'] = "</select>";
 $skin['functions']['option'] = "<option value='ANOPTION'>ANOPTION</option>";
 $skin['functions']['input'] = "<input name='NAME' value='VALUE' type='TYPE' EXTRA />";
 $skin['functions']['admin_database_type_option'] = "<option value='TYPE'>TYPE</option>";

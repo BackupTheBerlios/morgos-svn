@@ -21,6 +21,7 @@
 	}
 
 	$UI->addModule ('index', false, false);
+	$UI->addModule ('viewadmin', false, true);
 	$UI->addModule ('admin/database', false, true, true);
 	$UI->addModule ('admin/users', false, true, true);
 	$UI->addModule ('admin/news', false, true, true);
