@@ -31,6 +31,14 @@ if ($choosenModule == 'viewadmin') {
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
 	$user->login ($_POST['loginname'], $_POST['password']);
+	trigger_error ('NOTICE: You are now logged in.');
+	$UI->setRunning (false);
+	$UI->loadPage ('index');
+} elseif ($choosenModule == 'logout') {
+	$user = $UI->getUserClass ();
+	$UI->setRunning (true);
+	$user->logout ();
+	trigger_error ('NOTICE: You are now logged out.');
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
 } elseif (array_key_exists ($choosenModule, $availableModules)) {
