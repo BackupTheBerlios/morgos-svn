@@ -30,17 +30,44 @@ if ($choosenModule == 'viewadmin') {
 } elseif ($choosenModule == 'login') {
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
-	$user->login ($_POST['loginname'], $_POST['password']);
-	trigger_error ('NOTICE: You are now logged in.');
+	$success = $user->login ($_POST['loginname'], $_POST['password']);
+	if ($success) {
+		trigger_error ('NOTICE: You are now logged in.');
+	} else {
+		trigger_error ('ERROR: You are not logged in.');
+	}
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
 } elseif ($choosenModule == 'logout') {
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
-	$user->logout ();
-	trigger_error ('NOTICE: You are now logged out.');
+	$success = $user->logout ();
+	if ($success) {
+		trigger_error ('NOTICE: You are now logged out.');
+	} else {
+		trigger_error ('ERROR: You are not logged out.');
+	}
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
+} elseif ($choosenModule == 'registeruser') {
+	$user = $UI->getUserClass ();
+	$UI->setRunning (true);
+	if ($_POST['account-password'] != $_POST['account-password2']) {
+		trigger_error ('ERROR: The 2 passwords are not equal');
+		$UI->setRunning (false);
+		$UI->loadPage ('register');
+	} else {
+		$success = $user->insertUser ($_POST['account-name'], $_POST['account-email'], $_POST['account-password'], false);
+		if ($success) {
+			trigger_error ('NOTICE: You are registerd now.');
+			$UI->setRunning (false);
+			$UI->loadPage ('index');
+		} else {
+			trigger_error ('NOTICE: You are not registerd.');
+			$UI->setRunning (false);
+			$UI->loadPage ('register');
+		}
+	}
 } elseif (array_key_exists ($choosenModule, $availableModules)) {
 	$UI->loadPage ($choosenModule);
 }  else {

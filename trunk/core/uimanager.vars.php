@@ -153,6 +153,14 @@ $this->vars['VAR_LOGIN_FORM_LOGINNAME_NAME'] = 'loginname';
 $this->vars['VAR_LOGIN_FORM_LOGINNAME_VALUE'] = $this->i10nMan->translate ('Loginname');
 $this->vars['VAR_LOGIN_FORM_PASSWORD_NAME'] = 'password';
 $this->vars['VAR_LOGIN_FORM_SUBMIT_NAME'] = 'submit';
+$this->vars['VAR_TO_REGISTER_USER'] = './index.php?module=register';
+$this->vars['VAR_REGISTER_ACTION'] = './index.php?module=registeruser';
+$this->vars['VAR_REGISTER_METHOD'] = 'post';
+$this->vars['VAR_REGISTER_NAME_NAME'] = 'account-name';
+$this->vars['VAR_REGISTER_EMAIL_NAME'] = 'account-email';
+$this->vars['VAR_REGISTER_PASSWORD1_NAME'] = 'account-password';
+$this->vars['VAR_REGISTER_PASSWORD2_NAME'] = 'account-password2';
+$this->vars['VAR_REGISTER_SUBMIT_NAME'] = 'submit';
 
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
@@ -194,7 +202,13 @@ $this->vars['TEXT_ADMIN'] = $this->i10nMan->translate ('Admin');
 $this->vars['TEXT_SAVE_MANUALLY_END'] = $this->i10nMan->translate ('End of the content of site.config.php');
 $this->vars['TEXT_SAVE_MANUALLY'] = $this->i10nMan->translate ('Save the folowing text in the file "site.config.php" in the directory where MorgOS is installed, then continue.');
 $this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
+$this->vars['TEXT_PASSWORD1'] = $this->i10nMan->translate ('Password');
+$this->vars['TEXT_PASSWORD2'] = $this->i10nMan->translate ('Password (repeat)');
+$this->vars['TEXT_NAME'] = $this->i10nMan->translate ('Username');
+$this->vars['TEXT_EMAIL'] = $this->i10nMan->translate ('E-Mail address');
 $this->vars['TEXT_PASSWORD'] = $this->i10nMan->translate ('Password');
+$this->vars['TEXT_SUBMIT_REGISTER'] = $this->i10nMan->translate ('Register now');
+$this->vars['TEXT_REGISTER'] = $this->i10nMan->translate ('Don\'t have an account? register now.');
 // the skin defined vars
 foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

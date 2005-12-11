@@ -54,8 +54,10 @@ class user {
 			session_register('username');
 			session_register('ip');
 			session_register('pass');
+			return true;
 		} else {
 			trigger_error ('WARNING: Wrong password.');
+			return false;
 		}
 	}
 	
@@ -86,10 +88,10 @@ class user {
 	}
 	
 	function logout () {
-		session_start();
 		unset ($_SESSION['username']);
 		unset ($_SESSION['pass']);
 		unset ($_SESSION['ip']);
+		return true;
 	}
 	
 	function insertUser ($username, $email, $password, $isAdmin) {
@@ -98,17 +100,18 @@ class user {
 		} else {
 			$isAdmin = 'no';
 		}
-		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS);
+		$username = addslashes ($username);
+		$email = addslashes ($email);
+		$password = md5 ($password);
+		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE username='$username'");
 		$row = $this->genDB->fetch_array ($result);
-		$usernameDB = $row['name'];
-		$password = md5 ($password);
+		$usernameDB = $row['username'];
 		if ($this->genDB->num_rows ($result) != 0) {
 			trigger_error ('ERROR: User already exists');
+			return false;
 		} else  {
-			$username = addslashes ($username);
-			$email = addslashes ($email);
-			$password = addslashes ($password);
-			$this->genDB->query("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
+			$this->genDB->query ("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
+			return true;
 		}
 	}
 	
