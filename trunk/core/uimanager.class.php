@@ -44,6 +44,7 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
  * \bug lowest tested version is 4.1.0
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
+ * \bug Register is in the navigator
  * \todo change the dir in __construct to install in place of DOT install
  * \todo check all input wich is outputted and from user (htmlspecialchars)
  * \todo check for UBB hacks (when UBB is implmented)
@@ -413,7 +414,7 @@ class UIManager {
 	 * \return (bool)
 	*/
 	/*pulbic*/ function editPage ($module, $language, $newName, $newContent) {
-		$SQL = "UPDATE " . TBL_PAGES . " SET name='$newName', content='$newContent' WHERE module='$module' AND language='$language' AND tm.needauthorized='yes'"; 
+		$SQL = "UPDATE " . TBL_PAGES . " SET name='$newName', content='$newContent' WHERE module='$module' AND language='$language'"; 
 		$result = $this->genDB->query ($SQL);
 		if ($result !== false) {
 			return true;
