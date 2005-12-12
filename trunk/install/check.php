@@ -10,11 +10,17 @@
 		header ('Location: ./install.php');
 	}
 ?>
-<html>
+<?php echo '<?xml version="1.0"?>' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>MorgOS Installation Wizard Step 2</title>
+	</head>
 	<body>
 		<div>
-			<p>
-			PHP Version 4.0.0 or higher: 
+			<h1>Install wizard MorgOS Step 2: Requirements check</h1>
+			<h2>Required</h2>
+			<p>PHP Version 4.0.0 or higher: 
 			<?php
 				if (versionCompare (PHP_VERSION, '4.0.0', '>=')) {
 					echo '<span class="ok">Yes</span>';
@@ -27,27 +33,30 @@
 				}
 			?>
 			</p>
-			<p>Databases available: <br />
+			<p>Databases available:</p>
 			<?php
 				$DBMan = new genericDatabase ();
 				$supported = $DBMan->getAllSupportedDatabases ();
 				$db = false;
+				echo '<ul>';
 				foreach ($supported as $key => $support) {
 					$db = true;
-					echo $key . '<br />';
+					echo '<li>' . $key . '</li>';
 				}
+				echo '</ul>';
 				if ($db == false) {
 					echo '<span class="notok">No database detected, please install a database plugin.</span>';
 					$canrun = false;
 				}
 			?>
-			</p>
+			<h2>Optional</h2>
+			This space left intentionnally blank.
 		</div>
 		<div>
 			<?php
 				if ($canrun == true) { ?>
 					<form action='./install.php?phase=config' method='post'>
-						<input type='hidden' name='canrun' value='yes' value='Next' />
+						<input type='hidden' name='canrun' value='yes' />
 						<input type='submit' value='Next' />
 					</form>
 			<?php
@@ -56,7 +65,7 @@
 				}
 			?>
 			<form action='./install.php?phase=check' method='post'>
-				<input type='hidden' value='yes' name='agree'>
+				<input type='hidden' value='yes' name='agree' />
 				<input type='submit' value='Check again' />
 			</form>
 		</div>

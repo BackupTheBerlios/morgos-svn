@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title>VAR_SITE_TITLE :: VAR_PAGE_TITLE</title>
+		<link rel="stylesheet" type="text/css" href=" FILE (styles/default/basic.css)" />
+	</head>
+	<body>
+		<div id="header"><h1>VAR_SITE_TITLE</h1></div>
+		VAR_NAVIGATION
+		<div id="sidebar">
+			VAR_USER_PLACE
+		</div>
+		<div id="content">
+			<h2>VAR_PAGE_TITLE</h2>
+			VAR_SKIN_DEFAULT_NOTICES VAR_PAGE_CONTENT
+			FORM (VAR_REGISTER_ACTION, VAR_REGISTER_METHOD)
+				TEXT_NAME:  INPUT (text, VAR_REGISTER_NAME_NAME) <br />
+				TEXT_EMAIL:  INPUT (text, VAR_REGISTER_EMAIL_NAME) <br />
+				TEXT_PASSWORD1:  INPUT (password, VAR_REGISTER_PASSWORD1_NAME) <br />
+				TEXT_PASSWORD2:  INPUT (password, VAR_REGISTER_PASSWORD2_NAME) <br />
+				INPUT (submit, VAR_REGISTER_SUBMIT_NAME, TEXT_SUBMIT_REGISTER)
+			CLOSEFORM ()
+		</div>
+	</body>
+</html>

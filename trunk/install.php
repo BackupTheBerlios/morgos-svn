@@ -16,6 +16,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 error_reporting (E_ALL);
+/*Check that all required files exist*/
+function checkFile ($file) {
+	if (! file_exists ($file)) {
+		trigger_error ("ERROR: A required file to install MorgOS is not found. ($file)");
+	}
+}
+
+checkFile ('install/license.php');
+checkFile ('install/check.php');
+checkFile ('install/config.php');
+//checkFile ('install/checkdbconn.php');
+checkFile ('install/installing.php');
+checkFile ('install/installingdb.php');
+checkFile ('install/sql/news.sql');
+checkFile ('install/sql/pages.sql');
+checkFile ('install/sql/users.sql');
+
 if (array_key_exists ('phase', $_GET) == false) {
 	$phase = 'start';
 } else {
