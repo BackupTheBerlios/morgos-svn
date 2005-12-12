@@ -393,7 +393,7 @@ class UIManager {
 			$module = $this->module;
 		}
 		if (! $language) {
-			$language = $this->config->getConfigByName ('/userinterface/contentlanguage', TYPE_STRING);
+			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 		}
 		$SQL = "SELECT * FROM " . TBL_PAGES . " WHERE module='$module' AND language='$language'"; 
 		$result = $this->genDB->query ($SQL);
@@ -549,7 +549,13 @@ class UIManager {
 			preg_match_all ($regExp, $string, $matches);
 			foreach ($matches[0] as $key => $match) {
 				$funcParams = explode (',', $matches[1][$key]);
-				$replace = $this->parse ($skin['functions'][$funcKey]);
+				switch ($function['name']) {
+					case 'FILE':
+						$replace = $this->skinPath . $matches[1][0];
+						break;
+					default:
+						$replace = $this->parse ($skin['functions'][$funcKey]);
+				}
 				foreach ($function['params'] as $number => $name) {
 					if (array_key_exists ($number, $funcParams)) {
 						$replace = str_replace ($name, trim ($funcParams[$number]), $replace);

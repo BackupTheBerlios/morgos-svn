@@ -47,4 +47,5 @@ $this->functions['error'] = array ('name' => 'ERROR', 'params' => array ('CONTEN
 $this->functions['warning'] = array ('name' => 'WARNING', 'params' => array ('CONTENT'));
 $this->functions['notice'] = array ('name' => 'NOTICE', 'params' => array ('CONTENT'));
 $this->functions['debug'] = array ('name' => 'DEBUG', 'params' => array ('CONTENT'));
+$this->functions['file'] = array ('name' => 'FILE', 'params' => array ('FILENAME'));
 ?>
