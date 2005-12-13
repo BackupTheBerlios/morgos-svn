@@ -98,7 +98,7 @@ class UIManager {
 			$this->config->getConfigItem ('/database/password', TYPE_STRING));
 			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
 			$this->user = new user ($this->genDB);	
-			$this->i10nMan = new languages ();
+			$this->i10nMan = new languages ('languages/');
 			if (! $this->i10nMan->loadLanguage ('nederlands')) {
 				trigger_error ('ERROR: Couldn\'t init internationalization.');
 			}

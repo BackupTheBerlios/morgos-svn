@@ -29,12 +29,28 @@
 */
 class languages {
 	
-	function __construct () {
+	/** \fn __construct ($dir, $defLang = 'english')
+	 * The constructor.
+	 *
+	 * \param $dir (string) the dir where the languages are stored
+	 * \param $defLang (string) the default language where all other languages are derived from standard (english)
+	*/
+	function __construct ($dir, $defLang = 'english') {
+		$this->dir = $dir;
+		if (file_exists ($dir)) {
+			if (! is_dir ($dir)) {
+				trigger_error ('ERROR: can\'t init i10n Manager, language dir doesn\'t exists.');			
+			}
+		} else {
+			trigger_error ('ERROR: can\'t init i10n Manager, language dir doesn\'t exists.');
+		}
+		$this->defLang = $defLang;
 		$this->getAllSupportedLanguages ();
+
 	}
 
-	function languages () {
-		$this->__construct ();
+	function languages ($dir, $defLang = 'english') {
+		$this->__construct ($dir, $defLang);
 	}
 	
 	/** \fn getAllSupportedLanguages ()
@@ -45,9 +61,9 @@ class languages {
 	/*public*/ function getAllSupportedLanguages () {
 		if (! isset ($this->supported)) {
 			$supported = array ();
-			$supported[] = 'english';
-			$handler = opendir ('languages/');
-			// $files = scandir ('languages/'); PHP5 only :( 
+			$supported[] = $this->defLang;
+			$handler = opendir ($this->dir);
+			// $files = scandir ($this->dir); PHP5 only :( 
 			// foreach ($files as $file) PHP5 only :(
 			while (false !== ($file = readdir ($handler))) {
 				// starts with a letter, then you have whatever you want and it ends with '.language.php'
@@ -72,12 +88,14 @@ class languages {
 			unset ($this->stringTree);
 			unset ($strings);
 			$this->stringTree = array ();
-			if ($language != 'english') {
-				include ('languages/' . $language . '.language.php');
+			if ($language != $this->defLang) {
+				include ($this->dir . $language . '.language.php');
 				$this->stringTree = $strings;
 			}
 			return true;
 		} else {
+			trigger_error ('ERROR: Language doesn\'t exists, please install it. Default is used.');
+			$this->loadLanguage ($this->defLang);
 			return false;
 		}
 	}

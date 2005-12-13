@@ -50,16 +50,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>MorgOS Installation Wizard Step 5</title>
+		<title><?php echo $i10nMan->translate ('MorgOS Installation Wizard Step 5'); ?></title>
 	</head>
 	<body>
-		<h1>Install wizard MorgOS Step 5: Installation of database</h1>
+		<h1><?php echo $i10nMan->translate ('Install wizard MorgOS Step 5: Installation of database'); ?></h1>
 		<form action='./index.php' method='post'>
 			<div>
-				Installation is done.
-				Remove the dir "install/" and file "install.php" and press "next" to go to the site.
+				<?php echo $i10nMan->translate ('Installation is done.'); ?>
+				<?php echo $i10nMan->translate ('Remove the dir "install/" and file "install.php" and press "next" to go to the site.'); ?>
 			</div>
-			<input type='submit' value='Next' />
+			<input type='submit' value='<?php echo $i10nMan->translate ('Next'); ?>' />
 		</form>
 	</body>
 </html>

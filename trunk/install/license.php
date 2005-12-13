@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>MorgOS Installation Wizard Step 1</title>
+		<title><?php echo $i10nMan->translate ('MorgOS Installation Wizard Step 1') ?></title>
 		<style type="text/css">
 			ol li {
 				margin-bottom: 5px;
@@ -11,7 +11,10 @@
 	</head>
 	<body>
 		<div>
-			<h1>Install wizard MorgOS Step 1: License</h1>
+			<h1><?php echo $i10nMan->translate ('Install wizard MorgOS Step 1: License'); ?></h1>
+			<?php
+				echo $error;
+			?>
 			<h2>GNU GENERAL PUBLIC LICENSE</h2>
 			<p>Version 2, June 1991</p>
 			<p>
@@ -319,14 +322,14 @@
 					PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 					POSSIBILITY OF SUCH DAMAGES.				
 				</li>
-				<h2>END OF TERMS AND CONDITIONS</h2>
 			</ol>
+			<h2>END OF TERMS AND CONDITIONS</h2>
 		</div>
 		<div>
 			<form action='./install.php?phase=check' method='post'>
-				I agree: <input type='radio' name='agree' value='yes' /> <br />
-				I do not agree <input type='radio' checked name='agree' value='no'/> <br />
-				<input type='submit' value='Next' />
+				<?php echo $i10nMan->translate ('I agree'); ?> : <input type='radio' name='agree' value='yes' /> <br />
+				<?php echo $i10nMan->translate ('I do not agree'); ?> <input type='radio' checked name='agree' value='no'/> <br />
+				<input type='submit' value='<?php echo $i10nMan->translate ('Next'); ?>' />
 			</form>
 		</div>
 	</body>

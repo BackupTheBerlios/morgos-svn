@@ -32,6 +32,21 @@ checkFile ('install/installingdb.php');
 checkFile ('install/sql/news.sql');
 checkFile ('install/sql/pages.sql');
 checkFile ('install/sql/users.sql');
+checkFile ('core/language.class.php');
+
+include_once ('core/language.class.php');
+
+function errorHandlerForInstaller ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
+	$errStr;
+	die ();
+}
+
+//set_error_handler ('errorHandlerForInstaller');
+$i10nMan = new languages ('install/languages/', 'english');
+$result = @$i10nMan->loadLanguage ('nederlands'); // if it couldn\'t load don\'t throw an error
+if ($result == false) {
+	$error = 'Error loading language.';
+}
 
 if (array_key_exists ('phase', $_GET) == false) {
 	$phase = 'start';
