@@ -150,12 +150,20 @@ class UIManager {
 
 		$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_MODULES . " WHERE module='$moduleName'";
 		$query = $this->genDB->query ($SQL);
+		if ($this->genDB->num_rows ($query) == 0) {
+			$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_INTERNAL_MODULES . " WHERE module='$moduleName'";
+			$query = $this->genDB->query ($SQL);
+		}
+		if ($this->genDB->num_rows ($query) == 0) {
+			trigger_error ("ERROR: Page does not exists.");
+			return;
+		}
 		$module = $this->genDB->fetch_array ($query);
-		if ($module['needauthorized'] == strtolower ("YES") && $this->user->isLoggedIn () == false) {
+		if (strtolower ($module['needauthorized']) == "yes" && $this->user->isLoggedIn () == false) {
 			trigger_error ("ERROR: You need to be logged in to access this page.");
 		}
 		
-		if ($module['needauthorizedasadmin'] == strtolower ("YES") && $this->user->isAdmin () == false) {
+		if (strtolower ($module['needauthorizedasadmin']) == "yes" && $this->user->isAdmin () == false) {
 			trigger_error ("ERROR: You need to be admin to access this page.");
 		}
 
@@ -604,7 +612,9 @@ class UIManager {
 	*/
 	/*private*/ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
 		$pos = strpos ($errStr, ": ");
-		if ($errNo != E_USER_NOTICE) {
+		if ($errNo == E_STRICT) {
+			return;
+		} elseif ($errNo != E_USER_NOTICE) {
 			$type = 'PHP';
 			$error = $errStr;
 		} else {

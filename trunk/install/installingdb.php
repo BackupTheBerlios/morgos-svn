@@ -24,6 +24,7 @@
 	$UI->addModule ('viewadmin', false, true);
 	$UI->addModule ('logout', true, false);
 	$UI->addModule ('register', false, false);
+	$UI->addModule ('usersettings', true, false);
 	$UI->addModule ('admin/database', false, true, true);
 	$UI->addModule ('admin/users', false, true, true);
 	$UI->addModule ('admin/news', false, true, true);
@@ -39,6 +40,7 @@
 		$UI->addPage ('viewadmin', $language, $i10nMan->translate ('View admin'), '');
 		$UI->addPage ('logout', $language, $i10nMan->translate ('Logout'), '');
 		$UI->addPage ('register', $language, $i10nMan->translate ('Register'), '');
+		$UI->addPage ('usersettings', $language, $i10nMan->translate ('Change your settings'), '');
 	}
 
 	$username = addslashes ($_POST['admin-account']);
