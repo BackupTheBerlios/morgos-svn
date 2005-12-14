@@ -61,15 +61,10 @@ class UIManager {
 	function __construct () {
 		$this->notices = array ();
 		$this->running = false;
-		if (versionCompare (PHP_VERSION, '4.3', '>=')) {
-			$errorHandler = array ($this, "errorHandler");
-		} else {
-			$errorHandler = 'errorHandler';
-		}
 		if (versionCompare (PHP_VERSION, '5.0', '>=')) {
-			set_error_handler ($errorHandler, E_USER_NOTICE);
+			set_error_handler (array ($this, "errorHandler"));
 		} else {
-			set_error_handler ($errorHandler);
+			set_error_handler ('errorHandler');
 		}
 		if (! file_exists ('site.config.php')) {
 			header ('Location: install.php');
