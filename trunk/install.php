@@ -37,7 +37,7 @@ checkFile ('core/language.class.php');
 include_once ('core/language.class.php');
 
 function errorHandlerForInstaller ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
-	$errStr;
+	echo $errStr;
 	die ();
 }
 
