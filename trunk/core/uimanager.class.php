@@ -226,17 +226,26 @@ class UIManager {
 		}
 	}
 	
-	/** \fn getAllAvailableModules ()
+	/** \fn getAllAvailableModules ($extended = false)
 	 * Returns an array of all available modules
 	 *
+	 * \param $extended (bool) search to in INTERNAL_MODULES (default is false)
 	 * \return (string array)
 	*/
-	/*public*/ function getAllAvailableModules () {
+	/*public*/ function getAllAvailableModules ($extended = false) {
 		$SQL = 'SELECT * FROM ' . TBL_MODULES;
 		$available = array ();
 		$result = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($result)) {
 			$available[$row['module']] = $row;
+		}
+		
+		if ($extended) {
+			$SQL = 'SELECT * FROM ' . TBL_INTERNAL_MODULES;
+			$result = $this->genDB->query ($SQL);
+			while ($row = $this->genDB->fetch_array ($result)) {
+				$available[$row['module']] = $row;
+			}
 		}
 		return $available;
 	}
@@ -475,6 +484,7 @@ class UIManager {
 			}
 		}
 		$HTML .= ' USER_NAVIGATION_CLOSE ()';
+		$HTML = ' BOX (TEXT_USER, ' . $HTML . ')';
 		$HTML = $this->parse ($HTML);
 		return $HTML;
 	}

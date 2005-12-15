@@ -1,59 +1,77 @@
 div#content {
-   color: black;
-   margin: 0;
-   margin-left: 12em;
-   padding: 1ex;
-        margin-top: 5px;
+	color: black;
+	margin: 0;
+	margin-left: 12em;
+	padding: 0;
+	padding-left: 1em;
+	margin-top: 7px; /*Why 7???*/
+	border-left: solid 2px black;
 }
+
+div#content h2 {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	text-align: center;
+}
+
 div#bottomstuff {
-   clear: both;
-   text-align: center;
+	clear: both;
+	text-align: center;
 }
+
 div#sidebar {
-clear: both;
-   float: left;
-   margin: 0;
-   padding: 1ex;
-   margin-top: 5px;
-   width: 10em;
+	clear: both;
+	float: left;
+	margin: 0;
+	padding: 1ex;
+	margin-top: 5px;
+	width: 10em;
 }
 
 #header {
-   text-align: center;
-   margin-bottom: 0;
-   margin-top: 0;
-   background: yellow;
+	text-align: center;
+	margin-bottom: 0;
+	margin-top: 0;
+	background: yellow;
+	border-bottom: solid 1px black;
+}
+
+#header h1 {
+	text-align: center;
+	margin: 0;
 }
 
 #navigation {
-    margin-top: 5px;
-    margin-bottom: 0;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0;
-    height: 1.8em;
+	margin-top: 5px;
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+	height: 1.8em;
 }
 
 #navigation li {
-    width: auto;
-    float: left;
-    display: inline; /* no effect on modern browsers, looks better on very old ones */
-    list-style-type: none;
-    margin: 0; padding-right: 2px;
-/*    height: 99%;*/
+	width: auto;
+	float: left;
+	display: inline; /* no effect on modern browsers, looks better on very old ones */
+	list-style-type: none;
+	margin: 0;
+	margin-right: 30px;
+	padding-right: 20px;
 }
 
 #navigation li a {
-   background: #FFA;
-   color: black;
-   border: solid 1px #555;
-   display: block;
-   height: 100%;
-   padding-left: 20px;
-   padding-right: 20px;
-   text-align: center;
-   text-decoration: none;
-   width: 100%;
+	background: #FFA;
+	color: black;
+	border: solid 1px #555;
+ 	display: block;
+	height: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+	/*margin-left: 100px;*/
+	text-align: center;
+	text-decoration: none;
+	width: 100%;
 }
 
 #navigation li a:hover {
@@ -65,4 +83,14 @@ clear: both;
     visibility: hidden;
     clear: both;
     font-size: 1px;
+}
+
+#sidebar .box  {
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+#sidebar .box  h3 {
+	text-align: center;
+	margin: 0;
 }

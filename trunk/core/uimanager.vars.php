@@ -267,6 +267,8 @@ $this->vars['TEXT_LANGUAGE'] = $this->i10nMan->translate ('Language');
 $this->vars['TEXT_CONTENTLANGUAGE'] = $this->i10nMan->translate ('Content Language');
 $this->vars['TEXT_THEME'] = $this->i10nMan->translate ('Theme');
 $this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
+$this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
+$this->vars['TEXT_USER'] = $this->i10nMan->translate ('User');
 // the skin defined vars
 foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

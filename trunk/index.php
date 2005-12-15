@@ -24,7 +24,7 @@ if (array_key_exists ('module', $_GET)) {
 	$choosenModule = 'index';
 }
 
-$availableModules = $UI->getAllAvailableModules ();
+$availableModules = $UI->getAllAvailableModules (true);
 if ($choosenModule == 'viewadmin') {
 	header ('Location: admin.php');
 } elseif ($choosenModule == 'login') {
