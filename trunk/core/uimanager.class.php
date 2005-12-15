@@ -45,6 +45,7 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \bug lowest tested version is 4.1.0
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
  * \bug Register is in the navigator
+ * \bug if you change your theme, it is only changed whe, you reload
  * \todo change the dir in __construct to install in place of DOT install
  * \todo check all input wich is outputted and from user (htmlspecialchars)
  * \todo check for UBB hacks (when UBB is implmented)
@@ -78,8 +79,6 @@ class UIManager {
 		 	include_once ('core/config.class.php');
 			$this->config = new config ();
 			$this->config->addConfigItemsFromFile ('site.config.php');
-			$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
-			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
 			define ('TBL_PREFIX', 'morgos_');
 			define ('TBL_MODULES', TBL_PREFIX . 'modules');
 			define ('TBL_INTERNAL_MODULES', TBL_PREFIX . 'internal_modules');
@@ -92,13 +91,23 @@ class UIManager {
 			$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
 			$this->config->getConfigItem ('/database/password', TYPE_STRING));
 			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
-			$this->user = new user ($this->genDB);	
+			$this->user = new user ($this->genDB);
+			if ($this->user->isLoggedIn ()) {
+				$userInfo = $this->user->getUser ();			
+				$this->config->addConfigItem ('/userinterface/language', $userInfo['language'], TYPE_STRING);
+				$this->config->addConfigItem ('/userinterface/contentlanguage', $userInfo['contentlanguage'], TYPE_STRING);
+				$this->config->addConfigItem ('/userinterface/skin', $userInfo['skin'], TYPE_STRING);
+			} else {
+				$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
+				$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
+				$this->config->addConfigItem ('/userinterface/skin', 'MorgOS Default', TYPE_STRING);
+			}
 			$this->i10nMan = new languages ('languages/');
-			if (! $this->i10nMan->loadLanguage ('nederlands')) {
+			if (! $this->i10nMan->loadLanguage ($this->config->getConfigItem ('/userinterface/language', TYPE_STRING))) {
 				trigger_error ('ERROR: Couldn\'t init internationalization.');
 			}
 
-			$this->loadSkin ('MorgOS Default');
+			$this->loadSkin ($this->config->getConfigItem ('/userinterface/skin', TYPE_STRING));
 		} else {
 			header ('Location: install.php');
 		}
@@ -166,7 +175,6 @@ class UIManager {
 		if (strtolower ($module['needauthorizedasadmin']) == "yes" && $this->user->isAdmin () == false) {
 			trigger_error ("ERROR: You need to be admin to access this page.");
 		}
-
 		if (file_exists ($this->skinPath . $moduleName . '.html')) {
 			$output = file_get_contents ($this->skinPath . $moduleName . '.html');
 		} else {
@@ -469,6 +477,30 @@ class UIManager {
 		$HTML .= ' USER_NAVIGATION_CLOSE ()';
 		$HTML = $this->parse ($HTML);
 		return $HTML;
+	}
+	
+	/** \fn getAllSupportedSkins ()
+	 * returns all skins
+	 *
+	 * \return (array (string))
+	*/
+	/*public*/ function getAllSupportedSkins () {
+		$handler = opendir ('skins');
+		// $files = scandir ('skins'); PHP5 only :( 
+		// foreach ($files as $file) PHP5 only :(
+		$supSkins = array ();
+		$skinPaths = array ();
+		while (false !== ($file = readdir ($handler))) {
+			// do not start with a point (.)
+			if ((preg_match ('/^\w.*/i', $file) == 1) and (is_dir ('skins/' . $file)) and (is_file ('skins/' . $file . '/skin.php'))) {
+				unset ($skin);
+				include ('skins/' . $file . '/skin.php');
+				if (versionCompare ($skin['general']['minversion'],MORGOS_VERSION,'<=') and (versionCompare ($skin['general']['maxversion'],MORGOS_VERSION,'>='))) {
+					$supSkins[] = $skin['general']['name'];
+				}
+			}
+		}
+		return $supSkins;
 	}
 	
 	/** \fn loadSkin ($skinName)

@@ -163,6 +163,56 @@ $this->vars['VAR_REGISTER_EMAIL_NAME'] = 'account-email';
 $this->vars['VAR_REGISTER_PASSWORD1_NAME'] = 'account-password';
 $this->vars['VAR_REGISTER_PASSWORD2_NAME'] = 'account-password2';
 $this->vars['VAR_REGISTER_SUBMIT_NAME'] = 'submit';
+$this->vars['VAR_USERSETTINGSFORM_ACTION'] = './index.php?module=saveusersettings';
+$this->vars['VAR_USERSETTINGSFORM_METHOD'] = 'post';
+$this->vars['VAR_USERSETTINGSFORM_EMAIL_NAME'] = 'account-email';
+$curUser = $this->user->getUser ();
+$this->vars['VAR_USERSETTINGSFORM_EMAIL_VALUE'] = $curUser['email'];
+$this->vars['VAR_USERSETTINGSFORM_PASSWORD1_NAME'] = 'account-password1';
+$this->vars['VAR_USERSETTINGSFORM_PASSWORD2_NAME'] = 'account-password2';
+$this->vars['VAR_USERSETTINGSFORM_SUBMIT'] = 'submit';
+$this->vars['VAR_THEME_OPTION_NAME'] = 'skin';
+$this->vars['VAR_LANGUAGE_OPTION_NAME'] = 'language';
+$this->vars['VAR_CONTENTLANGUAGE_OPTION_NAME'] = 'contentlanguage';
+$this->vars['VAR_OPEN_LANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_open_language_option']);
+$this->vars['VAR_CLOSE_LANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_close_language_option']);
+$this->vars['VAR_OPEN_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_open_contentlanguage_option']);
+$this->vars['VAR_CLOSE_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_close_contentlanguage_option']);
+$this->vars['VAR_OPEN_THEME_OPTION'] = $this->parse ($skin['variable']['var_open_theme_option']);
+$this->vars['VAR_CLOSE_THEME_OPTION'] = $this->parse ($skin['variable']['var_close_theme_option']);
+
+$languageOption = ' VAR_OPEN_LANGUAGE_OPTION';
+foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
+	if ($language == $this->config->getConfigItem ('/userinterface/language', TYPE_STRING)) {
+		$languageOption .= ' LANGUAGE_OPTION_SELECTED (' . $language . ')';
+	} else {
+		$languageOption .= ' LANGUAGE_OPTION (' . $language . ')';
+	}
+}
+$languageOption .= ' VAR_CLOSE_LANGUAGE_OPTION';
+$this->vars['VAR_LANGUAGE_OPTION'] = $this->parse ($languageOption);
+
+$contentLanguageOption = ' VAR_OPEN_CONTENTLANGUAGE_OPTION';
+foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
+	if ($language == $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING)) {
+		$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION_SELECTED (' . $language . ')';
+	} else {
+		$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION (' . $language . ')';
+	}
+}
+$contentLanguageOption .= ' VAR_CLOSE_CONTENTLANGUAGE_OPTION';
+$this->vars['VAR_CONTENTLANGUAGE_OPTION'] = $this->parse ($contentLanguageOption);
+
+$themeOption = ' VAR_OPEN_THEME_OPTION';
+foreach ($this->getAllSupportedSkins () as $askin) {
+	if ($askin == $this->config->getConfigItem ('/userinterface/skin', TYPE_STRING)) {
+		$themeOption .= ' THEME_OPTION_SELECTED (' . $askin . ')';
+	} else {
+		$themeOption .= ' THEME_OPTION (' . $askin . ')';
+	}
+}
+$themeOption .= ' VAR_CLOSE_THEME_OPTION';
+$this->vars['VAR_THEME_OPTION'] = $this->parse ($themeOption);
 
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
@@ -196,7 +246,6 @@ $this->vars['TEXT_DELETE_PAGE'] = $this->i10nMan->translate ('Delete page');
 $this->vars['TEXT_DELETE_MODULE'] = $this->i10nMan->translate ('Delete module');
 $this->vars['TEXT_LANGUAGE'] = $this->i10nMan->translate ('Language');
 $this->vars['TEXT_PAGENAME'] = $this->i10nMan->translate ('Name');
-$this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_SAVE_PAGE'] = $this->i10nMan->translate ('Save this page');
 $this->vars['TEXT_SITE_NAME'] = $this->i10nMan->translate ('Site name');
 $this->vars['TEXT_ADMIN_MODULES_ADMIN_ONLY'] = $this->i10nMan->translate ('Admin only');
@@ -211,6 +260,13 @@ $this->vars['TEXT_EMAIL'] = $this->i10nMan->translate ('E-Mail address');
 $this->vars['TEXT_PASSWORD'] = $this->i10nMan->translate ('Password');
 $this->vars['TEXT_SUBMIT_REGISTER'] = $this->i10nMan->translate ('Register now');
 $this->vars['TEXT_REGISTER'] = $this->i10nMan->translate ('Don\'t have an account? register now.');
+$this->vars['TEXT_SAVE_SETTINGS'] = $this->i10nMan->translate ('Save your settings');
+$this->vars['TEXT_CHANGE_PASSWORD'] = $this->i10nMan->translate ('Change your password');
+$this->vars['TEXT_GENERAL_SETTINGS'] = $this->i10nMan->translate ('General options');
+$this->vars['TEXT_LANGUAGE'] = $this->i10nMan->translate ('Language');
+$this->vars['TEXT_CONTENTLANGUAGE'] = $this->i10nMan->translate ('Content Language');
+$this->vars['TEXT_THEME'] = $this->i10nMan->translate ('Theme');
+$this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 // the skin defined vars
 foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

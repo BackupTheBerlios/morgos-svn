@@ -32,6 +32,12 @@ $skin['variable']['var_login_form'] =
 		INPUT (submit, VAR_LOGIN_FORM_SUBMIT_NAME, TEXT_LOGIN) 
 		CLOSEFORM ()
 	</div>";
+$skin['variable']['var_open_language_option'] = "<select name='VAR_LANGUAGE_OPTION_NAME'>";
+$skin['variable']['var_close_language_option'] = "</select>";
+$skin['variable']['var_open_contentlanguage_option'] = "<select name='VAR_CONTENTLANGUAGE_OPTION_NAME'>";
+$skin['variable']['var_close_contentlanguage_option'] = "</select>";
+$skin['variable']['var_open_theme_option'] = "<select name='VAR_THEME_OPTION_NAME'>";
+$skin['variable']['var_close_theme_option'] = "</select>";
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";
@@ -62,4 +68,10 @@ $skin['functions']['warning'] = "<div class='warning'>CONTENT</div>";
 $skin['functions']['error'] = "<div class='error'>CONTENT</div>";
 $skin['functions']['notice'] = "<div class='notice'>CONTENT</div>";
 $skin['functions']['debug'] = "<div class='debug'>CONTENT</div>";
+$skin['functions']['language_option'] = " <option value='LANGUAGE'>LANGUAGE</option>";
+$skin['functions']['language_option_selected'] = " <option SELECTED value='LANGUAGE'>LANGUAGE</option>";
+$skin['functions']['contentlanguage_option'] = " <option value='CONTENTLANGUAGE'>CONTENTLANGUAGE</option>";
+$skin['functions']['contentlanguage_option_selected'] = " <option SELECTED value='CONTENTLANGUAGE'>CONTENTLANGUAGE</option>";
+$skin['functions']['theme_option'] = " <option value='THEME'>THEME</option>";
+$skin['functions']['theme_option_selected'] = " <option SELECTED value='THEME'>THEME</option>";
 ?>

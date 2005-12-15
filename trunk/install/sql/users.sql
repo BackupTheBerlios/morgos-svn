@@ -4,6 +4,7 @@ CREATE TABLE %prefix%users (
   email varchar (100) NOT NULL,
   isadmin varchar (3) NOT NULL,
   language varchar (50) NOT NULL,
+  skin varchar (100) NOT NULL,
   contentlanguage varchar (50) NOT NULL,
   PRIMARY KEY (username)
 );

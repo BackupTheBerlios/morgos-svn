@@ -83,7 +83,7 @@ class config {
 		if ($this->isType ($value) == $type) {
 			$this->configTree[$configName] = array ('value' => $value,'type' => $type,'password' => $password);
 		} else {
-			trigger_error ('DEBUG: type is: ' . $this->valueToString ($value) . ' needs to be ' . $this->valueToString ($value));
+			trigger_error ('DEBUG: type is: ' . $this->typeToString ($value) . ' needs to be ' . $this->typeToString ($type));
 			trigger_error ('INTERNAL_ERROR: type is not correct');
 		}
 	}
@@ -166,12 +166,15 @@ class config {
 					$this->configTree[$configName]['value'] = $newValue;
 			 	} else {
 			 		trigger_error ('DEBUG: configname is: ' . $configName);
-					trigger_error ('INTERNAL_ERROR: configname does not exists');
+					trigger_error ('INTERNAL_ERROR: Password is wrong');
 				}
 			} else {
 				trigger_error ('DEBUG: configname is : ' . $configName);
-				trigger_error ('INTERNAL_ERROR: configname yet exists');
+				trigger_error ('INTERNAL_ERROR: configname is a dir');
 			}
+		} else {
+			trigger_error ('DEBUG: configname is: ' . $configName);
+			trigger_error ('INTERNAL_ERROR: configname does not exists');
 		}
 	}
 	

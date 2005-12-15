@@ -115,16 +115,36 @@ class user {
 		}
 	}
 	
-	function getUser ($username) {
+	function getUser ($username = NULL) {
+		if ($username == NULL && array_key_exists ('username', $_SESSION)) {
+			$username = $_SESSION['username'];
+		}
 		$username = addslashes ($username);
 		$query = $this->genDB->query ("SELECT * FROM ".TBL_USERS." WHERE username='$username'");
 		return $this->genDB->fetch_array($query);
 	}
 	
-	function updateUser ($username, $email , $pass, $id) {
+	function updateUser ($username, $newEmail, $newSettings, $newPass = NULL) {
 		$username = addslashes ($username);
-		$pass = md5 ($pass);
-		$this->genDB->query ("UPDATE ".TBL_USERS." SET  email='$email', pass='$pass' WHERE username='$username'");
+		$newEmail = addslashes ($newEmail);
+		$SQL = "UPDATE ".TBL_USERS." SET  email='$newEmail'";
+		if ($newPass != NULL) {
+			$newPass = md5 ($newPass);
+			$_SESSION['pass'] = $newPass;
+			$SQL .= ",password='$newPass' ";
+		}
+		foreach ($newSettings as $setting => $value) {
+			$setting = addslashes ($setting);
+			$value = addslashes ($value);
+			$SQL .= ", $setting='$value' ";
+		}		
+		$SQL .= "WHERE username='$username'";
+		$result = $this->genDB->query ($SQL);
+		if ($result !== false) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

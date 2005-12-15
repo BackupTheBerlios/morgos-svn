@@ -68,6 +68,33 @@ if ($choosenModule == 'viewadmin') {
 			$UI->loadPage ('register');
 		}
 	}
+} elseif ($choosenModule == 'saveusersettings') {
+	$userClass = $UI->getUserClass ();
+	$user = $userClass->getUser ();
+	$username = $user['username'];
+	$UI->setRunning (true);
+	if ($_POST['account-password1'] != $_POST['account-password2']) {
+		trigger_error ('ERROR: Your settings aren\'t saved');
+		trigger_error ('ERROR: The 2 passwords are not equal');
+		$UI->setRunning (false);
+		$UI->loadPage ('userssettings');
+	} else {
+		$settings = array ();
+		$settings['language'] = $_POST['language'];
+		$settings['contentlanguage'] = $_POST['contentlanguage'];
+		$settings['skin'] = $_POST['skin'];
+		$success = $userClass->updateUser ($username, $_POST['account-email'], $settings, $_POST['account-password1']);
+		if ($success) {
+			$UI->config->changeValueConfigItem ('/userinterface/language', $_POST['language']);
+			$UI->config->changeValueConfigItem ('/userinterface/contentlanguage', $_POST['contentlanguage']);
+			$UI->config->changeValueConfigItem ('/userinterface/skin', $_POST['contentlanguage']);
+			trigger_error ('NOTICE: Your settings are saved.');
+		} else {
+			trigger_error ('ERROR: Your settings aren\'t saved');
+		}
+		$UI->setRunning (false);
+		$UI->loadPage ('userssettings');
+	}
 } elseif (array_key_exists ($choosenModule, $availableModules)) {
 	$UI->loadPage ($choosenModule);
 }  else {

@@ -48,4 +48,10 @@ $this->functions['warning'] = array ('name' => 'WARNING', 'params' => array ('CO
 $this->functions['notice'] = array ('name' => 'NOTICE', 'params' => array ('CONTENT'));
 $this->functions['debug'] = array ('name' => 'DEBUG', 'params' => array ('CONTENT'));
 $this->functions['file'] = array ('name' => 'FILE', 'params' => array ('FILENAME'));
+$this->functions['language_option'] = array ('name' => 'LANGUAGE_OPTION', 'params' => array ('LANGUAGE'));
+$this->functions['language_option_selected'] = array ('name' => 'LANGUAGE_OPTION_SELECTED', 'params' => array ('LANGUAGE'));
+$this->functions['contentlanguage_option'] = array ('name' => 'CONTENTLANGUAGE_OPTION', 'params' => array ('CONTENTLANGUAGE'));
+$this->functions['contentlanguage_option_selected'] = array ('name' => 'CONTENTLANGUAGE_OPTION_SELECTED', 'params' => array ('CONTENTLANGUAGE'));
+$this->functions['theme_option'] = array ('name' => 'THEME_OPTION', 'params' => array ('THEME'));
+$this->functions['theme_option_selected'] = array ('name' => 'THEME_OPTION_SELECTED', 'params' => array ('THEME'));
 ?>
