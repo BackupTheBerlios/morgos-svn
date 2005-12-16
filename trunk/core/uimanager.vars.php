@@ -147,7 +147,7 @@ if ($this->user->isLoggedIn ()) {
 	$userPlace = 'VAR_LOGIN_FORM';
 }
 
-$this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigation ();
+$this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigator ();
 $this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
 $this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
 $this->vars['VAR_LOGIN_FORM_METHOD'] = 'post';
@@ -269,6 +269,7 @@ $this->vars['TEXT_THEME'] = $this->i10nMan->translate ('Theme');
 $this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
 $this->vars['TEXT_USER'] = $this->i10nMan->translate ('User');
+$this->vars['TEXT_NAVIGATION'] = $this->i10nMan->translate ('Navigate');
 // the skin defined vars
 foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

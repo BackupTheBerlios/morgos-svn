@@ -56,7 +56,7 @@ class UIManager {
 	private $user*/
 
 	function UIManager () {
-		$this->__construct ();
+		$this->__construct ($noUser);
 	}
 
 	function __construct () {
@@ -81,7 +81,6 @@ class UIManager {
 			$this->config->addConfigItemsFromFile ('site.config.php');
 			define ('TBL_PREFIX', 'morgos_');
 			define ('TBL_MODULES', TBL_PREFIX . 'modules');
-			define ('TBL_INTERNAL_MODULES', TBL_PREFIX . 'internal_modules');
 			define ('TBL_PAGES', TBL_PREFIX . 'userpages');
 			include_once ('core/database.class.php');
 			include_once ('core/user.class.php');
@@ -91,23 +90,11 @@ class UIManager {
 			$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
 			$this->config->getConfigItem ('/database/password', TYPE_STRING));
 			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
-			$this->user = new user ($this->genDB);
-			if ($this->user->isLoggedIn ()) {
-				$userInfo = $this->user->getUser ();			
-				$this->config->addConfigItem ('/userinterface/language', $userInfo['language'], TYPE_STRING);
-				$this->config->addConfigItem ('/userinterface/contentlanguage', $userInfo['contentlanguage'], TYPE_STRING);
-				$this->config->addConfigItem ('/userinterface/skin', $userInfo['skin'], TYPE_STRING);
-			} else {
-				$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
-				$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
-				$this->config->addConfigItem ('/userinterface/skin', 'MorgOS Default', TYPE_STRING);
-			}
 			$this->i10nMan = new languages ('languages/');
-			if (! $this->i10nMan->loadLanguage ($this->config->getConfigItem ('/userinterface/language', TYPE_STRING))) {
+			if (! $this->i10nMan->loadLanguage ('english')) {
 				trigger_error ('ERROR: Couldn\'t init internationalization.');
 			}
-
-			$this->loadSkin ($this->config->getConfigItem ('/userinterface/skin', TYPE_STRING));
+			$this->user = NULL;
 		} else {
 			header ('Location: install.php');
 		}
@@ -137,6 +124,9 @@ class UIManager {
 	 * \return class
 	*/
 	/*public*/ function &getUserClass () {
+		if ($this->user == NULL) {
+			$this->user = new user ($this->genDB);
+		}
 		return $this->user;
 	}
 	
@@ -150,6 +140,21 @@ class UIManager {
 	 * \param $authorizedAsAsdmin (bool) standard false
 	*/ 
 	/*public*/ function loadPage ($moduleName, $language = NULL) {
+		if ($this->user == NULL) {
+			$this->user = new user ($this->genDB);
+		}
+		if ($this->user->isLoggedIn ()) {
+			$userInfo = $this->user->getUser ();		
+			$this->config->addConfigItem ('/userinterface/language', $userInfo['language'], TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/contentlanguage', $userInfo['contentlanguage'], TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/skin', $userInfo['skin'], TYPE_STRING);
+		} else {
+			$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/skin', 'MorgOS Default', TYPE_STRING);
+		}
+		$this->loadSkin ($this->config->getConfigItem ('/userinterface/skin', TYPE_STRING));
+		
 		$this->module = $moduleName;
 		if (! $language) {
 			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
@@ -159,10 +164,6 @@ class UIManager {
 
 		$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_MODULES . " WHERE module='$moduleName'";
 		$query = $this->genDB->query ($SQL);
-		if ($this->genDB->num_rows ($query) == 0) {
-			$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_INTERNAL_MODULES . " WHERE module='$moduleName'";
-			$query = $this->genDB->query ($SQL);
-		}
 		if ($this->genDB->num_rows ($query) == 0) {
 			trigger_error ("ERROR: Page does not exists.");
 			return;
@@ -234,18 +235,13 @@ class UIManager {
 	*/
 	/*public*/ function getAllAvailableModules ($extended = false) {
 		$SQL = 'SELECT * FROM ' . TBL_MODULES;
+		if ($extended == false) {
+			$SQL .= " WHERE listedinadmin='no'";
+		}
 		$available = array ();
 		$result = $this->genDB->query ($SQL);
 		while ($row = $this->genDB->fetch_array ($result)) {
 			$available[$row['module']] = $row;
-		}
-		
-		if ($extended) {
-			$SQL = 'SELECT * FROM ' . TBL_INTERNAL_MODULES;
-			$result = $this->genDB->query ($SQL);
-			while ($row = $this->genDB->fetch_array ($result)) {
-				$available[$row['module']] = $row;
-			}
 		}
 		return $available;
 	}
@@ -274,19 +270,46 @@ class UIManager {
 	/** \fn getNavigator ()
 	 * Returns the HTML code for the normal navigator
 	 *
-	 * \warning On the moment all elements are showed there is no look to parent
 	 * \return (string)
 	*/
 	/*public*/ function getNavigator () {
 		$HTML = ' NAVIGATION_OPEN ()';
-		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		$SQL = "SELECT tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND needauthorized='no' AND needauthorizedasadmin='no'";
-		$query = $this->genDB->query ($SQL);
-		while ($row = $this->genDB->fetch_array ($query)) {
-			$HTML .= ' NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
-		}
+		$HTML .= $this->getNavigatorItem ('');
 		$HTML .= ' NAVIGATION_CLOSE ()';
 		$HTML = $this->parse ($HTML);
+		return $HTML;
+	}
+	
+	/** \fn getNavigatorItem ($parent)
+	 * Returns the HTML code for the one item (and all his childs)
+	 *
+	 * \param $parent (string)
+	 * \return (string)
+	*/
+	/*public*/ function getNavigatorItem ($parent) {
+		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND needauthorized='no' AND needauthorizedasadmin='no' AND parent='$parent'";
+		$query = $this->genDB->query ($SQL);
+		$HTML = NULL;
+		while ($item = $this->genDB->fetch_array ($query)) {
+			if ($item['place'] != 0) {
+				$childs = $this->getNavigatorItem ($item['module']);
+				$item['childs'] = $childs;
+				$navigation[] = $item;
+			}
+		}
+		foreach ($navigation as $key => $data) {
+			$name[$key]  = $data['name'];
+			$place[$key] = $data['place'];
+		}
+		array_multisort ($place, SORT_ASC, $name, SORT_ASC, $navigation);
+		foreach ($navigation as $item) {
+			if ($item['childs'] != NULL) {
+				$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
+			} else {
+				$HTML .= ' NAVIGATION_ITEM_WITHOUT_CHILDS ('.$item['name'].', index.php?module='.$item['module'].')';
+			}
+		}		
 		return $HTML;
 	}
 	
@@ -313,16 +336,18 @@ class UIManager {
 		$this->genDB->query ($SQL);
 	}
 	
-	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $isInternal = false)
+	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $listedInAdmin = true, $parent = NULL)
 	 * adds a module,
 	 *
 	 * \param $module (string)
 	 * \param $needAuthorize (bool)
 	 * \param $needAuthorizeAsAdmin (bool)
-	 * \param $isInternal (bool) if true (standard false) the user don't see this page
+	 * \param $place (int) the place in the navigator, if 0 is not listed
+	 * \param $listedInAdmin (bool) if this needs to be listed in the admin
+	 * \param $parent (string) the parent module, if NULL it is the root (multiple roots are possible)
 	 * \return (bool) 
 	*/
-	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $isInternal = false) {
+	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $listedInAdmin = true, $parent = NULL) {
 		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
 			return false;
 		} else {
@@ -336,12 +361,18 @@ class UIManager {
 			} else {
 				$needAuthorizeAsAdmin = 'no';
 			}
-			if ($isInternal == true) {
-				$SQL = "INSERT into " . TBL_INTERNAL_MODULES;
+			if ($listedInAdmin == true) {
+				$listedInAdmin = 'yes';
 			} else {
-				$SQL = "INSERT into " . TBL_MODULES;
+				$listedInAdmin = 'no';
 			}
-			$SQL .= " (module,needauthorized,needauthorizedasadmin) VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin')";
+			if (! is_integer ($place)) {
+				trigger_error ("ERROR: Place is not an integer");
+				return;
+			}			
+			$SQL = "INSERT INTO " . TBL_MODULES;
+			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, parent)";
+			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$parent')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;
@@ -465,27 +496,51 @@ class UIManager {
 		$this->running = $running;
 	}
 
-	/** \fn getUserNavigation ()
-	 * return HTML for the usernavigation.
+	/** \fn getUserNavigator ()
+	 * Returns the HTML code for the user navigator
 	 *
 	 * \return (string)
 	*/
-	/*public*/ function getUserNavigation () {
+	/*public*/ function getUserNavigator () {
 		$HTML = ' USER_NAVIGATION_OPEN ()';
+		$HTML .= $this->getUserNavigatorItem ('');
+		$HTML .= ' USER_NAVIGATION_CLOSE ()';
+		$HTML = $this->parse ($HTML);
+		return $HTML;
+	}
+	
+	/** \fn getUserNavigatorItem ($parent)
+	 * Returns the HTML code for the one item (and all his childs)
+	 *
+	 * \param $parent (string)
+	 * \return (string)
+	*/
+	/*public*/ function getUserNavigatorItem ($parent) {
 		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		$SQL = "SELECT tm.*, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language'";
+		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent, tm.needauthorized, tm.needauthorizedasadmin FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND parent='$parent'";
 		$query = $this->genDB->query ($SQL);
-		while ($row = $this->genDB->fetch_array ($query)) {
-			// do this not with SQL => get some unexpected results
-			if ($row['needauthorized'] == 'yes') {
-				$HTML .= ' USER_NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
-			} elseif (($row['needauthorizedasadmin'] == 'yes') and ($this->user->isAdmin ())) {
-				$HTML .= ' USER_NAVIGATION_ITEM ('.$row['name'].', index.php?module='.$row['module'].')';
+		$HTML = NULL;
+		while ($item = $this->genDB->fetch_array ($query)) {
+			if ($item['place'] != 0) {
+				if ((strtolower ($item['needauthorized']) == 'yes') or (strtolower ($item['needauthorizedasadmin']) == 'yes') && ($this->user->isAdmin ())) {
+					$childs = $this->getNavigatorItem ($item['module']);
+					$item['childs'] = $childs;
+					$navigation[] = $item;
+				}
 			}
 		}
-		$HTML .= ' USER_NAVIGATION_CLOSE ()';
-		$HTML = ' BOX (TEXT_USER, ' . $HTML . ')';
-		$HTML = $this->parse ($HTML);
+		foreach ($navigation as $key => $data) {
+			$name[$key]  = $data['name'];
+			$place[$key] = $data['place'];
+		}
+		array_multisort ($place, SORT_ASC, $name, SORT_ASC, $navigation);
+		foreach ($navigation as $item) {
+			if ($item['childs'] != NULL) {
+				$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
+			} else {
+				$HTML .= ' NAVIGATION_ITEM_WITHOUT_CHILDS ('.$item['name'].', index.php?module='.$item['module'].')';
+			}
+		}		
 		return $HTML;
 	}
 	
