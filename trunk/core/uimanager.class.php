@@ -236,7 +236,7 @@ class UIManager {
 	/*public*/ function getAllAvailableModules ($extended = false) {
 		$SQL = 'SELECT * FROM ' . TBL_MODULES;
 		if ($extended == false) {
-			$SQL .= " WHERE listedinadmin='no'";
+			$SQL .= " WHERE listedinadmin='yes'";
 		}
 		$available = array ();
 		$result = $this->genDB->query ($SQL);
@@ -702,6 +702,61 @@ class UIManager {
 			$available[] = $page['language'];
 		}
 		return $available;
+	}
+	
+	/*private*/ function getModuleAdminHTMLItem ($parent) {
+		$SQL = "SELECT * FROM " . TBL_MODULES . " WHERE parent='$parent'";
+		$query = $this->genDB->query ($SQL);
+		$pages .= ' VAR_ADMIN_MODULES_OPEN';
+		while ($module = $this->genDB->fetch_array ($query)) {
+			if ($module['needauthorized'] == 'yes') {
+				$authorizedOnly = ' ADMIN_MODULES_FORM_NEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
+			} else {
+				$authorizedOnly = ' ADMIN_MODULES_FORM_NONEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
+			}
+			$authorizedOnly = $this->parse ($authorizedOnly);
+			
+			if ($module['needauthorizedasadmin'] == 'yes') {
+				$adminOnly = ' ADMIN_MODULES_FORM_ADMIN_ONLY (ADMIN_ONLY' . $module['module'] .')';
+			} else {
+				$adminOnly = ' ADMIN_MODULES_FORM_NOT_ADMIN_ONLY (ADMIN_ONLY' . $module['module'] .')';
+			}
+			$adminOnly = $this->parse ($adminOnly);
+			
+			$languages = $this->getAllAvailableLanguagesFromModule ($module['module']);
+			$textLang = $this->parse (' ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES (LANGUAGE_'.$module['module'] .')');
+			foreach ($languages as $language) {
+				$textLang .= $this->parse (' ADMIN_MODULES_FORM_ITEM_AVAILABLE_LANGUAGES ('. $language .')');
+			}
+			$textLang .= $this->parse (' ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES ()');
+			$submitName = 'VIEW_PAGE' . $module['module'];
+			$addPage = 'ADD_PAGE' . $module['module'];
+			$deletePage = 'DELETE_PAGE' . $module['module'];
+			$deleteModule = 'DELETE_MODULE' . $module['module'];
+			$editPage = 'EDIT_PAGE' . $module['module'];
+			$placeUp = 'PLACE_UP'. $module['module'];
+			$placeDown = 'PLACE_DOWN'. $module['module'];
+			if (strtolower ($module['listedinadmin']) == 'yes') {
+				if ($module['place'] != 0) {
+					$childs = $this->parse ($this->getModuleAdminHTMLItem ($module['module']));
+					$parent = $this->parse (' SELECT (test)');
+					foreach ($this->getAllAvailableModules () as $name) {
+						$parent .= $this->parse (' OPTION ('.$name['module'].')' . "\n");
+					}
+					$parent .= $this->parse (' CLOSESELECT ()');
+					$pages .= ' ADMIN_MODULES_ITEM_INNAVIGATOR ('.$module['module'] . ', ' . $authorizedOnly .', ' . $adminOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .', '. $editPage .', ' . $childs . ','. $parent .')';
+				} else {
+					$pages .= ' ADMIN_MODULES_ITEM_NOTINNAVIGATOR ('.$module['module'] . ', ' . $authorizedOnly .', ' . $adminOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .', '. $editPage . ')';
+				}
+			};
+		}
+		$pages .= ' VAR_ADMIN_MODULES_CLOSE';
+		return $pages;
+	}
+	
+	/*private*/ function getModuleAdminHTML () {
+		$HTML = $this->getModuleAdminHTMLItem ('');
+		return $this->parse ($HTML);
 	}
 	
 	/** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)

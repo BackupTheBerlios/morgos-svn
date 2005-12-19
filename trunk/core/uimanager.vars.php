@@ -43,37 +43,7 @@ $this->vars['VAR_ADMIN_NAVIGATION'] = $this->getAdminNavigator ();
 $this->vars['VAR_ADMIN_LINK_INDEX'] = 'admin.php';
 $this->vars['VAR_ADMIN_LINK_GENERAL'] = 'admin.php?module=general';
 
-$pages = ' VAR_ADMIN_MODULES_OPEN';
-foreach ($this->getAllAvailableModules (false) as $module) {
-	if ($module['needauthorized'] == 'yes') {
-		$authorizedOnly = ' ADMIN_MODULES_FORM_NEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
-	} else {
-		$authorizedOnly = ' ADMIN_MODULES_FORM_NONEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
-	}
-	$authorizedOnly = $this->parse ($authorizedOnly);
-	
-	if ($module['needauthorizedasadmin'] == 'yes') {
-		$adminOnly = ' ADMIN_MODULES_FORM_ADMIN_ONLY (ADMIN_ONLY' . $module['module'] .')';
-	} else {
-		$adminOnly = ' ADMIN_MODULES_FORM_NOT_ADMIN_ONLY (ADMIN_ONLY' . $module['module'] .')';
-	}
-	$adminOnly = $this->parse ($adminOnly);
-	
-	$languages = $this->getAllAvailableLanguagesFromModule ($module['module']);
-	$textLang = $this->parse (' ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES (LANGUAGE_'.$module['module'] .')');
-	foreach ($languages as $language) {
-		$textLang .= $this->parse (' ADMIN_MODULES_FORM_ITEM_AVAILABLE_LANGUAGES ('. $language .')');
-	}
-	$textLang .= $this->parse (' ADMIN_MODULES_FORM_CLOSE_AVAILABLE_LANGUAGES ()');
-	$submitName = 'VIEW_PAGE' . $module['module'];
-	$addPage = 'ADD_PAGE' . $module['module'];
-	$deletePage = 'DELETE_PAGE' . $module['module'];
-	$deleteModule = 'DELETE_MODULE' . $module['module'];
-	$editPage = 'EDIT_PAGE' . $module['module'];
-	$pages .= ' ADMIN_MODULES_ITEM ('.$module['module'] . ', ' . $authorizedOnly .', ' . $adminOnly .', '. $textLang . ', '. $submitName .', ' . $addPage .', ' . $deletePage .', ' . $deleteModule .', '. $editPage . ')';
-}
-$pages .= ' VAR_ADMIN_MODULES_CLOSE';
-$this->vars['VAR_ADMIN_MODULES'] = $pages;
+$this->vars['VAR_ADMIN_MODULES'] = $this->getModuleAdminHTML ();
 
 $this->vars['VAR_ADMIN_LINK_DATABASE'] = 'admin.php?module=database';
 $this->vars['VAR_ADMIN_LINK_PAGES'] = 'admin.php?module=pages';

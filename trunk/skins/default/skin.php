@@ -21,7 +21,7 @@ $skin['general']['maxversion'] = '0.1';
 $skin['general']['minversion'] = '0.1';
 
 $skin['variable']['license'] = "Copyright &copy; 2005 MorgOS";
-$skin['variable']['admin_modules_open'] = "<table border='1'><tr><td>TEXT_ADMIN_MODULES_NAME</td><td>TEXT_ADMIN_MODULES_AUTHORIZED_ONLY</td><td>TEXT_ADMIN_MODULES_ADMIN_ONLY</td><td>TEXT_ADMIN_MODULES_LANGUAGES</td><td>TEXT_ADMIN_MODULES_VISIT</td><td>TEXT_ADD_PAGE</td><td>TEXT_EDIT_PAGE</td><td>TEXT_DELETE_PAGE</td><td>TEXT_DELETE_MODULE</td>";
+$skin['variable']['admin_modules_open'] = "<table border='1'><!--<tr><td>TEXT_ADMIN_MODULES_NAME</td><td>TEXT_ADMIN_MODULES_AUTHORIZED_ONLY</td><td>TEXT_ADMIN_MODULES_ADMIN_ONLY</td><td>TEXT_ADMIN_MODULES_LANGUAGES</td><td>TEXT_ADMIN_MODULES_VISIT</td><td>TEXT_ADD_PAGE</td><td>TEXT_EDIT_PAGE</td><td>TEXT_DELETE_PAGE</td><td>TEXT_DELETE_MODULE</td><td>TEXT_PARENT</td>-->";
 $skin['variable']['admin_modules_close'] = "</table>";
 $skin['variable']['var_skin_default_notices'] = "VAR_ERRORS VAR_WARNINGS VAR_NOTICES VAR_DEBUGGING";
 $skin['variable']['var_login_form'] = 
@@ -58,7 +58,8 @@ $skin['functions']['user_navigation_open'] = "<ul class='makeMenu'>";
 $skin['functions']['user_navigation_close'] = "</ul>";
 $skin['functions']['user_navigation_item_with_childs'] = "<li><a href='LINK'>TEXT &gt;</a><ul> CHILDS</ul></li> \n";
 $skin['functions']['user_navigation_item_without_childs'] = "<li><a href='LINK'>TEXT</a></li> \n";
-$skin['functions']['admin_modules_item'] = "<tr><td>NAME</td><td>AUTHORIZED_ONLY</td><td>ADMIN_ONLY</td><td>LANGUAGE</td><td> INPUT (submit, NSUBMIT, TEXT_ADMIN_MODULES_VIEW_PAGE)</td><td> INPUT (submit, ADDPAGE, TEXT_ADMIN_MODULES_ADD_PAGE)</td><td> INPUT (submit, EDITPAGE, TEXT_EDIT_PAGE)</td><td> INPUT (submit, DELETEPAGE, TEXT_ADMIN_MODULES_DELETE_PAGE)</td><td> INPUT (submit, DELETEMODULE, TEXT_ADMIN_MODULES_DELETE_MODULE)</td></tr>";
+$skin['functions']['admin_modules_item_innavigator'] = "<tr><td>NAME</td><td>AUTHORIZED_ONLY</td><td>ADMIN_ONLY</td><td>LANGUAGE</td><td> INPUT (submit, NSUBMIT, TEXT_ADMIN_MODULES_VIEW_PAGE)</td><td> INPUT (submit, ADDPAGE, TEXT_ADMIN_MODULES_ADD_PAGE)</td><td> INPUT (submit, EDITPAGE, TEXT_EDIT_PAGE)</td><td> INPUT (submit, DELETEPAGE, TEXT_ADMIN_MODULES_DELETE_PAGE)</td><td> INPUT (submit, DELETEMODULE, TEXT_ADMIN_MODULES_DELETE_MODULE)</td><td>PARENT</td><tr><td colspan='9'>TEXT__CHI_LDS</td></tr><tr><td colspan='9'><div style='margin-left: 5em;'>CHILDS</div></td></tr></tr>";
+$skin['functions']['admin_modules_item_notinnavigator'] = "<tr><td>NAME</td><td>AUTHORIZED_ONLY</td><td>ADMIN_ONLY</td><td>LANGUAGE</td><td> INPUT (submit, NSUBMIT, TEXT_ADMIN_MODULES_VIEW_PAGE)</td><td> INPUT (submit, ADDPAGE, TEXT_ADMIN_MODULES_ADD_PAGE)</td><td> INPUT (submit, EDITPAGE, TEXT_EDIT_PAGE)</td><td> INPUT (submit, DELETEPAGE, TEXT_ADMIN_MODULES_DELETE_PAGE)</td><td> INPUT (submit, DELETEMODULE, TEXT_ADMIN_MODULES_DELETE_MODULE)</td></tr>";
 $skin['functions']['admin_modules_form_needauthorize'] = "<input name='NAME'  CHECKED type='checkbox' />";
 $skin['functions']['admin_modules_form_noneedauthorize'] = "<input name='NAME' type='checkbox' />";
 $skin['functions']['admin_modules_form_admin_only'] = "<input name='NAME'  CHECKED type='checkbox' />";
