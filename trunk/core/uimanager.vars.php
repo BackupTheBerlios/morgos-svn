@@ -183,6 +183,7 @@ foreach ($this->getAllSupportedSkins () as $askin) {
 }
 $themeOption .= ' VAR_CLOSE_THEME_OPTION';
 $this->vars['VAR_THEME_OPTION'] = $this->parse ($themeOption);
+$this->vars['VAR_ADMIN_USERS_ADMIN'] = $this->getUserAdminHTML ();
 
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');

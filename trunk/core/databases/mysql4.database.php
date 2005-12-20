@@ -47,7 +47,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 		$this->connection = mysql_connect ($host, $user, $password);
 		if ($this->connection == false) {
 			trigger_error ($this->error (), E_USER_NOTICE);
-			trigger_error ('Couldn\'t connect with database', E_USER_ERROR);
+			trigger_error ('ERROR: Couldn\'t connect with database', E_USER_ERROR);
 		} else {
 			return true;
 		}
@@ -59,7 +59,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 			return true;
 		} else {
 			trigger_error ($this->error (), E_USER_NOTICE);
-			trigger_error ('Couldn\'t open database', E_USER_ERROR);
+			trigger_error ('ERROR: Couldn\'t open database', E_USER_ERROR);
 		}
 	}
 
@@ -69,18 +69,17 @@ class MySQLDatabase /*implements iDatabase*/ {
 
 	/*public*/ function query ( $sql,  $fatal = true) {
 		if (! isset ($this->connection)) {
-			trigger_error ('No Database connection', E_USER_WARNING);
+			trigger_error ('ERROR: No Database connection', E_USER_WARNING);
 		} else {
 			$sql = $this->sql2mysql ($sql);
 			$result = mysql_query ($sql, $this->connection);
 			if ($result == false) {
-				echo $sql;
 				if ($fatal == true) {
 					trigger_error ($this->error (), E_USER_NOTICE);
-					trigger_error ('Query not executed', E_USER_ERROR);
+					trigger_error ('ERROR: Query not executed', E_USER_ERROR);
 				} else {
 					trigger_error ($this->error (), E_USER_NOTICE);					
-					trigger_error ('Query not executed', E_USER_WARNING);
+					trigger_error ('ERROR: Query not executed', E_USER_WARNING);
 				}
 			} else {
 				return $result;
@@ -120,7 +119,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 	}
 	
 	/*private*/ function error () {
-		return mysql_errno () . ': ' . mysql_error () . ' ';
+		return 'ERROR: ' . mysql_errno () . ': ' . mysql_error () . ' ';
 	}
 	
 	/*private*/ function list_tables ( $DBName) {

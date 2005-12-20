@@ -60,4 +60,7 @@ $this->functions['contentlanguage_option_selected'] = array ('name' => 'CONTENTL
 $this->functions['theme_option'] = array ('name' => 'THEME_OPTION', 'params' => array ('THEME'));
 $this->functions['theme_option_selected'] = array ('name' => 'THEME_OPTION_SELECTED', 'params' => array ('THEME'));
 $this->functions['box'] = array ('name' => 'BOX', 'params' => array ('TITLE', 'CONTENT'));
+$this->functions['admin_user_isadmin'] = array ('name' => 'ADMIN_USER_ISADMIN', 'params' => array ('USERNAME'));
+$this->functions['admin_user_isnotadmin'] = array ('name' => 'ADMIN_USER_ISNOTADMIN', 'params' => array ('USERNAME'));
+$this->functions['admin_user'] = array ('name' => 'ADMIN_USER', 'params' => array ('USERNAME', 'EMAIL', 'ISADMIN'));
 ?>

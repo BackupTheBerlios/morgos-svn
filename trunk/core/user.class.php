@@ -25,6 +25,7 @@ define ('TBL_USERS', TBL_PREFIX . 'users');
 /** \class user
  * class that take care of the main user system
  * \todo make login safer (max 10 logins, wait one second, password min 6 characters, ...)
+ * \bug insertUser queries to much 2 + number of settings, should be 2 or maybe 3
  *
  * \author Sam Heijens
  * \author Nathan Samson
@@ -94,7 +95,7 @@ class user {
 		return true;
 	}
 	
-	function insertUser ($username, $email, $password, $isAdmin) {
+	function insertUser ($username, $email, $password, $isAdmin, $settings = array ()) {
 		if ($isAdmin) {
 			$isAdmin = 'yes';
 		} else {
@@ -105,12 +106,17 @@ class user {
 		$password = md5 ($password);
 		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE username='$username'");
 		$row = $this->genDB->fetch_array ($result);
-		$usernameDB = $row['username'];
+		$usernameDB = $row['username'];
 		if ($this->genDB->num_rows ($result) != 0) {
 			trigger_error ('ERROR: User already exists');
 			return false;
 		} else  {
 			$this->genDB->query ("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
+			foreach ($settings as $setting => $value) {
+				$setting = addslashes ($setting);
+				$value = addslashes ($value);
+				$this->genDB->query ($SQL = "UPDATE " . TBL_USERS . " set $setting='$value' WHERE username='$username'");
+			}
 			return true;
 		}
 	}
@@ -121,10 +127,14 @@ class user {
 		}
 		$username = addslashes ($username);
 		$query = $this->genDB->query ("SELECT * FROM ".TBL_USERS." WHERE username='$username'");
-		return $this->genDB->fetch_array($query);
+		if ($this->genDB->num_rows ($query) == 0) {
+			return false;
+		} else {
+			return $this->genDB->fetch_array ($query);
+		}
 	}
 	
-	function updateUser ($username, $newEmail, $newSettings, $newPass = NULL) {
+	function updateUser ($username, $newEmail, $newSettings = array (), $newPass = NULL) {
 		$username = addslashes ($username);
 		$newEmail = addslashes ($newEmail);
 		$SQL = "UPDATE ".TBL_USERS." SET  email='$newEmail'";
@@ -144,6 +154,36 @@ class user {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	function getAllUsers ($sortOn = 'username', $asc = true) {
+		if ($asc) {
+			$asc = 'asc';
+		} else {
+			$asc = 'desc';
+		}
+		$SQL = "SELECT * FROM " . TBL_USERS . " ORDER BY '" . $sortOn . "' $asc";
+		$result = $this->genDB->query ($SQL);
+		$allUsers = array ();
+		while ($user = $this->genDB->fetch_array ($result)) {
+			$allUsers[] = $user;
+		}
+		return $allUsers;
+	}
+	
+	function setAdmin ($username, $newIsAdmin) {
+		if ($newIsAdmin) {
+			$newIsAdmin = 'yes';
+		} else {
+			$newIsAdmin = 'no';
+		}
+		$SQL = "UPDATE " . TBL_USERS . " set isadmin='$newIsAdmin' WHERE username='$username'";
+		$result = $this->genDB->query ($SQL);
+		if ($result !== false) {
+			return true;
+		} else {
+			return true;
 		}
 	}
 }

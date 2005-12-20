@@ -122,10 +122,25 @@ switch ($module) {
 		$UI->addPage ($_POST['module'], $_POST['language'], $_POST['name'], $_POST['content']);
 		header ('Location: admin.php?module=pages');
 		break;
+	case 'saveusers':
+		$UI->user = new user ($UI->genDB);
+		foreach ($UI->user->getAllUsers () as $user) {
+			if (array_key_exists ($user['username'], $_POST)) {
+				$UI->user->setAdmin ($user['username'], true);
+			} else {
+				$UI->user->setAdmin ($user['username'], false);
+			}
+		}
+		
+		$UI->setRunning (true);
+		trigger_error ('NOTICE: User options are saved');
+		$UI->setRunning (false);
+		$UI->loadPage ('admin/users', NULL, true, true);
+		break;
 	case 'index':
-		// do the default one
-	default:
 		$UI->loadPage ('admin/index', NULL, true, true);
+	default:
+		header ('Location: http://127.0.0.1'); // Nice joke for hackers
 		break;
 }
 ?>

@@ -5,6 +5,7 @@ CREATE TABLE %prefix%modules (
   listedinadmin varchar(3) DEFAULT 'yes',
   parent varchar (50) default '',
   place int (10),
+  placeinadmin int (10),
   PRIMARY KEY (module)
 );
 

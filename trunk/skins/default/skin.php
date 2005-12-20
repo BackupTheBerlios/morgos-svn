@@ -38,6 +38,8 @@ $skin['variable']['var_open_contentlanguage_option'] = "<select name='VAR_CONTEN
 $skin['variable']['var_close_contentlanguage_option'] = "</select>";
 $skin['variable']['var_open_theme_option'] = "<select name='VAR_THEME_OPTION_NAME'>";
 $skin['variable']['var_close_theme_option'] = "</select>";
+$skin['variable']['VAR_USER_ADMIN_OPEN'] = "<table border='1'><tr><td>TEXT_USERNAME</td><td>TEXT_EMAIL</td><td>TEXT_ISADMIN</td></tr>";
+$skin['variable']['VAR_USER_ADMIN_CLOSE'] = "</table>";
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";
@@ -78,4 +80,7 @@ $skin['functions']['contentlanguage_option_selected'] = " <option SELECTED value
 $skin['functions']['theme_option'] = " <option value='THEME'>THEME</option>";
 $skin['functions']['theme_option_selected'] = " <option SELECTED value='THEME'>THEME</option>";
 $skin['functions']['box'] = "<div class='box'><h3>TITLE</h3>CONTENT</div>";
+$skin['functions']['admin_user_isadmin'] = "<input name='USERNAME' type='checkbox' CHECKED />";
+$skin['functions']['admin_user_isnotadmin'] = "<input name='USERNAME' type='checkbox' />";
+$skin['functions']['admin_user'] = "<tr><td>USERNAME</td><td>EMAIL</td><td>ISADMIN</td></tr>";
 ?>

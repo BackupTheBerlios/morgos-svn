@@ -44,11 +44,13 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
  * \bug lowest tested version is 4.1.0
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
- * \bug Register is in the navigator
- * \bug if you change your theme, it is only changed whe, you reload
- * \todo change the dir in __construct to install in place of DOT install
- * \todo check all input wich is outputted and from user (htmlspecialchars)
- * \todo check for UBB hacks (when UBB is implmented)
+ * \bug a skin/extension can see all data (even admin data), this is a security bug AND cost rendering time
+ * \todo 0.1 change the dir in __construct to install in place of DOT install
+ * \todo 0.1 check all input wich is outputted and from user (htmlspecialchars)
+ * \todo 0.1 check for UBB hacks (when UBB is implmented)
+ * \todo 0.? installer: check for an already existing installation (both site.config.php and database)
+ * \todo 0.? installer: better error handling (now if an error occurs the script stops, and you need ro rerun the whole wizard again)
+ * \todo ? ?? split this class in 2 parts: one part handling modules / pages and one handling output to user / errorhandling ...
 */
 class UIManager {
 	/*private $genDB;
@@ -336,18 +338,19 @@ class UIManager {
 		$this->genDB->query ($SQL);
 	}
 	
-	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $listedInAdmin = true, $parent = NULL)
+	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL)
 	 * adds a module,
 	 *
 	 * \param $module (string)
 	 * \param $needAuthorize (bool)
 	 * \param $needAuthorizeAsAdmin (bool)
 	 * \param $place (int) the place in the navigator, if 0 is not listed
+	 * \param $placeinadmin (int) the place in the admin navigator, if 0 is not listed
 	 * \param $listedInAdmin (bool) if this needs to be listed in the admin
 	 * \param $parent (string) the parent module, if NULL it is the root (multiple roots are possible)
 	 * \return (bool) 
 	*/
-	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $listedInAdmin = true, $parent = NULL) {
+	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL) {
 		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
 			return false;
 		} else {
@@ -369,10 +372,14 @@ class UIManager {
 			if (! is_integer ($place)) {
 				trigger_error ("ERROR: Place is not an integer");
 				return;
-			}			
+			}		
+			if (! is_integer ($placeinadmin)) {
+				trigger_error ("ERROR: Place is not an integer");
+				return;
+			}	
 			$SQL = "INSERT INTO " . TBL_MODULES;
-			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, parent)";
-			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$parent')";
+			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, placeinadmin, parent)";
+			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$placeinadmin', '$parent')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;
@@ -395,6 +402,10 @@ class UIManager {
 		if (array_key_exists ($language, $this->getAllAvailableLanguagesFromModule ($language))) {
 			return false;
 		} else {
+			$module = addslashes ($module);
+			$language = addslashes ($language);
+			$name = addslashes ($name);
+			$content = addslashes ($content);
 			$SQL = "INSERT into " . TBL_PAGES . " (module,name,language,content) VALUES ('$module','$name','$language','$content')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
@@ -674,18 +685,32 @@ class UIManager {
 	 * \return (string)
 	*/
 	/*private*/ function getAdminNavigator () {
-		$pages = array ();
-		$pages[] = array ('name' => 'TEXT_ADMIN_INDEX', 'link' => 'VAR_ADMIN_LINK_INDEX');
-		$pages[] = array ('name' => 'TEXT_ADMIN_GENERAL', 'link' => 'VAR_ADMIN_LINK_GENERAL');
-		$pages[] = array ('name' => 'TEXT_ADMIN_DATABASE', 'link' => 'VAR_ADMIN_LINK_DATABASE');
-		$pages[] = array ('name' => 'TEXT_ADMIN_PAGES', 'link' => 'VAR_ADMIN_LINK_PAGES');
+		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+		$SQL = "SELECT tm.placeinadmin, tm.module, tp.name FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND needauthorizedasadmin='yes'";
+		$query = $this->genDB->query ($SQL);
 		$HTML = 'ADMIN_NAVIGATION_OPEN ()';
-		foreach ($pages as $page) {
-			if ($page['link'] != 'TO IMPLEMENT') {
-				$HTML .= ' ADMIN_NAVIGATION_ITEM (' .$page['name']. ', ' .$page['link']. ')';
+		while ($page = $this->genDB->fetch_array ($query)) {
+			if ($page['placeinadmin'] != 0) {
+				$pages[] = $page;
+				
 			}
 		}
-		$HTML .= ' ADMIN_NAVIGATION_CLOSE ()';
+		foreach ($pages as $key => $data) {
+			$name[$key]  = $data['name'];
+			$place[$key] = $data['placeinadmin'];
+		}
+		array_multisort ($place, SORT_ASC, $name, SORT_ASC, $pages);
+		foreach ($pages as $item) {
+			$pos = strpos ($item['module'], '/');
+			if ($pos !== false)  {
+				$moduleName = substr ($item['module'], $pos + 1);
+			} else {
+				$moduleName = $item['module'];
+			}
+			$link = './admin.php?module=' . $moduleName;
+			$HTML .= ' ADMIN_NAVIGATION_ITEM (' .$item['name']. ', ' .$link. ')';
+		}
+		$HTML .= ' ADMIN_NAVIGATION_CLOSE ()';		
 		return $HTML;
 	}
 	
@@ -756,6 +781,24 @@ class UIManager {
 	
 	/*private*/ function getModuleAdminHTML () {
 		$HTML = $this->getModuleAdminHTMLItem ('');
+		return $this->parse ($HTML);
+	}
+	
+	/*private*/ function getUserAdminHTML () {
+		$HTML = " FORM ( admin.php?module=saveusers, post)";
+		$HTML .= " VAR_USER_ADMIN_OPEN";
+		foreach ($this->user->getAllUsers () as $user) {
+			if (strtolower ($user['isadmin']) == 'yes') {
+				$isAdmin = " ADMIN_USER_ISADMIN ($user[username])";
+			} else {
+				$isAdmin = " ADMIN_USER_ISNOTADMIN ($user[username])";
+			}
+			$isAdmin = $this->parse ($isAdmin);
+			$HTML .= " ADMIN_USER ($user[username], $user[email], $isAdmin)";
+		}
+		$HTML .= " VAR_USER_ADMIN_CLOSE";
+		$HTML .= " INPUT (submit, VAR_SUBMIT_USERS_NAME, TEXT_SUBMIT_USERS)";
+		$HTML .= " CLOSEFORM ()";
 		return $this->parse ($HTML);
 	}
 	

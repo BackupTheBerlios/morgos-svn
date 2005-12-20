@@ -23,20 +23,18 @@
 		}
 	}
 
-	$UI->addModule ('index', false, false, 1);
-	$UI->addModule ('register', false, false, 0);
-	
-	$UI->addModule ('usersettings', true, false, 1, false);
-	$UI->addModule ('logout', true, false , 3, false);
-	
-	$UI->addModule ('viewadmin', false, true, 2, false);
-	$UI->addModule ('admin/database', false, true, 0, false);
-	$UI->addModule ('admin/users', false, true, 0, false);
-	$UI->addModule ('admin/news', false, true, 0, false);
-	$UI->addModule ('admin/general', false, true, 0, false);
-	$UI->addModule ('admin/addpage', false, true, 0, false);
-	$UI->addModule ('admin/index', false, true, 0, false);
-	$UI->addModule ('admin/pages', false, true, 0, false);
+	$UI->addModule ('index'         , false, false, 1, 0, false);
+	$UI->addModule ('register'      , false, false, 0, 0, false);
+	$UI->addModule ('usersettings'  , true , false, 1, 0, false);
+	$UI->addModule ('logout'        , true , false, 3, 0, false);
+	$UI->addModule ('viewadmin'     , false, true , 2, 0, false);
+	$UI->addModule ('admin/addpage' , false, true , 0, 0, false);
+	$UI->addModule ('admin/index'   , false, true , 0, 1, false);
+	$UI->addModule ('admin/general' , false, true , 0, 2, false);
+	$UI->addModule ('admin/database', false, true , 0, 3, false);
+	$UI->addModule ('admin/users'   , false, true , 0, 4, false);
+	$UI->addModule ('admin/news'    , false, true , 0, 5, false);
+	$UI->addModule ('admin/pages'   , false, true , 0, 6, false);
 	$i10nMan = &$UI->i10nMan;
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {
@@ -46,12 +44,21 @@
 		$UI->addPage ('logout', $language, $i10nMan->translate ('Logout'), '');
 		$UI->addPage ('register', $language, $i10nMan->translate ('Register'), '');
 		$UI->addPage ('usersettings', $language, $i10nMan->translate ('Change your settings'), '');
+		$UI->addPage ('admin/database', $language, $i10nMan->translate ('Database'), 'Here you change all database settings. WARNING: It is recommend that you don\'t change options here, only if you KNOW what you are doing.');
+		$UI->addPage ('admin/users', $language, $i10nMan->translate ('Users'), 'Here you can view all users. Ban them or remove them, make them admin or rempve from the admin.');
+		$UI->addPage ('admin/news', $language, $i10nMan->translate ('News'), 'Here you can view all news items. You can edit, remove or add items.');
+		$UI->addPage ('admin/general', $language, $i10nMan->translate ('General'), 'Here you edit all general options.');
+		$UI->addPage ('admin/addpage', $language, $i10nMan->translate ('Add page'), 'Add a page.');
+		$UI->addPage ('admin/index', $language, $i10nMan->translate ('Admin home'), 'This is the admin, here you edit all what you want.');
+		$UI->addPage ('admin/pages', $language, $i10nMan->translate ('Pages'), 'Here you can admin all pages.');
 	}
 
 	$username = addslashes ($_POST['admin-account']);
 	$email = addslashes ($_POST['admin-email']);
 	$password = addslashes ($_POST['admin-password']);
-	$UI->user->insertUser ($username, $email, $password, true);
+	$UI->user = new user ($UI->genDB);
+	$settings = array ('language' => 'english', 'skin' => 'MorgOS Default', 'contentlanguage' => 'english');
+	$UI->user->insertUser ($username, $email, $password, true, $settings);
 ?>
 <?php echo '<?xml version="1.0"?>' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
