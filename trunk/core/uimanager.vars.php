@@ -116,7 +116,11 @@ if ($this->user->isLoggedIn ()) {
 } else {
 	$userPlace = 'VAR_LOGIN_FORM';
 }
-
+if ($_GET['module'] == 'login' && $this->user->isLoggedIn () == false) {
+	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '<a href="index.php?module=forgotpass"> TEXT_FORGOT_PASSWORD</a>';
+} else {
+	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '';
+}
 $this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigator ();
 $this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
 $this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
@@ -184,7 +188,11 @@ foreach ($this->getAllSupportedSkins () as $askin) {
 $themeOption .= ' VAR_CLOSE_THEME_OPTION';
 $this->vars['VAR_THEME_OPTION'] = $this->parse ($themeOption);
 $this->vars['VAR_ADMIN_USERS_ADMIN'] = $this->getUserAdminHTML ();
-
+$this->vars['VAR_LOSTPASSFORM_ACTION'] = './index.php?module=sendpass';
+$this->vars['VAR_LOSTPASSFORM_METHOD'] = 'post';
+$this->vars['VAR_LOSTPASS_NAMENAME'] = 'username';
+$this->vars['VAR_LOSTPASS_EMAILNAME'] = 'useremail';
+$this->vars['VAR_LOSTPASS_SUBMITNAME'] = 'submit';
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
 $this->vars['TEXT_ADMIN_INDEX'] = $this->i10nMan->translate ('Admin Home');
@@ -226,6 +234,7 @@ $this->vars['TEXT_SAVE_MANUALLY'] = $this->i10nMan->translate ('Save the folowin
 $this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
 $this->vars['TEXT_PASSWORD1'] = $this->i10nMan->translate ('Password');
 $this->vars['TEXT_PASSWORD2'] = $this->i10nMan->translate ('Password (repeat)');
+$this->vars['TEXT_NAME_OR_EMAIL'] = $this->i10nMan->translate ('Fill in your username OR your email.');
 $this->vars['TEXT_NAME'] = $this->i10nMan->translate ('Username');
 $this->vars['TEXT_EMAIL'] = $this->i10nMan->translate ('E-Mail address');
 $this->vars['TEXT_PASSWORD'] = $this->i10nMan->translate ('Password');
@@ -241,6 +250,8 @@ $this->vars['TEXT_CONTENT'] = $this->i10nMan->translate ('Content');
 $this->vars['TEXT_LOGIN'] = $this->i10nMan->translate ('Login');
 $this->vars['TEXT_USER'] = $this->i10nMan->translate ('User');
 $this->vars['TEXT_NAVIGATION'] = $this->i10nMan->translate ('Navigate');
+$this->vars['TEXT_FORGOT_PASSWORD'] = $this->i10nMan->translate ('Forgotten your password?');
+$this->vars['TEXT_LOSTPASS_SUBMIT'] = $this->i10nMan->translate ('Send new password');
 // the skin defined vars
 foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

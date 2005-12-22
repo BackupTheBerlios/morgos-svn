@@ -57,7 +57,11 @@ if ($choosenModule == 'viewadmin') {
 		$UI->setRunning (false);
 		$UI->loadPage ('register');
 	} else {
-		$success = $user->insertUser ($_POST['account-name'], $_POST['account-email'], $_POST['account-password'], false);
+		$settings = array ();
+		$settings['language'] = 'english';
+		$settings['contentlanguage'] = 'english';
+		$settings['skin'] = 'MorgOS Default';
+		$success = $user->insertUser ($_POST['account-name'], $_POST['account-email'], $_POST['account-password'], false, $settings);
 		if ($success) {
 			trigger_error ('NOTICE: You are registerd now.');
 			$UI->setRunning (false);
@@ -92,6 +96,55 @@ if ($choosenModule == 'viewadmin') {
 		$UI->setRunning (false);
 		$UI->loadPage ('usersettings');
 	}
+} elseif ($choosenModule == 'sendpass') {
+	$UI->setrunning (true);
+	if (!empty ($_POST['username']) && empty ($_POST['useremail'])) {
+		$UI->user = new user ($UI->genDB);
+		$newp = $UI->user->changePasswordFromUsername ($_POST['username']);
+		if ($newp !== false) {
+			$user = $UI->user->getUser ($_POST['username']);
+			$useremail = $user['email'];
+			$username = $_POST['username'];
+			$sitename = $UI->config->getConfigItem ('/general/sitename', TYPE_STRING);
+			$subject = $UI->i10nMan->translate ('Your new requested password on: %1', $sitename);
+			$message = $UI->i10nMan->translate ("Dear %1 \nYou have requested your login-detail on %2.\n Your login-name: %1\n Your new Password %3.\n It is recommendend that you change your password after logging in.", $username, $sitename, $newp);
+			$from = 'noreplay';
+			mail ($useremail, $subject, $message, "FROM: $from \r\n");
+			trigger_error ('NOTICE: Your password is send to your email adress');
+			$UI->setrunning (false);
+			$UI->loadPage ('index');
+		} else {
+			$UI->setrunning (false);
+			$UI->loadPage ('forgotpass');
+		}
+	} elseif (!empty ($_POST['useremail']) && empty ($_POST['username'])) {
+		$UI->user = new user ($UI->genDB);
+		$newp = $UI->user->changePasswordFromEmail ($_POST['useremail']);
+		if ($newp !== false) {
+			$useremail = $_POST['useremail'];
+			$user = $UI->user->getUserFromEmail ($_POST['useremail']);
+			$username = $user['username'];
+			$sitename = $UI->config->getConfigItem ('/general/sitename', TYPE_STRING);
+			$subject = $UI->i10nMan->translate ('Your new requested password on: %1', $sitename);
+			$message = $UI->i10nMan->translate ("Dear %1 \nYou have requested your login-detail on %2.\n Your login-name: %1\n Your new Password %3.\n It is recommendend that you change your password after logging in.", $username, $sitename, $newp);
+			$from = 'noreply';
+			mail ($useremail, $subject, $message, "FROM: $from \r\n");
+			trigger_error ('NOTICE: Your password is send to your email adress');
+			$UI->setrunning (false);
+			$UI->loadPage ('index');
+		} else {
+			$UI->setrunning (false);
+			$UI->loadPage ('forgotpass');
+		}
+	} elseif (empty ($_POST['username']) && empty ($_POST['useremail'])) {
+		trigger_error ('ERROR: You need to fill your username OR your email in.');
+		$UI->setrunning (false);
+		$UI->loadPage ('forgotpass');
+	} else {
+		trigger_error ('ERROR: You need to fill your username OR your email in.');
+		$UI->setrunning (false);
+		$UI->loadPage ('forgotpass');
+	}	
 } elseif (array_key_exists ($choosenModule, $availableModules)) {
 	$UI->loadPage ($choosenModule);
 }  else {

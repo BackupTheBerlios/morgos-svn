@@ -48,6 +48,8 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \todo 0.1 change the dir in __construct to install in place of DOT install
  * \todo 0.1 check all input wich is outputted and from user (htmlspecialchars)
  * \todo 0.1 check for UBB hacks (when UBB is implmented)
+ * \todo 0.1 redo the admin page
+ * \todo 0.1 default skin: changes in Admin (PAGE_CONTENT)
  * \todo 0.? installer: check for an already existing installation (both site.config.php and database)
  * \todo 0.? installer: better error handling (now if an error occurs the script stops, and you need ro rerun the whole wizard again)
  * \todo ? ?? split this class in 2 parts: one part handling modules / pages and one handling output to user / errorhandling ...

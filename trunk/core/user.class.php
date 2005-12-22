@@ -104,11 +104,11 @@ class user {
 		$username = addslashes ($username);
 		$email = addslashes ($email);
 		$password = md5 ($password);
-		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE username='$username'");
-		$row = $this->genDB->fetch_array ($result);
-		$usernameDB = $row['username'];
-		if ($this->genDB->num_rows ($result) != 0) {
+		if ($this->userExist ($username) == true) {
 			trigger_error ('ERROR: User already exists');
+			return false;
+		} elseif ($this->emailExist ($email)) {
+			trigger_error ('ERROR: Email already exists');
 			return false;
 		} else  {
 			$this->genDB->query ("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
@@ -127,6 +127,16 @@ class user {
 		}
 		$username = addslashes ($username);
 		$query = $this->genDB->query ("SELECT * FROM ".TBL_USERS." WHERE username='$username'");
+		if ($this->genDB->num_rows ($query) == 0) {
+			return false;
+		} else {
+			return $this->genDB->fetch_array ($query);
+		}
+	}
+	
+	function getUserFromEmail ($useremail) {
+		$useremail = addslashes ($useremail);
+		$query = $this->genDB->query ("SELECT * FROM ".TBL_USERS." WHERE email='$useremail'");
 		if ($this->genDB->num_rows ($query) == 0) {
 			return false;
 		} else {
@@ -184,6 +194,66 @@ class user {
 			return true;
 		} else {
 			return true;
+		}
+	}
+	
+	function userExist ($username) {
+		$username = addslashes ($username);
+		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE username='$username'");
+		if ($this->genDB->num_rows ($result) != 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	function emailExist ($email) {
+		$email = addslashes ($email);
+		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE email='$email'");
+		if ($this->genDB->num_rows ($result) != 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	function randomPassword () {
+		$newPassword = NULL;
+		mt_srand (microtime() * 1000000); // needed for PHP < 4.2
+		while (strlen ($newPassword) <= 7) {
+			$i = chr (mt_rand (47,123));
+			if (ereg ("^[a-zA-Z0-9]$", $i)) {
+				$newPassword .= $i;
+			}
+		}
+		return $newPassword;
+	}
+	
+	function changePasswordFromUsername ($username) {
+		$username = addslashes ($username);
+		if ($this->userExist ($username)) {
+			$newPassword = $this->randomPassword ();
+			$passwordInDB = md5 ($newPassword);
+			$SQL = "UPDATE " . TBL_USERS . " set password='$passwordInDB' WHERE username='$username'";
+			$query = $this->genDB->query ($SQL);
+			return $newPassword;
+		} else {
+			trigger_error ('ERROR: User doesn\'t exists');
+			return false;
+		}
+	}
+	
+	function changePasswordFromEmail ($email) {
+		$email = addslashes ($email);
+		if ($this->emailExist ($email)) {
+			$newPassword = $this->randomPassword ();
+			$passwordInDB = md5 ($newPassword);
+			$SQL = "UPDATE " . TBL_USERS . " set password='$passwordInDB' WHERE email='$email'";
+			$query = $this->genDB->query ($SQL);
+			return $newPassword;
+		} else {
+			trigger_error ('ERROR: Email doesn\'t exists');
+			return false;
 		}
 	}
 }

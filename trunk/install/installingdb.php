@@ -23,18 +23,19 @@
 		}
 	}
 
-	$UI->addModule ('index'         , false, false, 1, 0, false);
+	$UI->addModule ('index'         , false, false, 1, 0, true);
 	$UI->addModule ('register'      , false, false, 0, 0, false);
+	$UI->addModule ('forgotpass'    , false, false, 0, 0, false);
 	$UI->addModule ('usersettings'  , true , false, 1, 0, false);
 	$UI->addModule ('logout'        , true , false, 3, 0, false);
 	$UI->addModule ('viewadmin'     , false, true , 2, 0, false);
-	$UI->addModule ('admin/addpage' , false, true , 0, 0, false);
-	$UI->addModule ('admin/index'   , false, true , 0, 1, false);
-	$UI->addModule ('admin/general' , false, true , 0, 2, false);
-	$UI->addModule ('admin/database', false, true , 0, 3, false);
-	$UI->addModule ('admin/users'   , false, true , 0, 4, false);
-	$UI->addModule ('admin/news'    , false, true , 0, 5, false);
-	$UI->addModule ('admin/pages'   , false, true , 0, 6, false);
+	$UI->addModule ('admin/addpage' , false, true , 0, 0, true);
+	$UI->addModule ('admin/index'   , false, true , 0, 1, true);
+	$UI->addModule ('admin/general' , false, true , 0, 2, true);
+	$UI->addModule ('admin/database', false, true , 0, 3, true);
+	$UI->addModule ('admin/users'   , false, true , 0, 4, true);
+	$UI->addModule ('admin/news'    , false, true , 0, 5, true);
+	$UI->addModule ('admin/pages'   , false, true , 0, 6, true);
 	$i10nMan = &$UI->i10nMan;
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {

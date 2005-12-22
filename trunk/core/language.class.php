@@ -102,15 +102,26 @@ class languages {
 	
 	/** \fn translate ($string)
 	 * It translates a string in the loaded language
+	 * \warning if an extra param links to another before it this doesn't work
 	 *
 	 * \param $string (string) the string you want to translate
 	 * \return (string) the same tring but normally in another language, if it couldn't be translated the original string will be returned
 	*/
 	/*public*/ function translate ($string) {
 		if (array_key_exists ($string, $this->stringTree)) {
-			return $this->stringTree[$string];
+			$translated = $this->stringTree[$string];
+			for ($i = 1; $i <= func_num_args (); $i++) {
+				$arg = func_get_arg ($i);
+				$translated = str_replace ('%' . $i, $arg, $translated);
+			}
+			return $translated;
 		} else {
-			return $string;
+			$translated = $string;
+			for ($i = 1; $i < func_num_args (); $i++) {
+				$arg = func_get_arg ($i);
+				$translated = str_replace ('%' . $i, $arg, $translated);
+			}
+			return $translated;
 		}
 	}
 }
