@@ -60,7 +60,7 @@ class UIManager {
 	private $user*/
 
 	function UIManager () {
-		$this->__construct ($noUser);
+		$this->__construct ();
 	}
 
 	function __construct () {

@@ -160,4 +160,8 @@ function versionCompare ($version1, $version2, $operator) {
 			return false;
 	}
 }
+
+if (! defined ('E_STRICT')) {
+	define ('E_STRICT', 2048);
+}
 ?>

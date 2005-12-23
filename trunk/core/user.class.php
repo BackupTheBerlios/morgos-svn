@@ -92,6 +92,7 @@ class user {
 		unset ($_SESSION['username']);
 		unset ($_SESSION['pass']);
 		unset ($_SESSION['ip']);
+		session_destroy (); // ?this is required? (only for (?some?) version of PHP 4)
 		return true;
 	}
 	
