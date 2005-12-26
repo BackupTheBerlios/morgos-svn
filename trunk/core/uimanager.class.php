@@ -43,7 +43,6 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \version 0.1svn
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
  * \bug lowest tested version is 4.1.0
- * \bug If a module is deleted but not all pages are deleted this pages are not deleted
  * \bug a skin/extension can see all data (even admin data), this is a security bug AND cost rendering time
  * \todo 0.1 change the dir in __construct to install in place of DOT install
  * \todo 0.1 check all input wich is outputted and from user (htmlspecialchars)
@@ -52,7 +51,6 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \todo 0.1 default skin: changes in Admin (PAGE_CONTENT)
  * \todo 0.? installer: check for an already existing installation (both site.config.php and database)
  * \todo 0.? installer: better error handling (now if an error occurs the script stops, and you need ro rerun the whole wizard again)
- * \todo ? ?? split this class in 2 parts: one part handling modules / pages and one handling output to user / errorhandling ...
 */
 class UIManager {
 	/*private $genDB;
@@ -89,12 +87,14 @@ class UIManager {
 			include_once ('core/database.class.php');
 			include_once ('core/user.class.php');
 			include_once ('core/language.class.php');
+			include_once ('core/pages.class.php');
 			$DBManager = new genericDatabase ();
 			$this->genDB = $DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 			$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
 			$this->config->getConfigItem ('/database/password', TYPE_STRING));
 			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
 			$this->i10nMan = new languages ('languages/');
+			$this->pages = new pages ($this->genDB);
 			if (! $this->i10nMan->loadLanguage ('english')) {
 				trigger_error ('ERROR: Couldn\'t init internationalization.');
 			}
@@ -132,6 +132,15 @@ class UIManager {
 			$this->user = new user ($this->genDB);
 		}
 		return $this->user;
+	}
+	
+	/** \fn getPagesClass ()
+	 * returns the pagesclass
+	 *
+	 * \return class
+	*/
+	/*public*/ function &getPagesClass () {
+		return $this->pages;
 	}
 	
 	/** \fn loadPage ($moduleName, $language,$authorized = false,$authorizedAsAdmin = false) 
@@ -231,46 +240,6 @@ class UIManager {
 		}
 	}
 	
-	/** \fn getAllAvailableModules ($extended = false)
-	 * Returns an array of all available modules
-	 *
-	 * \param $extended (bool) search to in INTERNAL_MODULES (default is false)
-	 * \return (string array)
-	*/
-	/*public*/ function getAllAvailableModules ($extended = false) {
-		$SQL = 'SELECT * FROM ' . TBL_MODULES;
-		if ($extended == false) {
-			$SQL .= " WHERE listedinadmin='yes'";
-		}
-		$available = array ();
-		$result = $this->genDB->query ($SQL);
-		while ($row = $this->genDB->fetch_array ($result)) {
-			$available[$row['module']] = $row;
-		}
-		return $available;
-	}
-	
-	/** \fn getModuleContent ($module = NULL, $language = NULL)
-	 * Returns the content of a module
-	 *
-	 * \param $module (string) the name of the module, is standard the loaded module
-	 * \param $language (string) the language is standard the contentlanguage
-	 * \return (string)
-	*/
-	/*public*/ function getModuleContent ($module = NULL, $language = NULL) {
-		if (! $module) {
-			$module = $this->module;
-		}
-		if (! $language) {
-			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		}
-		$SQL = 'SELECT content FROM ' . TBL_PAGES . ' WHERE module=\''. $module . '\'  AND language=\'' . $language . '\'';
-		$result = $this->genDB->query ($SQL);
-		while ($row = $this->genDB->fetch_array ($result)) {
-			return $row['content'];
-		}
-	}
-	
 	/** \fn getNavigator ()
 	 * Returns the HTML code for the normal navigator
 	 *
@@ -315,176 +284,6 @@ class UIManager {
 			}
 		}		
 		return $HTML;
-	}
-	
-	/** \fn changeSettingsModule ($module, $needAuthorize, $adminOnly)
-	 * changes the settings for a module
-	 *
-	 * \param $module (string)
-	 * \param $needAuthorize (bool) 
-	 * \param $adminOnly (bool) 
-	*/
-	/*public*/ function changeSettingsModule ($module, $needAuthorize, $adminOnly) {
-		if ($needAuthorize) {
-			$needAuthorize = 'yes';
-		} else {
-			$needAuthorize = 'no';
-		}
-		
-		if ($adminOnly) {
-			$adminOnly = 'yes';
-		} else {
-			$adminOnly = 'no';
-		}
-		$SQL = "UPDATE " . TBL_MODULES . " SET needauthorized='$needAuthorize', needauthorizedasadmin='$adminOnly' WHERE module='$module'";
-		$this->genDB->query ($SQL);
-	}
-	
-	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL)
-	 * adds a module,
-	 *
-	 * \param $module (string)
-	 * \param $needAuthorize (bool)
-	 * \param $needAuthorizeAsAdmin (bool)
-	 * \param $place (int) the place in the navigator, if 0 is not listed
-	 * \param $placeinadmin (int) the place in the admin navigator, if 0 is not listed
-	 * \param $listedInAdmin (bool) if this needs to be listed in the admin
-	 * \param $parent (string) the parent module, if NULL it is the root (multiple roots are possible)
-	 * \return (bool) 
-	*/
-	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL) {
-		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
-			return false;
-		} else {
-			if ($needAuthorize) {
-				$needAuthorize = 'yes';
-			} else {
-				$needAuthorize = 'no';
-			}
-			if ($needAuthorizeAsAdmin) {
-				$needAuthorizeAsAdmin = 'yes';
-			} else {
-				$needAuthorizeAsAdmin = 'no';
-			}
-			if ($listedInAdmin == true) {
-				$listedInAdmin = 'yes';
-			} else {
-				$listedInAdmin = 'no';
-			}
-			if (! is_integer ($place)) {
-				trigger_error ("ERROR: Place is not an integer");
-				return;
-			}		
-			if (! is_integer ($placeinadmin)) {
-				trigger_error ("ERROR: Place is not an integer");
-				return;
-			}	
-			$SQL = "INSERT INTO " . TBL_MODULES;
-			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, placeinadmin, parent)";
-			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$placeinadmin', '$parent')";
-			$result = $this->genDB->query ($SQL);
-			if ($result !== false) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-	
-	/** \fn addPage ($module, $language, $name, $content)
-	 * adds a page
-	 *
-	 * \param $module (string)
-	 * \param $language (string)
-	 * \param $name (string)
-	 * \param $content (string)
-	 * \return (bool) 
-	*/
-	/*public*/ function addPage ($module, $language, $name, $content) {
-		if (array_key_exists ($language, $this->getAllAvailableLanguagesFromModule ($language))) {
-			return false;
-		} else {
-			$module = addslashes ($module);
-			$language = addslashes ($language);
-			$name = addslashes ($name);
-			$content = addslashes ($content);
-			$SQL = "INSERT into " . TBL_PAGES . " (module,name,language,content) VALUES ('$module','$name','$language','$content')";
-			$result = $this->genDB->query ($SQL);
-			if ($result !== false) {
-				return true;
-			} else {
-				trigger_error ('INTERNAL_ERROR: Can\'t add page');
-				return false;
-			}
-		}
-	}
-	
-	/** \fn deletePage ($module, $language)
-	 * deletes a page
-	*/
-	/*pulbic*/ function deletePage ($module, $language) {
-		$SQL = "DELETE FROM " . TBL_PAGES . " WHERE module='$module' AND language='$language'";
-		$result = $this->genDB->query ($SQL);
-		if ($result !== false) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	/** \fn deleteModule ($module)
-	 * deletes a module
-	*/
-	/*pulbic*/ function deleteModule ($module) {
-		$SQL = "DELETE FROM " . TBL_MODULES . " WHERE module='$module'"; 
-		$result = $this->genDB->query ($SQL);
-		if ($result !== false) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/** \fn getPageInfo ($module = NULL, $language = NULL)
-	 * get all the page info
-	 *
-	 * \param $module (string) the module standard is the current loaded module
-	 * \param $language (string) the language standard is the current contentlanguagez
-	 * \return (bool | string array)
-	*/
-	/*pulbic*/ function getPageInfo ($module = NULL, $language = NULL) {
-		if (! $module) {
-			$module = $this->module;
-		}
-		if (! $language) {
-			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		}
-		$SQL = "SELECT * FROM " . TBL_PAGES . " WHERE module='$module' AND language='$language'"; 
-		$result = $this->genDB->query ($SQL);
-		if ($result !== false) {
-			return $this->genDB->fetch_array ($result);
-		} else {
-			return false;
-		}
-	}
-	
-	/** \fn editPage ($module, $language, $newName, $newContent)
-	 * edit the page
-	 *
-	 * \param $module (string)
-	 * \param $language (string)
-	 * \param $newName (string)
-	 * \param $newContent (string)
-	 * \return (bool)
-	*/
-	/*pulbic*/ function editPage ($module, $language, $newName, $newContent) {
-		$SQL = "UPDATE " . TBL_PAGES . " SET name='$newName', content='$newContent' WHERE module='$module' AND language='$language'"; 
-		$result = $this->genDB->query ($SQL);
-		if ($result !== false) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 		
 	/** \fn appendNotice ($notice, $type, $die)
@@ -640,7 +439,7 @@ class UIManager {
 	/*private*/ function replaceAllVars (&$string) {
 		include_once ('core/uimanager.vars.php');
 		foreach ($this->vars as $varName => $varValue) {
-			$string = str_replace ($varName, $varValue, $string);
+			$string = str_replace ('&' . $varName . ';', $varValue, $string);
 		}
 	}
 	
@@ -716,21 +515,6 @@ class UIManager {
 		return $HTML;
 	}
 	
-	/** \fn getAllAvailableLanguagesFromModule ($module)
-	 * Returns the language of all pages with a specified module
-	 *
-	 * \return (string array)
-	*/
-	/*private*/ function getAllAvailableLanguagesFromModule ($module) {
-		$available = array ();
-		$SQL = "SELECT language FROM ". TBL_PAGES . " WHERE module='$module'";
-		$result = $this->genDB->query ($SQL);
-		while ($page = $this->genDB->fetch_array ($result)) {
-			$available[] = $page['language'];
-		}
-		return $available;
-	}
-	
 	/*private*/ function getModuleAdminHTMLItem ($parent) {
 		$SQL = "SELECT * FROM " . TBL_MODULES . " WHERE parent='$parent'";
 		$query = $this->genDB->query ($SQL);
@@ -750,7 +534,7 @@ class UIManager {
 			}
 			$adminOnly = $this->parse ($adminOnly);
 			
-			$languages = $this->getAllAvailableLanguagesFromModule ($module['module']);
+			$languages = $this->pages->getAllAvailableLanguagesFromModule ($module['module']);
 			$textLang = $this->parse (' ADMIN_MODULES_FORM_OPEN_AVAILABLE_LANGUAGES (LANGUAGE_'.$module['module'] .')');
 			foreach ($languages as $language) {
 				$textLang .= $this->parse (' ADMIN_MODULES_FORM_ITEM_AVAILABLE_LANGUAGES ('. $language .')');
@@ -767,7 +551,7 @@ class UIManager {
 				if ($module['place'] != 0) {
 					$childs = $this->parse ($this->getModuleAdminHTMLItem ($module['module']));
 					$parent = $this->parse (' SELECT (test)');
-					foreach ($this->getAllAvailableModules () as $name) {
+					foreach ($this->pages->getAllAvailableModules () as $name) {
 						$parent .= $this->parse (' OPTION ('.$name['module'].')' . "\n");
 					}
 					$parent .= $this->parse (' CLOSESELECT ()');

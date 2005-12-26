@@ -23,23 +23,23 @@ $skin['general']['minversion'] = '0.1';
 $skin['variable']['license'] = "Copyright &copy; 2005 MorgOS";
 $skin['variable']['admin_modules_open'] = "<table border='1'><!--<tr><td>TEXT_ADMIN_MODULES_NAME</td><td>TEXT_ADMIN_MODULES_AUTHORIZED_ONLY</td><td>TEXT_ADMIN_MODULES_ADMIN_ONLY</td><td>TEXT_ADMIN_MODULES_LANGUAGES</td><td>TEXT_ADMIN_MODULES_VISIT</td><td>TEXT_ADD_PAGE</td><td>TEXT_EDIT_PAGE</td><td>TEXT_DELETE_PAGE</td><td>TEXT_DELETE_MODULE</td><td>TEXT_PARENT</td>-->";
 $skin['variable']['admin_modules_close'] = "</table>";
-$skin['variable']['var_skin_default_notices'] = "VAR_ERRORS VAR_WARNINGS VAR_NOTICES VAR_DEBUGGING";
+$skin['variable']['var_skin_default_notices'] = "&VAR_ERRORS; &VAR_WARNINGS; &VAR_NOTICES; &VAR_DEBUGGING;";
 $skin['variable']['var_login_form'] = 
-	" BOX ( TEXT_USER ,<div id='loginform'> FORM (VAR_LOGIN_FORM_ACTION, VAR_LOGIN_FORM_METHOD) 
-		TEXT_LOGIN:  INPUT (text, VAR_LOGIN_FORM_LOGINNAME_NAME, VAR_LOGIN_FORM_LOGINNAME_VALUE) <br />
-		TEXT_PASSWORD:  INPUT (password, VAR_LOGIN_FORM_PASSWORD_NAME) <br />
-		<a href='VAR_TO_REGISTER_USER'>TEXT_REGISTER</a> <br />
-		VAR_FORGOT_PASSWORD_LINK <br />
-		INPUT (submit, VAR_LOGIN_FORM_SUBMIT_NAME, TEXT_LOGIN) 
+	" BOX ( &TEXT_USER; ,<div id='loginform'> FORM (&VAR_LOGIN_FORM_ACTION;, &VAR_LOGIN_FORM_METHOD;) 
+		&TEXT_LOGIN;:  INPUT (text, &VAR_LOGIN_FORM_LOGINNAME_NAME;, &VAR_LOGIN_FORM_LOGINNAME_VALUE;) <br />
+		&TEXT_PASSWORD;:  INPUT (password, &VAR_LOGIN_FORM_PASSWORD_NAME;) <br />
+		<a href='&VAR_TO_REGISTER_USER;'>&TEXT_REGISTER;</a> <br />
+		&VAR_FORGOT_PASSWORD_LINK; <br />
+		INPUT (submit, &VAR_LOGIN_FORM_SUBMIT_NAME;, &TEXT_LOGIN;) 
 		CLOSEFORM ()
 	</div>)";
-$skin['variable']['var_open_language_option'] = "<select name='VAR_LANGUAGE_OPTION_NAME'>";
+$skin['variable']['var_open_language_option'] = "<select name='&VAR_LANGUAGE_OPTION_NAME;'>";
 $skin['variable']['var_close_language_option'] = "</select>";
-$skin['variable']['var_open_contentlanguage_option'] = "<select name='VAR_CONTENTLANGUAGE_OPTION_NAME'>";
+$skin['variable']['var_open_contentlanguage_option'] = "<select name='&VAR_CONTENTLANGUAGE_OPTION_NAME;'>";
 $skin['variable']['var_close_contentlanguage_option'] = "</select>";
-$skin['variable']['var_open_theme_option'] = "<select name='VAR_THEME_OPTION_NAME'>";
+$skin['variable']['var_open_theme_option'] = "<select name='&VAR_THEME_OPTION_NAME;'>";
 $skin['variable']['var_close_theme_option'] = "</select>";
-$skin['variable']['VAR_USER_ADMIN_OPEN'] = "<table border='1'><tr><td>TEXT_USERNAME</td><td>TEXT_EMAIL</td><td>TEXT_ISADMIN</td></tr>";
+$skin['variable']['VAR_USER_ADMIN_OPEN'] = "<table border='1'><tr><td>&TEXT_USERNAME;</td><td>&TEXT_EMAIL;</td><td>&TEXT_ISADMIN;</td></tr>";
 $skin['variable']['VAR_USER_ADMIN_CLOSE'] = "</table>";
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";

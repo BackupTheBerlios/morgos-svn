@@ -115,7 +115,7 @@ class config {
 	/*public*/ function addConfigItemsFromFile ($file,$globalType = -1,$globalPassword = NULL) {
 		include ($file);
 		foreach ($config as $path => $item) {
-			if ($globalType = TYPE_GUESS) {
+			if ($globalType == TYPE_GUESS) {
 				$type = $this->isType ($item);
 			} else {
 				$type = $globalType;

@@ -87,8 +87,9 @@ if (! isset ($saveOutput)) {
 $this->vars['VAR_SAVE_CONFIG_MANUALLY'] = $saveOutput;
 $this->vars['VAR_ADMIN_SAVECONFIG_FORM_ACTION'] = './admin';
 $this->vars['VAR_ADMIN_SAVECONFIG_FORM_SUBMIT'] = 'submit';
-$this->vars['VAR_PAGE_CONTENT'] = $this->getModuleContent ();
-$page = $this->getPageInfo ();
+$contentLanguage = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+$this->vars['VAR_PAGE_CONTENT'] = $this->pages->getModuleContent ($this->module, $contentLanguage);
+$page = $this->pages->getPageInfo ($this->module, $contentLanguage);
 $this->vars['VAR_PAGE_TITLE'] = $page['name'];
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
@@ -112,12 +113,12 @@ foreach ($this->notices as $val) {
 	}*/
 }
 if ($this->user->isLoggedIn ()) {
-	$userPlace = 'VAR_USER_NAVIGATION';
+	$userPlace = '&VAR_USER_NAVIGATION;';
 } else {
-	$userPlace = 'VAR_LOGIN_FORM';
+	$userPlace = '&VAR_LOGIN_FORM;';
 }
 if ($_GET['module'] == 'login' && $this->user->isLoggedIn () == false) {
-	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '<a href="index.php?module=forgotpass"> TEXT_FORGOT_PASSWORD</a>';
+	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '<a href="index.php?module=forgotpass">&TEXT_FORGOT_PASSWORD;</a>';
 } else {
 	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '';
 }
@@ -155,7 +156,7 @@ $this->vars['VAR_CLOSE_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable'
 $this->vars['VAR_OPEN_THEME_OPTION'] = $this->parse ($skin['variable']['var_open_theme_option']);
 $this->vars['VAR_CLOSE_THEME_OPTION'] = $this->parse ($skin['variable']['var_close_theme_option']);
 
-$languageOption = ' VAR_OPEN_LANGUAGE_OPTION';
+$languageOption = ' &VAR_OPEN_LANGUAGE_OPTION;';
 foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
 	if ($language == $this->config->getConfigItem ('/userinterface/language', TYPE_STRING)) {
 		$languageOption .= ' LANGUAGE_OPTION_SELECTED (' . $language . ')';
@@ -163,10 +164,10 @@ foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
 		$languageOption .= ' LANGUAGE_OPTION (' . $language . ')';
 	}
 }
-$languageOption .= ' VAR_CLOSE_LANGUAGE_OPTION';
+$languageOption .= ' &VAR_CLOSE_LANGUAGE_OPTION;';
 $this->vars['VAR_LANGUAGE_OPTION'] = $this->parse ($languageOption);
 
-$contentLanguageOption = ' VAR_OPEN_CONTENTLANGUAGE_OPTION';
+$contentLanguageOption = ' &VAR_OPEN_CONTENTLANGUAGE_OPTION;';
 foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
 	if ($language == $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING)) {
 		$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION_SELECTED (' . $language . ')';
@@ -174,10 +175,10 @@ foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
 		$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION (' . $language . ')';
 	}
 }
-$contentLanguageOption .= ' VAR_CLOSE_CONTENTLANGUAGE_OPTION';
+$contentLanguageOption .= ' &VAR_CLOSE_CONTENTLANGUAGE_OPTION;';
 $this->vars['VAR_CONTENTLANGUAGE_OPTION'] = $this->parse ($contentLanguageOption);
 
-$themeOption = ' VAR_OPEN_THEME_OPTION';
+$themeOption = ' &VAR_OPEN_THEME_OPTION;';
 foreach ($this->getAllSupportedSkins () as $askin) {
 	if ($askin == $this->config->getConfigItem ('/userinterface/skin', TYPE_STRING)) {
 		$themeOption .= ' THEME_OPTION_SELECTED (' . $askin . ')';
@@ -185,7 +186,7 @@ foreach ($this->getAllSupportedSkins () as $askin) {
 		$themeOption .= ' THEME_OPTION (' . $askin . ')';
 	}
 }
-$themeOption .= ' VAR_CLOSE_THEME_OPTION';
+$themeOption .= ' &VAR_CLOSE_THEME_OPTION;';
 $this->vars['VAR_THEME_OPTION'] = $this->parse ($themeOption);
 $this->vars['VAR_ADMIN_USERS_ADMIN'] = $this->getUserAdminHTML ();
 $this->vars['VAR_LOSTPASSFORM_ACTION'] = './index.php?module=sendpass';

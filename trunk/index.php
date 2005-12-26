@@ -24,7 +24,7 @@ if (array_key_exists ('module', $_GET)) {
 	$choosenModule = 'index';
 }
 
-$availableModules = $UI->getAllAvailableModules (true);
+$availableModules = $UI->getPagesClass ()->getAllAvailableModules (true);
 if ($choosenModule == 'viewadmin') {
 	header ('Location: admin.php');
 } elseif ($choosenModule == 'login') {
@@ -108,7 +108,7 @@ if ($choosenModule == 'viewadmin') {
 			$sitename = $UI->config->getConfigItem ('/general/sitename', TYPE_STRING);
 			$subject = $UI->i10nMan->translate ('Your new requested password on: %1', $sitename);
 			$message = $UI->i10nMan->translate ("Dear %1 \nYou have requested your login-detail on %2.\n Your login-name: %1\n Your new Password %3.\n It is recommendend that you change your password after logging in.", $username, $sitename, $newp);
-			$from = 'noreplay';
+			$from = 'noreply';
 			mail ($useremail, $subject, $message, "FROM: $from \r\n");
 			trigger_error ('NOTICE: Your password is send to your email adress');
 			$UI->setrunning (false);
