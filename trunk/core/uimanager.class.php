@@ -518,7 +518,7 @@ class UIManager {
 	/*private*/ function getModuleAdminHTMLItem ($parent) {
 		$SQL = "SELECT * FROM " . TBL_MODULES . " WHERE parent='$parent'";
 		$query = $this->genDB->query ($SQL);
-		$pages .= ' VAR_ADMIN_MODULES_OPEN';
+		$pages .= ' &VAR_ADMIN_MODULES_OPEN;';
 		while ($module = $this->genDB->fetch_array ($query)) {
 			if ($module['needauthorized'] == 'yes') {
 				$authorizedOnly = ' ADMIN_MODULES_FORM_NEEDAUTHORIZE (NEED_AUTHORIZE' . $module['module'] .')';
@@ -561,7 +561,7 @@ class UIManager {
 				}
 			};
 		}
-		$pages .= ' VAR_ADMIN_MODULES_CLOSE';
+		$pages .= ' &VAR_ADMIN_MODULES_CLOSE;';
 		return $pages;
 	}
 	
@@ -572,7 +572,7 @@ class UIManager {
 	
 	/*private*/ function getUserAdminHTML () {
 		$HTML = " FORM ( admin.php?module=saveusers, post)";
-		$HTML .= " VAR_USER_ADMIN_OPEN";
+		$HTML .= " &VAR_USER_ADMIN_OPEN;";
 		foreach ($this->user->getAllUsers () as $user) {
 			if (strtolower ($user['isadmin']) == 'yes') {
 				$isAdmin = " ADMIN_USER_ISADMIN ($user[username])";
@@ -582,8 +582,8 @@ class UIManager {
 			$isAdmin = $this->parse ($isAdmin);
 			$HTML .= " ADMIN_USER ($user[username], $user[email], $isAdmin)";
 		}
-		$HTML .= " VAR_USER_ADMIN_CLOSE";
-		$HTML .= " INPUT (submit, VAR_SUBMIT_USERS_NAME, TEXT_SUBMIT_USERS)";
+		$HTML .= " &VAR_USER_ADMIN_CLOSE;";
+		$HTML .= " INPUT (submit, &VAR_SUBMIT_USERS_NAME;, &TEXT_SUBMIT_USERS;)";
 		$HTML .= " CLOSEFORM ()";
 		return $this->parse ($HTML);
 	}
