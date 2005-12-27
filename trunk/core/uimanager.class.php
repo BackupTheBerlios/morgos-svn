@@ -99,6 +99,18 @@ class UIManager {
 				trigger_error ('ERROR: Couldn\'t init internationalization.');
 			}
 			$this->user = NULL;
+			$this->loadedExtensions = array ();
+			//print_r ($this->config->getConfigDir ('/extensions'));
+			foreach ($this->config->getConfigDir ('/extensions') as $extension => $load) {
+				if ($load == true) {
+					$result = $this->loadExtension (substr ($extension, strlen ('/extensions/')));
+					if ($result == false) {
+						$this->setRunning (true);
+						trigger_error ('WARNING: Couldn\'t load extension.');
+						$this->setRunning (false);
+					}
+				}
+			}
 		} else {
 			header ('Location: install.php');
 		}
@@ -592,13 +604,13 @@ class UIManager {
 	 * the error handler
 	*/
 	/*private*/ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL) {
-		$pos = strpos ($errStr, ": ");
 		if ($errNo == E_STRICT) {
 			return;
 		} elseif ($errNo != E_USER_NOTICE) {
 			$type = 'PHP';
 			$error = $errStr;
 		} else {
+			$pos = strpos ($errStr, ": ");
 			if ($pos != 0) {
 				$type = substr ($errStr, 0, $pos);
 				$error = substr ($errStr, $pos + 2);
@@ -635,12 +647,89 @@ class UIManager {
 				//trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
 		}
 		if ($this->running == false) {
+			echo $errFile . ' ' . $errLine;
 			$output = file_get_contents ("skins/default/error.html");
-			echo str_replace ("VAR_ERROR", $error, $output);
+			echo str_replace ("&VAR_ERROR;", $error, $output);
 			die ();
 		} else {
 			$this->appendNotice ($error, $type, $die);
 		}
+	}
+
+	/** \fn loadExtension ($extensionName)
+	 * Loads an extension. Returns false on failure, true on success
+	 *
+	 * \param $extensioName (string)
+	 * \return (bool)
+	*/
+	/*private*/ function loadExtension ($extensionName) {
+		$statuses = $this->getAllExtensionsStatus ();
+		if (array_key_exists ($extensionName, $statuses)) {
+			if ($statuses[$extensionName] == 'ok') {
+				$this->loadedExtensions[] = $extensionName;
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	/** \fn extensionIsLoaded ($extension)
+	 * Is an extension loaded
+	 *
+	 * \param $extension (string)
+	 * \return (bool)
+	*/
+	/*private*/ function extensionIsLoaded ($extension) {
+		if (in_array ($extension, $this->loadedExtensions)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/** \fn getAllExtensionsStatus ()
+	 * Returns an array with the status for all found extensions. The possible statusses are:
+	 *  - loaded
+	 *  - incompatible
+	 *  - missing_file
+	 *  - ok
+	*/
+	/*private*/ function getAlLExtensionsStatus () {
+		$all = array ();
+		$handler = opendir ('extensions');
+		// $files = scandir ('extensions/'); PHP5 only :( 
+		// foreach ($files as $file) PHP5 only :(
+		while (false !== ($file = readdir ($handler))) {
+			$extensionDir = 'extensions/' . $file;
+			if (is_dir ($extensionDir) and $file[0] != '.') {
+				if (file_exists ($extensionDir . '/extension.php')) {
+					$extension = array ();
+					include ($extensionDir . '/extension.php');
+					$extensionName = $extension['general']['name'];
+					$minVersion = $extension['general']['minversion'];
+					$maxVersion = $extension['general']['maxversion'];
+					if (versionCompare (MORGOS_VERSION, $minVersion, '<') && versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
+						$all[$extensionName] = 'incompatible';
+					} elseif ($this->extensionIsLoaded ($extensionName)) {
+						$all[$extensionName] = 'loaded';
+					} else {
+						$all[$extensionName] = 'ok';
+						if (array_key_exists ('required_files', $extension)) {
+							foreach ($extension['required_files'] as $reqFile) {
+								if (! file_exists ($extensionDir . $reqFile)) {
+									$all[$extensionName] = 'missing_file';
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	//	print_r ($all);
+		return $all;
 	}
 }
 ?>

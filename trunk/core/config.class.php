@@ -136,11 +136,11 @@ class config {
 	*/
 	/*public*/ function getConfigItem ( $configName,  $type = TYPE_FLEXIBLE,  $password = NULL) {
 		if ($this->exists ($configName)) {
-			if (($this->configTree[$configName]['type'] == $type) or ($type = TYPE_FLEXIBLE)) {
+			if (($this->configTree[$configName]['type'] == $type) or ($type == TYPE_FLEXIBLE)) {
 				return $this->configTree[$configName]['value'];
 			} else {
 				$value = $this->configTree[$configName]['value'];
-			 	trigger_error ('DEBUG: type is: ' . $this->valueToString ($value) . ' needs to be ' . $this->valueToString ($value));
+			 	trigger_error ('DEBUG: type is: ' . $this->typeToString ($value) . ' needs to be ' . $this->typeToString ($value));
 				trigger_error ('INTERNAL_ERROR: type is not correct');
 			}
 		} else {
@@ -176,6 +176,31 @@ class config {
 			trigger_error ('DEBUG: configname is: ' . $configName);
 			trigger_error ('INTERNAL_ERROR: configname does not exists');
 		}
+	}
+	
+	/** \fn getConfigDir ($configDir)
+	 * Get all items in a config dir
+	 *
+	 * \param $configDir (string) the config dir you want
+	*/
+	function getConfigDir ($configDir) {
+		$childs = array ();
+		if ($this->exists ($configDir)) {
+			if ($this->isDir ($configDir)) {
+				foreach ($this->configTree as $name => $item) {
+					if ($childName = strstr ($name, $configDir) and ($childName != $configDir)) {
+						$childs[$childName] = $this->getConfigItem ($name, TYPE_FLEXIBLE);
+					}
+				}
+			} else {
+				trigger_error ('DEBUG: configname is : ' . $configDir);
+				trigger_error ('INTERNAL_ERROR: configname is not a dir');
+			}
+		} else {
+			trigger_error ('DEBUG: configname is: ' . $configDir);
+			trigger_error ('INTERNAL_ERROR: configname does not exists');
+		}
+		return $childs;
 	}
 	
 	/** \fn exists ($configName)
