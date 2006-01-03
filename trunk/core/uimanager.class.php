@@ -48,7 +48,6 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \todo 0.1 check all input wich is outputted and from user (htmlspecialchars)
  * \todo 0.1 check for UBB hacks (when UBB is implmented)
  * \todo 0.1 redo the admin page
- * \todo 0.1 default skin: changes in Admin (PAGE_CONTENT)
  * \todo 0.? installer: check for an already existing installation (both site.config.php and database)
  * \todo 0.? installer: better error handling (now if an error occurs the script stops, and you need ro rerun the whole wizard again)
 */
@@ -111,6 +110,8 @@ class UIManager {
 					}
 				}
 			}
+			//var_dump ($this->loadExtension ('Hello world'));
+			//print_r ($this->loadedExtensions);
 		} else {
 			header ('Location: install.php');
 		}
@@ -211,13 +212,13 @@ class UIManager {
 		echo $this->parse ($output);
 	}
 	
-	/** \fn saveAdmin ($array, $configItems)
+	/** \fn saveAdmin ($array)
 	 * It saves site.config.php with all values.
 	 *
 	 * \param $array (mixed array) the array where the changed configItems live in
 	 * \param $configItems (string) all configItems
 	*/
-	/*public*/ function saveAdmin ($array, $configItems) {
+	/*public*/ function saveAdmin ($array) {
 		for ($i = 1; $i < func_num_args (); $i++) {
 			$arg = func_get_arg ($i);
 			if (array_key_exists ($arg, $array)) {
@@ -237,6 +238,16 @@ class UIManager {
 		$output .= '	$config[\'/database/host\'] = \'' . $this->config->getConfigItem ('/database/host', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/user\'] = \'' . $this->config->getConfigItem ('/database/user', TYPE_STRING) .'\';' . NEWLINE ;
 		$output .= '	$config[\'/database/password\'] = \'' . $this->config->getConfigItem ('/database/password', TYPE_STRING) .'\';' . NEWLINE;
+		foreach ($this->config->getConfigDir ('/extensions') as $extension => $load) {
+			if ($load == true) {
+				$load = 'true';
+			} else {
+				$load = 'false';
+			}
+			$output .= '	$config[\''.$extension .'\'] = ' . $load .';' . NEWLINE;
+			
+		}
+		$output .= '	$config[\'/extensions/WHATEVER\'] = false;' . NEWLINE;
 		$output .= '?>';
 		$fHandler = @fopen ('site.config.php', 'w');
 		if ($fHandler !== false) {
@@ -656,6 +667,34 @@ class UIManager {
 		}
 	}
 
+	/** \fn getExtensionInfo ($extensionName)
+	 * Get all info from an extension
+	 *
+	 * \param $extensionName (string) the name of the extension
+	 * \return (array)
+	*/
+	/*private*/ function getExtensionInfo ($extensionName) {
+		$statuses = $this->getAllExtensionsStatus ();
+		if (array_key_exists ($extensionName, $statuses)) {
+			$handler = opendir ('extensions');
+			// $files = scandir ('extensions/'); PHP5 only :( 
+			// foreach ($files as $file) PHP5 only :(
+			while (false !== ($file = readdir ($handler))) {
+				$extensionDir = 'extensions/' . $file;
+				if (is_dir ($extensionDir) and $file[0] != '.') {
+					if (file_exists ($extensionDir . '/extension.php')) {
+						$extension = array ();
+						include ($extensionDir . '/extension.php');
+						$extension['extension_dir'] = $extensionDir;
+						if ($extension['general']['name'] == $extensionName) {
+							return $extension;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	/** \fn loadExtension ($extensionName)
 	 * Loads an extension. Returns false on failure, true on success
 	 *
@@ -665,8 +704,17 @@ class UIManager {
 	/*private*/ function loadExtension ($extensionName) {
 		$statuses = $this->getAllExtensionsStatus ();
 		if (array_key_exists ($extensionName, $statuses)) {
+//			echo $extensionName;
 			if ($statuses[$extensionName] == 'ok') {
-				$this->loadedExtensions[] = $extensionName;
+				$extension = $this->getExtensionInfo ($extensionName);
+				//print_r ($extension);
+				if (array_key_exists ('file_to_load', $extension)) {
+					$arrayOfObjects = array ();
+					$arrayOfObjects['UI'] = $this;
+					$arrayOfObjects['genDB'] = $this->genDB;
+					$loadedExtension = include ($extension['extension_dir'] . '/' . $extension['file_to_load']);
+					$this->loadedExtensions[$extensionName] = $loadedExtension;
+				}
 				return true;
 			} else {
 				return false;
@@ -683,11 +731,50 @@ class UIManager {
 	 * \return (bool)
 	*/
 	/*private*/ function extensionIsLoaded ($extension) {
-		if (in_array ($extension, $this->loadedExtensions)) {
+		if (array_key_exists ($extension, $this->loadedExtensions)) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	/** \fn getExtensionAdminHTML ()
+	 *
+	*/
+	/*private*/ function getExtensionAdminHTML () {
+		$HTML = $this->parse (' &OPEN_EXTENSIONS_ADMIN;');
+		$statusses = $this->getAllExtensionsStatus ();
+		foreach ($statusses as $extension => $status) {
+			$extensionName = 'load' . $extension;
+			if ($status == 'loaded' || $status == 'ok') {
+				if ($this->config->getConfigitem ('/extensions/' . $extension, TYPE_BOOL) == true) {
+					$status = 'loaded';
+				} else {
+					$status = 'ok';
+				}
+			}
+			switch ($status) {
+				case 'loaded':
+					$statusHTML = " ADMIN_EXTENSION_STATUS_LOADED ($extensionName)";
+					break;
+				case 'ok':
+					$statusHTML = " ADMIN_EXTENSION_STATUS_OK ($extensionName)";
+					break;
+				case 'incompatible':
+					$statusHTML = " ADMIN_EXTENSION_STATUS_INCOMPATIBLE ($extensionName)";
+					break;
+				case 'missing_file':
+					$statusHTML = " ADMIN_EXTENSION_STATUS_MISSING_FILE ($extensionName)";
+					break;
+				default: 
+					trigger_error ('NOTICE: Unrecognized extension-status.');
+					$statusHTML = NULL;
+			}
+			$statusHTML = $this->parse ($statusHTML);
+			$HTML .= " ADMIN_EXTENSION_ITEM ($extension, $statusHTML)";
+		}
+		$HTML .= ' &CLOSE_EXTENSIONS_ADMIN;';
+		return $this->parse ($HTML);
 	}
 	
 	/** \fn getAllExtensionsStatus ()
@@ -711,15 +798,15 @@ class UIManager {
 					$extensionName = $extension['general']['name'];
 					$minVersion = $extension['general']['minversion'];
 					$maxVersion = $extension['general']['maxversion'];
-					if (versionCompare (MORGOS_VERSION, $minVersion, '<') && versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
+					if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
 						$all[$extensionName] = 'incompatible';
 					} elseif ($this->extensionIsLoaded ($extensionName)) {
 						$all[$extensionName] = 'loaded';
 					} else {
 						$all[$extensionName] = 'ok';
-						if (array_key_exists ('required_files', $extension)) {
-							foreach ($extension['required_files'] as $reqFile) {
-								if (! file_exists ($extensionDir . $reqFile)) {
+						if (array_key_exists ('required_file', $extension)) {
+							foreach ($extension['required_file'] as $reqFile) {
+								if (! file_exists ($extensionDir . '/' . $reqFile)) {
 									$all[$extensionName] = 'missing_file';
 								}
 							}
@@ -728,7 +815,7 @@ class UIManager {
 				}
 			}
 		}
-	//	print_r ($all);
+		//print_r ($all);
 		return $all;
 	}
 }

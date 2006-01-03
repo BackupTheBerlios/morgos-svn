@@ -14,6 +14,7 @@
 	$output .= '	$config[\'/database/host\'] = \'' . $_POST['database-host'] ."';" . NEWLINE;
 	$output .= '	$config[\'/database/user\'] = \'' . $_POST['database-user'] ."';" . NEWLINE ;
 	$output .= '	$config[\'/database/password\'] = \'' . $_POST['database-password'] ."';" . NEWLINE;
+	$output .= '	$config[\'/extensions/WHATEVER\'] = false;' . NEWLINE;
 	$output .= "?>";
 	$fHandler = @fopen ('site.config.php', 'w');
 	if ($fHandler !== false) {

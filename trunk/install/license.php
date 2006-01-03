@@ -13,7 +13,9 @@
 		<div>
 			<h1><?php echo $i10nMan->translate ('Install wizard MorgOS Step 1: License'); ?></h1>
 			<?php
-				echo $error;
+				if (isset ($error)) {
+					echo $error;
+				}
 			?>
 			<h2>GNU GENERAL PUBLIC LICENSE</h2>
 			<p>Version 2, June 1991</p>

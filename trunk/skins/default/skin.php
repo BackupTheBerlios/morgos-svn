@@ -41,6 +41,8 @@ $skin['variable']['var_open_theme_option'] = "<select name='&VAR_THEME_OPTION_NA
 $skin['variable']['var_close_theme_option'] = "</select>";
 $skin['variable']['VAR_USER_ADMIN_OPEN'] = "<table border='1'><tr><td>&TEXT_USERNAME;</td><td>&TEXT_EMAIL;</td><td>&TEXT_ISADMIN;</td></tr>";
 $skin['variable']['VAR_USER_ADMIN_CLOSE'] = "</table>";
+$skin['variable']['OPEN_EXTENSIONS_ADMIN'] = "FORM (&VAR_EXTENSIONS_ADMIN_ACTION;,&VAR_EXTENSIONS_ADMIN_METHOD;)<table>";
+$skin['variable']['CLOSE_EXTENSIONS_ADMIN'] = "<tr><td colspan=\"3\"> INPUT (submit, &VAR_SAVE_EXTENSIONS_SUBMIT;, &TEXT_SAVE_EXTENSIONS_SUBMIT;)</td></tr></table> CLOSEFORM ()";
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";
@@ -84,4 +86,9 @@ $skin['functions']['box'] = "<div class='box'><h3>TITLE</h3>CONTENT</div>";
 $skin['functions']['admin_user_isadmin'] = "<input name='USERNAME' type='checkbox' CHECKED />";
 $skin['functions']['admin_user_isnotadmin'] = "<input name='USERNAME' type='checkbox' />";
 $skin['functions']['admin_user'] = "<tr><td>USERNAME</td><td>EMAIL</td><td>ISADMIN</td></tr>";
+$skin['functions']['admin_extension_item'] = "<tr><td>NAME</td><td>STATUS</td></tr>";
+$skin['functions']['admin_extension_status_ok'] = "&TEXT_EXTENSION_LOAD; <input type=\"checkbox\" name=\"NAME\" />";
+$skin['functions']['admin_extension_status_loaded'] = "&TEXT_EXTENSION_LOAD; <input CHECKED type=\"checkbox\" name=\"NAME\" />";
+$skin['functions']['admin_extension_status_missing_file'] = "&TEXT_EXTENSION_MISSING_FILE;";
+$skin['functions']['admin_extension_status_incompatible'] = "&TEXT_EXTENSION_INCOMPATIBLE;";
 ?>

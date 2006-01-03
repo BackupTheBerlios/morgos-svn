@@ -88,7 +88,7 @@ $this->vars['VAR_SAVE_CONFIG_MANUALLY'] = $saveOutput;
 $this->vars['VAR_ADMIN_SAVECONFIG_FORM_ACTION'] = './admin';
 $this->vars['VAR_ADMIN_SAVECONFIG_FORM_SUBMIT'] = 'submit';
 $contentLanguage = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-$this->vars['VAR_PAGE_CONTENT'] = $this->pages->getModuleContent ($this->module, $contentLanguage);
+$this->vars['VAR_PAGE_CONTENT'] = $this->pages->getPageContent ($this->module, $contentLanguage);
 $page = $this->pages->getPageInfo ($this->module, $contentLanguage);
 $this->vars['VAR_PAGE_TITLE'] = $page['name'];
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
@@ -194,6 +194,12 @@ $this->vars['VAR_LOSTPASSFORM_METHOD'] = 'post';
 $this->vars['VAR_LOSTPASS_NAMENAME'] = 'username';
 $this->vars['VAR_LOSTPASS_EMAILNAME'] = 'useremail';
 $this->vars['VAR_LOSTPASS_SUBMITNAME'] = 'submit';
+$this->vars['VAR_EXTENSIONS_ADMIN_METHOD'] = 'post';
+$this->vars['VAR_EXTENSIONS_ADMIN_ACTION'] = './admin.php?module=saveextensions';
+$this->vars['VAR_SAVE_EXTENSIONS_SUBMIT'] = 'submit';
+$this->vars['VAR_ADMIN_EXTENSIONS_ADMIN'] = $this->getExtensionAdminHTML ();
+$this->vars['OPEN_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['OPEN_EXTENSIONS_ADMIN']);
+$this->vars['CLOSE_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['CLOSE_EXTENSIONS_ADMIN']);
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
 $this->vars['TEXT_ADMIN_INDEX'] = $this->i10nMan->translate ('Admin Home');
@@ -253,6 +259,10 @@ $this->vars['TEXT_USER'] = $this->i10nMan->translate ('User');
 $this->vars['TEXT_NAVIGATION'] = $this->i10nMan->translate ('Navigate');
 $this->vars['TEXT_FORGOT_PASSWORD'] = $this->i10nMan->translate ('Forgotten your password?');
 $this->vars['TEXT_LOSTPASS_SUBMIT'] = $this->i10nMan->translate ('Send new password');
+$this->vars['TEXT_EXTENSION_MISSING_FILE'] = $this->i10nMan->translate ('A required file is missing to make this extension work correctly.');
+$this->vars['TEXT_EXTENSION_INCOMPATIBLE'] = $this->i10nMan->translate ('This extension is incompatible with this version of MorgOS.');
+$this->vars['TEXT_EXTENSION_LOAD'] = $this->i10nMan->translate ('Load extenion');
+$this->vars['TEXT_SAVE_EXTENSIONS_SUBMIT'] = $this->i10nMan->translate ('Save extensions');
 // the skin defined vars
 foreach ($skin['variable'] as $key => $skinVar) {
 	if (! array_key_exists (strtoupper ($key), $this->vars)) {

@@ -21,6 +21,7 @@
  * \author Sam Heijens
  * \author Nathan Samson
 */
+session_start ();
 define ('TBL_USERS', TBL_PREFIX . 'users');
 /** \class user
  * class that take care of the main user system
@@ -36,10 +37,16 @@ class user {
 	}
 	
 	function __construct ($genDB) {
-		session_start ();
 		$this->genDB = $genDB;
 	}
-
+	
+	/* \fn login ($username, $password)
+	 * This function logs a in.
+	 *
+	 * \param $username (string) this contains the username of a user
+	 * \param $password (string) this contains the password of a user
+	 * \return (bool) returns true if the user is logged in
+	*/
 	function login ($username, $password) {
 		$username = addslashes ($username);
 		$query = $this->genDB->query ("SELECT username, password FROM ".TBL_USERS." WHERE username = '$username'");
@@ -47,7 +54,8 @@ class user {
 			trigger_error ('WARNING: Username does not exists.');
 			return;
 		}
-		$user = $this->genDB->fetch_array ($query);
+		$user = $this->genDB->fetch_array ($query);
+
 		if (md5 ($password) == $user['password']) {
 			$_SESSION['username'] = $username;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
@@ -62,6 +70,11 @@ class user {
 		}
 	}
 	
+	/* \fn isLoggedIn ()
+	 * This function Checks if the user is logged in
+	 *
+	 * \return (bool) is true if the users is logged in
+	*/
 	function isLoggedIn () {
 		if (array_key_exists ('username', $_SESSION)) {
 			$user = $this->getUser ($_SESSION['username']);
@@ -75,6 +88,11 @@ class user {
 		}
 	}
 	
+	/* \fn isAdmin ()
+	 * This function checks if the user admin or not
+	 *
+	 * \return (bool) is true if the user is admin
+	*/
 	function isAdmin () {
 		if ($this->isLoggedIn ()) {
 			$user = $this->getUser ($_SESSION['username']);
@@ -88,6 +106,11 @@ class user {
 		}
 	}
 	
+	/* \fn logout ()
+	 * This function logs the current user out.
+	 *
+	 * \return (bool) returns always true
+	*/	
 	function logout () {
 		unset ($_SESSION['username']);
 		unset ($_SESSION['pass']);
@@ -96,6 +119,16 @@ class user {
 		return true;
 	}
 	
+	/* \fn insertUser ($username, $email, $password, $isAdmin, $settings = array ())
+	 * this function inserts a new user into the database
+	 *
+	 * \param $username (string) the name of the user
+	 * \param $email (string) the e-mail adress of the user
+	 * \param $password (string) the password of the user
+	 * \param $isAdmin (bool) is true if the user has to be an admin
+	 * \param $settings (array)
+	 * \return (bool) true on success, false on failure
+	*/
 	function insertUser ($username, $email, $password, $isAdmin, $settings = array ()) {
 		if ($isAdmin) {
 			$isAdmin = 'yes';
@@ -116,12 +149,18 @@ class user {
 			foreach ($settings as $setting => $value) {
 				$setting = addslashes ($setting);
 				$value = addslashes ($value);
-				$this->genDB->query ($SQL = "UPDATE " . TBL_USERS . " set $setting='$value' WHERE username='$username'");
+				$this->genDB->query ("UPDATE " . TBL_USERS . " set $setting='$value' WHERE username='$username'");
 			}
 			return true;
 		}
 	}
 	
+	/* \fn getUser ($username = NULL)
+	 * this function gets every data available from the database from that particular user
+	 *
+	 * \param $username (string) this contains the username of a user
+	 * \return (array | bool) returns an array with all info, or false on failure
+	*/
 	function getUser ($username = NULL) {
 		if ($username == NULL && array_key_exists ('username', $_SESSION)) {
 			$username = $_SESSION['username'];
@@ -135,6 +174,12 @@ class user {
 		}
 	}
 	
+	/* \fn getUserFromEmail ($useremail)
+	 * this function gets every data available from the database from that particular user
+	 *
+	 * \param $useremail (string) this contains the emailadress of a user
+	 * \return (array | bool) returns an array with all info, or false on failure
+	*/
 	function getUserFromEmail ($useremail) {
 		$useremail = addslashes ($useremail);
 		$query = $this->genDB->query ("SELECT * FROM ".TBL_USERS." WHERE email='$useremail'");
@@ -145,6 +190,15 @@ class user {
 		}
 	}
 	
+	/* \fn updateUser ($username, $newEmail, $newSettings = array (), $newPass = NULL)
+	 * this function updates the data of one user in the database
+	 *
+	 * \param $username (string) this contains the name of the user
+	 * \param $newEmail (string) this contains the new e-mailadress for the user
+	 * \param $newSettings (array)
+	 * \param $newpass (string) this contains the new password for the user
+	 * \return (bool) true on success, false on failure
+	*/
 	function updateUser ($username, $newEmail, $newSettings = array (), $newPass = NULL) {
 		$username = addslashes ($username);
 		$newEmail = addslashes ($newEmail);
@@ -168,6 +222,13 @@ class user {
 		}
 	}
 	
+	/* \fn getAllUsers ($sortOn, $asc)
+	 * this function gets all data from all users from the database
+	 *
+	 * \param $sortOn (string) herein is stated in wich order the data should be sorted in
+	 * \param $asc (bool) is true if the list should be downwards
+	 * \return (array) 
+	*/	
 	function getAllUsers ($sortOn = 'username', $asc = true) {
 		if ($asc) {
 			$asc = 'asc';
@@ -183,6 +244,12 @@ class user {
 		return $allUsers;
 	}
 	
+	/* \fn updateUser ($username, $newIsAdmin)
+	 * this function can change the status of a user.
+	 *
+	 * \param $username (string) this contains the name of the user
+	 * \param $newIsAdmin (bool) this is true when the user has to be admin, false if the user has to be a regular user
+	*/
 	function setAdmin ($username, $newIsAdmin) {
 		if ($newIsAdmin) {
 			$newIsAdmin = 'yes';
@@ -198,6 +265,11 @@ class user {
 		}
 	}
 	
+	/* \fn userExist ($username)
+	 * this function checks if the username already exists
+	 *
+	 * \param $username (string) this contains the username that should be checked
+	*/
 	function userExist ($username) {
 		$username = addslashes ($username);
 		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE username='$username'");
@@ -208,6 +280,11 @@ class user {
 		}
 	}
 	
+	/* \fn emailExist ($email)
+	 * this function checks if the emailadres already exists
+	 *
+	 * \param $email (string) this contains the email that should be checked
+	*/
 	function emailExist ($email) {
 		$email = addslashes ($email);
 		$result = $this->genDB->query ("SELECT username FROM ".TBL_USERS . " WHERE email='$email'");
@@ -218,6 +295,9 @@ class user {
 		}
 	}
 	
+	/* \fn randomPassword ()
+	 * this function returns a random password
+	*/
 	function randomPassword () {
 		$newPassword = NULL;
 		mt_srand (microtime() * 1000000); // needed for PHP < 4.2
@@ -230,6 +310,11 @@ class user {
 		return $newPassword;
 	}
 	
+	/* \fn changePasswordFromUsername ($username)
+	 * this function changes the password when only the username is given
+	 *
+	 * \param $username (string) this contains the username where the password has to be changed
+	*/
 	function changePasswordFromUsername ($username) {
 		$username = addslashes ($username);
 		if ($this->userExist ($username)) {
@@ -244,6 +329,11 @@ class user {
 		}
 	}
 	
+	/* \fn changePasswordFromEmail ($email)
+	 * this function changes the password when only the emailadress is given
+	 *
+	 * \param $email (string) this contains the email from the user where the password has to be changed
+	*/
 	function changePasswordFromEmail ($email) {
 		$email = addslashes ($email);
 		if ($this->emailExist ($email)) {

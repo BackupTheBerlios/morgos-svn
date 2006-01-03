@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 
-$extension['general']['name'] = 'W3C';
+$extension['general']['name'] = 'Hello world';
 $extension['general']['version'] = '0.1';
 $extension['general']['maxversion'] = '0.1';
 $extension['general']['minversion'] = '0.1';

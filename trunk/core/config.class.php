@@ -139,8 +139,8 @@ class config {
 			if (($this->configTree[$configName]['type'] == $type) or ($type == TYPE_FLEXIBLE)) {
 				return $this->configTree[$configName]['value'];
 			} else {
-				$value = $this->configTree[$configName]['value'];
-			 	trigger_error ('DEBUG: type is: ' . $this->typeToString ($value) . ' needs to be ' . $this->typeToString ($value));
+				$value = $this->configTree[$configName]['type'];
+			 	trigger_error ('DEBUG: type is: ' . $this->typeToString ($value) . ' needs to be ' . $this->typeToString ($type));
 				trigger_error ('INTERNAL_ERROR: type is not correct');
 			}
 		} else {
@@ -209,7 +209,7 @@ class config {
 	 * \param configName (string) the name of the config item
 	 * \return (bool)
 	*/
-	/*private | public*/ function exists ($configName) {
+	/*public*/ function exists ($configName) {
 		if (array_key_exists ($configName, $this->configTree)) {
 			return true;
 		} else {
@@ -223,7 +223,7 @@ class config {
 	 * \param configName (string) the name of the config item
 	 * \return (bool)
 	*/
-	/*private | public*/ function isDir ($configName) {
+	/*public*/ function isDir ($configName) {
 		if ($this->configTree[$configName] == 'PATH') {
 			return true;
 		} else {
@@ -231,6 +231,22 @@ class config {
 		}
 	}
 	
+	/** \fn removeConfigItem ($configName)
+	 * Remove configItem and all its children
+	 *
+	 * \param configName (string) the name of the config item
+	*/
+	/*public*/ function removeConfigItem ($configName) {
+		if ($this->isDir ($configName)) {
+			$children = $this->getConfigDir ($configName);
+			foreach ($children as $name => $val) {
+				unset ($this->configTree[$name]);
+			}
+			unset ($this->configTree[$configName]);
+		} else {
+			unset ($this->configTree[$configName]);
+		}
+	}
 		
 	/** \fn convertType (&$value,$type)
 	 * converts the value into type $type. If $value could not be converted it returns false

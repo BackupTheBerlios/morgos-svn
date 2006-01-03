@@ -25,9 +25,6 @@ if (array_key_exists ('module', $_GET)) {
 }
 
 switch ($module) {
-	case 'database':
-		$UI->loadPage ('admin/database', NULL, true, true);
-		break;
 	case 'databasesave':
 		if ($_POST['submit'] == 'ADMIN_DATABASE_FORM_INSTALL_NEW_DATABASE') {
 			// install the database again (and maybe copy from the old one)
@@ -35,22 +32,10 @@ switch ($module) {
 		if ($UI->saveAdmin ($_POST, '/database/type', '/database/host', '/database/name', '/database/user', '/database/password')) {
 			header ('Location: admin.php?module=database');
 		}
-	case 'users':
-		$UI->loadPage ('admin/users', NULL, true, true);
-		break;
-	case 'news':
-		$UI->loadPage ('admin/news', NULL, true, true);
-		break;
-	case 'general':
-		$UI->loadPage ('admin/general', NULL, true, true);
-		break;
 	case 'generalsave':
 		if ($UI->saveAdmin ($_POST, '/general/sitename')) {
 			header ('Location: admin.php?module=general');
 		}
-		break;
-	case 'pages':
-		$UI->loadPage ('admin/pages', NULL, true, true);
 		break;
 	case 'pagessave':
 		if (! array_key_exists ('submit', $_POST)) {
@@ -137,10 +122,32 @@ switch ($module) {
 		$UI->setRunning (false);
 		$UI->loadPage ('admin/users', NULL, true, true);
 		break;
-	case 'index':
-		$UI->loadPage ('admin/index', NULL, true, true);
+	case 'saveextensions':
+		$UI->getConfigClass ()->removeConfigItem ('/extensions');
+		foreach ($_POST as $key => $item) {
+			if (substr ($key, 0, 4) == 'load') {
+				$extensionName = substr ($key, 4);
+				$extensionName = str_replace ('_', ' ', $extensionName);
+				if ($item == 'on') {
+					if ($UI->getConfigClass ()->exists ('/extensions/' . $extensionName)) {
+						$UI->getConfigClass ()->changeValueConfigItem ('/extensions/' . $extensionName, true);
+					} else {
+						$UI->getConfigClass ()->addConfigItem ('/extensions/' . $extensionName, true, TYPE_BOOL);
+					}
+				}
+			}
+		}
+		$UI->getConfigClass ()->addConfigItem ('/extensions/WHATEVER', false, TYPE_BOOL);
+		$UI->saveAdmin (array ());
+		$UI->loadPage ('admin/extensions');
+		break;
 	default:
-		header ('Location: http://127.0.0.1'); // Nice joke for hackers
+		$allModules = $UI->getPagesClass ()->getAllAvailableModules (true);
+		if (array_key_exists ('admin/' . $module, $allModules)) {
+			$UI->loadPage ('admin/' . $module);
+		} else {
+			header ('Location: http://127.0.0.1'); // Nice joke for hackers
+		}
 		break;
 }
 ?>

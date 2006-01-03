@@ -43,7 +43,16 @@ function errorHandlerForInstaller ($errNo, $errStr, $errFile = NULL, $errLine = 
 
 //set_error_handler ('errorHandlerForInstaller');
 $i10nMan = new languages ('install/languages/', 'english');
-$result = @$i10nMan->loadLanguage ('nederlands'); // if it couldn\'t load don\'t throw an error
+if (array_key_exists ('language', $_COOKIE)) {
+	$language = $_COOKIE['language'];
+} elseif (array_key_exists ('language', $_GET)) {
+	$language = $_GET['language'];
+	setcookie ('language', addslashes ($language));
+} else {
+	$language = 'english';
+}
+$language = addslashes ($language);
+$result = @$i10nMan->loadLanguage ($language); // if it couldn\'t load don\'t throw an error
 if ($result == false) {
 	$error = 'Error loading language.';
 }

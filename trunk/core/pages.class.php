@@ -55,19 +55,39 @@ class pages {
 		return $available;
 	}
 	
-	/** \fn getModuleContent ($module, $language)
+	/** \fn getPageContent ($module, $language)
 	 * Returns the content of a module
 	 *
 	 * \param $module (string) the name of the module
 	 * \param $language (string) the language
 	 * \return (string)
 	*/
-	/*public*/ function getModuleContent ($module, $language) {
+	/*public*/ function getPageContent ($module, $language) {
 		$module = addslashes ($module);
 		$SQL = 'SELECT content FROM ' . TBL_PAGES . ' WHERE module=\''. $module . '\'  AND language=\'' . $language . '\'';
 		$result = $this->genDB->query ($SQL);
-		while ($row = $this->genDB->fetch_array ($result)) {
-			return $row['content'];
+		if ($this->genDB->num_rows ($result) != 0) {
+			$row = $this->genDB->fetch_array ($result);
+			$content = $row['content'];
+			foreach ($this->prependers[$module] as $text) {
+				$content = $text . $content;
+			}
+			
+			foreach ($this->appenders[$module] as $text) {
+				$content = $content . $text;
+			}
+			
+			foreach ($this->prependers['ALL_MODULES'] as $text) {
+				$content = $text . $content;
+			}
+			
+			foreach ($this->appenders['ALL_MODULES'] as $text) {
+				$content = $content . $text;
+			}
+			return $content;
+		} else {
+			trigger_error ('ERROR: Page not found.');
+			return false;
 		}
 	}
 	
@@ -235,6 +255,31 @@ class pages {
 		}
 	}
 	
+	/** \fn prependTextToPageContent ($string, $toModule = NULL)
+	 * prepends text to the page content.
+	 *
+	 * \param $string (string) the string to prepend
+	 * \param $toModule (string) all modules where you want to add the text
+	*/
+	/*public*/ function prependTextToPageContent ($string, $toModule = NULL) {
+		if ($toModule == NULL) {
+			$toModule = 'ALL_MODULES';
+		}
+		$this->prependers[$toModule][] = $string;
+	}	
+	
+	/** \fn appendTextToPageContent ($string, $toModule = NULL)
+	 * Appends text to the page content.
+	 *
+	 * \param $string (string) the string to append
+	 * \param $toModule (string) all modules where you want to add the text
+	*/
+	/*public*/ function appendTextToPageContent ($string, $toModule = NULL) {
+		if ($toModule == NULL) {
+			$toModule = 'ALL_MODULES';
+		}
+		$this->appenders[$toModule][] = $string;
+	}
 		
 	/** \fn getAllAvailableLanguagesFromModule ($module)
 	 * Returns the language of all pages with a specified module
