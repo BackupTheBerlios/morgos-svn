@@ -40,14 +40,19 @@ gettype ($supported); // this is here only to trick Doxygen
  * \todo if no database connection exists at query-time, try to reconnect and try to redo the query
 */
 class MySQLDatabase /*implements iDatabase*/ {
-	function __construct () {
+	function MySQLDatabase (&$i10nMan) {
+		$this->__construct ($i10nMan);
+	}
+
+	function __construct (&$i10nMan) {
+		$this->i10nMan = &$i10nMan;
 	}
 
 	/*public*/ function connect ( $host,  $user,  $password) {
 		$this->connection = mysql_connect ($host, $user, $password);
 		if ($this->connection == false) {
-			trigger_error ($this->error (), E_USER_NOTICE);
-			trigger_error ('ERROR: Couldn\'t connect with database', E_USER_ERROR);
+			trigger_error ('DEBUG: ' . $this->error ());
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Couldn\'t connect with database'));
 		} else {
 			return true;
 		}
@@ -58,8 +63,8 @@ class MySQLDatabase /*implements iDatabase*/ {
 		if ($succeed == true) {
 			return true;
 		} else {
-			trigger_error ($this->error (), E_USER_NOTICE);
-			trigger_error ('ERROR: Couldn\'t open database', E_USER_ERROR);
+			trigger_error ('DEBUG: ' . $this->error ());
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Couldn\'t open database'));
 		}
 	}
 
@@ -69,17 +74,17 @@ class MySQLDatabase /*implements iDatabase*/ {
 
 	/*public*/ function query ( $sql,  $fatal = true) {
 		if (! isset ($this->connection)) {
-			trigger_error ('ERROR: No Database connection', E_USER_WARNING);
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('No Database connection'));
 		} else {
 			$sql = $this->sql2mysql ($sql);
 			$result = mysql_query ($sql, $this->connection);
 			if ($result == false) {
 				if ($fatal == true) {
-					trigger_error ($this->error (), E_USER_NOTICE);
-					trigger_error ('ERROR: Query not executed', E_USER_ERROR);
+					trigger_error ('DEBUG: ' . $this->error ());
+					trigger_error ('ERROR: ' . $this->i10nMan->translate ('Query not executed'));
 				} else {
-					trigger_error ($this->error (), E_USER_NOTICE);					
-					trigger_error ('ERROR: Query not executed', E_USER_WARNING);
+					trigger_error ('DEBUG: ' . $this->error ());					
+					trigger_error ('WARNING: ' . $this->i10nMan->translate ('Query not executed'));
 				}
 			} else {
 				return $result;
@@ -114,16 +119,8 @@ class MySQLDatabase /*implements iDatabase*/ {
 		return $sql;
 	}
 	
-	/*private*/ function table_name ( $result,$i) {
-		return mysql_table_name ($result, $i);
-	}
-	
 	/*private*/ function error () {
-		return 'ERROR: ' . mysql_errno () . ': ' . mysql_error () . ' ';
-	}
-	
-	/*private*/ function list_tables ( $DBName) {
-		
+		return mysql_errno () . ': ' . mysql_error () . ' ';
 	}
 }
 }

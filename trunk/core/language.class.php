@@ -20,6 +20,7 @@
  *
  * \author Nathan Samson
 */
+include_once ('core/compatible.php');
 /** \class languages
  * Class that take care of the translatable strings
  *
@@ -39,10 +40,10 @@ class languages {
 		$this->dir = $dir;
 		if (file_exists ($dir)) {
 			if (! is_dir ($dir)) {
-				trigger_error ('ERROR: can\'t init i10n Manager, language dir doesn\'t exists.');			
+				trigger_error ('ERROR: ' . $this->translate ('can\'t init i10n Manager, language dir doesn\'t exists.'));
 			}
 		} else {
-			trigger_error ('ERROR: can\'t init i10n Manager, language dir doesn\'t exists.');
+			trigger_error ('ERROR: ' . $this->translate ('can\'t init i10n Manager, language dir doesn\'t exists.'));
 		}
 		$this->defLang = $defLang;
 		$this->getAllSupportedLanguages ();
@@ -63,9 +64,8 @@ class languages {
 			$supported = array ();
 			$supported[] = $this->defLang;
 			$handler = opendir ($this->dir);
-			// $files = scandir ($this->dir); PHP5 only :( 
-			// foreach ($files as $file) PHP5 only :(
-			while (false !== ($file = readdir ($handler))) {
+			$files = scandir ($this->dir);
+			foreach ($files as $file) {
 				// starts with a letter, then you have whatever you want and it ends with '.language.php'
 				preg_match_all ('/^(\w.*)\.language\.php$/i', $file, $matches);
 				foreach ($matches[0] as $key => $match) {
@@ -94,7 +94,7 @@ class languages {
 			}
 			return true;
 		} else {
-			trigger_error ('ERROR: Language doesn\'t exists, please install it. Default is used.');
+			trigger_error ('ERROR: ' . $this->translate ('Language doesn\'t exists, please install it. Default is used.'));
 			$this->loadLanguage ($this->defLang);
 			return false;
 		}
@@ -110,18 +110,13 @@ class languages {
 	/*public*/ function translate ($string) {
 		if (array_key_exists ($string, $this->stringTree)) {
 			$translated = $this->stringTree[$string];
-			for ($i = 1; $i <= func_num_args (); $i++) {
-				$arg = func_get_arg ($i);
-				$translated = str_replace ('%' . $i, $arg, $translated);
-			}
-			return $translated;
 		} else {
 			$translated = $string;
-			for ($i = 1; $i < func_num_args (); $i++) {
-				$arg = func_get_arg ($i);
-				$translated = str_replace ('%' . $i, $arg, $translated);
-			}
-			return $translated;
 		}
+		for ($i = 1; $i < func_num_args (); $i++) {
+			$arg = func_get_arg ($i);
+			$translated = str_replace ('%' . $i, $arg, $translated);
+		}
+		return $translated;
 	}
 }

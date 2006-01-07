@@ -29,12 +29,13 @@
  * \bug If a module is deleted but not all pages are deleted this pages are not deleted
 */
 class pages {
-	function pages ($genDB) {
-		$this->construct ($genDB);
+	function pages (&$genDB, &$i10nMan) {
+		$this->construct ($genDB, $i10nMan);
 	}
 
-	function __construct ($genDB) {
-		$this->genDB = $genDB;
+	function __construct (&$genDB, &$i10nMan) {
+		$this->genDB = &$genDB;
+		$this->i10nMan = &$i10nMan;
 	}
 	/** \fn getAllAvailableModules ($extended = false)
 	 * Returns an array of all available modules
@@ -86,7 +87,7 @@ class pages {
 			}
 			return $content;
 		} else {
-			trigger_error ('ERROR: Page not found.');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Page not found.'));
 			return false;
 		}
 	}
@@ -146,11 +147,11 @@ class pages {
 				$listedInAdmin = 'no';
 			}
 			if (! is_integer ($place)) {
-				trigger_error ("ERROR: Place is not an integer");
+				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Place is not an integer'));
 				return;
 			}		
 			if (! is_integer ($placeinadmin)) {
-				trigger_error ("ERROR: Place is not an integer");
+				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Place is not an integer'));
 				return;
 			}	
 			$SQL = "INSERT INTO " . TBL_MODULES;
@@ -187,7 +188,7 @@ class pages {
 			if ($result !== false) {
 				return true;
 			} else {
-				trigger_error ('INTERNAL_ERROR: Can\'t add page');
+				trigger_error ('INTERNAL_ERROR: ' . $this->i10nMan->translate ('Can\'t add page'));
 				return false;
 			}
 		}

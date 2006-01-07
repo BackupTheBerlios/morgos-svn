@@ -76,11 +76,13 @@ class UIManager {
 		if (is_readable ('site.config.php')) {
 			if (file_exists ('.install')) {
 				if (is_dir ('.install')) {
-					trigger_error ('ERROR: Remove dir install.php and than continue');
+					trigger_error ('ERROR: ' . $this->i10nMan->translate ('Remove dir install.php and than continue'));
 				}
 			}
 		 	include_once ('core/config.class.php');
-			$this->config = new config ();
+			include_once ('core/language.class.php');
+			$this->i10nMan = new languages ('languages/');
+			$this->config = new config ($this->i10nMan);
 			$this->config->addConfigItemsFromFile ('site.config.php');
 			if (! defined ('TBL_PREFIX')) {
 				define ('TBL_PREFIX', 'morgos_');
@@ -89,17 +91,15 @@ class UIManager {
 			}
 			include_once ('core/database.class.php');
 			include_once ('core/user.class.php');
-			include_once ('core/language.class.php');
 			include_once ('core/pages.class.php');
-			$DBManager = new genericDatabase ();
+			$DBManager = new genericDatabase ($this->i10nMan);
 			$this->genDB = $DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
 			$this->genDB->connect ($this->config->getConfigItem ('/database/host', TYPE_STRING), $this->config->getConfigItem ('/database/user', TYPE_STRING),
 			$this->config->getConfigItem ('/database/password', TYPE_STRING));
 			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
-			$this->i10nMan = new languages ('languages/');
-			$this->pages = new pages ($this->genDB);
+			$this->pages = new pages ($this->genDB, $this->i10nMan);
 			if (! $this->i10nMan->loadLanguage ('english')) {
-				trigger_error ('ERROR: Couldn\'t init internationalization.');
+				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Couldn\'t init internationalization.'));
 			}
 			$this->user = NULL;
 			
@@ -113,7 +113,7 @@ class UIManager {
 					$result = $this->loadExtension (substr ($extension, strlen ('/extensions/')));
 					if ($result == false) {
 						$this->setRunning (true);
-						trigger_error ('WARNING: Couldn\'t load extension.');
+						trigger_error ('WARNING: ' . $this->i10nMan->translate ('Couldn\'t load extension.'));
 						$this->setRunning (false);
 					}
 				}
@@ -148,7 +148,7 @@ class UIManager {
 	*/
 	/*public*/ function &getUserClass () {
 		if ($this->user == NULL) {
-			$this->user = new user ($this->genDB);
+			$this->user = new user ($this->genDB, $this->i10nMan);
 		}
 		return $this->user;
 	}
@@ -173,7 +173,7 @@ class UIManager {
 	*/ 
 	/*public*/ function loadPage ($moduleName, $language = NULL) {
 		if ($this->user == NULL) {
-			$this->user = new user ($this->genDB);
+			$this->user = new user ($this->genDB, $this->i10nMan);
 		}
 		if ($this->user->isLoggedIn ()) {
 			$userInfo = $this->user->getUser ();		
@@ -197,16 +197,16 @@ class UIManager {
 		$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_MODULES . " WHERE module='$moduleName'";
 		$query = $this->genDB->query ($SQL);
 		if ($this->genDB->num_rows ($query) == 0) {
-			trigger_error ("ERROR: Page does not exists.");
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Page does not exists.'));
 			return;
 		}
 		$module = $this->genDB->fetch_array ($query);
 		if (strtolower ($module['needauthorized']) == "yes" && $this->user->isLoggedIn () == false) {
-			trigger_error ("ERROR: You need to be logged in to access this page.");
+			trigger_error ('ERROR: '. $this->i10nMan->translate ('You need to be logged in to access this page.'));
 		}
 		
 		if (strtolower ($module['needauthorizedasadmin']) == "yes" && $this->user->isAdmin () == false) {
-			trigger_error ("ERROR: You need to be admin to access this page.");
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('You need to be admin to access this page.'));
 		}
 		if (file_exists ($this->skinPath . $moduleName . '.html')) {
 			$output = file_get_contents ($this->skinPath . $moduleName . '.html');
@@ -230,7 +230,7 @@ class UIManager {
 			if (array_key_exists ($arg, $array)) {
 				$this->config->changeValueConfigItem ($arg, $array[$arg]);
 			} else {
-				trigger_error ('ERROR: Configuration not saved, new value is empty');
+				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Configuration not saved, new value is empty'));
 			}
 		}
 		define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
@@ -456,7 +456,7 @@ class UIManager {
 		// needs to be 3 = (===) because the key can be 0 and than it is the same as false
 		// to be compatible with PHP <= 4.2 we need to have === NULL
 		if (($key === false) or ($key === NULL)) {
-			trigger_error ('ERROR: Couldn\'t load skin, unsupported skin');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Couldn\'t load skin, unsupported skin'));
 		} else {
 			$this->skinPath = $skinPaths[$key];
 		}
@@ -696,7 +696,7 @@ class UIManager {
 				break;
 			case "UKNOWN";
 				$die = false;
-				trigger_error ('DEBUG: Type is not set');
+				trigger_error ('DEBUG: ' . $this->i10nMan->translate ('Type is not set'));
 				break;
 			default:
 				$die = true;
@@ -759,7 +759,7 @@ class UIManager {
 					if (! array_key_exists ($ID, $this->extensions)) {
 						$this->extensions[$ID] = $extension;
 					} else {
-						trigger_error ('ERROR: Extension hasn\'t an unique ID');
+						trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension hasn\'t an unique ID'));
 					}
 				}
 			}
@@ -841,7 +841,7 @@ class UIManager {
 					$statusHTML = " ADMIN_EXTENSION_STATUS_NOT_INSTALLED ($extensionLoad)";
 					break;
 				default: 
-					trigger_error ('NOTICE: Unrecognized extension-status.');
+					trigger_error ('NOTICE: ' . $this->i10nMan->translate ('Unrecognized extension-status.'));
 					$statusHTML = NULL;
 			}
 			$installExtension = 'admin.php?module=installextension&name=' . $extensionID;
@@ -868,7 +868,7 @@ class UIManager {
 				$extension['install_function'] ($this->genDB);
 			}
 		} else {
-			trigger_error ('ERROR: Extension does not exists.');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension does not exists.'));
 		}
 	}
 	
@@ -879,7 +879,7 @@ class UIManager {
 				$extension['uninstall_function'] ($this->genDB);
 			}
 		} else {
-			trigger_error ('ERROR: Extension does not exists.');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension does not exists.'));
 		}
 	}
 }

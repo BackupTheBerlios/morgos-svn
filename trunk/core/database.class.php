@@ -24,7 +24,7 @@ function checkDatabase ($database, $tables) {
 	// TODO
 	return true;
 }
-
+include_once ('core/compatible.php');
 /** \interface iDatabase
  * interface that take care off the generic database subsystem. All Database-Modules must follow this API
  *
@@ -57,11 +57,12 @@ class genericDatabase {
 	/*private $loadedDatabase = NULL;
 	private $supported;*/
 
-	function genericDatabase () {
-		$this->__construct ();
+	function genericDatabase (&$i10nMan) {
+		$this->__construct (&$i10nMan);
 	}
 
-	function __construct () {
+	function __construct (&$i10nMan) {
+		$this->i10nMan = &$i10nMan;
 		$this->getAllSupportedDatabases ();
 	}
 	/** \fn getAllSupportedDatabases ()
@@ -73,9 +74,8 @@ class genericDatabase {
 		if (! isset ($this->supported)) {
 			$supported = array ();
 			$handler = opendir ('core/databases/');
-			// $files = scandir ('core/databases/'); PHP5 only :( 
-			// foreach ($files as $file) PHP5 only :(
-			while (false !== ($file = readdir ($handler))) {
+			$files = scandir ('core/databases/');
+			foreach ($files as $file) {
 				// starts with a letter, then you have whatever you want and it ends with '.database.php'
 				if ((preg_match ('/^\w.*\.database\.php$/i', $file) == 1) and (is_file ('core/databases/' . $file))) {
 					include ('core/databases/' . $file);
@@ -96,10 +96,10 @@ class genericDatabase {
 	/*public*/ function &load ($type) {
 		if (array_key_exists ($type, $this->supported)) {
 			$className = $this->supported[$type];
-			$this->loadedDatabase = new $className ();
+			$this->loadedDatabase = new $className ($this->i10nMan);
 			return $this->loadedDatabase;
 		} else {
-			trigger_error ('ERROR: Database type not supported.');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Database type not supported.'));
 		}
 	}
 }

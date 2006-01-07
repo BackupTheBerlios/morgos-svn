@@ -44,11 +44,12 @@ class config {
 	*/
 	var $configTree;
 
-	function config () {
-		$this->__construct ();
+	function config ($lang) {
+		$this->__construct ($lang);
 	}
 
-	function __construct () {
+	function __construct ($lang) {
+		$this->lang = &$lang;
 		$this->configTree = array ();
 	}
 	
@@ -73,7 +74,7 @@ class config {
 			$curPath .= '/' . $dir;
 			if ($this->exists ($curPath)) {
 				if (! $this->isDir ($curPath)) {
-					trigger_error ('INTERNAL_ERROR: Problem with config path');
+					trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('Problem with config path'));
 				}
 				break;
 			} else {
@@ -83,8 +84,8 @@ class config {
 		if ($this->isType ($value) == $type) {
 			$this->configTree[$configName] = array ('value' => $value,'type' => $type,'password' => $password);
 		} else {
-			trigger_error ('DEBUG: type is: ' . $this->typeToString ($value) . ' needs to be ' . $this->typeToString ($type));
-			trigger_error ('INTERNAL_ERROR: type is not correct');
+			trigger_error ('DEBUG: ' . $this->lang->translate ('type is: %1 needs to be %2') . $this->typeToString ($type), $this->typeToString ($value), $this->typeToString ($type));
+			trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('type is not correct'));
 		}
 	}
 	
@@ -140,12 +141,12 @@ class config {
 				return $this->configTree[$configName]['value'];
 			} else {
 				$value = $this->configTree[$configName]['type'];
-			 	trigger_error ('DEBUG: type is: ' . $this->typeToString ($value) . ' needs to be ' . $this->typeToString ($type));
-				trigger_error ('INTERNAL_ERROR: type is not correct');
+			 	trigger_error ('DEBUG: ' . $this->lang->translate ('type is: %1 needs to be %2') . $this->typeToString ($type), $this->typeToString ($value), $this->typeToString ($type));
+				trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('type is not correct'));
 			}
 		} else {
-			trigger_error ('DEBUG: configname is: ' . $configName);
-			trigger_error ('INTERNAL_ERROR: configname does not exists');
+			trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+			trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('configname does not exists'));
 		}
 	}
 	
@@ -165,16 +166,16 @@ class config {
 				if ($this->configTree[$configName]['password'] == $password) {
 					$this->configTree[$configName]['value'] = $newValue;
 			 	} else {
-			 		trigger_error ('DEBUG: configname is: ' . $configName);
-					trigger_error ('INTERNAL_ERROR: Password is wrong');
+			 		trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+					trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('Password is wrong'));
 				}
 			} else {
-				trigger_error ('DEBUG: configname is : ' . $configName);
-				trigger_error ('INTERNAL_ERROR: configname is a dir');
+				trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+				trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('configname is a dir'));
 			}
 		} else {
-			trigger_error ('DEBUG: configname is: ' . $configName);
-			trigger_error ('INTERNAL_ERROR: configname does not exists');
+			trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+			trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('configname does not exists'));
 		}
 	}
 	
@@ -193,12 +194,12 @@ class config {
 					}
 				}
 			} else {
-				trigger_error ('DEBUG: configname is : ' . $configDir);
-				trigger_error ('INTERNAL_ERROR: configname is not a dir');
+				trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+				trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('configname is not a dir'));
 			}
 		} else {
-			trigger_error ('DEBUG: configname is: ' . $configDir);
-			trigger_error ('INTERNAL_ERROR: configname does not exists');
+			trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+			trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('configname does not exists'));
 		}
 		return $childs;
 	}
@@ -264,8 +265,8 @@ class config {
 			} elseif ($type == TYPE_NUMERIC) {
 				$value = (integer) $vaue;
 			} else {
-				trigger_error ('DEBUG: Type is: ' . $type);
-				trigger_error ('INTERNAL_ERROR: Type is not correct');
+				trigger_error ('DEBUG: ' . $this->lang->translate ('Type is: %1', $type));
+				trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('Type is not correct'));
 			}
 		}
 	}

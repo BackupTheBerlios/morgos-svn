@@ -32,12 +32,13 @@ define ('TBL_USERS', TBL_PREFIX . 'users');
  * \author Nathan Samson
 */
 class user {
-	function user ($genDB) {
-		$this->__construct ($genDB);
+	function user (&$genDB, &$i10nMan) {
+		$this->__construct (&$genDB, $i10nMan);
 	}
 	
-	function __construct ($genDB) {
-		$this->genDB = $genDB;
+	function __construct (&$genDB, &$i10nMan) {
+		$this->genDB = &$genDB;
+		$this->i10nMan = &$i10nMan;
 	}
 	
 	/* \fn login ($username, $password)
@@ -51,7 +52,7 @@ class user {
 		$username = addslashes ($username);
 		$query = $this->genDB->query ("SELECT username, password FROM ".TBL_USERS." WHERE username = '$username'");
 		if ($this->genDB->num_rows ($query) == 0) {
-			trigger_error ('WARNING: Username does not exists.');
+			trigger_error ('WARNING: ' . $this->lang->translate ('Username does not exists.'));
 			return;
 		}
 		$user = $this->genDB->fetch_array ($query);
@@ -65,7 +66,7 @@ class user {
 			session_register('pass');
 			return true;
 		} else {
-			trigger_error ('WARNING: Wrong password.');
+			trigger_error ('WARNING: ' . $this->lang->translate ('Wrong password.'));
 			return false;
 		}
 	}
@@ -139,10 +140,10 @@ class user {
 		$email = addslashes ($email);
 		$password = md5 ($password);
 		if ($this->userExist ($username) == true) {
-			trigger_error ('ERROR: User already exists');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('User already exists'));
 			return false;
 		} elseif ($this->emailExist ($email)) {
-			trigger_error ('ERROR: Email already exists');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Email already exists'));
 			return false;
 		} else  {
 			$this->genDB->query ("INSERT INTO ".TBL_USERS." (username, email, password, isadmin) VALUES ('$username', '$email', '$password', '$isAdmin')");
@@ -324,7 +325,7 @@ class user {
 			$query = $this->genDB->query ($SQL);
 			return $newPassword;
 		} else {
-			trigger_error ('ERROR: User doesn\'t exists');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('User doesn\'t exists'));
 			return false;
 		}
 	}
@@ -343,7 +344,7 @@ class user {
 			$query = $this->genDB->query ($SQL);
 			return $newPassword;
 		} else {
-			trigger_error ('ERROR: Email doesn\'t exists');
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Email doesn\'t exists'));
 			return false;
 		}
 	}
