@@ -129,18 +129,39 @@ switch ($module) {
 				$extensionName = substr ($key, 4);
 				$extensionName = str_replace ('_', ' ', $extensionName);
 				if ($item == 'on') {
-					if ($UI->getConfigClass ()->exists ('/extensions/' . $extensionName)) {
-						$UI->getConfigClass ()->changeValueConfigItem ('/extensions/' . $extensionName, true);
-					} else {
-						$UI->getConfigClass ()->addConfigItem ('/extensions/' . $extensionName, true, TYPE_BOOL);
+					$UI->getConfigClass ()->addConfigItem ('/extensions/' . $extensionName, true, TYPE_BOOL);
+					if (array_key_exists ($extensionName, $UI->extensions)) {
+						if ($UI->extensions[$extensionName]['installable'] == true) {
+							$UI->installExtension ($extensionName);
+						}
 					}
 				}
 			}
 		}
 		$UI->getConfigClass ()->addConfigItem ('/extensions/WHATEVER', false, TYPE_BOOL);
 		$UI->saveAdmin (array ());
+		$UI = NULL;
+		$UI = new UIManager (); // to reload all extensions
 		$UI->loadPage ('admin/extensions');
 		break;
+	case 'installextension':
+		$UI->installExtension ($_GET['name']);
+		$UI = NULL;
+		$UI = new UIManager (); // to reload all extensions
+		$UI->setRunning (true);
+		trigger_error ('NOTICE: Extension is installed in the database.');
+		$UI->setRunning (false);
+		$UI->loadPage ('admin/extensions');
+		break;
+	case 'uninstallextension':
+		$UI->unInstallExtension ($_GET['name']);
+		$UI = NULL;
+		$UI = new UIManager (); // to reload all extensions
+		$UI->setRunning (true);
+		trigger_error ('NOTICE: Extension is uninstalled in the database.');
+		$UI->setRunning (false);
+		$UI->loadPage ('admin/extensions');
+		break;	
 	default:
 		$allModules = $UI->getPagesClass ()->getAllAvailableModules (true);
 		if (array_key_exists ('admin/' . $module, $allModules)) {

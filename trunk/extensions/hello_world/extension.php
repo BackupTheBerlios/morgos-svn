@@ -20,9 +20,9 @@ $extension['general']['name'] = 'Hello world';
 $extension['general']['version'] = '0.1';
 $extension['general']['maxversion'] = '0.1';
 $extension['general']['minversion'] = '0.1';
+$extension['general']['ID'] = '{2345-6789-0123-4567}';
 $extension['required_file'][] = 'index.php';
-
+$extension['need_install'] = false;
 $extension['file_to_load'] = 'index.php';
 $extension['file_to_install'] = 'install.php';
-
 ?>

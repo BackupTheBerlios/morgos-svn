@@ -200,6 +200,7 @@ $this->vars['VAR_SAVE_EXTENSIONS_SUBMIT'] = 'submit';
 $this->vars['VAR_ADMIN_EXTENSIONS_ADMIN'] = $this->getExtensionAdminHTML ();
 $this->vars['OPEN_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['OPEN_EXTENSIONS_ADMIN']);
 $this->vars['CLOSE_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['CLOSE_EXTENSIONS_ADMIN']);
+$this->vars['SIDEBAR'] = $this->getSidebarHTML ();
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
 $this->vars['TEXT_ADMIN_INDEX'] = $this->i10nMan->translate ('Admin Home');

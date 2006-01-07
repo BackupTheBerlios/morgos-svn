@@ -44,6 +44,8 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
  * \bug lowest tested version is 4.1.0
  * \bug a skin/extension can see all data (even admin data), this is a security bug AND cost rendering time
+ * \bug if a skin is enabled in site.config.php, but not installed it leaves enabled in site.config.php. 
+ 		When you install it is loaded.
  * \todo 0.1 change the dir in __construct to install in place of DOT install
  * \todo 0.1 check all input wich is outputted and from user (htmlspecialchars)
  * \todo 0.1 check for UBB hacks (when UBB is implmented)
@@ -80,9 +82,11 @@ class UIManager {
 		 	include_once ('core/config.class.php');
 			$this->config = new config ();
 			$this->config->addConfigItemsFromFile ('site.config.php');
-			define ('TBL_PREFIX', 'morgos_');
-			define ('TBL_MODULES', TBL_PREFIX . 'modules');
-			define ('TBL_PAGES', TBL_PREFIX . 'userpages');
+			if (! defined ('TBL_PREFIX')) {
+				define ('TBL_PREFIX', 'morgos_');
+				define ('TBL_MODULES', TBL_PREFIX . 'modules');
+				define ('TBL_PAGES', TBL_PREFIX . 'userpages');
+			}
 			include_once ('core/database.class.php');
 			include_once ('core/user.class.php');
 			include_once ('core/language.class.php');
@@ -98,7 +102,11 @@ class UIManager {
 				trigger_error ('ERROR: Couldn\'t init internationalization.');
 			}
 			$this->user = NULL;
+			
 			$this->loadedExtensions = array ();
+			$this->initAllExtensions ();
+			$this->prependSidebar = array ();
+			$this->appendSidebar = array ();
 			//print_r ($this->config->getConfigDir ('/extensions'));
 			foreach ($this->config->getConfigDir ('/extensions') as $extension => $load) {
 				if ($load == true) {
@@ -110,8 +118,6 @@ class UIManager {
 					}
 				}
 			}
-			//var_dump ($this->loadExtension ('Hello world'));
-			//print_r ($this->loadedExtensions);
 		} else {
 			header ('Location: install.php');
 		}
@@ -247,7 +253,7 @@ class UIManager {
 			$output .= '	$config[\''.$extension .'\'] = ' . $load .';' . NEWLINE;
 			
 		}
-		$output .= '	$config[\'/extensions/WHATEVER\'] = false;' . NEWLINE;
+		//$output .= '	$config[\'/extensions/WHATEVER\'] = false;' . NEWLINE;
 		$output .= '?>';
 		$fHandler = @fopen ('site.config.php', 'w');
 		if ($fHandler !== false) {
@@ -401,6 +407,26 @@ class UIManager {
 			}
 		}
 		return $supSkins;
+	}
+	
+	/** \fn prependToSidebar ($what, $module = 'ALL_MODULES')
+	 * Prepend elements to the sidebar.
+	 *
+	 * \param $what (string) the content which is prepended
+	 * \param $module (string) the module, if NULL in all modules $what is prepended
+	*/
+	/*public*/ function prependToSidebar ($what, $module = 'ALL_MODULES') {
+		$this->prependSidebar[$module][] = $what;
+	}
+
+	/** \fn appendToSidebar ($what, $module = 'ALL_MODULES')
+	 * Append elements to the sidebar.
+	 *
+	 * \param $what (string) the content which is appended
+	 * \param $module (string) the module, if NULL in all modules $what is appended
+	*/
+	/*public*/ function appendToSidebar ($what, $module = 'ALL_MODULES') {
+		$this->appendSidebar[$module][] = $what;
 	}
 	
 	/** \fn loadSkin ($skinName)
@@ -611,6 +637,25 @@ class UIManager {
 		return $this->parse ($HTML);
 	}
 	
+	/*private*/ function getSidebarHTML () {
+		$sidebar = NULL;
+		include ($this->skinPath . 'skin.php');
+		foreach ($this->prependSidebar['ALL_MODULES'] as $element) {
+			$sidebar .= ' ' . $element . ' ';
+		}
+		foreach ($this->prependSidebar[$this->loadedModule] as $element) {
+			$sidebar .= ' ' . $element . ' ';
+		}
+		$sidebar .= $skin['variable']['sidebar'];
+		foreach ($this->appendSidebar['ALL_MODULES'] as $element) {
+			$sidebar .= ' ' . $element . ' ';
+		}
+		foreach ($this->appendSidebar[$this->loadedModule] as $element) {
+			$sidebar .= ' ' . $element . ' ';
+		}
+		return $this->parse ($sidebar);
+	}
+	
 	/** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)
 	 * the error handler
 	*/
@@ -667,55 +712,80 @@ class UIManager {
 		}
 	}
 
-	/** \fn getExtensionInfo ($extensionName)
-	 * Get all info from an extension
-	 *
-	 * \param $extensionName (string) the name of the extension
-	 * \return (array)
+	/** \fn initAllExtensions ()
+	 * Check all extensions and assign an ID to every extension
 	*/
-	/*private*/ function getExtensionInfo ($extensionName) {
-		$statuses = $this->getAllExtensionsStatus ();
-		if (array_key_exists ($extensionName, $statuses)) {
-			$handler = opendir ('extensions');
-			// $files = scandir ('extensions/'); PHP5 only :( 
-			// foreach ($files as $file) PHP5 only :(
-			while (false !== ($file = readdir ($handler))) {
-				$extensionDir = 'extensions/' . $file;
-				if (is_dir ($extensionDir) and $file[0] != '.') {
-					if (file_exists ($extensionDir . '/extension.php')) {
-						$extension = array ();
-						include ($extensionDir . '/extension.php');
-						$extension['extension_dir'] = $extensionDir;
-						if ($extension['general']['name'] == $extensionName) {
-							return $extension;
+	/*private*/ function initAllExtensions () {
+		$this->extensions = array ();
+		$files = scandir ('extensions');
+		foreach ($files as $file) {
+			$extension = array ();
+			$extensionDir = 'extensions/' . $file;
+			if (is_dir ($extensionDir)) {
+				if (is_file ($extensionDir . '/extension.php')) {
+					include $extensionDir . '/extension.php';
+					$minVersion = $extension['general']['minversion'];
+					$maxVersion = $extension['general']['maxversion'];
+					$extensionID = $extension['general']['ID'];
+					if ($extension['need_install'] == true) {
+						$isInstalledFunction = $extension['is_installed_function'];
+						$installable = $isInstalledFunction ($this->genDB) ? false : true;
+						$extension['is_installed'] = $isInstalledFunction ($this->genDB);
+					} else {
+						$installable = false;
+//						$extension['is_isntalled']
+					}
+					
+					$extension['installable'] = $installable;
+					if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
+						$status = 'incompatible';
+					} elseif ($this->extensionIsLoaded ($extensionID)) {
+						$status = 'loaded';
+					} elseif ($installable == true) {
+						$status = 'not_installed';
+					} else {
+						$status = 'ok';
+						if (array_key_exists ('required_file', $extension)) {
+							foreach ($extension['required_file'] as $reqFile) {
+								if (! file_exists ($extensionDir . '/' . $reqFile)) {
+									$status = 'missing_file';
+								}
+							}
 						}
+					}
+					$extension['status'] = $status;
+					$extension['extension_dir'] = $extensionDir;
+					$ID = $extension['general']['ID'];
+					if (! array_key_exists ($ID, $this->extensions)) {
+						$this->extensions[$ID] = $extension;
+					} else {
+						trigger_error ('ERROR: Extension hasn\'t an unique ID');
 					}
 				}
 			}
 		}
 	}
 
-	/** \fn loadExtension ($extensionName)
+	/** \fn loadExtension ($extensionID)
 	 * Loads an extension. Returns false on failure, true on success
 	 *
-	 * \param $extensioName (string)
+	 * \param $extensionID(string)
 	 * \return (bool)
 	*/
-	/*private*/ function loadExtension ($extensionName) {
-		$statuses = $this->getAllExtensionsStatus ();
-		if (array_key_exists ($extensionName, $statuses)) {
-//			echo $extensionName;
-			if ($statuses[$extensionName] == 'ok') {
-				$extension = $this->getExtensionInfo ($extensionName);
-				//print_r ($extension);
+	/*private*/ function loadExtension ($extensionID) {
+		if (array_key_exists ($extensionID, $this->extensions)) {
+			$extension = $this->extensions[$extensionID];
+			if ($extension['status'] == 'ok') {
 				if (array_key_exists ('file_to_load', $extension)) {
 					$arrayOfObjects = array ();
 					$arrayOfObjects['UI'] = $this;
-					$arrayOfObjects['genDB'] = $this->genDB;
 					$loadedExtension = include ($extension['extension_dir'] . '/' . $extension['file_to_load']);
-					$this->loadedExtensions[$extensionName] = $loadedExtension;
+					$this->extensions[$extensionID]['status'] = 'loaded';
+					$this->loadedExtensions[$extensionID] = $loadedExtension;
+					return true;
+				} else {
+					return false;
 				}
-				return true;
 			} else {
 				return false;
 			}
@@ -743,11 +813,12 @@ class UIManager {
 	*/
 	/*private*/ function getExtensionAdminHTML () {
 		$HTML = $this->parse (' &OPEN_EXTENSIONS_ADMIN;');
-		$statusses = $this->getAllExtensionsStatus ();
-		foreach ($statusses as $extension => $status) {
-			$extensionName = 'load' . $extension;
+		foreach ($this->extensions as $extensionID => $extension) {
+			$extensionName = $extension['general']['name'];
+			$status = $extension['status'];
+			$extensionLoad = 'load' . $extensionID;
 			if ($status == 'loaded' || $status == 'ok') {
-				if ($this->config->getConfigitem ('/extensions/' . $extension, TYPE_BOOL) == true) {
+				if ($this->config->getConfigitem ('/extensions/' . $extensionID, TYPE_BOOL) == true) {
 					$status = 'loaded';
 				} else {
 					$status = 'ok';
@@ -755,68 +826,61 @@ class UIManager {
 			}
 			switch ($status) {
 				case 'loaded':
-					$statusHTML = " ADMIN_EXTENSION_STATUS_LOADED ($extensionName)";
+					$statusHTML = " ADMIN_EXTENSION_STATUS_LOADED ($extensionLoad)";
 					break;
 				case 'ok':
-					$statusHTML = " ADMIN_EXTENSION_STATUS_OK ($extensionName)";
+					$statusHTML = " ADMIN_EXTENSION_STATUS_OK ($extensionLoad)";
 					break;
 				case 'incompatible':
-					$statusHTML = " ADMIN_EXTENSION_STATUS_INCOMPATIBLE ($extensionName)";
+					$statusHTML = " ADMIN_EXTENSION_STATUS_INCOMPATIBLE ($extensionLoad)";
 					break;
 				case 'missing_file':
-					$statusHTML = " ADMIN_EXTENSION_STATUS_MISSING_FILE ($extensionName)";
+					$statusHTML = " ADMIN_EXTENSION_STATUS_MISSING_FILE ($extensionLoad)";
+					break;
+				case 'not_installed':
+					$statusHTML = " ADMIN_EXTENSION_STATUS_NOT_INSTALLED ($extensionLoad)";
 					break;
 				default: 
 					trigger_error ('NOTICE: Unrecognized extension-status.');
 					$statusHTML = NULL;
 			}
+			$installExtension = 'admin.php?module=installextension&name=' . $extensionID;
+			$unInstallExtension = 'admin.php?module=uninstallextension&name=' . $extensionID;
+			if ($status == 'not_installed') {
+				$install = " ADMIN_EXTENSION_INSTALL ($installExtension)";
+			} elseif ($extension['is_installed'] == true) {
+				$install = " ADMIN_EXTENSION_UNINSTALL ($unInstallExtension)";
+			} else {
+				$install = NULL;
+			}
 			$statusHTML = $this->parse ($statusHTML);
-			$HTML .= " ADMIN_EXTENSION_ITEM ($extension, $statusHTML)";
+			$install = $this->parse ($install);
+			$HTML .= " ADMIN_EXTENSION_ITEM ($extensionName, $statusHTML, $install)";
 		}
 		$HTML .= ' &CLOSE_EXTENSIONS_ADMIN;';
 		return $this->parse ($HTML);
 	}
 	
-	/** \fn getAllExtensionsStatus ()
-	 * Returns an array with the status for all found extensions. The possible statusses are:
-	 *  - loaded
-	 *  - incompatible
-	 *  - missing_file
-	 *  - ok
-	*/
-	/*private*/ function getAlLExtensionsStatus () {
-		$all = array ();
-		$handler = opendir ('extensions');
-		// $files = scandir ('extensions/'); PHP5 only :( 
-		// foreach ($files as $file) PHP5 only :(
-		while (false !== ($file = readdir ($handler))) {
-			$extensionDir = 'extensions/' . $file;
-			if (is_dir ($extensionDir) and $file[0] != '.') {
-				if (file_exists ($extensionDir . '/extension.php')) {
-					$extension = array ();
-					include ($extensionDir . '/extension.php');
-					$extensionName = $extension['general']['name'];
-					$minVersion = $extension['general']['minversion'];
-					$maxVersion = $extension['general']['maxversion'];
-					if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
-						$all[$extensionName] = 'incompatible';
-					} elseif ($this->extensionIsLoaded ($extensionName)) {
-						$all[$extensionName] = 'loaded';
-					} else {
-						$all[$extensionName] = 'ok';
-						if (array_key_exists ('required_file', $extension)) {
-							foreach ($extension['required_file'] as $reqFile) {
-								if (! file_exists ($extensionDir . '/' . $reqFile)) {
-									$all[$extensionName] = 'missing_file';
-								}
-							}
-						}
-					}
-				}
+	function installExtension ($extensionID) {
+		if (array_key_exists ($extensionID, $this->extensions)) {
+			$extension = $this->extensions[$extensionID];
+			if ($extension['installable'] == true) {
+				$extension['install_function'] ($this->genDB);
 			}
+		} else {
+			trigger_error ('ERROR: Extension does not exists.');
 		}
-		//print_r ($all);
-		return $all;
+	}
+	
+	function unInstallExtension ($extensionID) {
+		if (array_key_exists ($extensionID, $this->extensions)) {
+			$extension = $this->extensions[$extensionID];
+			if (($extension['installable'] == false) and ($extension['need_install'] == true)) {
+				$extension['uninstall_function'] ($this->genDB);
+			}
+		} else {
+			trigger_error ('ERROR: Extension does not exists.');
+		}
 	}
 }
 ?>

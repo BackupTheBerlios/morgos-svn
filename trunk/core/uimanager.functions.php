@@ -63,9 +63,12 @@ $this->functions['box'] = array ('name' => 'BOX', 'params' => array ('TITLE', 'C
 $this->functions['admin_user_isadmin'] = array ('name' => 'ADMIN_USER_ISADMIN', 'params' => array ('USERNAME'));
 $this->functions['admin_user_isnotadmin'] = array ('name' => 'ADMIN_USER_ISNOTADMIN', 'params' => array ('USERNAME'));
 $this->functions['admin_user'] = array ('name' => 'ADMIN_USER', 'params' => array ('USERNAME', 'EMAIL', 'ISADMIN'));
-$this->functions['admin_extension_item'] = array ('name' => 'ADMIN_EXTENSION_ITEM', 'params' => array ('NAME', 'STATUS'));
+$this->functions['admin_extension_item'] = array ('name' => 'ADMIN_EXTENSION_ITEM', 'params' => array ('NAME', 'STATUS', 'INSTALL'));
 $this->functions['admin_extension_status_ok'] = array ('name' => 'ADMIN_EXTENSION_STATUS_OK', 'params' => array ('NAME'));
 $this->functions['admin_extension_status_incompatible'] = array ('name' => 'ADMIN_EXTENSION_STATUS_INCOMPATIBLE', 'params' => array ('NAME'));
 $this->functions['admin_extension_status_loaded'] = array ('name' => 'ADMIN_EXTENSION_STATUS_LOADED', 'params' => array ('NAME'));
 $this->functions['admin_extension_status_missing_file'] = array ('name' => 'ADMIN_EXTENSION_STATUS_MISSING_FILE', 'params' => array ('NAME'));
+$this->functions['admin_extension_status_not_installed'] = array ('name' => 'ADMIN_EXTENSION_STATUS_NOT_INSTALLED', 'params' => array ('NAME'));
+$this->functions['admin_extension_install'] = array ('name' => 'ADMIN_EXTENSION_INSTALL', 'params' => array ('INSTALLLINK'));
+$this->functions['admin_extension_uninstall'] = array ('name' => 'ADMIN_EXTENSION_UNINSTALL', 'params' => array ('UNINSTALLLINK'));
 ?>

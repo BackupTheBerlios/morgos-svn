@@ -20,8 +20,9 @@ $extension['general']['name'] = 'W3C';
 $extension['general']['version'] = '0.1';
 $extension['general']['maxversion'] = '0.1';
 $extension['general']['minversion'] = '0.1';
+$extension['general']['ID'] = '{0123-4567-8910-1112}';
 $extension['required_file'][] = 'index.php';
-
+$extension['need_install'] = false;
 $extension['file_to_load'] = 'index.php';
 $extension['file_to_install'] = 'install.php';
 

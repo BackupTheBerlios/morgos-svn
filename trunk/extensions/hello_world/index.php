@@ -1,4 +1,5 @@
 <?php
+	if (! class_exists ('HelloWorldExtension')) {
 	class HelloWorldExtension {
 		function HelloWorldExtension ($UI) {
 			$this->_construct ($UI);
@@ -10,7 +11,7 @@
 			$UI->pages->appendTextToPageContent ('<br />See You later alligator.');
 		}
 	}
-	
+	}
 	$UI = $arrayOfObjects['UI'];
 	return new HelloWorldExtension ($UI);
 ?>

@@ -86,6 +86,29 @@ if (! function_exists ('trigger_error')) {
 	}
 }
 
+if (! function_exists ('scandir')) {
+	gettype ($_POST); // this is here only to trick Doxygen
+	/** \fn scandir ($directory)
+	 * List files and directories inside the specified path
+	 * \warning this is not fully compatible with the one defined in PHP 5
+	 *
+	 * \param $directory (string)
+	 * \return (array | false) 
+	*/
+	function scandir ($directory) {
+		$handler = opendir ($directory);
+		if ($handler === false) {
+			return false;
+		} else {
+			$files = array ();
+			while (false !== ($file = readdir ($handler))) {
+				$files[] = $file;
+			}
+			return $files;
+		}
+	}
+}
+
 /** \fn versionCompare ($version1, $version2, $operator)
  * compares 2 version numbers. A version looks like "1.2.*" or "1.2" (which is the same)
  * \warning this function is untested, use with care
@@ -120,25 +143,25 @@ function versionCompare ($version1, $version2, $operator) {
 	
 	switch ($operator) {
 		case '>=':
-			if (($result == 1) or ($result == 0)) {
+			if ($result >= 0) {
 				return true;
 			} else {
 				return false;
 			}
 		case '<=':
-			if (($result == -1) or ($result == 0)) {
+			if ($result <= 0) {
 				return true;
 			} else {
 				return false;
 			}
 		case '>':
-			if ($result == 1) {
+			if ($result > 0) {
 				return true;
 			} else {
 				return false;
 			}
 		case '<':
-			if ($result == -1) {
+			if ($result < 0) {
 				return true;
 			} else {
 				return false;
