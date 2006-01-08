@@ -52,7 +52,7 @@ class user {
 		$username = addslashes ($username);
 		$query = $this->genDB->query ("SELECT username, password FROM ".TBL_USERS." WHERE username = '$username'");
 		if ($this->genDB->num_rows ($query) == 0) {
-			trigger_error ('WARNING: ' . $this->lang->translate ('Username does not exists.'));
+			trigger_error ('WARNING: ' . $this->i10nMan->translate ('Username does not exists.'));
 			return;
 		}
 		$user = $this->genDB->fetch_array ($query);

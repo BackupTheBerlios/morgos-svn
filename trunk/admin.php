@@ -15,6 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
+function getmicrotime() {
+   list($usec, $sec) = explode(" ",microtime());
+   return ((float)$usec + (float)$sec);
+} 
+
+global $startTime;
+$startTime = getmicrotime ();
 include ('core/uimanager.class.php');
 $UI = new UIManager ();
 
@@ -123,13 +130,14 @@ switch ($module) {
 		$UI->loadPage ('admin/users', NULL, true, true);
 		break;
 	case 'saveextensions':
-		$UI->getConfigClass ()->removeConfigItem ('/extensions');
+		$config = &$UI->getConfigClass ();
+		$config->removeConfigItem ('/extensions');
 		foreach ($_POST as $key => $item) {
 			if (substr ($key, 0, 4) == 'load') {
 				$extensionName = substr ($key, 4);
 				$extensionName = str_replace ('_', ' ', $extensionName);
 				if ($item == 'on') {
-					$UI->getConfigClass ()->addConfigItem ('/extensions/' . $extensionName, true, TYPE_BOOL);
+					$config->addConfigItem ('/extensions/' . $extensionName, true, TYPE_BOOL);
 					if (array_key_exists ($extensionName, $UI->extensions)) {
 						if ($UI->extensions[$extensionName]['installable'] == true) {
 							$UI->installExtension ($extensionName);
@@ -138,7 +146,7 @@ switch ($module) {
 				}
 			}
 		}
-		$UI->getConfigClass ()->addConfigItem ('/extensions/WHATEVER', false, TYPE_BOOL);
+		$config->addConfigItem ('/extensions/WHATEVER', false, TYPE_BOOL);
 		$UI->saveAdmin (array ());
 		$UI = NULL;
 		$UI = new UIManager (); // to reload all extensions
@@ -163,7 +171,8 @@ switch ($module) {
 		$UI->loadPage ('admin/extensions');
 		break;	
 	default:
-		$allModules = $UI->getPagesClass ()->getAllAvailableModules (true);
+		$pages = &$UI->getPagesClass ();
+		$allModules = $pages->getAllAvailableModules (true);
 		if (array_key_exists ('admin/' . $module, $allModules)) {
 			$UI->loadPage ('admin/' . $module);
 		} else {

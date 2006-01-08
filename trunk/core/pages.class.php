@@ -30,7 +30,7 @@
 */
 class pages {
 	function pages (&$genDB, &$i10nMan) {
-		$this->construct ($genDB, $i10nMan);
+		$this->__construct ($genDB, $i10nMan);
 	}
 
 	function __construct (&$genDB, &$i10nMan) {

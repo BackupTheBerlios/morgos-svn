@@ -16,77 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 // MorgOS defined vars
-$DBTypeOptions = NULL;
-$DBManager = new genericDatabase;
-foreach ($DBManager->getAllSupportedDatabases () as $key => $supported) {
-	if ($this->config->getConfigItem ('/database/type', TYPE_STRING) == $key) {
-		$DBTypeOptions .= ' ADMIN_DATABASE_TYPE_OPTION_SELECTED ('. $key . ')';
-	} else {
-		$DBTypeOptions .= ' ADMIN_DATABASE_TYPE_OPTION ('. $key . ')';
-	}
-}
-$this->vars['VAR_ADMIN_DATABASE_FORM_DATABASE_TYPE_OPTIONS'] = $DBTypeOptions;
-$this->vars['VAR_ADMIN_DATABASE_FORM_ACTION'] = './admin.php?module=databasesave';
-$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_HOST'] = '/database/host';
-$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_DATABASE_TYPE'] = '/database/type';
-$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_DBNAME'] = '/database/name';
-$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_USER'] = '/database/user';
-$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_PASSWORD'] = '/database/password';
-$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_HOST'] = $this->config->getConfigItem ('/database/host', TYPE_STRING);
-$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_DBNAME'] = $this->config->getConfigItem ('/database/name', TYPE_STRING);
-$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_USER'] = $this->config->getConfigItem ('/database/user', TYPE_STRING);
-$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_PASSWORD'] = $this->config->getConfigItem ('/database/password', TYPE_STRING);
-$this->vars['VAR_ADMIN_GENERAL_FORM_ACTION'] = 'admin.php?module=generalsave';
-$this->vars['VAR_ADMIN_GENERAL_FORM_NAME_SITE_NAME'] = '/general/sitename';
-$this->vars['VAR_ADMIN_GENERAL_FORM_VALUE_SITE_NAME'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
-$this->vars['VAR_ADMIN_NAVIGATION'] = $this->getAdminNavigator ();
-$this->vars['VAR_ADMIN_LINK_INDEX'] = 'admin.php';
-$this->vars['VAR_ADMIN_LINK_GENERAL'] = 'admin.php?module=general';
-
-$this->vars['VAR_ADMIN_MODULES'] = $this->getModuleAdminHTML ();
-
-$this->vars['VAR_ADMIN_LINK_DATABASE'] = 'admin.php?module=database';
-$this->vars['VAR_ADMIN_LINK_PAGES'] = 'admin.php?module=pages';
-$this->vars['VAR_ADMIN_FORM_MODULES_ACTION'] = 'admin.php?module=pagessave';
-$this->vars['VAR_ADMIN_FORM_MODULES_SUBMIT'] = 'submit';
-$this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NAME'] = 'NEW_MODULE_NAME';
-$this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NEEDAUTHORIZE'] = 'NEW_MODULE_NEEDAUTHORIZE';
 include ($this->skinPath . 'skin.php');
-$this->vars['VAR_ADMIN_MODULES_OPEN'] = $this->parse ($skin['variable']['admin_modules_open']);
-$this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($skin['variable']['admin_modules_close']);
-$this->vars['VAR_SKIN_LICENSE'] = $this->parse ($skin['variable']['license']);
-$this->vars['VAR_ADMIN_DATABASE_FORM_SUBMIT'] = 'submit';
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_ACTION'] = 'admin.php?module=addpagesave';
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_SUBMIT'] = 'submit';
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_LANGUAGE'] = 'language';
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_CONTENT'] = 'content';
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_MODULE'] = 'module';
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_NAME'] = 'name';
-$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE'] = 'language';
-$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CONTENT'] = 'newcontent';
-$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE'] = 'language';
-$this->vars['VAR_ADMIN_FORM_EDITPAGE_ACTION'] = './admin.php?module=pagessave';
-$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_PAGENAME'] = 'newname';
-global $editPageModule, $editPageLanguage;
-if (isset ($editPageModule)) {
-	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURLANGUAGE'] = $editPageLanguage;
-	$this->vars['VAR_ADMIN_FORM_EDITPAGE_SUBMIT'] = 'EDIT_PAGE_SAVE' . $editPageModule;
-	$page = $this->getPageInfo ($editPageModule, $editPageLanguage);
-	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURPAGENAME'] = $page['name'];
-	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURCONTENT'] = $page['content']; 
-}
-global  $addToModule;
-if (! isset ($addToModule)) {
-	$addToModule = NULL;
-}
-$this->vars['VAR_ADMIN_FORM_ADDPAGE_VALUE_MODULE'] = $addToModule;
-global $saveOutput;
-if (! isset ($saveOutput)) {
-	$saveOutput = NULL;
-}
-$this->vars['VAR_SAVE_CONFIG_MANUALLY'] = $saveOutput;
-$this->vars['VAR_ADMIN_SAVECONFIG_FORM_ACTION'] = './admin';
-$this->vars['VAR_ADMIN_SAVECONFIG_FORM_SUBMIT'] = 'submit';
+
 $contentLanguage = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 $this->vars['VAR_PAGE_CONTENT'] = $this->pages->getPageContent ($this->module, $contentLanguage);
 $page = $this->pages->getPageInfo ($this->module, $contentLanguage);
@@ -107,100 +38,202 @@ foreach ($this->notices as $val) {
 	} elseif ($val["type"] == "DEBUG") {
 		$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
 	}
-/*	if ($val["die"] == true) {
-		echo "DIED";
-		die (); // FIX: Do a clean die ();
-	}*/
+	//if ($val["die"] == true) {
+	//	echo "DIED";
+	//	die (); // FIX: Do a clean die ();
+	//}
 }
+
 if ($this->user->isLoggedIn ()) {
+	$this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigator ();
 	$userPlace = '&VAR_USER_NAVIGATION;';
 } else {
 	$userPlace = '&VAR_LOGIN_FORM;';
+	$this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
+	$this->vars['VAR_LOGIN_FORM_METHOD'] = 'post';
+	$this->vars['VAR_LOGIN_FORM_LOGINNAME_NAME'] = 'loginname';
+	$this->vars['VAR_LOGIN_FORM_LOGINNAME_VALUE'] = $this->i10nMan->translate ('Loginname');
+	$this->vars['VAR_LOGIN_FORM_PASSWORD_NAME'] = 'password';
+	$this->vars['VAR_LOGIN_FORM_SUBMIT_NAME'] = 'submit';
 }
+
+$this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
+$this->vars['VAR_TO_REGISTER_USER'] = './index.php?module=register';
+$this->vars['SIDEBAR'] = $this->getSidebarHTML ();
+
+if (substr ($this->module, 0, 5) == 'admin') {
+	$this->vars['VAR_ADMIN_NAVIGATION'] = $this->getAdminNavigator ();
+	$this->vars['VAR_ADMIN_LINK_INDEX'] = 'admin.php';
+	$this->vars['VAR_ADMIN_LINK_GENERAL'] = 'admin.php?module=general';
+}
+
+if ($this->module == 'admin/databases') {
+	$DBTypeOptions = NULL;
+	$DBManager = new genericDatabase;
+	foreach ($DBManager->getAllSupportedDatabases () as $key => $supported) {
+		if ($this->config->getConfigItem ('/database/type', TYPE_STRING) == $key) {
+			$DBTypeOptions .= ' ADMIN_DATABASE_TYPE_OPTION_SELECTED ('. $key . ')';
+		} else {
+			$DBTypeOptions .= ' ADMIN_DATABASE_TYPE_OPTION ('. $key . ')';
+		}
+	}
+	$this->vars['VAR_ADMIN_DATABASE_FORM_DATABASE_TYPE_OPTIONS'] = $DBTypeOptions;
+	$this->vars['VAR_ADMIN_DATABASE_FORM_ACTION'] = './admin.php?module=databasesave';
+	$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_HOST'] = '/database/host';
+	$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_DATABASE_TYPE'] = '/database/type';
+	$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_DBNAME'] = '/database/name';
+	$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_USER'] = '/database/user';
+	$this->vars['VAR_ADMIN_DATABASE_FORM_NAME_PASSWORD'] = '/database/password';
+	$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_HOST'] = $this->config->getConfigItem ('/database/host', TYPE_STRING);
+	$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_DBNAME'] = $this->config->getConfigItem ('/database/name', TYPE_STRING);
+	$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_USER'] = $this->config->getConfigItem ('/database/user', TYPE_STRING);
+	$this->vars['VAR_ADMIN_DATABASE_FORM_VALUE_PASSWORD'] = $this->config->getConfigItem ('/database/password', TYPE_STRING);
+}
+
+if ($this->module == 'admin/general') {
+	$this->vars['VAR_ADMIN_GENERAL_FORM_ACTION'] = 'admin.php?module=generalsave';
+	$this->vars['VAR_ADMIN_GENERAL_FORM_NAME_SITE_NAME'] = '/general/sitename';
+	$this->vars['VAR_ADMIN_GENERAL_FORM_VALUE_SITE_NAME'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
+}
+
+if ($this->module == 'admin/pages') {
+	$this->vars['VAR_ADMIN_FORM_MODULES_ACTION'] = 'admin.php?module=pagessave';
+	$this->vars['VAR_ADMIN_FORM_MODULES_SUBMIT'] = 'submit';
+	$this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NAME'] = 'NEW_MODULE_NAME';
+	$this->vars['VAR_ADMIN_FORM_MODULES_NEW_MODULE_NEEDAUTHORIZE'] = 'NEW_MODULE_NEEDAUTHORIZE';
+	$this->vars['VAR_ADMIN_MODULES_OPEN'] = $this->parse ($skin['variable']['admin_modules_open']);
+	$this->vars['VAR_ADMIN_MODULES_CLOSE'] = $this->parse ($skin['variable']['admin_modules_close']);
+	$this->vars['VAR_ADMIN_MODULES'] = $this->getModuleAdminHTML ();
+	$this->vars['VAR_ADMIN_LINK_DATABASE'] = 'admin.php?module=database';
+	$this->vars['VAR_ADMIN_LINK_PAGES'] = 'admin.php?module=pages';
+
+	$this->vars['VAR_SKIN_LICENSE'] = $this->parse ($skin['variable']['license']);
+	$this->vars['VAR_ADMIN_DATABASE_FORM_SUBMIT'] = 'submit';
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_ACTION'] = 'admin.php?module=addpagesave';
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_SUBMIT'] = 'submit';
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_LANGUAGE'] = 'language';
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_CONTENT'] = 'content';
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_MODULE'] = 'module';
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_NAME'] = 'name';
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE'] = 'language';
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CONTENT'] = 'newcontent';
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_LANGUAGE'] = 'language';
+	$this->vars['VAR_ADMIN_FORM_EDITPAGE_ACTION'] = './admin.php?module=pagessave';
+	$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_PAGENAME'] = 'newname';
+	global $editPageModule, $editPageLanguage;
+	if (isset ($editPageModule)) {
+		$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURLANGUAGE'] = $editPageLanguage;
+		$this->vars['VAR_ADMIN_FORM_EDITPAGE_SUBMIT'] = 'EDIT_PAGE_SAVE' . $editPageModule;
+		$page = $this->getPageInfo ($editPageModule, $editPageLanguage);
+		$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURPAGENAME'] = $page['name'];
+		$this->vars['VAR_ADMIN_FORM_EDIT_PAGE_CURCONTENT'] = $page['content']; 
+	}
+}
+
+
+global  $addToModule;
+if (! isset ($addToModule)) {
+	$this->vars['VAR_ADMIN_FORM_ADDPAGE_VALUE_MODULE'] = $addToModule;
+}
+
+global $saveOutput;
+if (! isset ($saveOutput)) {
+	$this->vars['VAR_SAVE_CONFIG_MANUALLY'] = $saveOutput;
+}
+
+$this->vars['VAR_ADMIN_SAVECONFIG_FORM_ACTION'] = './admin';
+$this->vars['VAR_ADMIN_SAVECONFIG_FORM_SUBMIT'] = 'submit';
+
 if ($_GET['module'] == 'login' && $this->user->isLoggedIn () == false) {
 	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '<a href="index.php?module=forgotpass">&TEXT_FORGOT_PASSWORD;</a>';
 } else {
 	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '';
 }
-$this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigator ();
-$this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
-$this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
-$this->vars['VAR_LOGIN_FORM_METHOD'] = 'post';
-$this->vars['VAR_LOGIN_FORM_LOGINNAME_NAME'] = 'loginname';
-$this->vars['VAR_LOGIN_FORM_LOGINNAME_VALUE'] = $this->i10nMan->translate ('Loginname');
-$this->vars['VAR_LOGIN_FORM_PASSWORD_NAME'] = 'password';
-$this->vars['VAR_LOGIN_FORM_SUBMIT_NAME'] = 'submit';
-$this->vars['VAR_TO_REGISTER_USER'] = './index.php?module=register';
-$this->vars['VAR_REGISTER_ACTION'] = './index.php?module=registeruser';
-$this->vars['VAR_REGISTER_METHOD'] = 'post';
-$this->vars['VAR_REGISTER_NAME_NAME'] = 'account-name';
-$this->vars['VAR_REGISTER_EMAIL_NAME'] = 'account-email';
-$this->vars['VAR_REGISTER_PASSWORD1_NAME'] = 'account-password';
-$this->vars['VAR_REGISTER_PASSWORD2_NAME'] = 'account-password2';
-$this->vars['VAR_REGISTER_SUBMIT_NAME'] = 'submit';
-$this->vars['VAR_USERSETTINGSFORM_ACTION'] = './index.php?module=saveusersettings';
-$this->vars['VAR_USERSETTINGSFORM_METHOD'] = 'post';
-$this->vars['VAR_USERSETTINGSFORM_EMAIL_NAME'] = 'account-email';
-$curUser = $this->user->getUser ();
-$this->vars['VAR_USERSETTINGSFORM_EMAIL_VALUE'] = $curUser['email'];
-$this->vars['VAR_USERSETTINGSFORM_PASSWORD1_NAME'] = 'account-password1';
-$this->vars['VAR_USERSETTINGSFORM_PASSWORD2_NAME'] = 'account-password2';
-$this->vars['VAR_USERSETTINGSFORM_SUBMIT'] = 'submit';
-$this->vars['VAR_THEME_OPTION_NAME'] = 'skin';
-$this->vars['VAR_LANGUAGE_OPTION_NAME'] = 'language';
-$this->vars['VAR_CONTENTLANGUAGE_OPTION_NAME'] = 'contentlanguage';
-$this->vars['VAR_OPEN_LANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_open_language_option']);
-$this->vars['VAR_CLOSE_LANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_close_language_option']);
-$this->vars['VAR_OPEN_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_open_contentlanguage_option']);
-$this->vars['VAR_CLOSE_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_close_contentlanguage_option']);
-$this->vars['VAR_OPEN_THEME_OPTION'] = $this->parse ($skin['variable']['var_open_theme_option']);
-$this->vars['VAR_CLOSE_THEME_OPTION'] = $this->parse ($skin['variable']['var_close_theme_option']);
 
-$languageOption = ' &VAR_OPEN_LANGUAGE_OPTION;';
-foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
-	if ($language == $this->config->getConfigItem ('/userinterface/language', TYPE_STRING)) {
-		$languageOption .= ' LANGUAGE_OPTION_SELECTED (' . $language . ')';
-	} else {
-		$languageOption .= ' LANGUAGE_OPTION (' . $language . ')';
-	}
+if ($this->module == 'register') {
+	$this->vars['VAR_REGISTER_ACTION'] = './index.php?module=registeruser';
+	$this->vars['VAR_REGISTER_METHOD'] = 'post';
+	$this->vars['VAR_REGISTER_NAME_NAME'] = 'account-name';
+	$this->vars['VAR_REGISTER_EMAIL_NAME'] = 'account-email';
+	$this->vars['VAR_REGISTER_PASSWORD1_NAME'] = 'account-password';
+	$this->vars['VAR_REGISTER_PASSWORD2_NAME'] = 'account-password2';
+	$this->vars['VAR_REGISTER_SUBMIT_NAME'] = 'submit';
 }
-$languageOption .= ' &VAR_CLOSE_LANGUAGE_OPTION;';
-$this->vars['VAR_LANGUAGE_OPTION'] = $this->parse ($languageOption);
 
-$contentLanguageOption = ' &VAR_OPEN_CONTENTLANGUAGE_OPTION;';
-foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
-	if ($language == $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING)) {
-		$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION_SELECTED (' . $language . ')';
-	} else {
-		$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION (' . $language . ')';
-	}
-}
-$contentLanguageOption .= ' &VAR_CLOSE_CONTENTLANGUAGE_OPTION;';
-$this->vars['VAR_CONTENTLANGUAGE_OPTION'] = $this->parse ($contentLanguageOption);
+if ($this->module == 'usersettings') {
+	$this->vars['VAR_USERSETTINGSFORM_ACTION'] = './index.php?module=saveusersettings';
+	$this->vars['VAR_USERSETTINGSFORM_METHOD'] = 'post';
+	$this->vars['VAR_USERSETTINGSFORM_EMAIL_NAME'] = 'account-email';
+	$curUser = $this->user->getUser ();
+	$this->vars['VAR_USERSETTINGSFORM_EMAIL_VALUE'] = $curUser['email'];
+	$this->vars['VAR_USERSETTINGSFORM_PASSWORD1_NAME'] = 'account-password1';
+	$this->vars['VAR_USERSETTINGSFORM_PASSWORD2_NAME'] = 'account-password2';
+	$this->vars['VAR_USERSETTINGSFORM_SUBMIT'] = 'submit';
+	$this->vars['VAR_THEME_OPTION_NAME'] = 'skin';
+	$this->vars['VAR_LANGUAGE_OPTION_NAME'] = 'language';
+	$this->vars['VAR_CONTENTLANGUAGE_OPTION_NAME'] = 'contentlanguage';
+	$this->vars['VAR_OPEN_LANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_open_language_option']);
+	$this->vars['VAR_CLOSE_LANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_close_language_option']);
+	$this->vars['VAR_OPEN_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_open_contentlanguage_option']);
+	$this->vars['VAR_CLOSE_CONTENTLANGUAGE_OPTION'] = $this->parse ($skin['variable']['var_close_contentlanguage_option']);
+	$this->vars['VAR_OPEN_THEME_OPTION'] = $this->parse ($skin['variable']['var_open_theme_option']);
+	$this->vars['VAR_CLOSE_THEME_OPTION'] = $this->parse ($skin['variable']['var_close_theme_option']);
 
-$themeOption = ' &VAR_OPEN_THEME_OPTION;';
-foreach ($this->getAllSupportedSkins () as $askin) {
-	if ($askin == $this->config->getConfigItem ('/userinterface/skin', TYPE_STRING)) {
-		$themeOption .= ' THEME_OPTION_SELECTED (' . $askin . ')';
-	} else {
-		$themeOption .= ' THEME_OPTION (' . $askin . ')';
+	$languageOption = ' &VAR_OPEN_LANGUAGE_OPTION;';
+	foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
+		if ($language == $this->config->getConfigItem ('/userinterface/language', TYPE_STRING)) {
+			$languageOption .= ' LANGUAGE_OPTION_SELECTED (' . $language . ')';
+		} else {
+			$languageOption .= ' LANGUAGE_OPTION (' . $language . ')';
+		}
 	}
+	$languageOption .= ' &VAR_CLOSE_LANGUAGE_OPTION;';
+	$this->vars['VAR_LANGUAGE_OPTION'] = $this->parse ($languageOption);
+
+	$contentLanguageOption = ' &VAR_OPEN_CONTENTLANGUAGE_OPTION;';
+	foreach ($this->i10nMan->getAllSupportedLanguages () as $language) {
+		if ($language == $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING)) {
+				$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION_SELECTED (' . $language . ')';
+		} else {
+			$contentLanguageOption .= ' CONTENTLANGUAGE_OPTION (' . $language . ')';
+		}
+	}
+	$contentLanguageOption .= ' &VAR_CLOSE_CONTENTLANGUAGE_OPTION;';
+	$this->vars['VAR_CONTENTLANGUAGE_OPTION'] = $this->parse ($contentLanguageOption);
+
+	$themeOption = ' &VAR_OPEN_THEME_OPTION;';
+	foreach ($this->getAllSupportedSkins () as $askin) {
+		if ($askin == $this->config->getConfigItem ('/userinterface/skin', TYPE_STRING)) {
+			$themeOption .= ' THEME_OPTION_SELECTED (' . $askin . ')';
+		} else {
+			$themeOption .= ' THEME_OPTION (' . $askin . ')';
+		}
+	}
+	$themeOption .= ' &VAR_CLOSE_THEME_OPTION;';
+	$this->vars['VAR_THEME_OPTION'] = $this->parse ($themeOption);
 }
-$themeOption .= ' &VAR_CLOSE_THEME_OPTION;';
-$this->vars['VAR_THEME_OPTION'] = $this->parse ($themeOption);
-$this->vars['VAR_ADMIN_USERS_ADMIN'] = $this->getUserAdminHTML ();
-$this->vars['VAR_LOSTPASSFORM_ACTION'] = './index.php?module=sendpass';
-$this->vars['VAR_LOSTPASSFORM_METHOD'] = 'post';
-$this->vars['VAR_LOSTPASS_NAMENAME'] = 'username';
-$this->vars['VAR_LOSTPASS_EMAILNAME'] = 'useremail';
-$this->vars['VAR_LOSTPASS_SUBMITNAME'] = 'submit';
-$this->vars['VAR_EXTENSIONS_ADMIN_METHOD'] = 'post';
-$this->vars['VAR_EXTENSIONS_ADMIN_ACTION'] = './admin.php?module=saveextensions';
-$this->vars['VAR_SAVE_EXTENSIONS_SUBMIT'] = 'submit';
-$this->vars['VAR_ADMIN_EXTENSIONS_ADMIN'] = $this->getExtensionAdminHTML ();
-$this->vars['OPEN_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['OPEN_EXTENSIONS_ADMIN']);
-$this->vars['CLOSE_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['CLOSE_EXTENSIONS_ADMIN']);
-$this->vars['SIDEBAR'] = $this->getSidebarHTML ();
+
+if ($this->module == 'admin/users') {
+	$this->vars['VAR_ADMIN_USERS_ADMIN'] = $this->getUserAdminHTML ();
+}
+
+if ($this->module == 'admin/extensions') {
+	$this->vars['VAR_ADMIN_EXTENSIONS_ADMIN'] = $this->getExtensionAdminHTML ();
+	$this->vars['OPEN_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['OPEN_EXTENSIONS_ADMIN']);
+	$this->vars['CLOSE_EXTENSIONS_ADMIN'] = $this->parse ($skin['variable']['CLOSE_EXTENSIONS_ADMIN']);
+	$this->vars['VAR_EXTENSIONS_ADMIN_METHOD'] = 'post';
+	$this->vars['VAR_SAVE_EXTENSIONS_SUBMIT'] = 'submit';
+	$this->vars['VAR_EXTENSIONS_ADMIN_ACTION'] = './admin.php?module=saveextensions';
+}
+
+if ($this->module == 'forgotpass') {
+	$this->vars['VAR_LOSTPASSFORM_ACTION'] = './index.php?module=sendpass';
+	$this->vars['VAR_LOSTPASSFORM_METHOD'] = 'post';
+	$this->vars['VAR_LOSTPASS_NAMENAME'] = 'username';
+	$this->vars['VAR_LOSTPASS_EMAILNAME'] = 'useremail';
+	$this->vars['VAR_LOSTPASS_SUBMITNAME'] = 'submit';
+}
+
 // language vars
 $this->vars['TEXT_ADMIN_INTRODUCTION'] = $this->i10nMan->translate ('This is the admin. In the admin you can setup all what you need to configure.');
 $this->vars['TEXT_ADMIN_INDEX'] = $this->i10nMan->translate ('Admin Home');
