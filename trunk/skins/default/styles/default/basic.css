@@ -28,6 +28,14 @@ div#sidebar {
 	width: 10em;
 }
 
+div#subbar {
+	clear: both;
+	width: 100%;
+	text-align: center;
+	font-size: 0.8em;
+	border: 1px solid black;
+}
+
 #header {
 	text-align: center;
 	margin-bottom: 0;
@@ -41,46 +49,63 @@ div#sidebar {
 	margin: 0;
 }
 
-ul.makeMenu, ul.makeMenu ul {
-  width: 8em;              /* sets the size of the menu blocks */
-  border: 1px solid #000;      /* puts a black border around the menu blocks */
-  border-bottom: 0;
-  background-color: #8aa;      /* makes the menu blocks mint green - a bg-color MUST be included for IE to work properly! */
-  padding-left: 0px;           /* stops the usual indent from ul */
-  cursor: default;             /* gives an arrow cursor */
-  margin-left: 0px;            /* Opera 7 final's margin and margin-box model cause problems */
+ul.makeMenu {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	/*background-color: #EEEEEE;
+	border-top: #3F3849 0px solid;
+	border-right: #3F3849 1px solid;
+	border-left: #3F3849 1px solid;*/
 }
+
 ul.makeMenu li {
-  list-style-type: none;       /* removes the bullet points */
-  margin: 0px;                 /* Opera 7 puts large spacings between li elements */
-  position: relative;          /* makes the menu blocks be positioned relative to their parent menu item
-                                  the lack of offset makes these appear normal, but it will make a difference
-                                  to the absolutely positioned child blocks */
-  color: #fff;                 /* sets the default font colour to white */
-  border-bottom: solid 1px black;
+	font-size: 2em;
+	padding: 0;
+	border: solid 1px black;
+	font-size: 13px;
+	font-weight: bold;
+	/*border-bottom: #3f3849 1px solid;*/
+	border: solid 1px black;
+	margin-bottom: 0.5em;
 }
-ul.makeMenu li > ul {          /* using the > selector prevents many lesser browsers (and IE - see below) hiding child ULs */
-  display: none;               /* hides child menu blocks - one of the most important declarations */
-  position: absolute;          /* make child blocks hover without leaving space for them */
-  top: -1px;                    /* position slightly lower than the parent menu item */
-  left: 100%;              /* this must not be more than the width of the parent block, or the mouse will
-                                  have to move off the element to move between blocks, and the menu will close */
+
+ul.makeMenu li ul {
+	display: block;
+	list-style-type: none;
+	padding: 0 0 0 0;
+	border: 0;
+	
 }
-ul.makeMenu li:hover, ul.makeMenu li.CSStoHighlight {
-  background-color: #ffa;      /* gives the active menu items a yellow background */
-  color: #000;                 /* makes the active menu item text black */ 
+
+ul.makeMenu li ul a {
+	display: block;
+	list-style-type: none;
+	background-color: #EEEEEE;
+	border: 0;
+	border-bottom: solid 1px black;
 }
-ul.makeMenu ul.CSStoShow {     /* must not be combined with the next rule or IE gets confused */
-  display: block;              /* specially to go with the className changes in the behaviour file */
+
+/*Head elements*/
+ul.makeMenu li a {
+	display: block;
+	color: green;
+	padding: 2px 4px 2px 4px;
+ 
+	color: #3F3849;
+	text-decoration: none;
+	background-color: rgb(89, 132, 195);
 }
-ul.makeMenu li:hover > ul {    /* one of the most important declarations - the browser must detect hovering over arbitrary elements
-                                  the > targets only the child ul, not any child uls of that child ul */
-  display: block;              /* makes the child block visible - one of the most important declarations */
+
+ul.makeMenu ul li a:hover {
+	color: #000000;
+	background-color: #FFCC33;
 }
-/* and some link styles */
-ul.makeMenu li a { color: #fff; display: block; width: 100%; text-decoration: underline; }
-ul.makeMenu li a:hover, ul.makeMenu li a.CSStoHighLink { color: #000; }
-ul.makeMenu li:hover > a { color: #000; } /* supports links in branch headings - must not be display: block; */
+
+/*ul.makeMenu ul {
+	background-color: green;
+	color: red;
+}*/
 
 #sidebar .box  {
 	margin-bottom: 5px;

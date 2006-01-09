@@ -14,14 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-*/
-function getmicrotime() {
-   list($usec, $sec) = explode(" ",microtime());
-   return ((float)$usec + (float)$sec);
-} 
-
-global $startTime;
-$startTime = getmicrotime ();
+*/global $startTime;
+list($usec, $sec) = explode(" ",microtime());
+$startTime = ((float)$usec + (float)$sec);
 include ('core/uimanager.class.php');
 $UI = new UIManager ();
 
@@ -36,6 +31,7 @@ $availableModules = $pages->getAllAvailableModules (true);
 if ($choosenModule == 'viewadmin') {
 	header ('Location: admin.php');
 } elseif ($choosenModule == 'login') {
+	$UI->signalMan->execSignal ('login', $_POST['loginname'], $_POST['password']);
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
 	$success = $user->login ($_POST['loginname'], $_POST['password']);
@@ -47,6 +43,7 @@ if ($choosenModule == 'viewadmin') {
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
 } elseif ($choosenModule == 'logout') {
+	$UI->signalMan->execSignal ('logout');
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
 	$success = $user->logout ();
@@ -58,6 +55,7 @@ if ($choosenModule == 'viewadmin') {
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
 } elseif ($choosenModule == 'registeruser') {
+	$UI->signalMan->execSignal ('registeruser');
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
 	if ($_POST['account-password'] != $_POST['account-password2']) {

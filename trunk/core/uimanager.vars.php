@@ -1,6 +1,6 @@
 <?php
 /* MorgOS is a Content Management System written in PHP
- * Copyright (C) 2005 MorgOS
+ * Copyright (C) 2005-2006 MorgOS
  * This program is free software; you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -60,6 +60,8 @@ if ($this->user->isLoggedIn ()) {
 $this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
 $this->vars['VAR_TO_REGISTER_USER'] = './index.php?module=register';
 $this->vars['SIDEBAR'] = $this->getSidebarHTML ();
+$this->vars['SUBBAR'] = $this->getSubbarHTML ();
+$this->vars['MORGOS_COPYRIGHT'] = $this->i10nMan->translate ('Powered By MorgOS &copy; 2006');
 
 if (substr ($this->module, 0, 5) == 'admin') {
 	$this->vars['VAR_ADMIN_NAVIGATION'] = $this->getAdminNavigator ();

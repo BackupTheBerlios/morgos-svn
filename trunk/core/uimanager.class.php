@@ -1,6 +1,6 @@
 <?php
 /* MorgOS is a Content Management System written in PHP
- * Copyright (C) 2005 MorgOS
+ * Copyright (C) 2005-2006 MorgOS
  * This program is free software; you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -81,7 +81,13 @@ class UIManager {
 			}
 		 	include_once ('core/config.class.php');
 			include_once ('core/language.class.php');
+			include_once ('core/signals.class.php');
 			$this->i10nMan = new languages ('languages/');
+			$this->signalMan = new signalManager ($this->i10nMan);
+			$this->signalMan->addSignal ('loadPage');
+			$this->signalMan->addSignal ('login');
+			$this->signalMan->addSignal ('logout');
+			$this->signalMan->addSignal ('registeruser');
 			$this->config = new config ($this->i10nMan);
 			$this->config->addConfigItemsFromFile ('site.config.php');
 			if (! defined ('TBL_PREFIX')) {
@@ -107,7 +113,6 @@ class UIManager {
 			$this->initAllExtensions ();
 			$this->prependSidebar = array ();
 			$this->appendSidebar = array ();
-			//print_r ($this->config->getConfigDir ('/extensions'));
 			foreach ($this->config->getConfigDir ('/extensions') as $extension => $load) {
 				if ($load == true) {
 					$result = $this->loadExtension (substr ($extension, strlen ('/extensions/')));
@@ -172,6 +177,7 @@ class UIManager {
 	 * \param $authorizedAsAsdmin (bool) standard false
 	*/ 
 	/*public*/ function loadPage ($moduleName, $language = NULL) {
+		$this->signalMan->execSignal ('loadPage', $moduleName, $language);
 		if ($this->user == NULL) {
 			$this->user = new user ($this->genDB, $this->i10nMan);
 		}
@@ -215,7 +221,11 @@ class UIManager {
 			$output = file_get_contents ($this->skinPath . 'usermodule.html');
 		}
 		$this->running = true;
-		echo $this->parse ($output);
+		$output = $this->parse ($output);
+		global $startTime;
+		list ($usec, $sec) = explode(" ",microtime());
+		$endTime = ((float) $usec + (float) $sec);
+		echo str_replace ('&TIME_RUNNED;', $endTime - $startTime, $output);
 	}
 	
 	/** \fn saveAdmin ($array)
@@ -290,7 +300,15 @@ class UIManager {
 	*/
 	/*public*/ function getNavigatorItem ($parent) {
 		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND needauthorized='no' AND needauthorizedasadmin='no' AND parent='$parent'";
+
+		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND parent='$parent'";
+		if ($this->user->isLoggedIn ()) {
+			if (! $this->user->isAdmin ()) {
+				$SQL .= " AND needauthorizedasadmin='no'";
+			}
+		} else {
+			$SQL .= " AND needauthorized='no'";
+		}
 		$query = $this->genDB->query ($SQL);
 		$HTML = NULL;
 		while ($item = $this->genDB->fetch_array ($query)) {
@@ -428,6 +446,26 @@ class UIManager {
 	/*public*/ function appendToSidebar ($what, $module = 'ALL_MODULES') {
 		$this->appendSidebar[$module][] = $what;
 	}
+	
+	/** \fn prependToSubbar ($what, $module = 'ALL_MODULES')
+	 * Prepend elements to the subbar.
+	 *
+	 * \param $what (string) the content which is prepended
+	 * \param $module (string) the module, if NULL in all modules $what is prepended
+	*/
+	/*public*/ function prependToSubbar ($what, $module = 'ALL_MODULES') {
+		$this->prependSidebar[$module][] = $what;
+	}
+
+	/** \fn appendToSubbar ($what, $module = 'ALL_MODULES')
+	 * Append elements to the subbar.
+	 *
+	 * \param $what (string) the content which is appended
+	 * \param $module (string) the module, if NULL in all modules $what is appended
+	*/
+	/*public*/ function appendToSubbar ($what, $module = 'ALL_MODULES') {
+		$this->appendSubbar[$module][] = $what;
+	}	 
 	
 	/** \fn loadSkin ($skinName)
 	 * Loads all skin options
@@ -654,6 +692,25 @@ class UIManager {
 			$sidebar .= ' ' . $element . ' ';
 		}
 		return $this->parse ($sidebar);
+	}
+	
+	/*private*/ function getSubbarHTML () {
+		$subbar = NULL;
+		include ($this->skinPath . 'skin.php');
+		foreach ($this->prependSubbar['ALL_MODULES'] as $element) {
+			$subbar .= ' ' . $element . ' ';
+		}
+		foreach ($this->prependSubbar[$this->loadedModule] as $element) {
+			$subbar .= ' ' . $element . ' ';
+		}
+		$subbar .= $skin['variable']['subbar'];
+		foreach ($this->appendSubbar['ALL_MODULES'] as $element) {
+			$subbar .= ' ' . $element . ' ';
+		}
+		foreach ($this->appendSubbar[$this->loadedModule] as $element) {
+			$subbar .= ' ' . $element . ' ';
+		}
+		return $this->parse ($subbar);
 	}
 	
 	/** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)

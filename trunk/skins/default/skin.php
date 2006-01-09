@@ -1,6 +1,6 @@
 <?php
 /* MorgOS is a Content Management System written in PHP
- * Copyright (C) 2005 MorgOS
+ * Copyright (C) 2005-2006 MorgOS
  * This program is free software; you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -44,6 +44,7 @@ $skin['variable']['VAR_USER_ADMIN_CLOSE'] = "</table>";
 $skin['variable']['OPEN_EXTENSIONS_ADMIN'] = "FORM (&VAR_EXTENSIONS_ADMIN_ACTION;,&VAR_EXTENSIONS_ADMIN_METHOD;)<table>";
 $skin['variable']['CLOSE_EXTENSIONS_ADMIN'] = "<tr><td colspan=\"3\"> INPUT (submit, &VAR_SAVE_EXTENSIONS_SUBMIT;, &TEXT_SAVE_EXTENSIONS_SUBMIT;)</td></tr></table> CLOSEFORM ()";
 $skin['variable']['sidebar'] = 'BOX (&TEXT_NAVIGATION;,&VAR_NAVIGATION;) &VAR_USER_PLACE;';
+$skin['variable']['subbar'] = '&MORGOS_COPYRIGHT; <br />&TIME_RUNNED;';
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";

@@ -15,13 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-function getmicrotime() {
-   list($usec, $sec) = explode(" ",microtime());
-   return ((float)$usec + (float)$sec);
-} 
-
 global $startTime;
-$startTime = getmicrotime ();
+list($usec, $sec) = explode(" ",microtime());
+$startTime = ((float)$usec + (float)$sec);
 include ('core/uimanager.class.php');
 $UI = new UIManager ();
 

@@ -184,6 +184,30 @@ function versionCompare ($version1, $version2, $operator) {
 	}
 }
 
+if (!function_exists('call_user_func_array')) {
+	function call_user_func_array($func, $args) {
+		$argString = '';
+		$comma = '';
+		for ($i = 0; $i < count($args); $i ++) {
+			$argString .= $comma . "\$args[$i]";
+			$comma = ', ';
+		}
+
+		if (is_array($func)) {
+			$obj = &$func[0];
+			$meth = $func[1];
+			if (is_string($func[0])) {
+				eval("\$retval = $obj::\$meth($argString);");
+			} else {
+				eval("\$retval = \$obj->\$meth($argString);");
+			}
+		} else {
+			eval("\$retval = \$func($argString);");
+		}
+		return $retval;
+	}
+}
+
 if (! defined ('E_STRICT')) {
 	define ('E_STRICT', 2048);
 }
