@@ -59,35 +59,20 @@ ul.makeMenu {
 	border-left: #3F3849 1px solid;*/
 }
 
+/*Head elements*/
 ul.makeMenu li {
 	font-size: 2em;
 	padding: 0;
-	border: solid 1px black;
 	font-size: 13px;
 	font-weight: bold;
 	/*border-bottom: #3f3849 1px solid;*/
 	border: solid 1px black;
+	border-bottom: 0;
 	margin-bottom: 0.5em;
+
 }
 
-ul.makeMenu li ul {
-	display: block;
-	list-style-type: none;
-	padding: 0 0 0 0;
-	border: 0;
-	
-}
-
-ul.makeMenu li ul a {
-	display: block;
-	list-style-type: none;
-	background-color: #EEEEEE;
-	border: 0;
-	border-bottom: solid 1px black;
-}
-
-/*Head elements*/
-ul.makeMenu li a {
+ul.makeMenu li span, ul.makeMenu li a {
 	display: block;
 	color: green;
 	padding: 2px 4px 2px 4px;
@@ -95,6 +80,33 @@ ul.makeMenu li a {
 	color: #3F3849;
 	text-decoration: none;
 	background-color: rgb(89, 132, 195);
+}
+
+ul.makeMenu li a:hover {
+	background-color: #FFCC33;
+}
+
+/*Child*/
+ul.makeMenu li ul {
+	padding: 0;
+}
+
+ul.makeMenu li ul li {
+	display: block;
+	list-style-type: none;
+	padding: 0 0 0 0;
+	margin-left: 0;
+	border: 0px;
+	border-bottom: solid 1px black;
+	margin-bottom: 0;
+}
+
+ul.makeMenu li ul li a {
+	display: block;
+	/*list-style-type: none;*/
+	background-color: #EEEEEE;
+	/*border: 0px;*/
+	/*border-bottom: solid 1px black;*/
 }
 
 ul.makeMenu ul li a:hover {

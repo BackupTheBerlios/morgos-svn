@@ -72,6 +72,7 @@ if (substr ($this->module, 0, 5) == 'admin') {
 	$this->functions['navigation_open'] = array ('name' => 'NAVIGATION_OPEN', 'params' => array ());
 	$this->functions['navigation_close'] = array ('name' => 'NAVIGATION_CLOSE', 'params' => array ());
 	$this->functions['navigation_item_with_childs'] = array ('name' => 'NAVIGATION_ITEM_WITH_CHILDS', 'params' => array ('TEXT', 'LINK', 'CHILDS'));
+	$this->functions['navigation_item_with_childs_nolink'] = array ('name' => 'NAVIGATION_ITEM_WITH_CHILDS_NOLINK', 'params' => array ('TEXT', 'CHILDS'));
 	$this->functions['navigation_item_without_childs'] = array ('name' => 'NAVIGATION_ITEM_WITHOUT_CHILDS', 'params' => array ('TEXT', 'LINK'));
 	
 	if ($this->user->isLoggedIn ()) {

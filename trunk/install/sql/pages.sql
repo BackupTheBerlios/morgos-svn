@@ -6,6 +6,7 @@ CREATE TABLE %prefix%modules (
   parent varchar (50) default '',
   place int (10),
   placeinadmin int (10),
+  islink varchar (3),
   PRIMARY KEY (module)
 );
 

@@ -115,7 +115,7 @@ class pages {
 		$this->genDB->query ($SQL);
 	}
 	
-	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL)
+	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL, $islink = true)
 	 * adds a module,
 	 *
 	 * \param $module (string)
@@ -125,9 +125,10 @@ class pages {
 	 * \param $placeinadmin (int) the place in the admin navigator, if 0 is not listed
 	 * \param $listedInAdmin (bool) if this needs to be listed in the admin
 	 * \param $parent (string) the parent module, if NULL it is the root (multiple roots are possible)
+	 * \param $islink (bool)
 	 * \return (bool) 
 	*/
-	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL) {
+	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL, $islink = true) {
 		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
 			return false;
 		} else {
@@ -153,10 +154,15 @@ class pages {
 			if (! is_integer ($placeinadmin)) {
 				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Place is not an integer'));
 				return;
-			}	
+			}
+			if ($islink) {
+				$islink = 'yes';
+			} else {
+				$islink = 'no';
+			}
 			$SQL = "INSERT INTO " . TBL_MODULES;
-			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, placeinadmin, parent)";
-			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$placeinadmin', '$parent')";
+			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, placeinadmin, parent, islink)";
+			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$placeinadmin', '$parent', '$islink')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;

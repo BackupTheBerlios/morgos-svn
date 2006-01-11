@@ -35,7 +35,7 @@
 			</p>
 			<p><?php echo $i10nMan->translate ('Databases available'); ?></p>
 			<?php
-				$DBMan = new genericDatabase ();
+				$DBMan = new genericDatabase ($i10nMan);
 				$supported = $DBMan->getAllSupportedDatabases ();
 				$db = false;
 				echo '<ul>';

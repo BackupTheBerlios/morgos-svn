@@ -292,13 +292,18 @@ class UIManager {
 		return $HTML;
 	}
 	
-	/** \fn getNavigatorItem ($parent)
+	/** \fn getNavigatorItem ($parent, $depth = 1)
 	 * Returns the HTML code for the one item (and all his childs)
 	 *
 	 * \param $parent (string)
+	 * \param $depth (int)
 	 * \return (string)
 	*/
-	/*public*/ function getNavigatorItem ($parent) {
+	/*public*/ function getNavigatorItem ($parent, $depth = 1) {
+		/*You can have max Parent-Child-Baby*/
+		if ($dept > 3) {
+			return NULL;
+		}
 		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 
 		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND parent='$parent'";
@@ -313,7 +318,7 @@ class UIManager {
 		$HTML = NULL;
 		while ($item = $this->genDB->fetch_array ($query)) {
 			if ($item['place'] != 0) {
-				$childs = $this->getNavigatorItem ($item['module']);
+				$childs = $this->getNavigatorItem ($item['module'], $depth + 1);
 				$item['childs'] = $childs;
 				$navigation[] = $item;
 			}
@@ -325,12 +330,16 @@ class UIManager {
 		array_multisort ($place, SORT_ASC, $name, SORT_ASC, $navigation);
 		foreach ($navigation as $item) {
 			if ($item['childs'] != NULL) {
-				$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
+				if ($item['islink'] == 'yes') {
+					$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
+				} else {
+					$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS_NOLINK ('.$item['name'].',' . $item['childs'] . ')';
+				}
 			} else {
 				$HTML .= ' NAVIGATION_ITEM_WITHOUT_CHILDS ('.$item['name'].', index.php?module='.$item['module'].')';
 			}
 		}		
-		return $HTML;
+		return $this->parse ($HTML);
 	}
 		
 	/** \fn appendNotice ($notice, $type, $die)
@@ -355,54 +364,6 @@ class UIManager {
 		$this->running = $running;
 	}
 
-	/** \fn getUserNavigator ()
-	 * Returns the HTML code for the user navigator
-	 *
-	 * \return (string)
-	*/
-	/*public*/ function getUserNavigator () {
-		$HTML = ' USER_NAVIGATION_OPEN ()';
-		$HTML .= $this->getUserNavigatorItem ('');
-		$HTML .= ' USER_NAVIGATION_CLOSE ()';
-		$HTML = $this->parse ($HTML);
-		return $HTML;
-	}
-	
-	/** \fn getUserNavigatorItem ($parent)
-	 * Returns the HTML code for the one item (and all his childs)
-	 *
-	 * \param $parent (string)
-	 * \return (string)
-	*/
-	/*public*/ function getUserNavigatorItem ($parent) {
-		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
-		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent, tm.needauthorized, tm.needauthorizedasadmin FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND parent='$parent'";
-		$query = $this->genDB->query ($SQL);
-		$HTML = NULL;
-		while ($item = $this->genDB->fetch_array ($query)) {
-			if ($item['place'] != 0) {
-				if ((strtolower ($item['needauthorized']) == 'yes') or (strtolower ($item['needauthorizedasadmin']) == 'yes') && ($this->user->isAdmin ())) {
-					$childs = $this->getNavigatorItem ($item['module']);
-					$item['childs'] = $childs;
-					$navigation[] = $item;
-				}
-			}
-		}
-		foreach ($navigation as $key => $data) {
-			$name[$key]  = $data['name'];
-			$place[$key] = $data['place'];
-		}
-		array_multisort ($place, SORT_ASC, $name, SORT_ASC, $navigation);
-		foreach ($navigation as $item) {
-			if ($item['childs'] != NULL) {
-				$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
-			} else {
-				$HTML .= ' NAVIGATION_ITEM_WITHOUT_CHILDS ('.$item['name'].', index.php?module='.$item['module'].')';
-			}
-		}		
-		return $HTML;
-	}
-	
 	/** \fn getAllSupportedSkins ()
 	 * returns all skins
 	 *

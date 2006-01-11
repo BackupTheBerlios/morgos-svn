@@ -22,7 +22,7 @@
 		fclose ($fHandler);
 	}
 	include_once ('core/database.class.php');
-	$DBMan = new genericDatabase ();
+	$DBMan = new genericDatabase ($i10nMan);
 	$DB = $DBMan->load ($_POST['database-type']);
 	$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password']);
 

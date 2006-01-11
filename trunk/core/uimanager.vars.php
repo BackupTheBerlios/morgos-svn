@@ -45,8 +45,7 @@ foreach ($this->notices as $val) {
 }
 
 if ($this->user->isLoggedIn ()) {
-	$this->vars['VAR_USER_NAVIGATION'] = $this->getUserNavigator ();
-	$userPlace = '&VAR_USER_NAVIGATION;';
+	$this->vars['VAR_USER_PLACE'] = '';
 } else {
 	$userPlace = '&VAR_LOGIN_FORM;';
 	$this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
@@ -55,9 +54,9 @@ if ($this->user->isLoggedIn ()) {
 	$this->vars['VAR_LOGIN_FORM_LOGINNAME_VALUE'] = $this->i10nMan->translate ('Loginname');
 	$this->vars['VAR_LOGIN_FORM_PASSWORD_NAME'] = 'password';
 	$this->vars['VAR_LOGIN_FORM_SUBMIT_NAME'] = 'submit';
+	$this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
 }
 
-$this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
 $this->vars['VAR_TO_REGISTER_USER'] = './index.php?module=register';
 $this->vars['SIDEBAR'] = $this->getSidebarHTML ();
 $this->vars['SUBBAR'] = $this->getSubbarHTML ();
