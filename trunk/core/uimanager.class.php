@@ -243,12 +243,18 @@ class UIManager {
 			}
 		}
 		define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
+		$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
+		if ($debug == true) {
+			$debug = 'true';
+		} else {
+			$debug = 'false';
+		}
 				
 		// write the config file out
 		$output = '<?php ' . NEWLINE;
 		$output .= '	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */' . NEWLINE;
 		$output .= '	$config[\'/general/sitename\'] = \'' . $this->config->getConfigItem ('/general/sitename', TYPE_STRING) ."';" . NEWLINE;
-		$output .= '	$config[\'/general/debug\'] = \'' . $this->config->getConfigItem ('/general/debug', TYPE_BOOL) ."';" . NEWLINE;
+		$output .= '	$config[\'/general/debug\'] = \'' . $debug ."';" . NEWLINE;
 		$output .= '	$config[\'/database/type\'] = \'' . $this->config->getConfigItem ('/database/type', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/name\'] = \'' . $this->config->getConfigItem ('/database/name', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/host\'] = \'' . $this->config->getConfigItem ('/database/host', TYPE_STRING) .'\';' . NEWLINE;
@@ -727,13 +733,15 @@ class UIManager {
 				$die = true;
 				//trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
 		}
+		$this->appendNotice ($error, $type, $die);
 		if (($this->running == false) and ($die == true)) {
-			echo $errFile . ' ' . $errLine;
 			$output = file_get_contents ("skins/default/error.html");
-			echo str_replace ("&VAR_ERROR;", $error, $output);
+			$errors = NULL;
+			foreach ($this->notices as $notice) {
+				$errors .= $notice['error'] . '<br />';
+			}
+			echo str_replace ("&VAR_ERROR;", $errors, $output);
 			die ();
-		} else {
-			$this->appendNotice ($error, $type, $die);
 		}
 	}
 

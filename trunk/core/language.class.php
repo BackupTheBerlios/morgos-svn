@@ -47,7 +47,7 @@ class languages {
 		}
 		$this->defLang = $defLang;
 		$this->getAllSupportedLanguages ();
-		$this->stringTree = NULL;
+		$this->stringTree = array ();
 	}
 
 	function languages ($dir, $defLang = 'english') {

@@ -84,7 +84,7 @@ class config {
 		if ($this->isType ($value) == $type) {
 			$this->configTree[$configName] = array ('value' => $value,'type' => $type,'password' => $password);
 		} else {
-			trigger_error ('DEBUG: ' . $this->lang->translate ('type is: %1 needs to be %2') . $this->typeToString ($type), $this->typeToString ($value), $this->typeToString ($type));
+			trigger_error ('DEBUG: ' . $this->lang->translate ('type is: %1 needs to be %2', $this->typeToString ($type), $this->typeToString ($value), $this->typeToString ($type)));
 			trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('type is not correct'));
 		}
 	}
@@ -141,7 +141,8 @@ class config {
 				return $this->configTree[$configName]['value'];
 			} else {
 				$value = $this->configTree[$configName]['type'];
-			 	trigger_error ('DEBUG: ' . $this->lang->translate ('type is: %1 needs to be %2') . $this->typeToString ($type), $this->typeToString ($value), $this->typeToString ($type));
+				trigger_error ('DEBUG: ' . $this->lang->translate ('configname is: %1', $configName));
+			 	trigger_error ('DEBUG: ' . $this->lang->translate ('type is: %1 needs to be %2', $this->typeToString ($value), $this->typeToString ($type)));
 				trigger_error ('INTERNAL_ERROR: ' . $this->lang->translate ('type is not correct'));
 			}
 		} else {
