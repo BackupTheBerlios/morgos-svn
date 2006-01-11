@@ -43,7 +43,6 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \version 0.1svn
  * \bug in PHP <= 4.3 if an error occurs in the constructor, errorHandler can not be handled correctly
  * \bug lowest tested version is 4.1.0
- * \bug a skin/extension can see all data (even admin data), this is a security bug AND cost rendering time
  * \bug if a skin is enabled in site.config.php, but not installed it leaves enabled in site.config.php. 
  		When you install it is loaded.
  * \todo 0.1 change the dir in __construct to install in place of DOT install
@@ -249,6 +248,7 @@ class UIManager {
 		$output = '<?php ' . NEWLINE;
 		$output .= '	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */' . NEWLINE;
 		$output .= '	$config[\'/general/sitename\'] = \'' . $this->config->getConfigItem ('/general/sitename', TYPE_STRING) ."';" . NEWLINE;
+		$output .= '	$config[\'/general/debug\'] = \'' . $this->config->getConfigItem ('/general/debug', TYPE_BOOL) ."';" . NEWLINE;
 		$output .= '	$config[\'/database/type\'] = \'' . $this->config->getConfigItem ('/database/type', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/name\'] = \'' . $this->config->getConfigItem ('/database/name', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/host\'] = \'' . $this->config->getConfigItem ('/database/host', TYPE_STRING) .'\';' . NEWLINE;
@@ -301,12 +301,12 @@ class UIManager {
 	*/
 	/*public*/ function getNavigatorItem ($parent, $depth = 1) {
 		/*You can have max Parent-Child-Baby*/
-		if ($dept > 3) {
+		if ($depth > 3) {
 			return NULL;
 		}
 		$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 
-		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND parent='$parent'";
+		$SQL = "SELECT tm.module, tp.name, tm.place, tm.parent, tm.islink, tm.extension FROM ".TBL_MODULES . " AS tm , " .TBL_PAGES ." AS tp  WHERE  tp.module=tm.module AND tp.language='$language' AND parent='$parent'";
 		if ($this->user->isLoggedIn ()) {
 			if (! $this->user->isAdmin ()) {
 				$SQL .= " AND needauthorizedasadmin='no'";
@@ -316,6 +316,9 @@ class UIManager {
 		}
 		$query = $this->genDB->query ($SQL);
 		$HTML = NULL;
+		$navigation = array ();
+		$name = array ();
+		$place = array ();
 		while ($item = $this->genDB->fetch_array ($query)) {
 			if ($item['place'] != 0) {
 				$childs = $this->getNavigatorItem ($item['module'], $depth + 1);
@@ -329,14 +332,16 @@ class UIManager {
 		}
 		array_multisort ($place, SORT_ASC, $name, SORT_ASC, $navigation);
 		foreach ($navigation as $item) {
-			if ($item['childs'] != NULL) {
-				if ($item['islink'] == 'yes') {
-					$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
+			if (($item['extension'] == '{0000-0000-0000-0000}') or (array_key_exists ($item['extension'], $this->loadedExtensions))) {
+				if ($item['childs'] != NULL) {
+					if ($item['islink'] == 'yes') {
+						$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS ('.$item['name'].', index.php?module='.$item['module'].',' . $item['childs'] . ')';
+					} else {
+						$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS_NOLINK ('.$item['name'].',' . $item['childs'] . ')';
+					}
 				} else {
-					$HTML .= ' NAVIGATION_ITEM_WITH_CHILDS_NOLINK ('.$item['name'].',' . $item['childs'] . ')';
+					$HTML .= ' NAVIGATION_ITEM_WITHOUT_CHILDS ('.$item['name'].', index.php?module='.$item['module'].')';
 				}
-			} else {
-				$HTML .= ' NAVIGATION_ITEM_WITHOUT_CHILDS ('.$item['name'].', index.php?module='.$item['module'].')';
 			}
 		}		
 		return $this->parse ($HTML);
@@ -698,6 +703,7 @@ class UIManager {
 				$die = true;
 				break;
 			case "DEBUG":
+				$error = $error . ': ' . $errFile . '@' . $errLine;
 				$die = false;
 				break;
 			case "NOTICE":
@@ -710,6 +716,7 @@ class UIManager {
 				$die = false;
 				break;
 			case "PHP":
+				$error = $error . ': ' . $errFile . '@' . $errLine;
 				$die = true;
 				break;
 			case "UKNOWN";
@@ -720,7 +727,7 @@ class UIManager {
 				$die = true;
 				//trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
 		}
-		if ($this->running == false) {
+		if (($this->running == false) and ($die == true)) {
 			echo $errFile . ' ' . $errLine;
 			$output = file_get_contents ("skins/default/error.html");
 			echo str_replace ("&VAR_ERROR;", $error, $output);
@@ -883,7 +890,7 @@ class UIManager {
 		if (array_key_exists ($extensionID, $this->extensions)) {
 			$extension = $this->extensions[$extensionID];
 			if ($extension['installable'] == true) {
-				$extension['install_function'] ($this->genDB);
+				$extension['install_function'] ($this->genDB, $this->pages);
 			}
 		} else {
 			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension does not exists.'));
@@ -894,7 +901,7 @@ class UIManager {
 		if (array_key_exists ($extensionID, $this->extensions)) {
 			$extension = $this->extensions[$extensionID];
 			if (($extension['installable'] == false) and ($extension['need_install'] == true)) {
-				$extension['uninstall_function'] ($this->genDB);
+				$extension['uninstall_function'] ($this->genDB, $this->pages);
 			}
 		} else {
 			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension does not exists.'));

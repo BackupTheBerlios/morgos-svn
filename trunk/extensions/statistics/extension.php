@@ -40,11 +40,13 @@ if (! function_exists ('statisticsIsInstalled')) {
 		return false;
 	}
 	
-	function statisticsInstall ($genDB) {
+	function statisticsInstall ($genDB, $pages) {
 		$genDB->query ('ALTER TABLE ' . TBL_PAGES . ' ADD pageViews int(10)');
+		$pages->addModule ('view_statistics', false, false, 2, 0, true, 'index', true, '{9786-5432-1098-7654}');
+		$pages->addPage ('view_statistics', 'english', 'View statistics', 'View all statitics for this website.');
 	}
 	
-	function statisticsUnInstall ($genDB) {
+	function statisticsUnInstall ($genDB, $pages) {
 		$result = $genDB->query ('ALTER TABLE ' . TBL_PAGES . ' DROP COLUMN pageViews');
 	}
 }

@@ -36,6 +36,10 @@ class pages {
 	function __construct (&$genDB, &$i10nMan) {
 		$this->genDB = &$genDB;
 		$this->i10nMan = &$i10nMan;
+		$this->prependers = array ();
+		$this->appenders = array ();
+		$this->prependers['ALL_MODULES'] = array ();
+		$this->appenders['ALL_MODULES'] = array ();
 	}
 	/** \fn getAllAvailableModules ($extended = false)
 	 * Returns an array of all available modules
@@ -70,12 +74,10 @@ class pages {
 		if ($this->genDB->num_rows ($result) != 0) {
 			$row = $this->genDB->fetch_array ($result);
 			$content = $row['content'];
-			foreach ($this->prependers[$module] as $text) {
-				$content = $text . $content;
-			}
-			
-			foreach ($this->appenders[$module] as $text) {
-				$content = $content . $text;
+			if (array_key_exists ($module, $this->prependers)) {
+				foreach ($this->prependers[$module] as $text) {
+					$content = $text . $content;
+				}
 			}
 			
 			foreach ($this->prependers['ALL_MODULES'] as $text) {
@@ -84,6 +86,12 @@ class pages {
 			
 			foreach ($this->appenders['ALL_MODULES'] as $text) {
 				$content = $content . $text;
+			}
+			
+			if (array_key_exists ($module, $this->appenders)) {
+				foreach ($this->appenders[$module] as $text) {
+					$content = $content . $text;
+				}
 			}
 			return $content;
 		} else {
@@ -115,7 +123,7 @@ class pages {
 		$this->genDB->query ($SQL);
 	}
 	
-	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL, $islink = true)
+	/** \fn addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL, $islink = true, $extension = '{0000-0000-0000-0000}')
 	 * adds a module,
 	 *
 	 * \param $module (string)
@@ -126,9 +134,10 @@ class pages {
 	 * \param $listedInAdmin (bool) if this needs to be listed in the admin
 	 * \param $parent (string) the parent module, if NULL it is the root (multiple roots are possible)
 	 * \param $islink (bool)
+	 * \param $extension (string) the ID of the extension where this count for. {0000-0000-0000-0000} is the standard and count anyway
 	 * \return (bool) 
 	*/
-	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL, $islink = true) {
+	/*public*/ function addModule ($module, $needAuthorize, $needAuthorizeAsAdmin, $place, $placeinadmin, $listedInAdmin = true, $parent = NULL, $islink = true, $extension = '{0000-0000-0000-0000}') {
 		if (array_key_exists ($module, $this->getAllAvailableModules ())) {
 			return false;
 		} else {
@@ -161,8 +170,8 @@ class pages {
 				$islink = 'no';
 			}
 			$SQL = "INSERT INTO " . TBL_MODULES;
-			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, placeinadmin, parent, islink)";
-			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$placeinadmin', '$parent', '$islink')";
+			$SQL .= " (module,needauthorized,needauthorizedasadmin, listedinadmin, place, placeinadmin, parent, islink, extension)";
+			$SQL .= " VALUES ('$module','$needAuthorize','$needAuthorizeAsAdmin', '$listedInAdmin', '$place', '$placeinadmin', '$parent', '$islink', '$extension')";
 			$result = $this->genDB->query ($SQL);
 			if ($result !== false) {
 				return true;

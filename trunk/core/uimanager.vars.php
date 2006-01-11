@@ -29,13 +29,14 @@ $this->vars['VAR_WARNINGS'] = NULL;
 $this->vars['VAR_NOTICES'] = NULL;
 $this->vars['VAR_DEBUGGING'] = NULL;
 foreach ($this->notices as $val) {
+	$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
 	if (($val["type"] == "INTERNAL_ERROR") or ($val['type'] == "ERROR")) {
 		$this->vars['VAR_ERRORS'] .= $this->parse (' ERROR (' . $val['error'] . ')');
 	} elseif ($val["type"] == "NOTICE") {
 		$this->vars['VAR_NOTICES'] .= $this->parse (' NOTICE (' . $val['error'] . ')');
 	} elseif ($val["type"] == "WARNING") {
 		$this->vars['VAR_WARNINGS'] .= $this->parse (' WARNING (' . $val['error'] . ')');
-	} elseif ($val["type"] == "DEBUG") {
+	} elseif ((($val["type"] == "DEBUG") or ($val["type"] == "PHP")) and ($debug == true)){
 		$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
 	}
 	//if ($val["die"] == true) {

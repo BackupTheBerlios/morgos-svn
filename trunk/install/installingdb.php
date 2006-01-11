@@ -39,7 +39,7 @@
 	$pages->addModule ('index'              , false, false, 1, 0, true);
 	$pages->addModule ('register'           , false, false, 0, 0, false);
 	$pages->addModule ('forgotpass'         , false, false, 0, 0, false);
-	$pages->addModule ('user'			, true , false, 2, 0, false);
+	$pages->addModule ('user'			, true , false, 2, 0, false, NULL, false); //nolink is true
 	$pages->addModule ('usersettings'       , true , false, 1, 0, false, 'user');
 	$pages->addModule ('logout'             , true , false, 3, 0, false, 'user');
 	$pages->addModule ('viewadmin'          , true , true , 2, 0, false, 'user');

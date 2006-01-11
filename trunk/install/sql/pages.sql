@@ -7,6 +7,7 @@ CREATE TABLE %prefix%modules (
   place int (10),
   placeinadmin int (10),
   islink varchar (3),
+  extension varchar (21),
   PRIMARY KEY (module)
 );
 
