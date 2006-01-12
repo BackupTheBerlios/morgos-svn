@@ -1,6 +1,6 @@
 <?php
 /* MorgOS is a Content Management System written in PHP
- * Copyright (C) 2005 MorgOS
+ * Copyright (C) 2005-2006 MorgOS
  * This program is free software; you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -59,14 +59,12 @@ switch ($module) {
 					$UI->deleteModule ($module);
 					header ('Location: admin.php?module=pages');
 				} elseif ((substr ($key, 0, 9) == 'EDIT_PAGE') and (substr ($key, 9, 5) != '_SAVE')) {
-					$module = $module = substr ($key, 9);
-					$editPageModule = $module;
+					$editPageModule = substr ($key, 9);
 					$editPageLanguage = $_POST['LANGUAGE_' . $editPageModule];
-					$module = substr ($key, 9);
 					$UI->loadPage ('admin/editpage');
 				} elseif (substr ($key, 0, 14) == 'EDIT_PAGE_SAVE')  {
 					$module = substr ($key, 14);
-					$UI->editPage ($module, $_POST['language'], $_POST['newname'], $_POST['newcontent']);
+					$UI->pages->editPage ($module, $_POST['language'], $_POST['newname'], $_POST['newcontent']);
 					header ('Location: admin.php?module=pages');
 				}
 			}

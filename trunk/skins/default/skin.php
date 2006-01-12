@@ -39,10 +39,10 @@ $skin['variable']['var_open_contentlanguage_option'] = "<select name='&VAR_CONTE
 $skin['variable']['var_close_contentlanguage_option'] = "</select>";
 $skin['variable']['var_open_theme_option'] = "<select name='&VAR_THEME_OPTION_NAME;'>";
 $skin['variable']['var_close_theme_option'] = "</select>";
-$skin['variable']['VAR_USER_ADMIN_OPEN'] = "<table border='1'><tr><td>&TEXT_USERNAME;</td><td>&TEXT_EMAIL;</td><td>&TEXT_ISADMIN;</td></tr>";
-$skin['variable']['VAR_USER_ADMIN_CLOSE'] = "</table>";
-$skin['variable']['OPEN_EXTENSIONS_ADMIN'] = "FORM (&VAR_EXTENSIONS_ADMIN_ACTION;,&VAR_EXTENSIONS_ADMIN_METHOD;)<table>";
-$skin['variable']['CLOSE_EXTENSIONS_ADMIN'] = "<tr><td colspan=\"3\"> INPUT (submit, &VAR_SAVE_EXTENSIONS_SUBMIT;, &TEXT_SAVE_EXTENSIONS_SUBMIT;)</td></tr></table> CLOSEFORM ()";
+$skin['variable']['var_user_admin_open'] = "<table border='1'><tr><td>&TEXT_USERNAME;</td><td>&TEXT_EMAIL;</td><td>&TEXT_ISADMIN;</td></tr>";
+$skin['variable']['var_user_admin_close'] = "</table>";
+$skin['variable']['open_extensions_admin'] = "FORM (&VAR_EXTENSIONS_ADMIN_ACTION;,&VAR_EXTENSIONS_ADMIN_METHOD;)<table>";
+$skin['variable']['close_extensions_admin'] = "<tr><td colspan=\"3\"> INPUT (submit, &VAR_SAVE_EXTENSIONS_SUBMIT;, &TEXT_SAVE_EXTENSIONS_SUBMIT;)</td></tr></table> CLOSEFORM ()";
 $skin['variable']['sidebar'] = 'BOX (&TEXT_NAVIGATION;,&VAR_NAVIGATION;) &VAR_USER_PLACE;';
 $skin['variable']['subbar'] = '&MORGOS_COPYRIGHT; <br />&TIME_RUNNED;';
 

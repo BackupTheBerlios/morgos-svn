@@ -512,22 +512,22 @@ class UIManager {
 		include ($this->skinPath . 'skin.php');
 		include_once ('core/uimanager.functions.php');
 		foreach ($this->functions as $funcKey => $function) {
-			if (count ($function['params']) != 0) {
-				$regExp = '/\s' . $function['name'] .' \(([\w-\W][^)]*)\)/';
+			if (count ($function) != 0) {
+				$regExp = '/\s' . strtoupper ($funcKey) .' \(([\w-\W][^)]*)\)/';
 			} else {
-				$regExp = '/\s' . $function['name'] .' \(()\)/';
+				$regExp = '/\s' . strtoupper ($funcKey) .' \(()\)/';
 			}
 			preg_match_all ($regExp, $string, $matches);
 			foreach ($matches[0] as $key => $match) {
 				$funcParams = explode (',', $matches[1][$key]);
-				switch ($function['name']) {
+				switch (strtoupper ($funcKey)) {
 					case 'FILE':
 						$replace = $this->skinPath . $matches[1][0];
 						break;
 					default:
 						$replace = $this->parse ($skin['functions'][$funcKey]);
 				}
-				foreach ($function['params'] as $number => $name) {
+				foreach ($function as $number => $name) {
 					if (array_key_exists ($number, $funcParams)) {
 						$replace = str_replace ($name, trim ($funcParams[$number]), $replace);
 					} else {

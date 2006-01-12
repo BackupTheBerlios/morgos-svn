@@ -1,6 +1,6 @@
 <?php
 /* W3C is an extension for MorgOS that add some W3C images on the sidebar.
- * Copyright (C) 2005 MorgOS
+ * Copyright (C) 2005-2006 MorgOS
  * This program is free software; you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or

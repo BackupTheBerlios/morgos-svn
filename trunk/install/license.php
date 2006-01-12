@@ -326,6 +326,7 @@
 				</li>
 			</ol>
 			<h2>END OF TERMS AND CONDITIONS</h2>
+			<h2>Some parts of the source-code are licensed under the GNU LIBRARY GENERAL PUBLIC LICENSE. <a href="http://www.gnu.org/copyleft/library.html">More information.</a></h2>
 		</div>
 		<div>
 			<form action='./install.php?phase=check' method='post'>

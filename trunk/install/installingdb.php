@@ -44,6 +44,7 @@
 	$pages->addModule ('logout'             , true , false, 3, 0, false, 'user');
 	$pages->addModule ('viewadmin'          , true , true , 2, 0, false, 'user');
 	$pages->addModule ('admin/addpage'      , false, true , 0, 0, true);
+	$pages->addModule ('admin/editpage'      , false, true , 0, 0, true);
 	$pages->addModule ('admin/index'        , false, true , 0, 1, true);
 	$pages->addModule ('admin/general'      , false, true , 0, 2, true);
 	$pages->addModule ('admin/database'     , false, true , 0, 3, true);
@@ -66,6 +67,7 @@
 		$pages->addPage ('admin/news', $language, $i10nMan->translate ('News'), 'Here you can view all news items. You can edit, remove or add items.');
 		$pages->addPage ('admin/general', $language, $i10nMan->translate ('General'), 'Here you edit all general options.');
 		$pages->addPage ('admin/addpage', $language, $i10nMan->translate ('Add page'), 'Add a page.');
+		$pages->addPage ('admin/editpage', $language, $i10nMan->translate ('Edit page'), 'Edit a page.');
 		$pages->addPage ('admin/index', $language, $i10nMan->translate ('Admin home'), 'This is the admin, here you edit all what you want.');
 		$pages->addPage ('admin/pages', $language, $i10nMan->translate ('Pages'), 'Here you can admin all pages.');
 		$pages->addPage ('admin/extensions', $language, $i10nMan->translate ('Extensions'), 'Here you can enable/disable extesnions.');
