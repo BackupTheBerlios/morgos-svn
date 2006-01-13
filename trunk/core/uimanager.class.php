@@ -254,7 +254,7 @@ class UIManager {
 		$output = '<?php ' . NEWLINE;
 		$output .= '	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */' . NEWLINE;
 		$output .= '	$config[\'/general/sitename\'] = \'' . $this->config->getConfigItem ('/general/sitename', TYPE_STRING) ."';" . NEWLINE;
-		$output .= '	$config[\'/general/debug\'] = \'' . $debug ."';" . NEWLINE;
+		$output .= '	$config[\'/general/debug\'] = ' . $debug .";" . NEWLINE;
 		$output .= '	$config[\'/database/type\'] = \'' . $this->config->getConfigItem ('/database/type', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/name\'] = \'' . $this->config->getConfigItem ('/database/name', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/host\'] = \'' . $this->config->getConfigItem ('/database/host', TYPE_STRING) .'\';' . NEWLINE;
@@ -754,45 +754,49 @@ class UIManager {
 		foreach ($files as $file) {
 			$extension = array ();
 			$extensionDir = 'extensions/' . $file;
-			if (is_dir ($extensionDir)) {
-				if (is_file ($extensionDir . '/extension.php')) {
-					include $extensionDir . '/extension.php';
-					$minVersion = $extension['general']['minversion'];
-					$maxVersion = $extension['general']['maxversion'];
-					$extensionID = $extension['general']['ID'];
-					if ($extension['need_install'] == true) {
-						$isInstalledFunction = $extension['is_installed_function'];
-						$installable = $isInstalledFunction ($this->genDB) ? false : true;
-						$extension['is_installed'] = $isInstalledFunction ($this->genDB);
-					} else {
-						$installable = false;
-//						$extension['is_isntalled']
-					}
-					
-					$extension['installable'] = $installable;
-					if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
-						$status = 'incompatible';
-					} elseif ($this->extensionIsLoaded ($extensionID)) {
-						$status = 'loaded';
-					} elseif ($installable == true) {
-						$status = 'not_installed';
-					} else {
-						$status = 'ok';
-						if (array_key_exists ('required_file', $extension)) {
-							foreach ($extension['required_file'] as $reqFile) {
-								if (! file_exists ($extensionDir . '/' . $reqFile)) {
-									$status = 'missing_file';
+			if ($file[0] != '.') {
+					if (is_dir ($extensionDir)) {
+						if (file_exists ($extensionDir . '/extension.php')) {
+						if (is_file ($extensionDir . '/extension.php')) {
+							include $extensionDir . '/extension.php';
+							$minVersion = $extension['general']['minversion'];
+							$maxVersion = $extension['general']['maxversion'];
+							$extensionID = $extension['general']['ID'];
+							if ($extension['need_install'] == true) {
+								$isInstalledFunction = $extension['is_installed_function'];
+								$installable = $isInstalledFunction ($this->genDB) ? false : true;
+								$extension['is_installed'] = $isInstalledFunction ($this->genDB);
+							} else {
+								$installable = false;
+								//$extension['is_isntalled']
+							}
+							
+							$extension['installable'] = $installable;
+							if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
+								$status = 'incompatible';
+							} elseif ($this->extensionIsLoaded ($extensionID)) {
+								$status = 'loaded';
+							} elseif ($installable == true) {
+								$status = 'not_installed';
+							} else {
+								$status = 'ok';
+								if (array_key_exists ('required_file', $extension)) {
+									foreach ($extension['required_file'] as $reqFile) {
+										if (! file_exists ($extensionDir . '/' . $reqFile)) {
+											$status = 'missing_file';
+										}
+									}
 								}
 							}
+							$extension['status'] = $status;
+							$extension['extension_dir'] = $extensionDir;
+							$ID = $extension['general']['ID'];
+							if (! array_key_exists ($ID, $this->extensions)) {
+								$this->extensions[$ID] = $extension;
+							} else {
+								trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension hasn\'t an unique ID'));
+							}
 						}
-					}
-					$extension['status'] = $status;
-					$extension['extension_dir'] = $extensionDir;
-					$ID = $extension['general']['ID'];
-					if (! array_key_exists ($ID, $this->extensions)) {
-						$this->extensions[$ID] = $extension;
-					} else {
-						trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension hasn\'t an unique ID'));
 					}
 				}
 			}

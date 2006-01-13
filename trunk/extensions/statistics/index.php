@@ -9,11 +9,11 @@
 			$this->UI = $UI;
 			$UI->pages->prependTextToPageContent ('Hello StatisticsExtension. <br />');
 			$UI->pages->appendTextToPageContent ('<br />See You later alligator.');
-			$UI->signalMan->connectSignal ('loadPage', array ($this, 'onLoadPage'));
+			$params = array ();
+			$UI->signalMan->connectSignal ('loadPage', array ($this, 'onLoadPage'), $params);
 		}
 		
 		function onLoadPage ($name, $language) {
-			// fill this in.
 		}
 	}
 	}

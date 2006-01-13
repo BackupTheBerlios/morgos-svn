@@ -68,14 +68,14 @@ class signalManager {
 		}
 	}
 	
-	/** \fn connectSignal ($name, $callback, $params = array ())
+	/** \fn connectSignal ($name, $callback, &$params)
 	 * Connect a callback to a function.
 	 *
 	 * \param $name (string)
 	 * \param $callback (callback)
 	 * \params $param (array)
-	*/
-	function connectSignal ($name, $callback, &$params = array ()) {
+	*/ // can't be &$params = array () PHP 4.? doesn't support it :(
+	function connectSignal ($name, $callback, &$params) {
 		if (array_key_exists ($name, $this->signals)) {
 			$this->signals[$name][] = array ($callback, &$params);
 		} else {

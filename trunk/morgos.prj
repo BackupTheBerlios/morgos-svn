@@ -12,6 +12,7 @@
 		<localfile path="C:\server\www\morgos\trunk\core\database.class.php" />
 		<localfile path="C:\server\www\morgos\trunk\core\language.class.php" />
 		<localfile path="C:\server\www\morgos\trunk\core\pages.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\signals.class.php" />
 		<localfile path="C:\server\www\morgos\trunk\core\uimanager.class.php" />
 		<localfile path="C:\server\www\morgos\trunk\core\uimanager.functions.php" />
 		<localfile path="C:\server\www\morgos\trunk\core\uimanager.vars.php" />
@@ -61,14 +62,29 @@
 	<category name="languages" expanded="no">
 		<localfile path="C:\server\www\morgos\trunk\languages\nederlands.language.php" />
 	</category>
+	<category name="extensions" expanded="no">
+		<category name="hello_world" expanded="yes">
+			<category name="languages" expanded="no">
+			</category>
+			<localfile path="C:\server\www\morgos\trunk\extensions\hello_world\extension.php" />
+			<localfile path="C:\server\www\morgos\trunk\extensions\hello_world\index.php" />
+		</category>
+		<category name="statistics" expanded="no">
+			<localfile path="C:\server\www\morgos\trunk\extensions\statistics\extension.php" />
+			<localfile path="C:\server\www\morgos\trunk\extensions\statistics\index.php" />
+		</category>
+	</category>
 	<localfile path="C:\server\www\morgos\trunk\admin.php" />
 	<localfile path="C:\server\www\morgos\trunk\index.php" />
 	<localfile path="C:\server\www\morgos\trunk\install.php" />
+	<localfile path="C:\server\www\morgos\trunk\site.config.php" />
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\server\www\morgos\trunk\core\uimanager.vars.php" linenum="237" placement="0:1:-1:-1:-4:-30:88:116:706:534" />
-	<localfile path="C:\server\www\morgos\trunk\core\user.class.php" linenum="55" placement="0:1:-1:-1:-4:-30:0:0:618:418" />
-	<localfile path="C:\server\www\morgos\trunk\index.php" linenum="17" placement="2:3:-1:-1:-4:-30:22:29:640:447" />
+	<localfile path="C:\server\www\morgos\trunk\core\signals.class.php" linenum="77" placement="0:1:-1:-1:-4:-30:66:87:680:501" />
+	<localfile path="C:\server\www\morgos\trunk\core\uimanager.class.php" linenum="257" placement="0:1:-1:-1:-4:-30:88:116:706:534" />
+	<localfile path="C:\server\www\morgos\trunk\extensions\statistics\index.php" linenum="16" placement="2:3:-1:-1:-4:-30:132:174:750:592" />
+	<localfile path="C:\server\www\morgos\trunk\extensions\hello_world\index.php" linenum="13" placement="0:1:-1:-1:-4:-30:0:0:618:418" />
+	<localfile path="C:\server\www\morgos\trunk\core\config.class.php" linenum="144" placement="0:1:-1:-1:-4:-30:88:116:706:534" />
 </workspace>
 

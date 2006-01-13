@@ -10,7 +10,8 @@
 			$this->extensionDir = $extensionDir;
 			$this->i10nMan = new languages ($this->extensionDir . '/languages');
 			$this->user = $UI->getUserClass ();
-			$UI->signalMan->connectSignal ('loadPage', array ($this, 'doSomething'));
+			$params = array ();
+			$UI->signalMan->connectSignal ('loadPage', array ($this, 'doSomething'), $params);
 		}
 		
 		function doSomething () {
