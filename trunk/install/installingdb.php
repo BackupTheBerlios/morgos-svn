@@ -32,7 +32,7 @@
 		}
 		$result = $DB->query ($query);
 		if ($result === false) {
-			echo $query;
+			trigger_error ('ERROR: ' . $i10nMan->translate ('Query'));
 		}
 	}
 	$pages = new pages ($DB, $i10nMan);
@@ -88,8 +88,10 @@
 	</head>
 	<body>
 		<h1><?php echo $i10nMan->translate ('Install wizard MorgOS Step 5: Installation of database'); ?></h1>
+		<?php showAllErrors (); ?>
 		<form action='./index.php' method='post'>
 			<div>
+				<?php echo $i10nMan->translate ('If you do not see any errors above the installation succeed. If you see any error check that MorgOS was not installed before. Copy all errors and post them as a bug on our website.'); ?>
 				<?php echo $i10nMan->translate ('Installation is done.'); ?>
 				<?php echo $i10nMan->translate ('Remove the dir "install/" and file "install.php" and press "next" to go to the site.'); ?>
 			</div>

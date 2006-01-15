@@ -51,8 +51,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 	/*public*/ function connect ( $host,  $user,  $password) {
 		$this->connection = mysql_connect ($host, $user, $password);
 		if ($this->connection == false) {
-			trigger_error ('DEBUG: ' . $this->error ());
-			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Couldn\'t connect with database'));
+			return false;
 		} else {
 			return true;
 		}

@@ -2,13 +2,6 @@
 	include_once ('core/compatible.php');
 	include_once ('core/database.class.php');
 	$canrun = true;
-	if (array_key_exists ('agree', $_POST)) {
-		if ($_POST['agree'] == 'no') {
-			header ('Location: ./install.php');
-		}
-	} else {
-		header ('Location: ./install.php');
-	}
 ?>
 <?php echo '<?xml version="1.0"?>' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -19,6 +12,7 @@
 	<body>
 		<div>
 			<h1><?php echo $i10nMan->translate ('MorgOS Installation Wizard Step 2: Requirements check'); ?></h1>
+			<?php showAllErrors (); ?>
 			<h2><?php echo $i10nMan->translate ('Required'); ?></h2>
 			<p><?php echo $i10nMan->translate ('PHP Version 4.0.0 or higher'); ?>: 
 			<?php

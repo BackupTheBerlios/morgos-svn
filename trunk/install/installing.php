@@ -1,8 +1,4 @@
 <?php
-	if ($_POST['admin-password'] != $_POST['admin-password2']) {
-		header ('Location: install.php'); // this is not admin-friendly FIXME 
-	}
-
 	include_once ('core/compatible.php');
 	define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
 	// write the config file out
@@ -22,10 +18,6 @@
 		fwrite ($fHandler, $output);
 		fclose ($fHandler);
 	}
-	include_once ('core/database.class.php');
-	$DBMan = new genericDatabase ($i10nMan);
-	$DB = $DBMan->load ($_POST['database-type']);
-	$DB->connect ($_POST['database-host'], $_POST['database-user'], $_POST['database-password']);
 
 	$SQL = "CREATE DATABASE IF NOT EXISTS " . $_POST['database-name'];
 	$DB->query ($SQL);

@@ -94,7 +94,7 @@ class languages {
 			}
 			return true;
 		} else {
-			trigger_error ('ERROR: ' . $this->translate ('Language doesn\'t exists, please install it. Default is used.'));
+			trigger_error ('WARNING: ' . $this->translate ('Language doesn\'t exists, please install it. Default is used.'));
 			$this->loadLanguage ($this->defLang);
 			return false;
 		}
