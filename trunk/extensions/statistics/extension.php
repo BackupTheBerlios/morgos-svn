@@ -48,6 +48,8 @@ if (! function_exists ('statisticsIsInstalled')) {
 	
 	function statisticsUnInstall ($genDB, $pages) {
 		$result = $genDB->query ('ALTER TABLE ' . TBL_PAGES . ' DROP COLUMN pageViews');
+		$pages->deleteModule ('view_statistics');
+		$pages->deletePage ('view_statistics', 'english');
 	}
 }
 ?>

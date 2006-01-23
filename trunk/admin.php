@@ -156,12 +156,15 @@ switch ($module) {
 		$UI->loadPage ('admin/extensions');
 		break;
 	case 'uninstallextension':
-		$UI->unInstallExtension ($_GET['name']);
-		$UI = NULL;
-		$UI = new UIManager (); // to reload all extensions
 		$UI->setRunning (true);
 		trigger_error ('NOTICE: Extension is uninstalled in the database.');
+		if ($UI->config->exists ('/extensions/' . $_GET['name'])) {
+			$UI->config->removeConfigItem ('/extensions/' . $_GET['name']);
+			$UI->saveAdmin (array ());
+		}
+		$UI->unInstallExtension ($_GET['name']);
 		$UI->setRunning (false);
+		$UI = new UIManager (); // to reload all extensions
 		$UI->loadPage ('admin/extensions');
 		break;	
 	default:
