@@ -23,6 +23,8 @@
 error_reporting (E_ALL);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
+define ('MORGOS_EXTENSION_ID', '{0000-0000-0000-0000}');
+define ('MORGOS_DEFAULT_SKIN', 'MorgOS Default');
 
 /** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)
  * the error handler, this is a link to the one in UIManager (since it works otherwise not in PHP <= 4.3 )
@@ -199,7 +201,7 @@ class UIManager {
 			$this->config->changeValueConfigItem ('/userinterface/contentlanguage', $language);
 		}
 
-		$SQL = "SELECT needauthorized, needauthorizedasadmin FROM " . TBL_MODULES . " WHERE module='$moduleName'";
+		$SQL = "SELECT needauthorized, needauthorizedasadmin, extension FROM " . TBL_MODULES . " WHERE module='$moduleName'";
 		$query = $this->genDB->query ($SQL);
 		if ($this->genDB->num_rows ($query) == 0) {
 			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Page does not exists.'));
@@ -215,6 +217,35 @@ class UIManager {
 		}
 		if (file_exists ($this->skinPath . $moduleName . '.html')) {
 			$output = file_get_contents ($this->skinPath . $moduleName . '.html');
+		} elseif ($module['extension'] != MORGOS_EXTENSION_ID) {
+			// look into the extension themes, first the one that is choosen by user then the default
+			if (array_key_exists ($module['extension'], $this->loadedExtensions)) {
+				$extension = $this->extensions[$module['extension']];
+				$files = scandir ($extension['extension_dir'] . '/skins');
+				$skinFile = null;
+				foreach ($files as $fileName) {
+					$file = $extension['extension_dir'] . '/skins/' . $fileName;
+					if (($fileName[0] != '.') and (is_dir ($fileName))) {
+						if (file_exists ($file . '/skin.php')) {
+							$skin = array ();
+							include ($file . '/skin.php');
+							if ($skin['general']['name'] == $this->config->getConfig ('/userinterface/skin')) {
+								$skinFile = $file . $moduleName . '.html';
+							} elseif ($skin['general']['name'] == MORGOS_DEFAULT_SKIN) {
+								$skinFile = $file . $moduleName . '.html';
+							}
+						}
+					}
+				}
+				if ($skinFile == null) {
+					$output = file_get_contents ($this->skinPath .'usermodule.html');
+				} else {
+					$output = file_get_contents ($skinFile);
+				}
+			} else {
+				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Extension is not loaded.'));
+				return;
+			}
 		} else {
 			// it is a module living in the database
 			$output = file_get_contents ($this->skinPath . 'usermodule.html');
