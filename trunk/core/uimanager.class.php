@@ -80,6 +80,21 @@ class UIManager {
 					trigger_error ('ERROR: ' . $this->i10nMan->translate ('Remove dir install.php and than continue'));
 				}
 			}
+			$reqFiles = array ();
+			$reqFiles[] = 'core/compatible.php';
+			$reqFiles[] = 'core/config.class.php';
+			$reqFiles[] = 'core/database.class.php';
+			$reqFiles[] = 'core/language.class.php';
+			$reqFiles[] = 'core/pages.class.php';
+			$reqFiles[] = 'core/signals.class.php';
+			$reqFiles[] = 'core/uimanager.class.php';
+			$reqFiles[] = 'core/uimanager.functions.php';
+			$reqFiles[] = 'core/uimanager.vars.php';
+			$reqFiles[] = 'core/user.class.php';
+			$reqFiles[] = 'admin.php';
+			$reqFiles[] = 'index.php';
+			$reqFiles[] = 'skins/default/tinymce';
+			//testFiles ($reqFiles);
 		 	include_once ('core/config.class.php');
 			include_once ('core/language.class.php');
 			include_once ('core/signals.class.php');

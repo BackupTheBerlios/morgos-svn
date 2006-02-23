@@ -28,6 +28,7 @@ $this->vars['VAR_ERRORS'] = NULL;
 $this->vars['VAR_WARNINGS'] = NULL;
 $this->vars['VAR_NOTICES'] = NULL;
 $this->vars['VAR_DEBUGGING'] = NULL;
+$this->vars['TINYMCE'] = 'skins/default/tinymce/jscripts/tiny_mce/tiny_mce.js';
 foreach ($this->notices as $val) {
 	$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
 	if (($val["type"] == "INTERNAL_ERROR") or ($val['type'] == "ERROR")) {

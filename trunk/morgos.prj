@@ -8,6 +8,9 @@
 			<localfile path="C:\server\www\morgos\trunk\core\databases\postgresql.database.php" />
 		</category>
 		<category name="tests" expanded="yes">
+			<localfile path="C:\server\www\morgos\trunk\core\tests\file.empty" />
+			<localfile path="C:\server\www\morgos\trunk\core\tests\file.txt" />
+			<localfile path="C:\server\www\morgos\trunk\core\tests\index.php" />
 			<localfile path="C:\server\www\morgos\trunk\core\tests\test.class.php" />
 		</category>
 		<localfile path="C:\server\www\morgos\trunk\core\compatible.php" />
@@ -84,5 +87,12 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
+	<localfile path="C:\server\www\morgos\trunk\core\tests\test.class.php" linenum="140" placement="0:1:-1:-1:-4:-30:22:29:640:447" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\compatible.test.php" linenum="14" placement="0:1:-1:-1:-4:-30:44:58:662:476" />
+	<localfile path="C:\server\www\morgos\trunk\core\compatible.php" linenum="35" placement="0:1:-1:-1:-4:-30:66:87:684:505" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\file.txt" linenum="1" placement="0:1:-1:-1:-4:-30:88:116:706:534" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\file.empty" linenum="1" placement="0:1:-1:-1:-4:-30:110:145:728:563" />
+	<localfile path="C:\server\www\morgos\trunk\index.php" linenum="1" placement="0:1:-1:-1:-4:-30:0:0:618:418" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\index.php" linenum="4" placement="2:3:-1:-1:-4:-30:22:29:640:447" />
 </workspace>
 
