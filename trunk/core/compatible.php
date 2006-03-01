@@ -54,17 +54,17 @@ if (! function_exists ('array_search')) {
 	 * \param $needle (mixed) the value where you search for
 	 * \param $haystack (array) the array where you search in
 	 * \param $strict (bool) if true, the type is also checked
-	 * \return (bool)
+	 * \return (mixed)
 	*/
 	function array_search ($needle, $haystack, $strict = false) {
-		foreach ($haystack as $value) {
+		foreach ($haystack as $key => $value) {
 			if ($strict == true) {
 				if ($value === $needle) {
-					return true;
+					return $key;
 				}
 			} else {
 				if ($value == $needle) {
-					return true;
+					return $key;
 				}
 			}
 		}
@@ -206,6 +206,10 @@ if (!function_exists('call_user_func_array')) {
 		}
 		return $retval;
 	}
+}
+
+if (! defined ('NEWLINE')) {
+	define ('NEWLINE', "\n");
 }
 
 if (! defined ('E_STRICT')) {

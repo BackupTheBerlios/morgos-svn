@@ -30,10 +30,20 @@ function testErrorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errC
 	if (error_reporting () != 0) {
 		if ($isTesterInited == true) {
 			if ($runningTest != NULL) {
-				if ($testerArray['debug'] == true) {
-					$testerArray['log'][$runningTest[0]][$runningTest[1]] = array ($errNo, $errStr, $errFile, $errLine);
-				} else {
-					$testerArray['log'][$runningTest[0]][$runningTest[1]] = array ($errNo, $errStr);
+				$ok = false;
+				$expectedErrors = &$testerArray['expectedErrors'];
+				foreach ($expectedErrors as $id => $expectError) {
+					if ($expectError == $errStr) {
+						unset ($expectedErrors[$id]);
+						$ok = true;
+					}
+				}
+				if ($ok == false) {
+					if ($testerArray['debug'] == true) {
+						$testerArray['log'][$runningTest[0]][$runningTest[1]] = array ($errNo, $errStr, $errFile, $errLine);
+					} else {
+						$testerArray['log'][$runningTest[0]][$runningTest[1]] = array ($errNo, $errStr);
+					}
 				}
 			} else {
 				$testerArray['globalerrors'][] = array ($errNo, $errStr, $errFile, $errLine);
@@ -57,6 +67,7 @@ function initTester ($doDebug = true, $name) {
 	$testerArray['debug'] = $doDebug;
 	$testerArray['dotests'] = array ();
 	$testerArray['runnedtests'] = array ();
+	$testerArray['expectedErrors'] = array ();
 	$runningTest = NULL;
 	set_error_handler ('testErrorHandler');
 	$isTesterInited =true;
@@ -85,21 +96,42 @@ function runTests () {
 	foreach ($testerArray['dotests'] as $groupName => $groupArray) {
 		foreach ($groupArray as $testToRun) {
 			global $runningTest;
+			cleanExpectedErrors ();
 			$runningTest = array ($groupName, $testToRun['name']);
 			$testerArray['runnedtests'][$groupName][$testToRun['name']][0] = 'succeed';
+			$testerArray['runnedtests'][$groupName][$testToRun['name']]['errors'] = 0;
+			$testerArray['runnedtests'][$groupName][$testToRun['name']]['succes'] = 0;
 			call_user_func_array ($testToRun['func'], $testToRun['params']);
+			
 			$runningTest = NULL;
 		}
 	}
 }
 
-function errorInTest ($error) {
-	global $testerArray, $runningTest;
-	$testerArray['runnedtests'][$runningTest[0]][$runningTest[1]][0] = 'failed';
-	$testerArray['runnedtests'][$runningTest[0]][$runningTest[1]][] = $error;
+function setExpectingError ($error) {
+	global $testerArray;
+	$testerArray['expectedErrors'][] = $error;
 }
 
-function failedTest () {
+function cleanExpectedErrors () {
+	global $testerArray, $runningTest;
+	if ($runningTest) {
+		if (count ($testerArray['expectedErrors']) !== 0) {
+			testResult ('Not all expected errors occured', true);
+		}
+	}
+	$testerArray['expectedErrors'] = array ();
+}
+
+function testResult ($error, $failed) {
+	global $testerArray, $runningTest;
+	if ($failed == true) {
+		$testerArray['runnedtests'][$runningTest[0]][$runningTest[1]]['errors']++;
+		$testerArray['runnedtests'][$runningTest[0]][$runningTest[1]][0] = 'failed';
+		$testerArray['runnedtests'][$runningTest[0]][$runningTest[1]][1][] = $error;
+	} else {
+		$testerArray['runnedtests'][$runningTest[0]][$runningTest[1]]['succes']++;
+	}
 }
 
 function showAllResults () {
@@ -112,25 +144,42 @@ function showAllResults () {
 		<h1>Welcome by the $testerArray[name] automated tester.</h1><p>Testing results:</p>";
 	foreach ($testerArray['runnedtests'] as $groupName => $groupArray) {
 		echo "<h2>$groupName</h2>";
+		$totalTests = 0;
+		$totalFailedTests = 0;
+		$totalSuccesfullTests = 0;
 		foreach ($groupArray as $name => $testToRun) {
 			$result = $testToRun[0];
+			$failedTests = $testToRun['errors'];
+			$succesfullTests = $testToRun['succes'];
+			$numberOfTests = $failedTests + $succesfullTests;
+			
+			$totalFailedTests += $failedTests;
+			$totalSuccesfullTests += $succesfullTests;
+			$totalTests += $numberOfTests;
+			
 			if ($result == 'failed') {
-				$result = '<span class="failed">failed</span>';
-				$result .= "<br />Error was: '$testToRun[1]'";
+				$result = '<span class="failed">' . $failedTests . '/' .  $numberOfTests . ' are failed</span>';
+				$result .= '<br />Errors: <ol>';
+				$i = 0;
+				foreach ($testToRun[1] as $error) {
+					$i++;
+					$result .= "<li> '$error'</li>";
+				}
+				$result .= '</ol>';
 			} else {
-				$result = '<span class="failed">successfull</span>';
+				$result = '<span class="failed">' . $numberOfTests . ' were successfull</span>';
 			}
 			echo "<h3>$name</h3>
 				<p>Result: $result
 				</p>";
-			$expectedErrors = NULL;
+			/*$expectedErrors = NULL;
 			foreach ($testerArray['log'][$groupName][$name] as $error) {
 				$expectedErrors .= $error;
 			}
 			if ($expectedErrors != NULL) {
 				echo "<h4>Expected errors that were thrown during execution.</h4>
-				<p>$errors</p>";
-			}
+				<p>$expectedErrors</p>";
+			}*/
 			
 			$unexpectedErrors = NULL;
 			foreach ($testerArray['log'][$groupName][$name] as $error) {
@@ -141,6 +190,9 @@ function showAllResults () {
 				<p>$unexpectedErrors</p>";
 			}
 		}
+		
+		$percent = round ($totalSuccesfullTests / $totalTests * 100, 2);
+		echo '<h3>' . $totalSuccesfullTests . '/' . $totalTests . ' (' . $percent . '%) were succesfull</h3>';
 	}
 	
 	$errors = NULL;
