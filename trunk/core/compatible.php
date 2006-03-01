@@ -93,9 +93,17 @@ if (! function_exists ('scandir')) {
 	 * \warning this is not fully compatible with the one defined in PHP 5
 	 *
 	 * \param $directory (string)
+	 * \param $sortingError (int) 1 if descending, otherwise ascending
 	 * \return (array | false) 
 	*/
-	function scandir ($directory) {
+	function scandir ($directory, $sortingOrder = 0) {
+		if (! file_exists ($directory)) {
+			return false;
+		}
+		if (! is_dir ($directory)) {
+			return false;
+		}
+
 		$handler = opendir ($directory);
 		if ($handler === false) {
 			return false;
@@ -104,6 +112,20 @@ if (! function_exists ('scandir')) {
 			while (false !== ($file = readdir ($handler))) {
 				$files[] = $file;
 			}
+			
+			natcasesort ($files);
+			
+			// to make the key's change
+			$copyFiles = array ();
+			foreach ($files as $file) {
+				$copyFiles[] = $file;
+			}
+			$files = $copyFiles;
+			
+			if ($sortingOrder == 1) {
+				$files = array_reverse ($files);
+			}
+			
 			return $files;
 		}
 	}

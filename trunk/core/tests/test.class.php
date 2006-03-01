@@ -102,7 +102,7 @@ function runTests () {
 			$testerArray['runnedtests'][$groupName][$testToRun['name']]['errors'] = 0;
 			$testerArray['runnedtests'][$groupName][$testToRun['name']]['succes'] = 0;
 			call_user_func_array ($testToRun['func'], $testToRun['params']);
-			
+			cleanExpectedErrors ();
 			$runningTest = NULL;
 		}
 	}
