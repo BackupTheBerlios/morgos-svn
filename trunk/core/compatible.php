@@ -16,8 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 /** \file compatible.php
- * File where all functions live that are in newer versions of PHP, but not in older ones, and that we want / can
- * to implement ourself.
+ * File where all functions/constants/variables live that are in newer versions of PHP, but not in older ones, and that we want / can
+ * to implement ourself. Some functions/constants/variables are utilities that we are using in the code and that are
+ * not implemented in any PHP version.
+ * \warning Some parts of this file can have no license, look to the function headers
  *
  * \author Nathan Samson
 */
@@ -117,15 +119,8 @@ if (! function_exists ('scandir')) {
 				$files[] = $file;
 			}
 			
-			natcasesort ($files);
-			
-			// to make the key's change
-			$copyFiles = array ();
-			foreach ($files as $file) {
-				$copyFiles[] = $file;
-			}
-			$files = $copyFiles;
-			
+			sort ($files);
+	
 			if ($sortingOrder == 1) {
 				$files = array_reverse ($files);
 			}
@@ -137,8 +132,7 @@ if (! function_exists ('scandir')) {
 
 /** \fn versionCompare ($version1, $version2, $operator)
  * compares 2 version numbers. A version looks like "1.2.*" or "1.2" (which is the same)
- * \warning this function is untested, use with care
- * \todo test this function
+ * \warning 1.2.0 > 1 does return false, this is intended
  *
  * \param $version1 (string)
  * \param $version2 (string)
@@ -154,9 +148,9 @@ function versionCompare ($version1, $version2, $operator) {
 			$result = 0;
 			break;
 		}
-		/*if (($version1[$key] == '*') or ($version2[$key] == '*')) {
+		if (($version1[$key] == '*') or ($version2[$key] == '*')) {
 			$result = 0; 
-		} else*/if ($version1[$key] > $version2[$key]) {
+		} elseif ($version1[$key] > $version2[$key]) {
 			$result = 1;
 			break;
 		} elseif ($version1[$key] < $version2[$key]) {
@@ -211,6 +205,12 @@ function versionCompare ($version1, $version2, $operator) {
 }
 
 if (!function_exists('call_user_func_array')) {
+	gettype ($_POST); // this is here only to trick Doxygen
+	/** \fn call_user_func_array ($func, $args)
+	 * Call a user function given with an array of parameters.
+	 * \warning the license of this function is uknown, the code can be found on 
+	 *  http://php.belnet.be/manual/en/function.call-user-func-array.php
+	*/
 	function call_user_func_array($func, $args) {
 		$argString = '';
 		$comma = '';

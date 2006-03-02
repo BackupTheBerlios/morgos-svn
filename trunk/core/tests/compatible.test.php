@@ -7,9 +7,7 @@
 	addTestToRun ('compatible.php', 'call_user_array'  , 'testCallUserArray'  , array ());
 	
 	function testFileGetContents () {
-		//setExpectingError ('file_get_contents(notExistingFile.extension) [<a href=\'function.file-get-contents\'>function.file-get-contents</a>]: failed to open stream: No such file or directory');
 		$return = @file_get_contents ('notExistingFile.extension');
-		//cleanExpectedErrors ();
 		testResult ('File not found returns not false.', $return !== false);
 		
 		$return = file_get_contents ('file.empty');
@@ -72,8 +70,104 @@
 	}
 	
 	function testVersionCompare () {
+		$result = versionCompare ('0.0.1', '0.0.2', ">");
+		$shouldReturn = false;
+		testResult ("A comparing error 1", $result !== $shouldReturn);
+		
+		$result = versionCompare ('0.0.1', '0.0.2', "<");
+		$shouldReturn = true;
+		testResult ("A comparing error 2", $result !== $shouldReturn);
+		
+		$result = versionCompare ('0.0.1', '0.0.2', "==");
+		$shouldReturn = false;
+		testResult ("A comparing error 3", $result !== $shouldReturn);
+		
+		$result = versionCompare ('0.0.1', '0.0.2', ">=");
+		$shouldReturn = false;
+		testResult ("A comparing error 4", $result !== $shouldReturn);
+		
+		$result = versionCompare ('0.0.1', '0.0.2', "<=");
+		$shouldReturn = true;
+		testResult ("A comparing error 5", $result !== $shouldReturn);
+		
+		$result = versionCompare ('1.0.1', '1.1', "<");
+		$shouldReturn = true;
+		testResult ("A comparing error 6", $result !== $shouldReturn);
+		
+		$result = versionCompare ('0.0.1', '0.0.*', "==");
+		$shouldReturn = true;
+		testResult ("A comparing error 7, probably in * comparision", $result !== $shouldReturn);
+		
+		$result = versionCompare ('0.0.1', '0.0.1', "<=");
+		$shouldReturn = true;
+		testResult ("A comparing error 8", $result !== $shouldReturn);
+		
+		$result = versionCompare ('1.0.1', '0.1.2', ">");
+		$shouldReturn = true;
+		testResult ("A comparing error 9", $result !== $shouldReturn);
+		
+		$result = versionCompare ('1.2.*', '1', "==");
+		$shouldReturn = true;
+		testResult ("A comparing error 10", $result !== $shouldReturn);
+		
+		$result = versionCompare ('1.2.*', '1', ">");
+		$shouldReturn = false;
+		testResult ("A comparing error 11", $result !== $shouldReturn);
+		
+		$result = versionCompare ('1.1', '1.0', "!=");
+		$shouldReturn = true;
+		testResult ("A comparing error 12", $result !== $shouldReturn);
+	}
+	
+	class testClass {
+		function test ($param1, $param2) {
+			global $firstParam, $secondParam;
+			$firstParam = $param1;
+			$secondParam = $param2;
+			
+			$param1++;
+			$param2++;
+		}
+		
+		function test2 ($param1, $param2) {
+			global $firstParam, $secondParam;
+			$firstParam = $param1;
+			$secondParam = $param2;
+			
+			$param1++;
+			$param2++;
+			$this->param1 = $param1;
+		}
+	}
+	
+	function testFunction ($param1, $param2) {
+		global $firstParam, $secondParam;
+		$firstParam = $param1;
+		$secondParam = $param2;
+		
+		$param1++;
+		$param2++;
 	}
 	
 	function testCallUserArray () {
+		global $firstParam, $secondParam;
+		call_user_func_array ('testFunction', array (1,2));
+		testResult ("A call_user_func_array 1", $firstParam !== 1 and $firstParam !== 2);
+
+		$test1 = 2;
+		$test2 = 3;
+		call_user_func_array ('testFunction', array (&$test1, &$test2));
+		testResult ("A call_user_func_array 2, probably in references", $test1 !== 3 and $test2 !== 4);
+		
+		$test1 = 2;
+		$test2 = 3;
+		call_user_func_array (array ('testClass', 'test'), array (&$test1, &$test2));
+		testResult ("A call_user_func_array 3, probably in objects", $test1 !== 3 and $test2 !== 4);
+		
+		$test1 = 2;
+		$test2 = 3;
+		$testClass = new testClass ();
+		call_user_func_array (array (&$testClass, 'test2'), array (&$test1, &$test2));
+		testResult ("A call_user_func_array 4, probably in object references", $test1 !== 3 and $test2 !== 4 and $testClass->param1 !== 3);
 	}
 ?>
