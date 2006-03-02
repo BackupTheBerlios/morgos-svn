@@ -7,7 +7,7 @@
 	addTestToRun ('compatible.php', 'call_user_array'  , 'testCallUserArray'  , array ());
 	
 	function testFileGetContents () {
-		setExpectingError ('file_get_contents(notExistingFile.extension) [<a href=\'function.file-get-contents\'>function.file-get-contents</a>]: failed to open stream: No such file or directory');
+		//setExpectingError ('file_get_contents(notExistingFile.extension) [<a href=\'function.file-get-contents\'>function.file-get-contents</a>]: failed to open stream: No such file or directory');
 		$return = @file_get_contents ('notExistingFile.extension');
 		//cleanExpectedErrors ();
 		testResult ('File not found returns not false.', $return !== false);
@@ -54,23 +54,20 @@
 	
 	function testScanDir () {
 		$result = scandir ('adir', 0);
-
-		
-		$shouldReturn = array ('.', '..', '.svn', 'a', 'b', 'd', 'e1', 'e2' , 'e10', 'e11');
-
+		$shouldReturn = array ('.', '..', '.svn', 'a', 'b', 'd', 'e1', 'e10', 'e11', 'e2');
 		testResult ('An error, probably in sorting', $shouldReturn !== $result);
 		
 		$result = scandir ('adir', 1);
-		$shouldReturn = array ('e11', 'e10', 'e2', 'e1', 'd', 'b', 'a', '.svn', '..', '.');
+		$shouldReturn = array ('e2', 'e11', 'e10', 'e1', 'd', 'b', 'a', '.svn', '..', '.');
 		testResult ('An error, probably in inverse sorting', $shouldReturn !== $result);
 		
 		$result = scandir ('emptydir');
 		testResult ('An empty dir doesn\t return array (., .., .svn)', $result !== array ('.', '..', '.svn'));
 		
-		$results = scandir ('notexistingdir');
+		$results = @scandir ('notexistingdir');
 		testResult ('Dir not exists doesn\'t return false', $result === false);
 		
-		$results = scandir ('notadir');
+		$results = @scandir ('notadir');
 		testResult ('Not a dir doesn\'t return false', $result === false);
 	}
 	

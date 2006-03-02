@@ -50,6 +50,9 @@ if (! function_exists ('array_search')) {
 	gettype ($_POST); // this is here only to trick Doxygen
 	/** \fn array_search ($needle, $haystack, $strict = false)
 	 * Searches the array for a given value and returns the corresponding key if successful.
+	 * \warning all array key's are transformed to an int
+	 * \warning the order of search is not set, so if you have 2 times the same value you
+	 *  can't know which key you will get
 	 *
 	 * \param $needle (mixed) the value where you search for
 	 * \param $haystack (array) the array where you search in
@@ -90,7 +93,8 @@ if (! function_exists ('scandir')) {
 	gettype ($_POST); // this is here only to trick Doxygen
 	/** \fn scandir ($directory)
 	 * List files and directories inside the specified path
-	 * \warning this is not fully compatible with the one defined in PHP 5
+	 * \warning this is not fully compatible with the one defined in PHP 5 (missing context param)
+	 * \warning sorting doesn't happen with natural sorting order, you need to do this manually
 	 *
 	 * \param $directory (string)
 	 * \param $sortingError (int) 1 if descending, otherwise ascending
