@@ -24,7 +24,7 @@ error_reporting (E_ALL);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
 define ('MORGOS_EXTENSION_ID', '{0000-0000-0000-0000}');
-define ('MORGOS_DEFAULT_SKIN', 'MorgOS Default');
+define ('MORGOS_DEFAULT_SKIN', 'MorgOS Site');
 
 /** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)
  * the error handler, this is a link to the one in UIManager (since it works otherwise not in PHP <= 4.3 )
@@ -205,7 +205,7 @@ class UIManager {
 		} else {
 			$this->config->addConfigItem ('/userinterface/language', 'english', TYPE_STRING);
 			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
-			$this->config->addConfigItem ('/userinterface/skin', 'MorgOS Default', TYPE_STRING);
+			$this->config->addConfigItem ('/userinterface/skin', MORGOS_DEFAULT_SKIN, TYPE_STRING);
 		}
 		$this->loadSkin ($this->config->getConfigItem ('/userinterface/skin', TYPE_STRING));
 		

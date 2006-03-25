@@ -25,6 +25,7 @@ define ('TYPE_GUESS',-1); // use this only for addConfigItemsFromFile ()
  *
  * \author Nathan Samson
 */
+include_once ('core/language.class.php');
 
 /** \class config
  * class that take care of the config implementation.
@@ -44,11 +45,14 @@ class config {
 	*/
 	var $configTree;
 
-	function config ($lang) {
+	function config ($lang = NULL) {
 		$this->__construct ($lang);
 	}
 
-	function __construct ($lang) {
+	function __construct ($lang = NULL) {
+		if ($lang == NULL) {
+			$lang = new languages ();
+		}
 		$this->lang = &$lang;
 		$this->configTree = array ();
 	}

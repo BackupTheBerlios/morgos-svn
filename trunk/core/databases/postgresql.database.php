@@ -24,7 +24,7 @@
 if (function_exists ('pg_connect')) {
 	//$supported['PostgreSQL 6.5'] = 'postgreSQLDatabase';
 	//$supported['PostgreSQL 7.x'] = 'postgreSQLDatabase';
-	//$supported['PostgreSQL 8.x'] = 'postgreSQLDatabase';
+	$supported['PostgreSQL 8.x'] = 'postgreSQLDatabase';
 }
 
 if ((array_search ('postgreSQLDatabase', $supported, true)) and (! class_exists ('postgreSQLDatabase'))) {
@@ -43,6 +43,7 @@ class postgreSQLDatabase /*implements iDatabase*/ {
 		$link  =  'user=' .$user;
 		$link .= ' password=' .$password;
 		$link .= ' host=' . $host;
+		echo $link;
 		$this->connection = pg_connect ($link);
 		if ($this->connection == false) {
 			trigger_error ('Couldn\'t connect with database', E_USER_ERROR);

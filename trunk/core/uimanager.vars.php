@@ -30,6 +30,7 @@ $this->vars['VAR_NOTICES'] = NULL;
 $this->vars['VAR_DEBUGGING'] = NULL;
 $this->vars['TINYMCE'] = 'skins/default/tinymce/jscripts/tiny_mce/tiny_mce.js';
 foreach ($this->notices as $val) {
+	echo "test";
 	$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
 	if (($val["type"] == "INTERNAL_ERROR") or ($val['type'] == "ERROR")) {
 		$this->vars['VAR_ERRORS'] .= $this->parse (' ERROR (' . $val['error'] . ')');
@@ -38,7 +39,13 @@ foreach ($this->notices as $val) {
 	} elseif ($val["type"] == "WARNING") {
 		$this->vars['VAR_WARNINGS'] .= $this->parse (' WARNING (' . $val['error'] . ')');
 	} elseif ((($val["type"] == "DEBUG") or ($val["type"] == "PHP")) and ($debug == true)){
-		$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
+		if ($debug) {
+			$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
+		}
+	} else {
+		if ($debug) {
+			$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
+		}
 	}
 	//if ($val["die"] == true) {
 	//	echo "DIED";

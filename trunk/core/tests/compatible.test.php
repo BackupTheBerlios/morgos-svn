@@ -2,7 +2,7 @@
 	include_once ('../compatible.php');
 	addTestToRun ('compatible.php', 'file_get_contents', 'testFileGetContents', array ());
 	addTestToRun ('compatible.php', 'array_search'     , 'testArraySearch'    , array ());
-	addTestToRun ('compatible.php', 'scandir'         , 'testScanDir'        , array ());
+	addTestToRun ('compatible.php', 'scandir'          , 'testScanDir'        , array ());
 	addTestToRun ('compatible.php', 'versionCompare'   , 'testVersionCompare' , array ());
 	addTestToRun ('compatible.php', 'call_user_array'  , 'testCallUserArray'  , array ());
 	
@@ -120,7 +120,7 @@
 	}
 	
 	class testClass {
-		function test ($param1, $param2) {
+		static function test ($param1, $param2) {
 			global $firstParam, $secondParam;
 			$firstParam = $param1;
 			$secondParam = $param2;

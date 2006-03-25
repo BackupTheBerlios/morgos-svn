@@ -19,8 +19,8 @@
 		fclose ($fHandler);
 	}
 
-	$SQL = "CREATE DATABASE IF NOT EXISTS " . $_POST['database-name'];
-	$DB->query ($SQL);
+	$SQL = "CREATE DATABASE IF NOT EXISTS " . addslashes ($_POST['database-name']);
+	$result = $DB->query ($SQL);
 ?>
 <?php echo '<?xml version="1.0"?>' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

@@ -85,6 +85,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 					trigger_error ('DEBUG: ' . $this->error ());					
 					trigger_error ('WARNING: ' . $this->i10nMan->translate ('Query not executed'));
 				}
+				return false;
 			} else {
 				return $result;
 			}

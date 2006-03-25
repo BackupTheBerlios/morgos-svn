@@ -20,6 +20,7 @@
  *
  * \author Nathan Samson
 */
+
 include_once ('core/compatible.php');
 /** \class languages
  * Class that take care of the translatable strings
