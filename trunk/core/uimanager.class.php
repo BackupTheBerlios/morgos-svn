@@ -18,11 +18,13 @@
 /** \file uimanager.class.php
  * File that take care of the main UI layer, extensionhandling and HTML output
  *
+ * $Id$
  * \author Nathan Samson
 */
 error_reporting (E_ALL);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
+define ('MORGOS_SVN_REVISION, '$Rev$');
 define ('MORGOS_EXTENSION_ID', '{0000-0000-0000-0000}');
 define ('MORGOS_DEFAULT_SKIN', 'MorgOS Site');
 

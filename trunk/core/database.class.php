@@ -18,6 +18,7 @@
 /** \file database.class.php
  * File that take care of the database SubSystem
  *
+ * $Id$
  * \author Nathan Samson
 */
 function checkDatabase ($database, $tables) {

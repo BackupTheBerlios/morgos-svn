@@ -18,6 +18,7 @@
 /** \file language.class.php
  * File that take care of the translatable strings
  *
+ * $Id$
  * \author Nathan Samson
 */
 

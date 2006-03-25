@@ -18,6 +18,7 @@
 /** \file signals.class.php
  * File that take care of the signals subclass
  *
+ * $Id$
  * \author Nathan Samson
 */
 /** \class signalManager

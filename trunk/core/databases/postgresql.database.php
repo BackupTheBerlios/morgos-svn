@@ -18,6 +18,7 @@
 /** \file postgresql.database.php
  * File that take care of the database (PostgreSQL) SubSystem
  *
+ * $Id$
  * \author Nathan Samson
 */
 

@@ -18,6 +18,7 @@
 /** \file pages.class.php
  * File that take care of the modules and pages
  *
+ * $Id$
  * \author Nathan Samson
 */
 

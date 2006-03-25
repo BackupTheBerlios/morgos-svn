@@ -18,6 +18,7 @@
 /** \file uimanager.class.php
  * File that take care of the main user system
  *
+ * $Id$
  * \author Sam Heijens
  * \author Nathan Samson
 */

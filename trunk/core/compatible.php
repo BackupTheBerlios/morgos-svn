@@ -21,6 +21,7 @@
  * not implemented in any PHP version.
  * \warning Some parts of this file can have no license, look to the function headers
  *
+ * $Id$
  * \author Nathan Samson
 */
 if (! function_exists ('file_get_contents')) {

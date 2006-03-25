@@ -23,6 +23,7 @@ define ('TYPE_GUESS',-1); // use this only for addConfigItemsFromFile ()
 /** \file config.class.php
  * File that take care of the config subsystem
  *
+ * $Id$
  * \author Nathan Samson
 */
 include_once ('core/language.class.php');

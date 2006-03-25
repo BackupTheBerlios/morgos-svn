@@ -18,6 +18,7 @@
 /** \file mysql4.database.php
  * File that take care of the database (MySQL) SubSystem
  *
+ * $Id$
  * \author Nathan Samson
 */
 

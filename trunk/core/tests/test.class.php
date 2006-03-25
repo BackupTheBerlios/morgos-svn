@@ -18,6 +18,7 @@
 /** \file test.class.php
  * Functions that handles errorreporting to see if everything is working well.
  *
+ * $Id$
  * \author Nathan Samson
 */
 
