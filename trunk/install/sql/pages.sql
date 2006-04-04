@@ -4,8 +4,8 @@ CREATE TABLE %prefix%modules (
   needauthorizedasadmin varchar(3) DEFAULT 'no',
   listedinadmin varchar(3) DEFAULT 'yes',
   parent varchar (50) default '',
-  place int (10),
-  placeinadmin int (10),
+  place int ,
+  placeinadmin int,
   islink varchar (3),
   extension varchar (21),
   PRIMARY KEY (module)

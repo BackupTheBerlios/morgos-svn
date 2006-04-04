@@ -18,6 +18,7 @@
 error_reporting (E_ALL);
 $SAVES = array ();
 $execPhase = false;
+$returned = false;
 define ('PHASE_START', 'start');
 define ('PHASE_CHECK', 'check');
 define ('PHASE_CONFIG', 'config');
@@ -90,8 +91,9 @@ function errorHandlerForInstaller ($errNo, $errStr, $errFile = NULL, $errLine = 
 			$die = true;
 			//trigger_error ('INTERNAL_ERROR: Error type is unrecognized.');
 	}
-	global $execPhase;
-	if (($die == true) and ($execPhase == false)) {
+	global $execPhase, $returned;
+	if (($die == true) and ($execPhase == false) and ($returned == false)) {
+		$returned = true;
 		// go the the previous page
 		global $phaseProvided, $doPhase;
 		switch ($doPhase) {

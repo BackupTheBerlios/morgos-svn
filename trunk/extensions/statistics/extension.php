@@ -31,12 +31,12 @@ $extension['file_to_install'] = 'install.php';
 
 if (! function_exists ('statisticsIsInstalled')) {
 	function statisticsIsInstalled ($genDB) {
-		$result = $genDB->query ('SHOW COLUMNS FROM ' . TBL_PAGES);
+		/*$result = $genDB->query ('SHOW COLUMNS FROM ' . TBL_PAGES);
 		while ($column = $genDB->fetch_array ($result)) {
 			if ($column['Field'] == 'pageViews') {
 				return true;
 			}
-		}
+		}*/
 		return false;
 	}
 	

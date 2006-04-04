@@ -24,9 +24,9 @@
 error_reporting (E_ALL);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
-define ('MORGOS_SVN_REVISION, '$Rev$');
+define ('MORGOS_SVN_REVISION', '$Rev$');
 define ('MORGOS_EXTENSION_ID', '{0000-0000-0000-0000}');
-define ('MORGOS_DEFAULT_SKIN', 'MorgOS Site');
+define ('MORGOS_DEFAULT_SKIN', 'MorgOS Default');
 
 /** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)
  * the error handler, this is a link to the one in UIManager (since it works otherwise not in PHP <= 4.3 )

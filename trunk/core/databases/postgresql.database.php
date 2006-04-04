@@ -44,7 +44,9 @@ class postgreSQLDatabase /*implements iDatabase*/ {
 		$link  =  'user=' .$user;
 		$link .= ' password=' .$password;
 		$link .= ' host=' . $host;
-		echo $link;
+		$this->link = $link;
+		$link .= ' dbname=postgres'; // not sure if this works
+		//echo $link;
 		$this->connection = pg_connect ($link);
 		if ($this->connection == false) {
 			trigger_error ('Couldn\'t connect with database', E_USER_ERROR);
@@ -54,9 +56,10 @@ class postgreSQLDatabase /*implements iDatabase*/ {
 		}
 	}
 	
-	/*public*/ function db_connect ($database) {
+	/*public*/ function select_db ($database) {
 		$link = ' dbname=' . $database;
-		$this->connection = pg_connect ($link);
+		pg_close ($this->connection);
+		$this->connection = pg_connect ($this->link . $link);
 		if ($this->connection == false) {
 			trigger_error ('Couldn\'t connect with database', E_USER_ERROR);
 			trigger_error ($this->error, E_USER_NOTICE);
@@ -71,16 +74,19 @@ class postgreSQLDatabase /*implements iDatabase*/ {
 
 	/*public*/ function query ( $sql,  $fatal = false) {
 		if (! isset ($this->connection)) {
-			trigger_error ('No Database connection', E_USER_WARNING);
+			trigger_error ('ERROR: No Database connection');
 		} else {
+						//echo $sql;
+						//debug_print_backtrace ();
 			$result =  pg_query ($this->connection, $sql);
 			if ($result == false) {
+
 				if ($fatal == true) {
-					trigger_error ('Query not executed', E_USER_ERROR);
-					trigger_error ($this->error, E_USER_NOTICE);
+					trigger_error ('WARNING: Query not executed');
+					trigger_error ($this->error);
 				} else {
-					trigger_error ('Query not executed', E_USER_WARNING);
-					trigger_error ($this->error, E_USER_NOTICE);					
+					trigger_error ('ERROR: Query not executed');
+					trigger_error ($this->error);					
 				}
 			} else {
 				return $result;
