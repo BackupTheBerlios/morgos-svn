@@ -26,17 +26,18 @@ $extension['need_install'] = true;
 $extension['is_installed_function'] = 'statisticsIsInstalled';
 $extension['install_function'] = 'statisticsInstall';
 $extension['uninstall_function'] = 'statisticsUnInstall';
+$extension['iscompatible_function'] = 'statisticsIsCompatible';
 $extension['file_to_load'] = 'index.php';
 $extension['file_to_install'] = 'install.php';
 
 if (! function_exists ('statisticsIsInstalled')) {
 	function statisticsIsInstalled ($genDB) {
-		/*$result = $genDB->query ('SHOW COLUMNS FROM ' . TBL_PAGES);
+		$result = $genDB->query ('SHOW COLUMNS FROM ' . TBL_PAGES);
 		while ($column = $genDB->fetch_array ($result)) {
 			if ($column['Field'] == 'pageViews') {
 				return true;
 			}
-		}*/
+		}
 		return false;
 	}
 	
@@ -50,6 +51,14 @@ if (! function_exists ('statisticsIsInstalled')) {
 		$result = $genDB->query ('ALTER TABLE ' . TBL_PAGES . ' DROP COLUMN pageViews');
 		$pages->deleteModule ('view_statistics');
 		$pages->deletePage ('view_statistics', 'english');
+	}
+	
+	function statisticsIsCompatible ($genDB) {
+		if ($genDB->getType () == 'PgSQL') {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
 ?>

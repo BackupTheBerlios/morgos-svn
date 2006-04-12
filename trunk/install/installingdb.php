@@ -44,7 +44,8 @@
 	$pages->addModule ('logout'             , true , false, 3, 0, false, 'user');
 	$pages->addModule ('viewadmin'          , true , true , 2, 0, false, 'user');
 	$pages->addModule ('admin/addpage'      , false, true , 0, 0, true);
-	$pages->addModule ('admin/editpage'      , false, true , 0, 0, true);
+	$pages->addModule ('admin/editpage'     , false, true , 0, 0, true);
+	$pages->addModule ('admin/savemanually' , false, true , 0, 0, false);
 	$pages->addModule ('admin/index'        , false, true , 0, 1, true);
 	$pages->addModule ('admin/general'      , false, true , 0, 2, true);
 	$pages->addModule ('admin/database'     , false, true , 0, 3, true);

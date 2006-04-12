@@ -21,7 +21,7 @@
  * $Id$
  * \author Nathan Samson
 */
-error_reporting (E_ALL);
+error_reporting (E_NONE);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
 define ('MORGOS_SVN_REVISION', '$Rev$');
@@ -290,19 +290,19 @@ class UIManager {
 				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Configuration not saved, new value is empty'));
 			}
 		}
-		define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
+		//define ('NEWLINE', "\n"); // TODO make this work also for WIndows and Mac endlines
 		$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
 		if ($debug == true) {
 			$debug = 'true';
 		} else {
 			$debug = 'false';
 		}
-				
+		
 		// write the config file out
 		$output = '<?php ' . NEWLINE;
 		$output .= '	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */' . NEWLINE;
 		$output .= '	$config[\'/general/sitename\'] = \'' . $this->config->getConfigItem ('/general/sitename', TYPE_STRING) ."';" . NEWLINE;
-		$output .= '	$config[\'/general/debug\'] = ' . $debug .";" . NEWLINE;
+		$output .= '	$config[\'/general/debug\'] = ' . $debug .';' . NEWLINE;
 		$output .= '	$config[\'/database/type\'] = \'' . $this->config->getConfigItem ('/database/type', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/name\'] = \'' . $this->config->getConfigItem ('/database/name', TYPE_STRING) .'\';' . NEWLINE;
 		$output .= '	$config[\'/database/host\'] = \'' . $this->config->getConfigItem ('/database/host', TYPE_STRING) .'\';' . NEWLINE;
@@ -810,31 +810,45 @@ class UIManager {
 							$minVersion = $extension['general']['minversion'];
 							$maxVersion = $extension['general']['maxversion'];
 							$extensionID = $extension['general']['ID'];
-							if ($extension['need_install'] == true) {
-								$isInstalledFunction = $extension['is_installed_function'];
-								$installable = $isInstalledFunction ($this->genDB) ? false : true;
-								$extension['is_installed'] = $isInstalledFunction ($this->genDB);
+							$isCompatibleFunction = $extension['iscompatible_function'];
+							if ($isCompatibleFunction != false) {
+								if (! $isCompatibleFunction ($this->genDB)) {
+									$compatible = false;
+								} else {
+									$compatible = true;
+								}
 							} else {
-								$installable = false;
-								//$extension['is_isntalled']
+								$compatible = true;
 							}
+							if ($compatible) {
+								if ($extension['need_install'] == true) {
+									$isInstalledFunction = $extension['is_installed_function'];
+									$installable = $isInstalledFunction ($this->genDB) ? false : true;
+									$extension['is_installed'] = $isInstalledFunction ($this->genDB);
+								} else {
+									$installable = false;
+									//$extension['is_isntalled']
+								}
 							
-							$extension['installable'] = $installable;
-							if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
-								$status = 'incompatible';
-							} elseif ($this->extensionIsLoaded ($extensionID)) {
-								$status = 'loaded';
-							} elseif ($installable == true) {
-								$status = 'not_installed';
-							} else {
-								$status = 'ok';
-								if (array_key_exists ('required_file', $extension)) {
-									foreach ($extension['required_file'] as $reqFile) {
-										if (! file_exists ($extensionDir . '/' . $reqFile)) {
-											$status = 'missing_file';
+								$extension['installable'] = $installable;
+								if (versionCompare (MORGOS_VERSION, $minVersion, '<') || versionCompare (MORGOS_VERSION, $maxVersion, '>')) {
+									$status = 'incompatible';
+								} elseif ($this->extensionIsLoaded ($extensionID)) {
+									$status = 'loaded';
+								} elseif ($installable == true) {
+									$status = 'not_installed';
+								} else {
+									$status = 'ok';
+									if (array_key_exists ('required_file', $extension)) {
+										foreach ($extension['required_file'] as $reqFile) {
+											if (! file_exists ($extensionDir . '/' . $reqFile)) {
+												$status = 'missing_file';
+											}
 										}
 									}
 								}
+							} else {
+								$status = 'incompatible';
 							}
 							$extension['status'] = $status;
 							$extension['extension_dir'] = $extensionDir;

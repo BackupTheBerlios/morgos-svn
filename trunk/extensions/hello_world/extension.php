@@ -25,4 +25,5 @@ $extension['required_file'][] = 'index.php';
 $extension['need_install'] = false;
 $extension['file_to_load'] = 'index.php';
 $extension['file_to_install'] = 'install.php';
+$extension['iscompatible_function'] = false;
 ?>

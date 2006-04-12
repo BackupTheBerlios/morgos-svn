@@ -67,7 +67,7 @@ class user {
 			session_register('pass');
 			return true;
 		} else {
-			trigger_error ('WARNING: ' . $this->lang->translate ('Wrong password.'));
+			trigger_error ('WARNING: ' . $this->i10nMan->translate ('Wrong password.'));
 			return false;
 		}
 	}

@@ -78,9 +78,9 @@ class postgreSQLDatabase /*implements iDatabase*/ {
 		} else {
 						//echo $sql;
 						//debug_print_backtrace ();
-			$result =  pg_query ($this->connection, $sql);
+			$result =  @pg_query ($this->connection, $sql);
 			if ($result == false) {
-
+				
 				if ($fatal == true) {
 					trigger_error ('WARNING: Query not executed');
 					trigger_error ($this->error);
@@ -108,6 +108,10 @@ class postgreSQLDatabase /*implements iDatabase*/ {
 
 	/*public*/ function num_rows ( $result) {
 		return pg_num_rows ($result);
+	}
+	
+	/*public*/ function getType () {
+		return 'PgSQL';
 	}
 	
 	/*private*/ function error () {

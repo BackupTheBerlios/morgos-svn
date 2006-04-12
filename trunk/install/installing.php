@@ -5,7 +5,7 @@
 	$output = "<?php \n";
 	$output .= "	/* This files is genereted by MorgOS, only change manual if you know what you are doing. */\n";
 	$output .= '	$config[\'/general/sitename\'] = \'' . $_POST['site-name'] ."';" . NEWLINE;
-	$output .= '	$config[\'/general/debug\'] = \'false\';' . NEWLINE;
+	$output .= '	$config[\'/general/debug\'] = false;' . NEWLINE;
 	$output .= '	$config[\'/database/type\'] = \'' . $_POST['database-type'] ."';" . NEWLINE;
 	$output .= '	$config[\'/database/name\'] = \'' . $_POST['database-name'] ."';" . NEWLINE;
 	$output .= '	$config[\'/database/host\'] = \'' . $_POST['database-host'] ."';" . NEWLINE;

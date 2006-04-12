@@ -191,8 +191,12 @@ function showAllResults () {
 				<p>$unexpectedErrors</p>";
 			}
 		}
-		
-		$percent = round ($totalSuccesfullTests / $totalTests * 100, 2);
+		if ($totalTests != 0) {
+			$percent = round ($totalSuccesfullTests / $totalTests * 100, 2);
+		} else {
+			$percent = 0;
+			echo '<h3 class="warning">0 Tests runned, implement them!!</h3>';
+		}
 		echo '<h3>' . $totalSuccesfullTests . '/' . $totalTests . ' (' . $percent . '%) were succesfull</h3>';
 	}
 	

@@ -30,31 +30,27 @@ include_once ('core/language.class.php');
 
 /** \class config
  * class that take care of the config implementation.
+ * \warning see if constructor (create lang) is correct
  *
  * \version 0.1svn
  * \author Nathan Samson
  * \todo test this class, especially isType ()
 */
 class config {
-	/** \var $configTree
-	 * the configtree is an array, each path or configItem has a place in the array
-	 * the content of an item has different items
-	 *  \li the value
-	 *  \li the type
-	 *  \li maybe a password
-	 * \private
-	*/
-	var $configTree;
-
 	function config ($lang = NULL) {
-		$this->__construct ($lang);
-	}
-
-	function __construct ($lang = NULL) {
 		if ($lang == NULL) {
-			$lang = new languages ();
+			$lang = new languages ('.');
 		}
+		
 		$this->lang = &$lang;
+		/** \var $configTree
+		 * the configtree is an array, each path or configItem has a place in the array
+		 * the content of an item has different items
+		 *  \li the value
+		 *  \li the type
+		 *  \li maybe a password
+		 * \private
+		*/
 		$this->configTree = array ();
 	}
 	

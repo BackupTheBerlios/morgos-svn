@@ -38,7 +38,7 @@ class languages {
 	 * \param $dir (string) the dir where the languages are stored
 	 * \param $defLang (string) the default language where all other languages are derived from standard (english)
 	*/
-	function __construct ($dir, $defLang = 'english') {
+	function languages ($dir, $defLang = 'english') {
 		$this->dir = $dir;
 		if (file_exists ($dir)) {
 			if (! is_dir ($dir)) {
@@ -50,10 +50,6 @@ class languages {
 		$this->defLang = $defLang;
 		$this->getAllSupportedLanguages ();
 		$this->stringTree = array ();
-	}
-
-	function languages ($dir, $defLang = 'english') {
-		$this->__construct ($dir, $defLang);
 	}
 	
 	/** \fn getAllSupportedLanguages ()

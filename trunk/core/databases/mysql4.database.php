@@ -113,6 +113,10 @@ class MySQLDatabase /*implements iDatabase*/ {
 		return mysql_num_rows ($result);
 	}
 	
+	/*public*/ function getType () {
+		return 'MySQL';
+	}
+	
 	/*private*/ function sql2mysql ( $sql) {
 		if (ereg ('( serial )',$sql)) {
 			$sql = ereg_replace ('( serial )', ' int AUTO_INCREMENT ', $sql);
