@@ -23,8 +23,7 @@
 */
 
 if (function_exists ('mysql_connect')) {
-	$supported['MySQL 3.x'] = 'MySQLDatabase';
-	$supported['MySQL 4.x'] = 'MySQLDatabase';
+	$supported['MySQL'] = 'MySQLDatabase';
 }
 if (function_exists ('mysqli_connect')) {
 	//$supported['MySQLi 4.1'] = 'Database_mysqli';
@@ -79,8 +78,9 @@ class MySQLDatabase /*implements iDatabase*/ {
 			$sql = $this->sql2mysql ($sql);
 			$result = mysql_query ($sql, $this->connection);
 			if ($result == false) {
+				echo $sql;
 				if ($fatal == true) {
-					trigger_error ('DEBUG: ' . $this->error ());
+					trigger_error ('DEBUG: ' . $sql . '  ' . $this->error ());
 					trigger_error ('ERROR: ' . $this->i10nMan->translate ('Query not executed'));
 				} else {
 					trigger_error ('DEBUG: ' . $this->error ());					
@@ -94,7 +94,7 @@ class MySQLDatabase /*implements iDatabase*/ {
 	}
 
 	/*public*/ function fetch_array ( $result) {
-		return mysql_fetch_array ($result);
+		return mysql_fetch_array ($result, MYSQL_ASSOC);
 	}
 
 	/*public*/ function get_all_tables ( $DBName) {

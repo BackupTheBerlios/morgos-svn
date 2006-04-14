@@ -21,7 +21,6 @@
  * $Id$
  * \author Nathan Samson
 */
-error_reporting (E_NONE);
 include_once ('core/compatible.php');
 define ('MORGOS_VERSION', '0.1');
 define ('MORGOS_SVN_REVISION', '$Rev$');
@@ -40,6 +39,66 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
 	$UI->errorHandler ($errNo, $errStr, $errFile, $errLine, $errContext);
 }
 
+/** \fn getFrom ($from, $name, &$var, $default = NULL)
+ * gets a value from an array (use for PHP/HTTP arrays like post, get and session)
+ *
+ * \param $from (string, array string)
+ * \param $name (string)
+ * \param &$var (variable)
+ * \param $default (mixed)
+ * \return (bool) true if found, false if not
+*/
+function getFrom ($from, $name, &$var, $default = NULL) {
+	if (is_array ($from)) {
+		foreach ($from as $f) {
+			switch ($f) {
+				case 'post':
+					$f = $_POST;
+					break;
+				case 'get':
+					$f = $_GET;
+					break;
+				case 'session':
+					$f = $_SESSION;
+					break;
+				default:
+					$f = array ();
+			}
+			if (array_key_exists ($name, $f)) {
+				$use = $from;
+				break;
+			}
+		}
+		$use = array (); // not found 
+	} else {
+		switch ($from) {
+			case 'post':
+				$use = $_POST;
+				break;
+			case 'get':
+				$use = $_GET;
+				break;
+			case 'session':
+				$use = $_SESSION;
+				break;
+			default:
+				$use = array ();
+		}
+	}
+	
+	if (array_key_exists ($name, $use)) {
+		$var = $use[$name];
+		if (empty ($var)) {
+			return false;
+		} else {
+			return true;
+		}
+	} else {
+		$var = $default;
+		return false;
+	}
+}
+
 /** \class UIManager
  * class that take care of the main UI layer, extensionhandling and HTML output.
  *
@@ -54,7 +113,7 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
  * \todo 0.1 check for UBB hacks (when UBB is implmented)
  * \todo 0.1 redo the admin page
  * \todo 0.? installer: check for an already existing installation (both site.config.php and database)
- * \todo 0.? installer: better error handling (now if an error occurs the script stops, and you need ro rerun the whole wizard again)
+ * \todo 0.? remove $this->module or $this->loadedModule;
 */
 class UIManager {
 	/*private $genDB;
@@ -115,6 +174,7 @@ class UIManager {
 			}
 			include_once ('core/database.class.php');
 			include_once ('core/user.class.php');
+			include_once ('core/news.class.php');
 			include_once ('core/pages.class.php');
 			$DBManager = new genericDatabase ($this->i10nMan);
 			$this->genDB = $DBManager->load ($this->config->getConfigItem ('/database/type', TYPE_STRING));
@@ -122,6 +182,7 @@ class UIManager {
 			$this->config->getConfigItem ('/database/password', TYPE_STRING));
 			$this->genDB->select_db ($this->config->getConfigItem ('/database/name', TYPE_STRING));
 			$this->pages = new pages ($this->genDB, $this->i10nMan);
+			$this->news = new news ($this->genDB, $this->i10nMan);
 			if (! $this->i10nMan->loadLanguage ('english')) {
 				trigger_error ('ERROR: ' . $this->i10nMan->translate ('Couldn\'t init internationalization.'));
 			}
@@ -131,6 +192,13 @@ class UIManager {
 			$this->initAllExtensions ();
 			$this->prependSidebar = array ();
 			$this->appendSidebar = array ();
+			$this->prependSidebar['ALL_MODULES'] = array ();
+			$this->appendSidebar['ALL_MODULES'] = array ();
+			
+			$this->prependSubbar = array ();
+			$this->appendSubbar = array ();
+			$this->prependSubbar['ALL_MODULES'] = array ();
+			$this->appendSubbar['ALL_MODULES'] = array ();
 			foreach ($this->config->getConfigDir ('/extensions') as $extension => $load) {
 				if ($load == true) {
 					$result = $this->loadExtension (substr ($extension, strlen ('/extensions/')));
@@ -185,14 +253,12 @@ class UIManager {
 		return $this->pages;
 	}
 	
-	/** \fn loadPage ($moduleName, $language,$authorized = false,$authorizedAsAdmin = false) 
+	/** \fn loadPage ($moduleName, $language) 
 	 * Echo a page with moduule $moduleName. If the user needs to be logged in to view this page (and he isn't) 
 	 * an error is triggered, if he needs to be admin and he isn't als an error is triggered
 	 *
 	 * \param $moduleName (string)
 	 * \param $language (string)
-	 * \param $authorized (bool) standard false
-	 * \param $authorizedAsAsdmin (bool) standard false
 	*/ 
 	/*public*/ function loadPage ($moduleName, $language = NULL) {
 		$this->signalMan->execSignal ('loadPage', $moduleName, $language);
@@ -209,9 +275,14 @@ class UIManager {
 			$this->config->addConfigItem ('/userinterface/contentlanguage', 'english', TYPE_STRING);
 			$this->config->addConfigItem ('/userinterface/skin', MORGOS_DEFAULT_SKIN, TYPE_STRING);
 		}
-		$this->loadSkin ($this->config->getConfigItem ('/userinterface/skin', TYPE_STRING));
+		$this->prependSidebar[$moduleName] = array ();
+		$this->appendSidebar[$moduleName] = array ();
 		
+		$this->prependSubbar[$moduleName] = array ();
+		$this->appendSubbar[$moduleName] = array ();
+		$this->loadSkin ($this->config->getConfigItem ('/userinterface/skin', TYPE_STRING));
 		$this->module = $moduleName;
+		$this->loadedModule = $moduleName;
 		if (! $language) {
 			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 		} else {
@@ -232,6 +303,7 @@ class UIManager {
 		if (strtolower ($module['needauthorizedasadmin']) == "yes" && $this->user->isAdmin () == false) {
 			trigger_error ('ERROR: ' . $this->i10nMan->translate ('You need to be admin to access this page.'));
 		}
+
 		if (file_exists ($this->skinPath . $moduleName . '.html')) {
 			$output = file_get_contents ($this->skinPath . $moduleName . '.html');
 		} elseif ($module['extension'] != MORGOS_EXTENSION_ID) {
@@ -272,6 +344,33 @@ class UIManager {
 		global $startTime;
 		list ($usec, $sec) = explode(" ",microtime());
 		$endTime = ((float) $usec + (float) $sec);
+		$this->vars['VAR_ERRORS'] = NULL;
+		$this->vars['VAR_WARNINGS'] = NULL;
+		$this->vars['VAR_NOTICES'] = NULL;
+		$this->vars['VAR_DEBUGGING'] = NULL;
+		foreach ($this->notices as $val) {
+			$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
+			if (($val["type"] == "INTERNAL_ERROR") or ($val['type'] == "ERROR")) {
+				$this->vars['VAR_ERRORS'] .= $val['error'];
+			} elseif ($val["type"] == "NOTICE") {
+				$this->vars['VAR_NOTICES'] .= $val['error'];
+			} elseif ($val["type"] == "WARNING") {
+				$this->vars['VAR_WARNINGS'] .= $val['error'];
+			} elseif (($val["type"] == "DEBUG") or ($val["type"] == "PHP")){
+				if ($debug) {
+					$this->vars['VAR_DEBUGGING'] .=  $val['error'] . '<br />';
+				}
+			} else {
+				if ($debug) {
+					$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
+				}
+			}
+		}
+		$output = str_replace ('&VAR_ERRORS;', $this->vars['VAR_ERRORS'], $output);
+		$output = str_replace ('&VAR_NOTICES;', $this->vars['VAR_NOTICES'], $output);
+		$output = str_replace ('&VAR_WARNINGS;', $this->vars['VAR_WARNINGS'], $output);
+		$output = str_replace ('&VAR_DEBUGGING;', $this->vars['VAR_DEBUGGING'], $output);
+		
 		echo str_replace ('&TIME_RUNNED;', $endTime - $startTime, $output);
 	}
 	
@@ -731,6 +830,23 @@ class UIManager {
 			$subbar .= ' ' . $element . ' ';
 		}
 		return $this->parse ($subbar);
+	}
+	
+	/*private*/ function getHTMLLatestNewsItems () {
+		$HTML = '&LATEST_NEWS_ITEMS_OPEN;';
+		include ($this->skinPath . 'skin.php');
+		foreach ($this->news->getAllNewsItems () as $i) {
+			$item = $skin['functions']['latest_news_items_item'];//' LATEST_NEWS_ITEMS_ITEM (' . $i['subject'] . ',' . $i['message'] .') ';
+			$item = str_replace ('SUBJECT', $i['subject'], $item);
+			$item = str_replace ('MESSAGE', nl2br ($i['message']), $item);
+			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
+			$topic = $this->news->getTopic ($name, $language);
+			$item = str_replace ('TOPICIMGSRC', $topic['image'], $item);
+			$HTML .= $item;
+		}
+		$HTML .= '&LATEST_NEWS_ITEMS_CLOSE;';
+		$HTML = $this->parse ($HTML);
+		return $HTML;
 	}
 	
 	/** \fn errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errContext = NULL)

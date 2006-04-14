@@ -24,39 +24,14 @@ $page = $this->pages->getPageInfo ($this->module, $contentLanguage);
 $this->vars['VAR_PAGE_TITLE'] = $page['name'];
 $this->vars['VAR_NAVIGATION'] = $this->getNavigator ();
 $this->vars['VAR_SITE_TITLE'] = $this->config->getConfigItem ('/general/sitename', TYPE_STRING);
-$this->vars['VAR_ERRORS'] = NULL;
-$this->vars['VAR_WARNINGS'] = NULL;
-$this->vars['VAR_NOTICES'] = NULL;
-$this->vars['VAR_DEBUGGING'] = NULL;
 $this->vars['TINYMCE'] = 'skins/default/tinymce/jscripts/tiny_mce/tiny_mce.js';
-foreach ($this->notices as $val) {
-	echo "test";
-	$debug = $this->config->getConfigItem ('/general/debug', TYPE_BOOL);
-	if (($val["type"] == "INTERNAL_ERROR") or ($val['type'] == "ERROR")) {
-		$this->vars['VAR_ERRORS'] .= $this->parse (' ERROR (' . $val['error'] . ')');
-	} elseif ($val["type"] == "NOTICE") {
-		$this->vars['VAR_NOTICES'] .= $this->parse (' NOTICE (' . $val['error'] . ')');
-	} elseif ($val["type"] == "WARNING") {
-		$this->vars['VAR_WARNINGS'] .= $this->parse (' WARNING (' . $val['error'] . ')');
-	} elseif ((($val["type"] == "DEBUG") or ($val["type"] == "PHP")) and ($debug == true)){
-		if ($debug) {
-			$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
-		}
-	} else {
-		if ($debug) {
-			$this->vars['VAR_DEBUGGING'] .= $this->parse (' DEBUG (' . $val['error'] . ')');
-		}
-	}
-	//if ($val["die"] == true) {
-	//	echo "DIED";
-	//	die (); // FIX: Do a clean die ();
-	//}
-}
 
 $this->vars['VAR_TO_REGISTER_USER'] = './index.php?module=register';
 $this->vars['SIDEBAR'] = $this->getSidebarHTML ();
 $this->vars['SUBBAR'] = $this->getSubbarHTML ();
 $this->vars['MORGOS_COPYRIGHT'] = $this->i10nMan->translate ('Powered By MorgOS &copy; 2006');
+
+$this->vars['TO_POSTNEW_NEWSITEMFORM'] = 'index.php?module=formpostnews';
 
 if (substr ($this->module, 0, 5) == 'admin') {
 	$this->vars['VAR_ADMIN_NAVIGATION'] = $this->getAdminNavigator ();
@@ -235,9 +210,32 @@ if (substr ($this->module, 0, 5) == 'admin') {
 		$this->vars['VAR_LOSTPASS_EMAILNAME'] = 'useremail';
 		$this->vars['VAR_LOSTPASS_SUBMITNAME'] = 'submit';
 	}
+	
+	if ($this->module == 'formpostnews') {
+		$this->vars['POSTNEWS_ACTION'] = 'index.php?module=postnews';
+		$this->vars['POSTNEWS_METHOD'] = 'post';
+		$this->vars['POSTNEWS_SUBJECT_NAME'] = 'subject';
+		$this->vars['POSTNEWS_MESSAGE_NAME'] = 'message';
+		$this->vars['POSTNEWS_TOPIC_NAME'] = 'topic';
+		$alltopics = NULL;
+		foreach ($this->news->getAllTopics ($language) as $topic) {
+			$alltopics .= '  POSTNEWS_OPTION_TOPIC (' . $topic['name'] . ')';
+		}
+		$this->vars['POSTNEWS_GETALLTOPICS'] = $this->parse ($alltopics);
+	}
+	
+	if ($this->module == 'index') {
+		$this->vars['LATEST_NEWS_ITEMS'] = $this->getHTMLLatestNewsItems ();
+		if ($this->user->isLoggedIn ()) {
+			$this->vars['LINK_POST_NEW_NEWSITEM'] = $skin['variable']['LINK_POST_NEW_NEWSITEM_LOGGEDIN'];
+		} else {
+			$this->vars['LINK_POST_NEW_NEWSITEM'] = $skin['variable']['LINK_POST_NEW_NEWSITEM_NOTLOGGEDIN'];
+		}
+		$this->vars['LINK_POST_NEW_NEWSITEM'] = $this->parse ($this->vars['LINK_POST_NEW_NEWSITEM']);
+	}
 }
 
-if ($_GET['module'] == 'login' && $this->user->isLoggedIn () == false) {
+if ($this->module == 'login' && $this->user->isLoggedIn () == false) {
 	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '<a href="index.php?module=forgotpass">&TEXT_FORGOT_PASSWORD;</a>';
 } else {
 	$this->vars['VAR_FORGOT_PASSWORD_LINK'] = '';
@@ -261,7 +259,9 @@ $this->vars['TEXT_MANAGE_MODULES'] = $this->i10nMan->translate ('Manage modules'
 $this->vars['TEXT_WARNING_CHANGES_LOST'] = $this->i10nMan->translate ('If you add a module, changes in other modules are lost!');
 $this->vars['TEXT_ADD_PAGE'] = $this->i10nMan->translate ('Add page');
 $this->vars['TEXT_EDIT_PAGE_INTRODUCTION'] = $this->i10nMan->translate ('Here you can edit a page.');
-$this->vars['TEXT_YOU_HAVE_CHOSEN_TO_ADD_PAGE_TO_MODULE'] = $this->i10nMan->translate ('You have chosen to add a page to module %1', $addToModule);
+if (isset ($addToModule)) {
+	$this->vars['TEXT_YOU_HAVE_CHOSEN_TO_ADD_PAGE_TO_MODULE'] = $this->i10nMan->translate ('You have chosen to add a page to module %1', $addToModule);
+}
 $this->vars['TEXT_ADMIN_MODULES_DELETE_PAGE'] = $this->i10nMan->translate ('Delete page');
 $this->vars['TEXT_ADMIN_MODULES_DELETE_MODULE'] = $this->i10nMan->translate ('Delete module');
 $this->vars['TEXT_EDIT_PAGE'] = $this->i10nMan->translate ('Edit page');

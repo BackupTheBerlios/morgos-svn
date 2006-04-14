@@ -83,5 +83,13 @@ if (substr ($this->module, 0, 5) == 'admin') {
 		$this->functions['theme_option'] = array ('THEME');
 		$this->functions['theme_option_selected'] = array ('THEME');
 	}
+	
+	if ($this->module == 'index') {
+		$this->functions['latest_news_items_item'] = array ('SUBJECT', 'MESSAGE');
+	}
+	
+	if ($this->module == 'formpostnews') {
+		$this->functions['postnews_option_topic'] = array ('TOPICNAME');
+	}
 }
 ?>

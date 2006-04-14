@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-*/global $startTime;
+*/
+error_reporting (E_ALL);
+global $startTime;
 list($usec, $sec) = explode(" ",microtime());
 $startTime = ((float)$usec + (float)$sec);
 include ('core/uimanager.class.php');
@@ -151,6 +153,51 @@ if ($choosenModule == 'viewadmin') {
 		$UI->setrunning (false);
 		$UI->loadPage ('forgotpass');
 	}	
+} elseif ($choosenModule == 'postnews') {
+	$UI->setrunning (true);
+	$do = true;
+	$s = getFrom ('post', 'subject', $subject);
+	if ($s == false) {
+		trigger_error ('ERROR: ' . $UI->i10nMan->translate ('News was not posted, required field subject was not filled in'));
+		$do = false;
+	}
+	$m = getFrom ('post', 'message', $message);
+	if ($m == false) {
+	 	trigger_error ('ERROR: ' . $UI->i10nMan->translate ('News was not posted, required field message was not filled in'));
+	 	$do = false;
+	}
+	$t = getFrom ('post', 'topic', $topic);
+	if ($t == false) {
+	 	trigger_error ('ERROR: ' . $UI->i10nMan->translate ('News was not posted, required field topic was not filled in'));
+		$do = false;
+	}
+	$topic = 'image';
+	$UI->setrunning (false);
+	if ($do == true) {
+		$user = $UI->getUserClass ();
+		if ($user->isLoggedIn ()) {
+			$u = $user->getUser ();
+			$username = $u['username'];
+			$UI->setrunning (true);
+			$language = $u['contentlanguage'];
+			if ($UI->news->addNewsItem ($subject, $message, $topic, $username, $language)) {
+				trigger_error ('NOTICE: ' . $UI->i10nMan->translate ('Your newsitem was successfully posted.'));
+				getFrom (array ('post', 'session'), 'fromPage', $from, 'index');
+				$UI->setrunning (false);
+				$UI->loadPage ($from);
+			} else {
+				trigger_error ('ERROR: ' . $UI->i10nMan->translate ('Your newsitem was not posted.'));
+				$UI->loadPage ('formpostnews');
+			}
+		} else {
+			$UI->setrunning (true);
+			trigger_error ('ERROR: You are not logged in, please login first.');
+			$UI->setrunning (false);
+			$UI->loadPage ('formpostnews');
+		}
+	} else {
+		$UI->loadPage ('formpostnews');
+	}
 } elseif (array_key_exists ($choosenModule, $availableModules)) {
 	$UI->loadPage ($choosenModule);
 }  else {

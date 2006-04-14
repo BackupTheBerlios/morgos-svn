@@ -36,13 +36,16 @@
 		}
 	}
 	$pages = new pages ($DB, $i10nMan);
+	// module,   needAuthorize, needAuthorizeAsAdmin, place, placeinadmin, listedInAdmin, parent,	islink = true
 	$pages->addModule ('index'              , false, false, 1, 0, true);
 	$pages->addModule ('register'           , false, false, 0, 0, false);
 	$pages->addModule ('forgotpass'         , false, false, 0, 0, false);
 	$pages->addModule ('user'			, true , false, 2, 0, false, NULL, false); //nolink is true
 	$pages->addModule ('usersettings'       , true , false, 1, 0, false, 'user');
-	$pages->addModule ('logout'             , true , false, 3, 0, false, 'user');
 	$pages->addModule ('viewadmin'          , true , true , 2, 0, false, 'user');
+	$pages->addModule ('formpostnews'       , true , false, 3, 0, false, 'user');	
+	$pages->addModule ('logout'             , true , false, 4, 0, false, 'user');
+	$pages->addModule ('postnews    '       , true , false, 0, 0, false, 'user');
 	$pages->addModule ('admin/addpage'      , false, true , 0, 0, true);
 	$pages->addModule ('admin/editpage'     , false, true , 0, 0, true);
 	$pages->addModule ('admin/savemanually' , false, true , 0, 0, false);
@@ -63,6 +66,7 @@
 		$pages->addPage ('register', $language, $i10nMan->translate ('Register'), '');
 		$pages->addPage ('usersettings', $language, $i10nMan->translate ('Change your settings'), '');
 		$pages->addPage ('user', $language, $i10nMan->translate ('User'), '');
+		$pages->addPage ('formpostnews', $language, $i10nMan->translate ('Post a newsmessage'), '');
 		$pages->addPage ('admin/database', $language, $i10nMan->translate ('Database'), 'Here you change all database settings. WARNING: It is recommend that you don\'t change options here, only if you KNOW what you are doing.');
 		$pages->addPage ('admin/users', $language, $i10nMan->translate ('Users'), 'Here you can view all users. Ban them or remove them, make them admin or rempve from the admin.');
 		$pages->addPage ('admin/news', $language, $i10nMan->translate ('News'), 'Here you can view all news items. You can edit, remove or add items.');

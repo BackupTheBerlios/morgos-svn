@@ -23,9 +23,7 @@
 */
 
 if (function_exists ('pg_connect')) {
-	//$supported['PostgreSQL 6.5'] = 'postgreSQLDatabase';
-	//$supported['PostgreSQL 7.x'] = 'postgreSQLDatabase';
-	$supported['PostgreSQL 8.x'] = 'postgreSQLDatabase';
+	$supported['PostgreSQL'] = 'postgreSQLDatabase';
 }
 
 if ((array_search ('postgreSQLDatabase', $supported, true)) and (! class_exists ('postgreSQLDatabase'))) {

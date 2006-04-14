@@ -45,6 +45,10 @@ $skin['variable']['open_extensions_admin'] = "FORM (&VAR_EXTENSIONS_ADMIN_ACTION
 $skin['variable']['close_extensions_admin'] = "<tr><td colspan=\"3\"> INPUT (submit, &VAR_SAVE_EXTENSIONS_SUBMIT;, &TEXT_SAVE_EXTENSIONS_SUBMIT;)</td></tr></table> CLOSEFORM ()";
 $skin['variable']['sidebar'] = 'BOX (&TEXT_NAVIGATION;,&VAR_NAVIGATION;) &VAR_USER_PLACE;';
 $skin['variable']['subbar'] = '&MORGOS_COPYRIGHT; <br />&TIME_RUNNED;';
+$skin['variable']['LATEST_NEWS_ITEMS_OPEN'] = '<div class="news">';
+$skin['variable']['LATEST_NEWS_ITEMS_CLOSE'] = '&LINK_POST_NEW_NEWSITEM;</div>';
+$skin['variable']['LINK_POST_NEW_NEWSITEM_LOGGEDIN'] = '<a href="&TO_POSTNEW_NEWSITEMFORM;">&TEXT_POST_NEW_NEWSITEM;</a>';
+$skin['variable']['LINK_POST_NEW_NEWSITEM_NOTLOGGEDIN'] = '';
 
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";
@@ -93,4 +97,6 @@ $skin['functions']['admin_extension_status_incompatible'] = "&TEXT_EXTENSION_INC
 $skin['functions']['admin_extension_status_not_installed'] = "&TEXT_EXTENSION_LOAD; <input type=\"checkbox\" name=\"NAME\" /> &TEXT_WARNING_INSTALL_EXTENSION_ON_LOAD;";
 $skin['functions']['admin_extension_install'] = "<a href='INSTALLLINK'>TEXT_INSTALL_EXTENSION</a>";
 $skin['functions']['admin_extension_uninstall'] = "<a href='UNINSTALLLINK'>TEXT_UNINSTALL_EXTENSION</a>";
+$skin['functions']['latest_news_items_item'] = '<div class="newsitem"><h3>SUBJECT</h3><p>MESSAGE</p></div>';
+$skin['functions']['postnews_option_topic'] = 'OPTION (TOPICNAME)';
 ?>
