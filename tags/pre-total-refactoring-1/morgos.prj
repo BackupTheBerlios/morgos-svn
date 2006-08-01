@@ -1,0 +1,98 @@
+<project version="Crimson Editor 3.60">
+	<category name="core" expanded="yes">
+		<category name="databases" expanded="no">
+			<category name="xmlsql" expanded="yes">
+				<localfile path="C:\server\www\morgos\trunk\core\databases\xmlsql\xmlsql.php" />
+			</category>
+			<localfile path="C:\server\www\morgos\trunk\core\databases\mysql4.database.php" />
+			<localfile path="C:\server\www\morgos\trunk\core\databases\postgresql.database.php" />
+		</category>
+		<category name="tests" expanded="yes">
+			<localfile path="C:\server\www\morgos\trunk\core\tests\file.empty" />
+			<localfile path="C:\server\www\morgos\trunk\core\tests\file.txt" />
+			<localfile path="C:\server\www\morgos\trunk\core\tests\index.php" />
+			<localfile path="C:\server\www\morgos\trunk\core\tests\test.class.php" />
+		</category>
+		<localfile path="C:\server\www\morgos\trunk\core\compatible.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\config.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\database.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\language.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\pages.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\signals.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\uimanager.class.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\uimanager.functions.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\uimanager.vars.php" />
+		<localfile path="C:\server\www\morgos\trunk\core\user.class.php" />
+	</category>
+	<category name="skins" expanded="no">
+		<category name="default" expanded="no">
+			<category name="styles" expanded="no">
+				<category name="default" expanded="no">
+					<localfile path="C:\server\www\morgos\trunk\skins\default\styles\default\basic.css" />
+				</category>
+			</category>
+			<category name="admin" expanded="no">
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\addpage.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\database.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\editpage.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\general.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\index.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\news.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\pages.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\savemanually.html" />
+				<localfile path="C:\server\www\morgos\trunk\skins\default\admin\users.html" />
+			</category>
+			<localfile path="C:\server\www\morgos\trunk\skins\default\error.html" />
+			<localfile path="C:\server\www\morgos\trunk\skins\default\forgotpass.html" />
+			<localfile path="C:\server\www\morgos\trunk\skins\default\index.html" />
+			<localfile path="C:\server\www\morgos\trunk\skins\default\register.html" />
+			<localfile path="C:\server\www\morgos\trunk\skins\default\skin.php" />
+			<localfile path="C:\server\www\morgos\trunk\skins\default\usermodule.html" />
+			<localfile path="C:\server\www\morgos\trunk\skins\default\usersettings.html" />
+		</category>
+	</category>
+	<category name="install" expanded="no">
+		<category name="sql" expanded="no">
+			<localfile path="C:\server\www\morgos\trunk\install\sql\news.sql" />
+			<localfile path="C:\server\www\morgos\trunk\install\sql\pages.sql" />
+			<localfile path="C:\server\www\morgos\trunk\install\sql\users.sql" />
+		</category>
+		<category name="languages" expanded="no">
+		</category>
+		<localfile path="C:\server\www\morgos\trunk\install\check.php" />
+		<localfile path="C:\server\www\morgos\trunk\install\config.php" />
+		<localfile path="C:\server\www\morgos\trunk\install\installing.php" />
+		<localfile path="C:\server\www\morgos\trunk\install\installingdb.php" />
+		<localfile path="C:\server\www\morgos\trunk\install\license.php" />
+	</category>
+	<category name="languages" expanded="no">
+		<localfile path="C:\server\www\morgos\trunk\languages\nederlands.language.php" />
+	</category>
+	<category name="extensions" expanded="no">
+		<category name="hello_world" expanded="yes">
+			<category name="languages" expanded="no">
+			</category>
+			<localfile path="C:\server\www\morgos\trunk\extensions\hello_world\extension.php" />
+			<localfile path="C:\server\www\morgos\trunk\extensions\hello_world\index.php" />
+		</category>
+		<category name="statistics" expanded="no">
+			<localfile path="C:\server\www\morgos\trunk\extensions\statistics\extension.php" />
+			<localfile path="C:\server\www\morgos\trunk\extensions\statistics\index.php" />
+		</category>
+	</category>
+	<localfile path="C:\server\www\morgos\trunk\admin.php" />
+	<localfile path="C:\server\www\morgos\trunk\index.php" />
+	<localfile path="C:\server\www\morgos\trunk\install.php" />
+	<localfile path="C:\server\www\morgos\trunk\site.config.php" />
+</project>
+
+<workspace version="Crimson Editor 3.60">
+	<localfile path="C:\server\www\morgos\trunk\core\tests\test.class.php" linenum="140" placement="0:1:-1:-1:-4:-30:22:29:640:447" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\compatible.test.php" linenum="14" placement="0:1:-1:-1:-4:-30:44:58:662:476" />
+	<localfile path="C:\server\www\morgos\trunk\core\compatible.php" linenum="35" placement="0:1:-1:-1:-4:-30:66:87:684:505" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\file.txt" linenum="1" placement="0:1:-1:-1:-4:-30:88:116:706:534" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\file.empty" linenum="1" placement="0:1:-1:-1:-4:-30:110:145:728:563" />
+	<localfile path="C:\server\www\morgos\trunk\index.php" linenum="1" placement="0:1:-1:-1:-4:-30:0:0:618:418" />
+	<localfile path="C:\server\www\morgos\trunk\core\tests\index.php" linenum="4" placement="2:3:-1:-1:-4:-30:22:29:640:447" />
+</workspace>
+
