@@ -85,7 +85,10 @@ if (substr ($this->module, 0, 5) == 'admin') {
 	}
 	
 	if ($this->module == 'index') {
-		$this->functions['latest_news_items_item'] = array ('SUBJECT', 'MESSAGE');
+		$this->functions['latest_news_items_item'] = array ('SUBJECT', 'MESSAGE', 'ONNEWS', 'ONITEM');
+		$this->functions['to_postnew_comment'] = array ('ONITEM', 'ONNEWS');
+		$this->functions['link_post_comment_loggedin'] = array ('ONITEM', 'ONNEWS');
+		$this->functions['link_post_comment_notloggedin'] = array ('ONITEM', 'ONNEWS');
 	}
 	
 	if ($this->module == 'formpostnews') {

@@ -129,6 +129,7 @@ if (substr ($this->module, 0, 5) == 'admin') {
 } else {
 	if ($this->user->isLoggedIn ()) {
 		$this->vars['VAR_USER_PLACE'] = '';
+		$this->vars['LINK_POST_COMMENT'] = ' LINK_POST_COMMENT_LOGGEDIN';
 	} else {
 		$userPlace = '&VAR_LOGIN_FORM;';
 		$this->vars['VAR_LOGIN_FORM_ACTION'] = './index.php?module=login';
@@ -138,6 +139,7 @@ if (substr ($this->module, 0, 5) == 'admin') {
 		$this->vars['VAR_LOGIN_FORM_PASSWORD_NAME'] = 'password';
 		$this->vars['VAR_LOGIN_FORM_SUBMIT_NAME'] = 'submit';
 		$this->vars['VAR_USER_PLACE'] = $this->parse ($userPlace);
+		$this->vars['LINK_POST_COMMENT'] = ' LINK_POST_COMMENT_NOTLOGGEDIN';
 	}
 	
 	if ($this->module == 'register') {
@@ -222,6 +224,22 @@ if (substr ($this->module, 0, 5) == 'admin') {
 			$alltopics .= '  POSTNEWS_OPTION_TOPIC (' . $topic['name'] . ')';
 		}
 		$this->vars['POSTNEWS_GETALLTOPICS'] = $this->parse ($alltopics);
+	}
+
+	if ($this->module == 'formpostcomment') {
+		global $onItemID, $onNews;
+			
+		$this->vars['POSTCOMMENT_ACTION'] = 'index.php?module=postcomment';
+		$this->vars['POSTCOMMENT_METHOD'] = 'post';
+		$this->vars['POSTCOMMENT_SUBJECT_NAME'] = 'subject';
+		$this->vars['POSTCOMMENT_MESSAGE_NAME'] = 'message';
+		$this->vars['POSTCOMMENT_TOPIC_NAME'] = 'topic';
+		$this->vars['POSTCOMMENT_ONITEM_NAME'] = 'onitem_number';
+		$this->vars['POSTCOMMENT_ONNEWS_NAME'] = 'onnews';
+
+		$this->vars['POSTCOMMENT_ONITEM_VALUE'] = $onItemID;
+		$this->vars['POSTCOMMENT_ONNEWS_VALUE'] = $onNews;
+		
 	}
 	
 	if ($this->module == 'index') {

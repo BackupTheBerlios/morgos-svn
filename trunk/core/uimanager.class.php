@@ -41,14 +41,18 @@ function errorHandler ($errNo, $errStr, $errFile = NULL, $errLine = 0, $errConte
 
 /** \fn getFrom ($from, $name, &$var, $default = NULL)
  * gets a value from an array (use for PHP/HTTP arrays like post, get and session)
+ * \warning $var becomes overwritten completely if $name is an array
+ * \bug code copying in the whole function
+ * \bug if $from is an array and $name is an array it returns something wrong!!!!
  *
  * \param $from (string, array string)
- * \param $name (string)
- * \param &$var (variable)
- * \param $default (mixed)
+ * \param $name (string, array string)
+ * \param &$var (mixed, array mixed)
+ * \param $default (mixed, array mixed)
+ * \param $strErrors (mixed array)
  * \return (bool) true if found, false if not
 */
-function getFrom ($from, $name, &$var, $default = NULL) {
+function getFrom ($from, $name, &$var, $default = NULL, $strErrors = array ()) {
 	if (is_array ($from)) {
 		foreach ($from as $f) {
 			switch ($f) {
@@ -85,17 +89,40 @@ function getFrom ($from, $name, &$var, $default = NULL) {
 				$use = array ();
 		}
 	}
-	
-	if (array_key_exists ($name, $use)) {
-		$var = $use[$name];
-		if (empty ($var)) {
-			return false;
-		} else {
+
+	if (is_array ($name)) {
+		$var = array ();
+		$i = 0;
+		$errors = array ();
+		foreach ($name as $n) {
+			if (array_key_exists ($n, $use)) {
+				$var[$n] = $use[$n];
+			} else {
+				$var = $default[$i];
+				if (count ($strErrors) >= $i+1) {
+					$errors[] = $strErrors[$i];
+				}
+			}
+			$i++;
+		}
+		
+		if (count ($errors) == 0) {
 			return true;
+		} else {
+			return $errors;
 		}
 	} else {
-		$var = $default;
-		return false;
+		if (array_key_exists ($name, $use)) {
+			$var = $use[$name];
+			if (empty ($var)) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			$var = $default;
+			return false;
+		}
 	}
 }
 
@@ -671,6 +698,9 @@ class UIManager {
 					case 'FILE':
 						$replace = $this->skinPath . $matches[1][0];
 						break;
+					case 'TO_POSTNEW_COMMENT':
+						$replace = 'index.php?module=formpostcomment&onItem=' . $funcParams[0] . '&onNews=' . $funcParams[1];
+						break;
 					default:
 						$replace = $this->parse ($skin['functions'][$funcKey]);
 				}
@@ -839,6 +869,8 @@ class UIManager {
 			$item = $skin['functions']['latest_news_items_item'];//' LATEST_NEWS_ITEMS_ITEM (' . $i['subject'] . ',' . $i['message'] .') ';
 			$item = str_replace ('SUBJECT', $i['subject'], $item);
 			$item = str_replace ('MESSAGE', nl2br ($i['message']), $item);
+			$item = str_replace ('ONNEWS', '1', $item);
+			$item = str_replace ('ONITEM', $i['id'], $item);
 			$language = $this->config->getConfigItem ('/userinterface/contentlanguage', TYPE_STRING);
 			$topic = $this->news->getTopic ($name, $language);
 			$item = str_replace ('TOPICIMGSRC', $topic['image'], $item);

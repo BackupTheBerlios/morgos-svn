@@ -297,6 +297,28 @@ class pages {
 		}
 		$this->appenders[$toModule][] = $string;
 	}
+	
+	/** \fn installLanguage ($language)
+	*/
+	function installLanguage ($language) {
+		$this->addPage ('index', $language, $this->i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
+		$this->addPage ('viewadmin', $language, $this->i10nMan->translate ('View admin'), '');
+		$this->addPage ('logout', $language, $this->i10nMan->translate ('Logout'), '');
+		$this->addPage ('register', $language, $this->i10nMan->translate ('Register'), '');
+		$this->addPage ('usersettings', $language, $this->i10nMan->translate ('Change your settings'), '');
+		$this->addPage ('user', $language, $this->i10nMan->translate ('User'), '');
+		$this->addPage ('formpostnews', $language, $this->i10nMan->translate ('Post a newsmessage'), '');
+		$this->addPage ('admin/database', $language, $this->i10nMan->translate ('Database'), 'Here you change all database settings. WARNING: It is recommend that you don\'t change options here, only if you KNOW what you are doing.');
+		$this->addPage ('admin/users', $language, $this->i10nMan->translate ('Users'), 'Here you can view all users. Ban them or remove them, make them admin or rempve from the admin.');
+		$this->addPage ('admin/news', $language, $this->i10nMan->translate ('News'), 'Here you can view all news items. You can edit, remove or add items.');
+		$this->addPage ('admin/general', $language, $this->i10nMan->translate ('General'), 'Here you edit all general options.');
+		$this->addPage ('admin/addpage', $language, $this->i10nMan->translate ('Add page'), 'Add a page.');
+		$this->addPage ('admin/editpage', $language, $this->i10nMan->translate ('Edit page'), 'Edit a page.');
+		$this->addPage ('admin/index', $language, $this->i10nMan->translate ('Admin home'), 'This is the admin, here you edit all what you want.');
+		$this->addPage ('admin/pages', $language, $this->i10nMan->translate ('Pages'), 'Here you can admin all pages.');
+		$this->addPage ('admin/extensions', $language, $this->i10nMan->translate ('Extensions'), 'Here you can enable/disable extesnions.');
+
+	}
 		
 	/** \fn getAllAvailableLanguagesFromModule ($module)
 	 * Returns the language of all pages with a specified module

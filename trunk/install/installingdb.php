@@ -60,22 +60,7 @@
 	$languages = $i10nMan->getAllSupportedLanguages ();
 	foreach ($languages as $language) {
 		$i10nMan->loadLanguage ($language);
-		$pages->addPage ('index', $language, $i10nMan->translate ('Home'), $i10nMan->translate ('This is the homepage.'));
-		$pages->addPage ('viewadmin', $language, $i10nMan->translate ('View admin'), '');
-		$pages->addPage ('logout', $language, $i10nMan->translate ('Logout'), '');
-		$pages->addPage ('register', $language, $i10nMan->translate ('Register'), '');
-		$pages->addPage ('usersettings', $language, $i10nMan->translate ('Change your settings'), '');
-		$pages->addPage ('user', $language, $i10nMan->translate ('User'), '');
-		$pages->addPage ('formpostnews', $language, $i10nMan->translate ('Post a newsmessage'), '');
-		$pages->addPage ('admin/database', $language, $i10nMan->translate ('Database'), 'Here you change all database settings. WARNING: It is recommend that you don\'t change options here, only if you KNOW what you are doing.');
-		$pages->addPage ('admin/users', $language, $i10nMan->translate ('Users'), 'Here you can view all users. Ban them or remove them, make them admin or rempve from the admin.');
-		$pages->addPage ('admin/news', $language, $i10nMan->translate ('News'), 'Here you can view all news items. You can edit, remove or add items.');
-		$pages->addPage ('admin/general', $language, $i10nMan->translate ('General'), 'Here you edit all general options.');
-		$pages->addPage ('admin/addpage', $language, $i10nMan->translate ('Add page'), 'Add a page.');
-		$pages->addPage ('admin/editpage', $language, $i10nMan->translate ('Edit page'), 'Edit a page.');
-		$pages->addPage ('admin/index', $language, $i10nMan->translate ('Admin home'), 'This is the admin, here you edit all what you want.');
-		$pages->addPage ('admin/pages', $language, $i10nMan->translate ('Pages'), 'Here you can admin all pages.');
-		$pages->addPage ('admin/extensions', $language, $i10nMan->translate ('Extensions'), 'Here you can enable/disable extesnions.');
+		$pages->installLanguage ($language);
 	}
 
 	$username = addslashes ($_POST['admin-account']);

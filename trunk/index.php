@@ -15,6 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
+/** \file index.php
+ * Main file
+ *
+ * \todo change everything to invalidLink
+ * \todo implement invalidLink
+ * $Id$
+ * \author Nathan Samson
+*/
 error_reporting (E_ALL);
 global $startTime;
 list($usec, $sec) = explode(" ",microtime());
@@ -23,16 +31,16 @@ include ('core/uimanager.class.php');
 $UI = new UIManager ();
 
 if (array_key_exists ('module', $_GET)) {
-	$choosenModule = $_GET['module'];
+	$selectedModule = $_GET['module'];
 } else {
-	$choosenModule = 'index';
+	$selectedModule = 'index';
 }
 
 $pages = $UI->getPagesClass ();
 $availableModules = $pages->getAllAvailableModules (true);
-if ($choosenModule == 'viewadmin') {
+if ($selectedModule == 'viewadmin') {
 	header ('Location: admin.php');
-} elseif ($choosenModule == 'login') {
+} elseif ($selectedModule == 'login') {
 	$UI->signalMan->execSignal ('login', $_POST['loginname'], $_POST['password']);
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
@@ -44,7 +52,7 @@ if ($choosenModule == 'viewadmin') {
 	}
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
-} elseif ($choosenModule == 'logout') {
+} elseif ($selectedModule == 'logout') {
 	$UI->signalMan->execSignal ('logout');
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
@@ -56,7 +64,7 @@ if ($choosenModule == 'viewadmin') {
 	}
 	$UI->setRunning (false);
 	$UI->loadPage ('index');
-} elseif ($choosenModule == 'registeruser') {
+} elseif ($selectedModule == 'registeruser') {
 	$UI->signalMan->execSignal ('registeruser');
 	$user = $UI->getUserClass ();
 	$UI->setRunning (true);
@@ -80,7 +88,7 @@ if ($choosenModule == 'viewadmin') {
 			$UI->loadPage ('register');
 		}
 	}
-} elseif ($choosenModule == 'saveusersettings') {
+} elseif ($selectedModule == 'saveusersettings') {
 	$userClass = $UI->getUserClass ();
 	$user = $userClass->getUser ();
 	$username = $user['username'];
@@ -104,7 +112,7 @@ if ($choosenModule == 'viewadmin') {
 		$UI->setRunning (false);
 		$UI->loadPage ('usersettings');
 	}
-} elseif ($choosenModule == 'sendpass') {
+} elseif ($selectedModule == 'sendpass') {
 	$UI->setrunning (true);
 	if (!empty ($_POST['username']) && empty ($_POST['useremail'])) {
 		$UI->user = new user ($UI->genDB);
@@ -153,7 +161,7 @@ if ($choosenModule == 'viewadmin') {
 		$UI->setrunning (false);
 		$UI->loadPage ('forgotpass');
 	}	
-} elseif ($choosenModule == 'postnews') {
+} elseif ($selectedModule == 'postnews') {
 	$UI->setrunning (true);
 	$do = true;
 	$s = getFrom ('post', 'subject', $subject);
@@ -198,8 +206,60 @@ if ($choosenModule == 'viewadmin') {
 	} else {
 		$UI->loadPage ('formpostnews');
 	}
-} elseif (array_key_exists ($choosenModule, $availableModules)) {
-	$UI->loadPage ($choosenModule);
+} elseif ($selectedModule == 'viewnewsitem') {
+	$f = getFrom ('get', 'newsID', $ID);
+	if ($f == false) {
+		$UI->loadPage ('invalidLink');
+	}
+	
+	global $newsID;
+	$newsID = $ID;
+	$UI->loadPage ('viewnewsitem');
+	
+} elseif ($selectedModule == 'formpostcomment') {
+	$f = getFrom ('get', 'onItem', $onItemID);
+	if ($f == false) {
+		$UI->loadPage ('invalidLink');
+	}
+	
+	$f = getFrom ('get', 'onNews', $onNews);
+	if ($f == false) {
+		$UI->loadPage ('invalidLink');	
+	}
+	
+	global $onItemID, $onNews;
+	$UI->loadPage ('formpostcomment');
+} elseif ($selectedModule == 'postcomment') {
+	$f = getFrom ('post', array ('subject', 'message'), $infoArrayUser, array (), array ('subject', 'message'));
+	if ($f !== true) {
+		$UI->setRunning (true);
+		foreach ($f as $e) {
+			trigger_error ($UI->i10nMan->translate ('You need to fill in %s', $this->i10nMan->translate ($e)));
+		}
+		$UI->setRunning (false);
+		$UI->loadPage ('index');
+	} else {
+		$f = getFrom ('post', array ('onitem_number', 'onnews'), $infoArrayNews);
+		if ($f !== true) {
+			$UI->loadPage ('invalidLink');
+		} else {
+			$user = $UI->getUserClass ();
+			$userInfo = $user->getUser ();
+			$userID = $userInfo['username'];
+			$language = $userInfo['contentlanguage'];
+			$UI->setRunning (true);
+			$result = $UI->news->addComment ($infoArrayUser['subject'], $infoArrayUser['message'], $language, $infoArrayNews['onnews'], $infoArrayNews['onitem_number'], $userID);
+			if ($result == true) {
+				trigger_error ('NOTICE: ' . $UI->i10nMan->translate ('Your comment is successfully posted.'));	
+			} else {
+				trigger_error ('ERROR: ' . $UI->i10nMan->translate ('Your comment is not posted.'));	
+			}
+			$UI->setRunning (false);
+			$UI->loadPage ('index');
+		}
+	} 	
+} elseif (array_key_exists ($selectedModule, $availableModules)) {
+	$UI->loadPage ($selectedModule);
 }  else {
 	trigger_error ('ERROR: Can\'t load this page, doesn\'t exists');
 }

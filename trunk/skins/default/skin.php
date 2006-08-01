@@ -50,6 +50,8 @@ $skin['variable']['LATEST_NEWS_ITEMS_CLOSE'] = '&LINK_POST_NEW_NEWSITEM;</div>';
 $skin['variable']['LINK_POST_NEW_NEWSITEM_LOGGEDIN'] = '<a href="&TO_POSTNEW_NEWSITEMFORM;">&TEXT_POST_NEW_NEWSITEM;</a>';
 $skin['variable']['LINK_POST_NEW_NEWSITEM_NOTLOGGEDIN'] = '';
 
+
+
 $skin['functions']['form'] = "<form action='ACTION' method='METHOD' EXTRA>";
 $skin['functions']['closeform'] = "</form>";
 $skin['functions']['select'] = "<select name='NAME' EXTRA>";
@@ -97,6 +99,8 @@ $skin['functions']['admin_extension_status_incompatible'] = "&TEXT_EXTENSION_INC
 $skin['functions']['admin_extension_status_not_installed'] = "&TEXT_EXTENSION_LOAD; <input type=\"checkbox\" name=\"NAME\" /> &TEXT_WARNING_INSTALL_EXTENSION_ON_LOAD;";
 $skin['functions']['admin_extension_install'] = "<a href='INSTALLLINK'>TEXT_INSTALL_EXTENSION</a>";
 $skin['functions']['admin_extension_uninstall'] = "<a href='UNINSTALLLINK'>TEXT_UNINSTALL_EXTENSION</a>";
-$skin['functions']['latest_news_items_item'] = '<div class="newsitem"><h3>SUBJECT</h3><p>MESSAGE</p></div>';
+$skin['functions']['latest_news_items_item'] = '<div class="newsitem"><h3>SUBJECT</h3>  &LINK_POST_COMMENT; (ONITEM,ONNEWS)<p>MESSAGE</p></div>';
 $skin['functions']['postnews_option_topic'] = 'OPTION (TOPICNAME)';
+$skin['functions']['link_post_comment_loggedin'] = '<p><a href=" TO_POSTNEW_COMMENT (ONITEM,ONNEWS) ">&TEXT_POST_COMMENT;</a></p>';
+$skin['functions']['LINK_POST_COMMENT_NOTLOGGEDIN'] = '';
 ?>

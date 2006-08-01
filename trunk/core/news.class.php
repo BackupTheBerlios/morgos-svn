@@ -122,13 +122,37 @@ class news {
 	 * \public
 	 * \param $subject (string)
 	 * \param $message (string)
-	 * \param $language (string)
+	 * \param $language (string) warning!! can not be NULL!!
 	 * \param $onNews (bool) true if the comment is on a news message or false if on another comment
 	 * \param $parentID (int) the ID of the parent, either a news message or a comment
 	 * \param $userID (mixed)
 	 * \return (bool)
 	*/
 	function addComment ($subject, $message, $language, $onNews, $parentID, $userID = NULL) {
+		$subject = addslashes ($subject);
+		$message = addslashes ($message);
+		$language = addslashes ($language);
+		if (! is_numeric ($parentID)) {
+			echo 'Hello: ' . $parentID;
+			trigger_error ('ERROR: ' . $this->i10nMan->translate ('Parent ID is not a number.'));
+			return false;
+		}
+		$userID = addslashes ($userID);
+		if ($onNews) {
+			$onNews = 'yes';
+		} else {
+			$onNews = 'no';
+		}
+		$date = time ();
+		$SQL = 'INSERT into ' . TBL_COMMENTS;
+		$SQL .= ' (message, subject, author, date, language, id_parent, comment_on_news) ';
+		$SQL .= "VALUES ('$message', '$subject', '$userID', '$date', '$language', '$parentID', '$onNews')";
+		$query = $this->genDB->query ($SQL);
+		if ($query !== false) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/** \fn getAllNewsItems ($language = NULL, $orderBy = 'date', $asc = true, )
@@ -143,7 +167,7 @@ class news {
 	 * array[n]['numberOfComments'] (int)
 	 * \public
 	 * \param $language (string) the language, leave NULL for all items
-	 * \param $orderBy (string) date, subject or topic
+	 * \param $orderBy (string) date, subject or topic, leave null for date
 	 * \param $asc (bool) true if ascending, false if descending (default)
 	 * \return (array array or false)
 	*/
