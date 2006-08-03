@@ -43,6 +43,9 @@ class newsmanager {
 	function addOptionsToNewsItem () {
 	}
 	
+	function getAllOptionsFromNewsItem () {
+	}
+	
 	function areNewsItemsGloballyDisabled () {
 	}	
 	
@@ -63,6 +66,9 @@ class newsmanager {
 	function addOptionsToTopic () {
 	}
 	
+	function getAllOptionsFromTopic () {
+	}
+	
 	/*Public commentitem functions*/
 	
 	function addOptionToComments () {
@@ -72,6 +78,9 @@ class newsmanager {
 	}
 	
 	function setCommentGloballyDisabled () {
+	}
+	
+	function getAllOptionsFromCommentItems () {
 	}
 	
 }
