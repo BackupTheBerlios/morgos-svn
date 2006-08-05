@@ -21,7 +21,6 @@
  * @since 0.2
  * @author Sam Heijens
  * @author Nathan Samson
- * @license GPL
 */
 
 $allModules['MySQL'] = 'mysqlDatabaseActions';
@@ -33,7 +32,13 @@ if (function_exists ('mysql_connect')) {
 $allModules['EXISTINGBUTNOTWORKING'] = 'EMPTY';
 
 if (! class_exists ('mysqlDatabaseActions')) {
-	class mysqlDatabaseActions {
+	class mysqlDatabaseActions extends databaseActions {
+		var $dbName;	
+	
+		function mysqlDatabaseActions () {
+			$this->setType ('MySQL');
+		}
+	
 		function connect($host,$userName,$password) {
 			$this->connection = @mysql_connect ($host,$userName,$password);
 			if ($this->connection == false) {
@@ -46,10 +51,16 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			if ($result == false) {
 				return "ERROR_DATABASE_SELECTDB_FAILED " . mysql_error ();
 			}
+			$this->dbName = $dbName;
 		}
 	        
-		function query ($query) {
-			return mysql_query ($query, $this->connection);
+		function query ($sql) {
+			$result = mysql_query ($sql, $this->connection);
+			if ($result !== false) {
+				return $result;
+			} else {
+				return "ERROR_DATABASE_QUERY_FAILED " . mysql_error ();
+			}
 		}
 	        
 		function numRows () {
@@ -57,9 +68,26 @@ if (! class_exists ('mysqlDatabaseActions')) {
 	        
 		function fetchArray ($query) {
 			$var = mysql_fetch_array ($query);
+			return $var;
 		}
 	        
-		function latestID () { 
+		function latestInsertID ($q) { 
+			return mysql_insert_id ($this->connection);
+		}
+		
+		function getAllFields ($tableName) {
+			$q = $this->query ("SHOW COLUMNS FROM $tableName");
+			if (! isError ($q)) {
+				$allFields = array ();
+				if (mysql_num_rows ($q) > 0) {
+					while ($row = mysql_fetch_assoc ($q)) {
+						$allFields[] = $row['Field'];
+					}
+				}
+				return $allFields;
+			} else {
+				return $q;
+			}
 		}
 	}
 }

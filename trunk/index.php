@@ -15,17 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file index.php
+/**
  * Here starts the main execution of the program. The main classes are loaded here, and the output is 
  * echoed here.
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
 include ('core/databasemanager.functions.php');
 include ('core/newsmanager.class.php');
 include ('core/usermanager.class.php');
-
+include ('core/varia.functions.php');
+include ('core/i18n.class.php');
 ?>

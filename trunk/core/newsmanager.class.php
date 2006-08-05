@@ -20,7 +20,6 @@
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
 include_once ('core/newscommentitem.class.php');

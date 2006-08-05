@@ -20,41 +20,194 @@
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
 include_once ('core/user.class.php');
 include_once ('core/usergroup.class.php');
 
 class userManager {
+	var $db;
 
-	function userManager () {
+	function userManager ($db) {
+		$this->db = $db;
 	}
 	
 	/*Public functions*/
 	/*User functions*/
 	
-	function userExists () {
+	/**
+	 * Creates a user object. This is the only good method to create one.
+	 * Do not use new user (); directly.
+	 *
+	 * @return (object user)
+	*/
+	function newUser () {
+		$allOptions = $this->getAllOptionsForUser ();
+		if (! isError ($allOptions)) {
+			return new user ($this->db, $allOptions);
+		} else {
+			return $allOptions;
+		}
+	}	
+	
+	/**
+	 * Check that an username is already registered.
+	 * 
+	 * @param $login (string) the login.
+	 * @return (bool). True if user exists, false if not
+	 * @public
+	*/
+	function loginIsRegistered ($login) {
+		$sql = "SELECT COUNT(login) FROM {$this->db->getPrefix ()}users WHERE login='$login'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			if ($row['COUNT(login)'] == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return $q;
+		}
 	}
 	
-	function emailIsRegistered () {
+	/**
+	 * Check that an email is already registered.
+	 * 
+	 * @param $email (string) the email.
+	 * @return (bool). True if email exists, false if not
+	 * @public
+	*/
+	function emailIsRegistered ($email) {
+		$sql = "SELECT COUNT(email) FROM {$this->db->getPrefix ()}users WHERE email='$email'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			if ($row['COUNT(email)'] == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return $q;
+		}
 	}
 	
-	function addUserToDatabase () {
+	/**
+	 * Insert an user into the database.
+	 *
+	 * @param $user (object user)  The user.
+	 * @return (error). If an error occurs return it.
+	 * @public
+	*/
+	function addUserToDatabase ($user) {
+		$lIR = $this->loginIsRegistered ($user->getLogin ()); 
+		if ($lIR == false) {
+			$eIR = $this->emailIsRegistered ($user->getEmail ()); 
+			if ($eIR == false) {
+				return $user->addToDatabase ();
+			} else {
+				if (! isError ($eIR)) {
+					return "ERROR_USERMANAGER_EMAIL_EXISTS {$user->getEmail ()}";
+				} else {
+					return $eIR;
+				}
+			}
+		} else {
+			if (! isError ($lIR)) {
+				return "ERROR_USERMANAGER_LOGIN_EXISTS {$user->getLogin ()}";
+			} else {
+				return $lIR;
+			}
+		}
 	}
 	
-	function removeUserFromDatabase () {
+	/**
+	 * Removes an user from the database.
+	 *
+	 * @param $user (object user) The user to delete.
+	 * @return (error). An error if occurs
+	 * @public
+	*/
+	function removeUserFromDatabase ($user) {
+		return $user->removeFromDatabase ();
 	}
 	
-	function addOptionToUser () {
+	/**
+	 * Adds an extra option to the database for the users.
+	 *
+	 * @param $newOption (string) the name of the new option
+	 * @param $sqlType (string) the sqltype possible options: 
+	 *   - Varchar (length)
+	 *   - Int
+	 *   - enum('a', 'b', 'c')
+	 *   - text
+	 * @warning old user objects don't profit of this. 
+	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
+	 * @bug when after adding one, someone ask wich exists the new is added in.
+	 *    if that "asker" want to do something with it on an old user object it can cause weird errors.
+	 * @return (error) if one
+	*/
+	function addOptionToUser ($newOption, $sqlType) {
+		$curOptions = $this->getAllOptionsForUser ();
+		if (! isError ($curOptions)) {
+			if (array_key_exists ($newOption, $curOptions)) {
+				$sql = "ALTER TABLE {$this->db->getPrefix()}users ADD $newOption $sqlType";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				return "ERROR_USERMNAGER_OPTION_FORUSER_EXISTS $newOption";
+			}
+		} else {
+			return $curOptions;
+		}
 	}
 	
+	/**
+	 * Returns an associative array with values null, and keys the name of the option
+	 *
+	 * @return (null array)
+	*/
 	function getAllOptionsForUser () {
+		$fields = $this->db->getAllFields ($this->db->getPrefix ().'users');
+		if (! isError ($fields)) {
+			$allOptions = array ();
+			foreach ($fields as $field) {
+				if (! ($field == 'userID' or $field == 'login' or $field == 'email')) {
+					$allOptions[$field] = null;
+				}
+			}
+			return $allOptions;
+		} else {
+			return $fields;
+		}
 	}
 
 	function getAllUsers () {
 	}
-	
+
+	/**
+	 * Returns an array of all users that are stored in the database.
+	 *
+	 * @return (int array)
+	 * @public
+	*/
+	function getAllUsersID () {
+		$sql = "SELECT userID FROM {$this->db->getPrefix ()}users";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$allUsers = array ();
+			while ($row = $this->db->fetchArray ($q)) {
+				$allUsers[] = $row['userID'];
+			}
+			return $allUsers;
+		} else {
+			return $q;
+		}
+	}	
 	
 	/*Group functions*/
 	

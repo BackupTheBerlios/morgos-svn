@@ -20,7 +20,6 @@
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
 class configurator {

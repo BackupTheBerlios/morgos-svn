@@ -20,10 +20,18 @@
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
-function isError () {
+function isError ($test) {
+	if (is_string ($test)) {
+		if (ereg ('^ERROR_', $test)) {
+			return true;
+		} else {
+			return false;
+		}		
+	} else {
+		return false;
+	}
 }
 
 

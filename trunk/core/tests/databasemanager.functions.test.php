@@ -20,14 +20,14 @@
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
-include ('core/databasemanager.functions.php');
+include_once ('core/databasemanager.functions.php');
 class databaseManagerTest extends PHPUnit2_Framework_TestCase {
 
 	function setUp () {
-		//$this->setName ('DatabaseManager');
+		global $avModules;
+		$this->availableModules = $avModules;
 	}
 	
 	function testLoadModule () {
@@ -35,7 +35,8 @@ class databaseManagerTest extends PHPUnit2_Framework_TestCase {
 		$this->assertSame ("ERROR_DATABASEMANAGER_MODULE_DOES_NOT_EXITS NOTEXISTINGMODULE", $m);
 		
 		$m = databaseLoadModule ('MySQL');
-		$this->assertSame (null, $m);
+		$newMySQL = new mysqlDatabaseActions ();
+		$this->assertEquals ($newMySQL, $m);
 	}
 
 	function testModuleGetAllModules () {
@@ -46,8 +47,10 @@ class databaseManagerTest extends PHPUnit2_Framework_TestCase {
 		$this->assertSame ($allModulesExpected, $allModules);
 		
 		$allModules = databaseGetAllModules (true);
-		$allModulesExpected = array ();
-		$allModulesExpected['MySQL'] = 'mysqlDatabaseActions';	
+		$allModulesExpected = $this->availableModules;
+		foreach ($allModulesExpected as $key => $value) {
+			$allModulesExpected[$key] = $allModules[$key];
+		}
 		$this->assertSame ($allModulesExpected, $allModules);
 	}
 	
@@ -66,6 +69,5 @@ class databaseManagerTest extends PHPUnit2_Framework_TestCase {
 	}
 }
 
-$databaseManagerTests = new databaseManagerTest ();
 
 ?>

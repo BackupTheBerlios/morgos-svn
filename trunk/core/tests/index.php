@@ -15,27 +15,60 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file index.php
- * Suite for the teste
+/** \file core/tests/index.php
+ * Suite for the tests
  *
  * @since 0.2
  * @author Nathan Samson
- * @license GPL
 */
 
 require_once 'PHPUnit2/Framework/TestSuite.php';
 require_once 'PHPUnit2/Util/TestDox/ResultPrinter/HTML.php';
 chdir ('../../');
-require_once 'databasemanager.functions.test.php';
+require_once 'core/tests/testoutput.php';
 
-$suite = new PHPUnit2_Framework_TestSuite ();
-$suite->addTest ($databaseManagerTests);
+class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
 
+	function MorgOSSuit () {
+		$this->setUp ();
+	}
 
-//$output = new PHPUnit2_Util_TestDox_ResultPrinter_HTML ();
-//$output->startTestSuite ($suite);
-$suite->run ();
-/*$output->endTestSuite ($suite);
-$output->write ($s);
-echo $s;*/
+	function setUp () {
+		global $dbModule;
+		include_once ('core/varia.functions.php');
+		include_once ('core/databasemanager.functions.php');
+		$testerOptions = parse_ini_file ('core/tests/options.ini');
+		$dbModule = databaseLoadModule ($testerOptions['dbModule']);
+		if (isError ($dbModule)) {
+			die ('Can\'t load database module, check your settings.');
+		}
+		$r = $dbModule->connect ($testerOptions['dbHost'], $testerOptions['dbUser'], $testerOptions['dbPass']);
+		if (isError ($r)) {
+			die ('Can\' connect to database, check your settings.');
+		}
+		$r = $dbModule->selectDatabase ($testerOptions['dbDatabaseName']);
+		if (isError ($r)) {
+			die ('Wrong databasename, check your settings.');
+		}
+		
+		global $avModules;
+		$availableModulesINI = explode (',', $testerOptions['dbAvailableModules']);
+		foreach ($availableModulesINI as $value) {
+			$avModules[$value] = null;
+		}
+	
+		$this->setName ('MorgOS automated Tester: results');
+		$this->addTestFile ('core/tests/databasemanager.functions.test.php');
+		$this->addTestFile ('core/tests/usermanager.class.test.php');
+
+		$result = new PHPUnit2_Framework_TestResult;
+		$result->addListener(new SimpleTestListener);
+
+		$this->run ($result);
+	}
+
+}
+
+$suite = new MorgOSSuit ();
+
 ?>

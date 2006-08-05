@@ -21,10 +21,9 @@
  * @since 0.2
  * @author Nathan Samson
  * @author Sam Heijens
- * @license GPL
 */
 
-/** @fn databaseLoadModule ($module)
+/**
  * Loads a database module. Returns the newly created class.
  *
  * @return module (class) the newly created class.
@@ -33,12 +32,13 @@ function databaseLoadModule ($module) {
 	if (databaseModuleExists ($module)) {
 		$allModules = databaseGetAllModules ();
 		$dbClass = new $allModules[$module] ();
+		return $dbClass;
 	} else {
 		return "ERROR_DATABASEMANAGER_MODULE_DOES_NOT_EXITS $module";
 	}
 }
 
-/** @fn databaseGetAllModules ($checkReqs = false)
+/**
  * Returns all available modules. If $checkReqs is true it checks of that all
  * requirements (PHP extensions) are installed.
  *
@@ -62,7 +62,7 @@ function databaseGetAllModules ($checkReqs = false) {
 	}
 }
 
-/** @fn databaseModuleExists ($module, $checkReqs = false)
+/**
  * Checks if a database module exists.
  *
  * @param $module (string) the module name to check
@@ -81,6 +81,24 @@ function databaseInstallModule () {
 }
 
 function databaseUnInstallModule () {
+}
+
+class databaseActions {
+
+	var $prefix;
+	var $type;
+	
+	function setPrefix ($prefix) {
+		$this->prefix = $prefix;
+	}
+
+	function getPrefix () {return $this->prefix;}
+	
+	function setType ($type) {
+		$this->type = $type;
+	}
+	
+	function getType () {return $this->type;}
 }
 
 ?>
