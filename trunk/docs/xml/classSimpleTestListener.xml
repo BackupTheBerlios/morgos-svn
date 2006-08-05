@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classSimpleTestListener" kind="class" prot="public">
+    <compoundname>SimpleTestListener</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classSimpleTestListener_120ca5c283d3f74752dce836c7d49fba5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::addError</definition>
+        <argsstring>(PHPUnit2_Framework_Test $test, Exception $e)</argsstring>
+        <name>addError</name>
+        <param>
+          <type>PHPUnit2_Framework_Test $</type>
+          <declname>test</declname>
+        </param>
+        <param>
+          <type>Exception $</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="5" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="5" bodyend="8"/>
+      </memberdef>
+      <memberdef kind="function" id="classSimpleTestListener_15292bc60b5faba8cc06c008029ecaddb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::addFailure</definition>
+        <argsstring>(PHPUnit2_Framework_Test $test, PHPUnit2_Framework_AssertionFailedError $e)</argsstring>
+        <name>addFailure</name>
+        <param>
+          <type>PHPUnit2_Framework_Test $</type>
+          <declname>test</declname>
+        </param>
+        <param>
+          <type>PHPUnit2_Framework_AssertionFailedError $</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="10" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="10" bodyend="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classSimpleTestListener_1598c569ffabac1f2a406ef8cae367e5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::addIncompleteTest</definition>
+        <argsstring>(PHPUnit2_Framework_Test $test, Exception $e)</argsstring>
+        <name>addIncompleteTest</name>
+        <param>
+          <type>PHPUnit2_Framework_Test $</type>
+          <declname>test</declname>
+        </param>
+        <param>
+          <type>Exception $</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="15" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="15" bodyend="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classSimpleTestListener_188884d3a65c0a535fc2cbeee65669e59" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::startTest</definition>
+        <argsstring>(PHPUnit2_Framework_Test $test)</argsstring>
+        <name>startTest</name>
+        <param>
+          <type>PHPUnit2_Framework_Test $</type>
+          <declname>test</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="21" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="21" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classSimpleTestListener_14ffb673ef4a39bafc72f52874037dc76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::endTest</definition>
+        <argsstring>(PHPUnit2_Framework_Test $test)</argsstring>
+        <name>endTest</name>
+        <param>
+          <type>PHPUnit2_Framework_Test $</type>
+          <declname>test</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="27" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="27" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classSimpleTestListener_1c239f3f9bc600528f8dfa03f3b69ffb5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::startTestSuite</definition>
+        <argsstring>(PHPUnit2_Framework_TestSuite $suite)</argsstring>
+        <name>startTestSuite</name>
+        <param>
+          <type>PHPUnit2_Framework_TestSuite $</type>
+          <declname>suite</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="34" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="34" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classSimpleTestListener_17c2ac3a520452e1321a0a6be8d9bf90a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::endTestSuite</definition>
+        <argsstring>(PHPUnit2_Framework_TestSuite $suite)</argsstring>
+        <name>endTestSuite</name>
+        <param>
+          <type>PHPUnit2_Framework_TestSuite $</type>
+          <declname>suite</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="39" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="39" bodyend="41"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classSimpleTestListener_14ba7ed32be102b1a0d3dbb32520fc044" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SimpleTestListener::printBt</definition>
+        <argsstring>()</argsstring>
+        <name>printBt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="43" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="43" bodyend="45"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" line="4" bodyfile="/home/nathan/public_html/morgos/trunk/core/tests/testoutput.php" bodystart="4" bodyend="46"/>
+    <listofallmembers>
+      <member refid="classSimpleTestListener_120ca5c283d3f74752dce836c7d49fba5" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>addError</name></member>
+      <member refid="classSimpleTestListener_15292bc60b5faba8cc06c008029ecaddb" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>addFailure</name></member>
+      <member refid="classSimpleTestListener_1598c569ffabac1f2a406ef8cae367e5e" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>addIncompleteTest</name></member>
+      <member refid="classSimpleTestListener_14ffb673ef4a39bafc72f52874037dc76" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>endTest</name></member>
+      <member refid="classSimpleTestListener_17c2ac3a520452e1321a0a6be8d9bf90a" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>endTestSuite</name></member>
+      <member refid="classSimpleTestListener_14ba7ed32be102b1a0d3dbb32520fc044" prot="private" virt="non-virtual"><scope>SimpleTestListener</scope><name>printBt</name></member>
+      <member refid="classSimpleTestListener_188884d3a65c0a535fc2cbeee65669e59" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>startTest</name></member>
+      <member refid="classSimpleTestListener_1c239f3f9bc600528f8dfa03f3b69ffb5" prot="public" virt="non-virtual"><scope>SimpleTestListener</scope><name>startTestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

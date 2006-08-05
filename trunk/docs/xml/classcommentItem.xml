@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classcommentItem" kind="class" prot="public">
+    <compoundname>commentItem</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcommentItem_11b4dc0df151f11b35c3b640610ae5ade" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::commentItem</definition>
+        <argsstring>()</argsstring>
+        <name>commentItem</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="26" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="26" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_179363f5a11cdafc33e3f9de3d0172856" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::initFromDatabaseID</definition>
+        <argsstring>()</argsstring>
+        <name>initFromDatabaseID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="30" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="30" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_122752af0f07b08fa309550f4cd14cd10" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::initFromArray</definition>
+        <argsstring>()</argsstring>
+        <name>initFromArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="33" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="33" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_16672265d8d57505dd8a83ef0740d35fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::addToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="37" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="37" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_1d33724c540d84e7715cf1a26e24fba5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::updateToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>updateToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="40" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="40" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_134f1cfbfa6fb2def0d5708cf07fd8306" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::getID</definition>
+        <argsstring>()</argsstring>
+        <name>getID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="43" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="43" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_1fbaf61367f0029b5034e6abceb913ab5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::getSubject</definition>
+        <argsstring>()</argsstring>
+        <name>getSubject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="44" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="44" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_1524bd9fe3fbfd21c977f2b52e4c9f334" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::getPostDate</definition>
+        <argsstring>()</argsstring>
+        <name>getPostDate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="45" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="45" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_1703e62ed075b630b051c1605a2730b95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::getMessage</definition>
+        <argsstring>()</argsstring>
+        <name>getMessage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="46" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="46" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classcommentItem_17b043686262adab551b12efcd1ead375" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>commentItem::initEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>initEmpty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="50" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="50" bodyend="51"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" line="25" bodyfile="/home/nathan/public_html/morgos/trunk/core/newscommentitem.class.php" bodystart="25" bodyend="52"/>
+    <listofallmembers>
+      <member refid="classcommentItem_16672265d8d57505dd8a83ef0740d35fe" prot="public" virt="non-virtual"><scope>commentItem</scope><name>addToDatabase</name></member>
+      <member refid="classcommentItem_11b4dc0df151f11b35c3b640610ae5ade" prot="public" virt="non-virtual"><scope>commentItem</scope><name>commentItem</name></member>
+      <member refid="classcommentItem_134f1cfbfa6fb2def0d5708cf07fd8306" prot="public" virt="non-virtual"><scope>commentItem</scope><name>getID</name></member>
+      <member refid="classcommentItem_1703e62ed075b630b051c1605a2730b95" prot="public" virt="non-virtual"><scope>commentItem</scope><name>getMessage</name></member>
+      <member refid="classcommentItem_1524bd9fe3fbfd21c977f2b52e4c9f334" prot="public" virt="non-virtual"><scope>commentItem</scope><name>getPostDate</name></member>
+      <member refid="classcommentItem_1fbaf61367f0029b5034e6abceb913ab5" prot="public" virt="non-virtual"><scope>commentItem</scope><name>getSubject</name></member>
+      <member refid="classcommentItem_17b043686262adab551b12efcd1ead375" prot="public" virt="non-virtual"><scope>commentItem</scope><name>initEmpty</name></member>
+      <member refid="classcommentItem_122752af0f07b08fa309550f4cd14cd10" prot="public" virt="non-virtual"><scope>commentItem</scope><name>initFromArray</name></member>
+      <member refid="classcommentItem_179363f5a11cdafc33e3f9de3d0172856" prot="public" virt="non-virtual"><scope>commentItem</scope><name>initFromDatabaseID</name></member>
+      <member refid="classcommentItem_1d33724c540d84e7715cf1a26e24fba5b" prot="public" virt="non-virtual"><scope>commentItem</scope><name>updateToDatabase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

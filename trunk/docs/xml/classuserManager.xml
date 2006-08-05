@@ -1,0 +1,358 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classuserManager" kind="class" prot="public">
+    <compoundname>userManager</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classuserManager_1841688729b9a21852cd3b4160431ab00" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::userManager</definition>
+        <argsstring>($db)</argsstring>
+        <name>userManager</name>
+        <param>
+          <type>$</type>
+          <declname>db</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="31" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="31" bodyend="33"/>
+        <references refid="classuserManager_14ef629abdeb15d7352f881c042331415" compoundref="usermanager_8class_8php" startline="29">$db</references>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1295fbf4c324f84e6441fb888ff49355c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::newUser</definition>
+        <argsstring>()</argsstring>
+        <name>newUser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Creates a user object. This is the only good method to create one. Do not use new user (); directly.</para><para><simplesect kind="return"><para>(object user) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="44" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="44" bodyend="51"/>
+        <references refid="classuserManager_1b5d92472eed4f12ab295b64b74cde0fe" compoundref="usermanager_8class_8php" startline="174" endline="187">getAllOptionsForUser</references>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_13a6adde108c762421a258975b0d96411" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::loginIsRegistered</definition>
+        <argsstring>($login)</argsstring>
+        <name>loginIsRegistered</name>
+        <param>
+          <type>$</type>
+          <declname>login</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check that an username is already registered.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$login</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(string) the login. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(bool). True if user exists, false if not </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="60" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="60" bodyend="73"/>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+        <referencedby refid="classuserManager_1cd901eaf46085eb986d7677b08844cff" compoundref="usermanager_8class_8php" startline="104" endline="124">addUserToDatabase</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_13a7bae052ae4ecad8c65e219b378c8f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::emailIsRegistered</definition>
+        <argsstring>($email)</argsstring>
+        <name>emailIsRegistered</name>
+        <param>
+          <type>$</type>
+          <declname>email</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check that an email is already registered.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$email</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(string) the email. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(bool). True if email exists, false if not </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="82" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="82" bodyend="95"/>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+        <referencedby refid="classuserManager_1cd901eaf46085eb986d7677b08844cff" compoundref="usermanager_8class_8php" startline="104" endline="124">addUserToDatabase</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1cd901eaf46085eb986d7677b08844cff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::addUserToDatabase</definition>
+        <argsstring>($user)</argsstring>
+        <name>addUserToDatabase</name>
+        <param>
+          <type>$</type>
+          <declname>user</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Insert an user into the database.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$user</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(object user) The user. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(error). If an error occurs return it. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="104" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="104" bodyend="124"/>
+        <references refid="classuserManager_13a7bae052ae4ecad8c65e219b378c8f0" compoundref="usermanager_8class_8php" startline="82" endline="95">emailIsRegistered</references>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+        <references refid="classuserManager_13a6adde108c762421a258975b0d96411" compoundref="usermanager_8class_8php" startline="60" endline="73">loginIsRegistered</references>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1049a29d1f25e6bc591c9aba67289f13d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::removeUserFromDatabase</definition>
+        <argsstring>($user)</argsstring>
+        <name>removeUserFromDatabase</name>
+        <param>
+          <type>$</type>
+          <declname>user</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes an user from the database.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$user</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(object user) The user to delete. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(error). An error if occurs </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="133" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="133" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_151c06e6e754cd32718ee9a059237d5f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::addOptionToUser</definition>
+        <argsstring>($newOption, $sqlType)</argsstring>
+        <name>addOptionToUser</name>
+        <param>
+          <type>$</type>
+          <declname>newOption</declname>
+        </param>
+        <param>
+          <type>$</type>
+          <declname>sqlType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds an extra option to the database for the users.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$newOption</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(string) the name of the new option </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>$sqlType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(string) the sqltype possible options:<itemizedlist>
+<listitem><para>Varchar (length)</para></listitem><listitem><para>Int</para></listitem><listitem><para>enum(&apos;a&apos;, &apos;b&apos;, &apos;c&apos;)</para></listitem><listitem><para>text </para></listitem></itemizedlist>
+</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="warning"><para>old user objects don&apos;t profit of this. Wait for a restart of the system (reload of the page) to be sure its applied. </para></simplesect>
+<xrefsect id="bug_1_bug000001"><xreftitle>Bug</xreftitle><xrefdescription><para>when after adding one, someone ask wich exists the new is added in. if that &quot;asker&quot; want to do something with it on an old user object it can cause weird errors. </para></xrefdescription></xrefsect><simplesect kind="return"><para>(error) if one </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="152" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="152" bodyend="167"/>
+        <references refid="classuserManager_1b5d92472eed4f12ab295b64b74cde0fe" compoundref="usermanager_8class_8php" startline="174" endline="187">getAllOptionsForUser</references>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1b5d92472eed4f12ab295b64b74cde0fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::getAllOptionsForUser</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptionsForUser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an associative array with values null, and keys the name of the option</para><para><simplesect kind="return"><para>(null array) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="174" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="174" bodyend="187"/>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+        <referencedby refid="classuserManager_151c06e6e754cd32718ee9a059237d5f8" compoundref="usermanager_8class_8php" startline="152" endline="167">addOptionToUser</referencedby>
+        <referencedby refid="classuserManager_1295fbf4c324f84e6441fb888ff49355c" compoundref="usermanager_8class_8php" startline="44" endline="51">newUser</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_11d1fd066c50de74aa3517f8ac4b0b521" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::getAllUsers</definition>
+        <argsstring>()</argsstring>
+        <name>getAllUsers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="189" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="189" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_135ccd83e75b22e39af56f3c5f7f4aecc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::getAllUsersID</definition>
+        <argsstring>()</argsstring>
+        <name>getAllUsersID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an array of all users that are stored in the database.</para><para><simplesect kind="return"><para>(int array) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="198" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="198" bodyend="210"/>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_102f7bad76b5f7c6064000dec3c6ae8dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::groupExists</definition>
+        <argsstring>()</argsstring>
+        <name>groupExists</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="214" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="214" bodyend="215"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1398469c70b836f501ec27223d9c0de11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::addGroupToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addGroupToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="217" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="217" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1f78d633283293f0835e5b80ae19b0237" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::addOptionToGroup</definition>
+        <argsstring>()</argsstring>
+        <name>addOptionToGroup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="220" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="220" bodyend="221"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_118d8a8e978cf2388da7aa00688fe5390" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::getAllOptionsForGroup</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptionsForGroup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="223" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="223" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_12c1e5e699c53ee05b8a0e023e952691e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::removeGroupFromDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>removeGroupFromDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="226" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="226" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="classuserManager_1ccefb79abd5c436b3bc9536b70f32ed4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>userManager::getAllGroups</definition>
+        <argsstring>()</argsstring>
+        <name>getAllGroups</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="229" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="229" bodyend="230"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classuserManager_14ef629abdeb15d7352f881c042331415" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>userManager::$db</definition>
+        <argsstring></argsstring>
+        <name>$db</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="29" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="29" bodyend="-1"/>
+        <referencedby refid="classuserManager_1841688729b9a21852cd3b4160431ab00" compoundref="usermanager_8class_8php" startline="31" endline="33">userManager</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" line="28" bodyfile="/home/nathan/public_html/morgos/trunk/core/usermanager.class.php" bodystart="28" bodyend="231"/>
+    <listofallmembers>
+      <member refid="classuserManager_14ef629abdeb15d7352f881c042331415" prot="public" virt="non-virtual"><scope>userManager</scope><name>$db</name></member>
+      <member refid="classuserManager_1398469c70b836f501ec27223d9c0de11" prot="public" virt="non-virtual"><scope>userManager</scope><name>addGroupToDatabase</name></member>
+      <member refid="classuserManager_1f78d633283293f0835e5b80ae19b0237" prot="public" virt="non-virtual"><scope>userManager</scope><name>addOptionToGroup</name></member>
+      <member refid="classuserManager_151c06e6e754cd32718ee9a059237d5f8" prot="public" virt="non-virtual"><scope>userManager</scope><name>addOptionToUser</name></member>
+      <member refid="classuserManager_1cd901eaf46085eb986d7677b08844cff" prot="public" virt="non-virtual"><scope>userManager</scope><name>addUserToDatabase</name></member>
+      <member refid="classuserManager_13a7bae052ae4ecad8c65e219b378c8f0" prot="public" virt="non-virtual"><scope>userManager</scope><name>emailIsRegistered</name></member>
+      <member refid="classuserManager_1ccefb79abd5c436b3bc9536b70f32ed4" prot="public" virt="non-virtual"><scope>userManager</scope><name>getAllGroups</name></member>
+      <member refid="classuserManager_118d8a8e978cf2388da7aa00688fe5390" prot="public" virt="non-virtual"><scope>userManager</scope><name>getAllOptionsForGroup</name></member>
+      <member refid="classuserManager_1b5d92472eed4f12ab295b64b74cde0fe" prot="public" virt="non-virtual"><scope>userManager</scope><name>getAllOptionsForUser</name></member>
+      <member refid="classuserManager_11d1fd066c50de74aa3517f8ac4b0b521" prot="public" virt="non-virtual"><scope>userManager</scope><name>getAllUsers</name></member>
+      <member refid="classuserManager_135ccd83e75b22e39af56f3c5f7f4aecc" prot="public" virt="non-virtual"><scope>userManager</scope><name>getAllUsersID</name></member>
+      <member refid="classuserManager_102f7bad76b5f7c6064000dec3c6ae8dd" prot="public" virt="non-virtual"><scope>userManager</scope><name>groupExists</name></member>
+      <member refid="classuserManager_13a6adde108c762421a258975b0d96411" prot="public" virt="non-virtual"><scope>userManager</scope><name>loginIsRegistered</name></member>
+      <member refid="classuserManager_1295fbf4c324f84e6441fb888ff49355c" prot="public" virt="non-virtual"><scope>userManager</scope><name>newUser</name></member>
+      <member refid="classuserManager_12c1e5e699c53ee05b8a0e023e952691e" prot="public" virt="non-virtual"><scope>userManager</scope><name>removeGroupFromDatabase</name></member>
+      <member refid="classuserManager_1049a29d1f25e6bc591c9aba67289f13d" prot="public" virt="non-virtual"><scope>userManager</scope><name>removeUserFromDatabase</name></member>
+      <member refid="classuserManager_1841688729b9a21852cd3b4160431ab00" prot="public" virt="non-virtual"><scope>userManager</scope><name>userManager</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

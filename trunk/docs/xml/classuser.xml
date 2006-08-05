@@ -1,0 +1,488 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classuser" kind="class" prot="public">
+    <compoundname>user</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classuser_1794768929f4ac8c9edac70dc0ee668ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::user</definition>
+        <argsstring>($db, $allOptions)</argsstring>
+        <name>user</name>
+        <param>
+          <type>$</type>
+          <declname>db</declname>
+        </param>
+        <param>
+          <type>$</type>
+          <declname>allOptions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$db</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(object database) the database module </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>$allOptions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(null array) an array with empty values. The keys are the extra options. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="39" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="39" bodyend="47"/>
+        <references refid="classuser_1d5a75a87aa3ada14e2975fb26698253a" compoundref="user_8class_8php" startline="28">$allOptions</references>
+        <references refid="classuser_162dbbadf7ff6113336bfc5e9330cd462" compoundref="user_8class_8php" startline="26">$db</references>
+        <references refid="classuser_1fe230d02953b66f259ca0dbfb12aa243" compoundref="user_8class_8php" startline="221" endline="228">initEmpty</references>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1d3872a34ec59fef66c20d119ab4fd000" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::initFromDatabaseID</definition>
+        <argsstring>($ID)</argsstring>
+        <name>initFromDatabaseID</name>
+        <param>
+          <type>$</type>
+          <declname>ID</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize the user from the database with key $ID</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$ID</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(int) The database ID </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(error) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="57" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="57" bodyend="67"/>
+        <references refid="classuser_1c7cc7c4f53c15e923062bd7242b5a88e" compoundref="user_8class_8php" startline="81" endline="88">initFromArray</references>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1976a3767d2f519083655f9feaa522032" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::initFromDatabaseLogin</definition>
+        <argsstring>()</argsstring>
+        <name>initFromDatabaseLogin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="69" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="69" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_12436b72df873f41472bd7cfb6d42431f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::initFromDatabaseEmail</definition>
+        <argsstring>()</argsstring>
+        <name>initFromDatabaseEmail</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="72" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="72" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1c7cc7c4f53c15e923062bd7242b5a88e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::initFromArray</definition>
+        <argsstring>($array)</argsstring>
+        <name>initFromArray</name>
+        <param>
+          <type>$</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initializes an user from arrayvalues.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$array</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(mixed array) The required values (keys) are login and email. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="81" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="81" bodyend="88"/>
+        <references refid="classuser_1fe230d02953b66f259ca0dbfb12aa243" compoundref="user_8class_8php" startline="221" endline="228">initEmpty</references>
+        <references refid="classuser_1ea59bd87dded02a30f30fa01dd809ef2" compoundref="user_8class_8php" startline="193" endline="199">setOption</references>
+        <referencedby refid="classuser_1d3872a34ec59fef66c20d119ab4fd000" compoundref="user_8class_8php" startline="57" endline="67">initFromDatabaseID</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuser_18e78658d3348911cbeec6cfd8b75763a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::addToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds the user to the database.</para><para><simplesect kind="return"><para>(error) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="98" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="98" bodyend="121"/>
+        <references refid="classuser_1ff69e82c79919f1ee151eafd630686db" compoundref="user_8class_8php" startline="181" endline="183">getAllOptions</references>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+        <references refid="classuser_1b15f38797834001e986032001a2dcace" compoundref="user_8class_8php" startline="207" endline="213">isInDatabase</references>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1780068b490977e42d0e532ea9fa403f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::removeFromDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>removeFromDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes the user from the database;</para><para><simplesect kind="return"><para>(error) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="129" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="129" bodyend="140"/>
+        <references refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" compoundref="varia_8functions_8php" startline="25" endline="35">isError</references>
+        <references refid="classuser_1b15f38797834001e986032001a2dcace" compoundref="user_8class_8php" startline="207" endline="213">isInDatabase</references>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1dd5f89bd286abaa9a94fb5ea96c56ece" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::updateToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>updateToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="142" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="142" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1f1630f78dea3d63d1d5b426b6f2dd6b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::updateFromArray</definition>
+        <argsstring>()</argsstring>
+        <name>updateFromArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="145" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="145" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_16486b8da55ca1359d37e305dae141f29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::addToGroup</definition>
+        <argsstring>()</argsstring>
+        <name>addToGroup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="148" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="148" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_145a6989491b9be205a1d61229d43ce72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::hasRight</definition>
+        <argsstring>()</argsstring>
+        <name>hasRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="151" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="151" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_172f079340c54b810e0a4051f573d51ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::getLogin</definition>
+        <argsstring>()</argsstring>
+        <name>getLogin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="154" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="154" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1aea376351d2ec116b7b4b10233f62101" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::getEmail</definition>
+        <argsstring>()</argsstring>
+        <name>getEmail</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="155" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="155" bodyend="155"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_110655ec3832dd0fa6d7cd3edc35bc9c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::getID</definition>
+        <argsstring>()</argsstring>
+        <name>getID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="156" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="156" bodyend="156"/>
+        <referencedby refid="classuser_1b15f38797834001e986032001a2dcace" compoundref="user_8class_8php" startline="207" endline="213">isInDatabase</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuser_11a89ed59d21b3ca7e14b57995fa651c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::getAllGroups</definition>
+        <argsstring>()</argsstring>
+        <name>getAllGroups</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="157" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="157" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1bb47c8ef74ac9063c1278bd4e2f75b15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::getOption</definition>
+        <argsstring>($name)</argsstring>
+        <name>getOption</name>
+        <param>
+          <type>$</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an extra option with name</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(string) The name of the option </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(string, error) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="166" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="166" bodyend="172"/>
+        <references refid="classuser_1ff69e82c79919f1ee151eafd630686db" compoundref="user_8class_8php" startline="181" endline="183">getAllOptions</references>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classuser_162dbbadf7ff6113336bfc5e9330cd462" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>user::$db</definition>
+        <argsstring></argsstring>
+        <name>$db</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="26" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="26" bodyend="-1"/>
+        <referencedby refid="classuser_1794768929f4ac8c9edac70dc0ee668ea" compoundref="user_8class_8php" startline="39" endline="47">user</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="classuser_1d5a75a87aa3ada14e2975fb26698253a" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>user::$allOptions</definition>
+        <argsstring></argsstring>
+        <name>$allOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="28" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="28" bodyend="-1"/>
+        <referencedby refid="classuser_1794768929f4ac8c9edac70dc0ee668ea" compoundref="user_8class_8php" startline="39" endline="47">user</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="classuser_101043e9340b56aae3d887e7a4046ba27" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>user::$ID</definition>
+        <argsstring></argsstring>
+        <name>$ID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="29" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classuser_123cf72a1a458417d58bf58f400cfc9bf" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>user::$login</definition>
+        <argsstring></argsstring>
+        <name>$login</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="30" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classuser_12aa22b3c92ae7913ee049dd8e99f3709" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>user::$email</definition>
+        <argsstring></argsstring>
+        <name>$email</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="31" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classuser_1ff69e82c79919f1ee151eafd630686db" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::getAllOptions</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an array of all extra options with their values.</para><para><simplesect kind="return"><para>(mixed array) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="181" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="181" bodyend="183"/>
+        <referencedby refid="classuser_18e78658d3348911cbeec6cfd8b75763a" compoundref="user_8class_8php" startline="98" endline="121">addToDatabase</referencedby>
+        <referencedby refid="classuser_1bb47c8ef74ac9063c1278bd4e2f75b15" compoundref="user_8class_8php" startline="166" endline="172">getOption</referencedby>
+        <referencedby refid="classuser_1fe230d02953b66f259ca0dbfb12aa243" compoundref="user_8class_8php" startline="221" endline="228">initEmpty</referencedby>
+        <referencedby refid="classuser_1ea59bd87dded02a30f30fa01dd809ef2" compoundref="user_8class_8php" startline="193" endline="199">setOption</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1ea59bd87dded02a30f30fa01dd809ef2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::setOption</definition>
+        <argsstring>($name, $value)</argsstring>
+        <name>setOption</name>
+        <param>
+          <type>$</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>$</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set options $name on $value</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>$name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(string) the name of the option </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>$value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(mixed) the new value of the options </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>(error) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="193" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="193" bodyend="199"/>
+        <references refid="classuser_1ff69e82c79919f1ee151eafd630686db" compoundref="user_8class_8php" startline="181" endline="183">getAllOptions</references>
+        <referencedby refid="classuser_1c7cc7c4f53c15e923062bd7242b5a88e" compoundref="user_8class_8php" startline="81" endline="88">initFromArray</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1b15f38797834001e986032001a2dcace" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::isInDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>isInDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Checks if the user is already stored in the database.</para><para><simplesect kind="return"><para>(bool) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="207" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="207" bodyend="213"/>
+        <references refid="classuser_110655ec3832dd0fa6d7cd3edc35bc9c9" compoundref="user_8class_8php" startline="156" endline="156">getID</references>
+        <referencedby refid="classuser_18e78658d3348911cbeec6cfd8b75763a" compoundref="user_8class_8php" startline="98" endline="121">addToDatabase</referencedby>
+        <referencedby refid="classuser_1780068b490977e42d0e532ea9fa403f8" compoundref="user_8class_8php" startline="129" endline="140">removeFromDatabase</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classuser_1fe230d02953b66f259ca0dbfb12aa243" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>user::initEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>initEmpty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize the user with default values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="221" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="221" bodyend="228"/>
+        <references refid="classuser_1ff69e82c79919f1ee151eafd630686db" compoundref="user_8class_8php" startline="181" endline="183">getAllOptions</references>
+        <referencedby refid="classuser_1c7cc7c4f53c15e923062bd7242b5a88e" compoundref="user_8class_8php" startline="81" endline="88">initFromArray</referencedby>
+        <referencedby refid="classuser_1794768929f4ac8c9edac70dc0ee668ea" compoundref="user_8class_8php" startline="39" endline="47">user</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/user.class.php" line="25" bodyfile="/home/nathan/public_html/morgos/trunk/core/user.class.php" bodystart="25" bodyend="229"/>
+    <listofallmembers>
+      <member refid="classuser_1d5a75a87aa3ada14e2975fb26698253a" prot="public" virt="non-virtual"><scope>user</scope><name>$allOptions</name></member>
+      <member refid="classuser_162dbbadf7ff6113336bfc5e9330cd462" prot="public" virt="non-virtual"><scope>user</scope><name>$db</name></member>
+      <member refid="classuser_12aa22b3c92ae7913ee049dd8e99f3709" prot="public" virt="non-virtual"><scope>user</scope><name>$email</name></member>
+      <member refid="classuser_101043e9340b56aae3d887e7a4046ba27" prot="public" virt="non-virtual"><scope>user</scope><name>$ID</name></member>
+      <member refid="classuser_123cf72a1a458417d58bf58f400cfc9bf" prot="public" virt="non-virtual"><scope>user</scope><name>$login</name></member>
+      <member refid="classuser_18e78658d3348911cbeec6cfd8b75763a" prot="public" virt="non-virtual"><scope>user</scope><name>addToDatabase</name></member>
+      <member refid="classuser_16486b8da55ca1359d37e305dae141f29" prot="public" virt="non-virtual"><scope>user</scope><name>addToGroup</name></member>
+      <member refid="classuser_11a89ed59d21b3ca7e14b57995fa651c1" prot="public" virt="non-virtual"><scope>user</scope><name>getAllGroups</name></member>
+      <member refid="classuser_1ff69e82c79919f1ee151eafd630686db" prot="private" virt="non-virtual"><scope>user</scope><name>getAllOptions</name></member>
+      <member refid="classuser_1aea376351d2ec116b7b4b10233f62101" prot="public" virt="non-virtual"><scope>user</scope><name>getEmail</name></member>
+      <member refid="classuser_110655ec3832dd0fa6d7cd3edc35bc9c9" prot="public" virt="non-virtual"><scope>user</scope><name>getID</name></member>
+      <member refid="classuser_172f079340c54b810e0a4051f573d51ef" prot="public" virt="non-virtual"><scope>user</scope><name>getLogin</name></member>
+      <member refid="classuser_1bb47c8ef74ac9063c1278bd4e2f75b15" prot="public" virt="non-virtual"><scope>user</scope><name>getOption</name></member>
+      <member refid="classuser_145a6989491b9be205a1d61229d43ce72" prot="public" virt="non-virtual"><scope>user</scope><name>hasRight</name></member>
+      <member refid="classuser_1fe230d02953b66f259ca0dbfb12aa243" prot="private" virt="non-virtual"><scope>user</scope><name>initEmpty</name></member>
+      <member refid="classuser_1c7cc7c4f53c15e923062bd7242b5a88e" prot="public" virt="non-virtual"><scope>user</scope><name>initFromArray</name></member>
+      <member refid="classuser_12436b72df873f41472bd7cfb6d42431f" prot="public" virt="non-virtual"><scope>user</scope><name>initFromDatabaseEmail</name></member>
+      <member refid="classuser_1d3872a34ec59fef66c20d119ab4fd000" prot="public" virt="non-virtual"><scope>user</scope><name>initFromDatabaseID</name></member>
+      <member refid="classuser_1976a3767d2f519083655f9feaa522032" prot="public" virt="non-virtual"><scope>user</scope><name>initFromDatabaseLogin</name></member>
+      <member refid="classuser_1b15f38797834001e986032001a2dcace" prot="private" virt="non-virtual"><scope>user</scope><name>isInDatabase</name></member>
+      <member refid="classuser_1780068b490977e42d0e532ea9fa403f8" prot="public" virt="non-virtual"><scope>user</scope><name>removeFromDatabase</name></member>
+      <member refid="classuser_1ea59bd87dded02a30f30fa01dd809ef2" prot="private" virt="non-virtual"><scope>user</scope><name>setOption</name></member>
+      <member refid="classuser_1f1630f78dea3d63d1d5b426b6f2dd6b7" prot="public" virt="non-virtual"><scope>user</scope><name>updateFromArray</name></member>
+      <member refid="classuser_1dd5f89bd286abaa9a94fb5ea96c56ece" prot="public" virt="non-virtual"><scope>user</scope><name>updateToDatabase</name></member>
+      <member refid="classuser_1794768929f4ac8c9edac70dc0ee668ea" prot="public" virt="non-virtual"><scope>user</scope><name>user</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

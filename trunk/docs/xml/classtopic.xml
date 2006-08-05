@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classtopic" kind="class" prot="public">
+    <compoundname>topic</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtopic_1b3584e72b548b5e838b8adbc38897ea5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::topic</definition>
+        <argsstring>()</argsstring>
+        <name>topic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="27" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="27" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_1c87257fe7d5810d2e8f04c0c5ef7558e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::initFromDatabaseID</definition>
+        <argsstring>()</argsstring>
+        <name>initFromDatabaseID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="31" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="31" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_130cab070ee5a249f09df3b8b51f9ca42" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::initFromArray</definition>
+        <argsstring>()</argsstring>
+        <name>initFromArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="34" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="34" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_18ad2cbb5b40dfa4432c9d7083e029900" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::addToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="39" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="39" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_1e4d1246c27f9c62f5f5cd0e71a6769a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::removeFromDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>removeFromDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="42" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="42" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_182e5ec4db4bed4db761fda17588e91ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::updateToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>updateToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="45" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="45" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_1fc6e159f63ca7c2f7c9a44dddaa31550" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::getIconFile</definition>
+        <argsstring>()</argsstring>
+        <name>getIconFile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="48" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="48" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_1173e81fe636abfdeca8526526ee4be4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::getAllNewsItems</definition>
+        <argsstring>()</argsstring>
+        <name>getAllNewsItems</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="50" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="50" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_14640aaa9ccc84b9c669a1f86bf6ca32c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::getOption</definition>
+        <argsstring>()</argsstring>
+        <name>getOption</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="53" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="53" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classtopic_1128ad6c9129f07ffe3b01ac340f203ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>topic::initEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>initEmpty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="57" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="57" bodyend="58"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" line="25" bodyfile="/home/nathan/public_html/morgos/trunk/core/newstopic.class.php" bodystart="25" bodyend="60"/>
+    <listofallmembers>
+      <member refid="classtopic_18ad2cbb5b40dfa4432c9d7083e029900" prot="public" virt="non-virtual"><scope>topic</scope><name>addToDatabase</name></member>
+      <member refid="classtopic_1173e81fe636abfdeca8526526ee4be4f" prot="public" virt="non-virtual"><scope>topic</scope><name>getAllNewsItems</name></member>
+      <member refid="classtopic_1fc6e159f63ca7c2f7c9a44dddaa31550" prot="public" virt="non-virtual"><scope>topic</scope><name>getIconFile</name></member>
+      <member refid="classtopic_14640aaa9ccc84b9c669a1f86bf6ca32c" prot="public" virt="non-virtual"><scope>topic</scope><name>getOption</name></member>
+      <member refid="classtopic_1128ad6c9129f07ffe3b01ac340f203ea" prot="public" virt="non-virtual"><scope>topic</scope><name>initEmpty</name></member>
+      <member refid="classtopic_130cab070ee5a249f09df3b8b51f9ca42" prot="public" virt="non-virtual"><scope>topic</scope><name>initFromArray</name></member>
+      <member refid="classtopic_1c87257fe7d5810d2e8f04c0c5ef7558e" prot="public" virt="non-virtual"><scope>topic</scope><name>initFromDatabaseID</name></member>
+      <member refid="classtopic_1e4d1246c27f9c62f5f5cd0e71a6769a4" prot="public" virt="non-virtual"><scope>topic</scope><name>removeFromDatabase</name></member>
+      <member refid="classtopic_1b3584e72b548b5e838b8adbc38897ea5" prot="public" virt="non-virtual"><scope>topic</scope><name>topic</name></member>
+      <member refid="classtopic_182e5ec4db4bed4db761fda17588e91ca" prot="public" virt="non-virtual"><scope>topic</scope><name>updateToDatabase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

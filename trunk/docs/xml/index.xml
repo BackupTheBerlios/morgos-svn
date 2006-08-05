@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.4.6">
+  <compound refid="classcommentItem" kind="class"><name>commentItem</name>
+    <member refid="classcommentItem_11b4dc0df151f11b35c3b640610ae5ade" kind="function"><name>commentItem</name></member>
+    <member refid="classcommentItem_179363f5a11cdafc33e3f9de3d0172856" kind="function"><name>initFromDatabaseID</name></member>
+    <member refid="classcommentItem_122752af0f07b08fa309550f4cd14cd10" kind="function"><name>initFromArray</name></member>
+    <member refid="classcommentItem_16672265d8d57505dd8a83ef0740d35fe" kind="function"><name>addToDatabase</name></member>
+    <member refid="classcommentItem_1d33724c540d84e7715cf1a26e24fba5b" kind="function"><name>updateToDatabase</name></member>
+    <member refid="classcommentItem_134f1cfbfa6fb2def0d5708cf07fd8306" kind="function"><name>getID</name></member>
+    <member refid="classcommentItem_1fbaf61367f0029b5034e6abceb913ab5" kind="function"><name>getSubject</name></member>
+    <member refid="classcommentItem_1524bd9fe3fbfd21c977f2b52e4c9f334" kind="function"><name>getPostDate</name></member>
+    <member refid="classcommentItem_1703e62ed075b630b051c1605a2730b95" kind="function"><name>getMessage</name></member>
+    <member refid="classcommentItem_17b043686262adab551b12efcd1ead375" kind="function"><name>initEmpty</name></member>
+  </compound>
+  <compound refid="classconfigurator" kind="class"><name>configurator</name>
+    <member refid="classconfigurator_1aea3ca1593f2a9d6e2a56a55a672cf9a" kind="function"><name>configurator</name></member>
+    <member refid="classconfigurator_18c924fe5610d1d430434659a833ad317" kind="function"><name>loadConfigFile</name></member>
+    <member refid="classconfigurator_132d8f2989df526229a4d0b9eba36873b" kind="function"><name>loadConfigArray</name></member>
+    <member refid="classconfigurator_16293d76262a8a1edcc1f7b60755ddb5e" kind="function"><name>getOption</name></member>
+    <member refid="classconfigurator_19d7fef0900df624e0af3244173d0522a" kind="function"><name>setOption</name></member>
+    <member refid="classconfigurator_1d14324b09c2dd1a1f9326310b6228d71" kind="function"><name>addOption</name></member>
+    <member refid="classconfigurator_1f1c64e8d437f08855b512392de143020" kind="function"><name>saveConfigFile</name></member>
+  </compound>
+  <compound refid="classdatabaseActions" kind="class"><name>databaseActions</name>
+    <member refid="classdatabaseActions_1de78d2adca4a3c8db208c72249afd621" kind="function"><name>setPrefix</name></member>
+    <member refid="classdatabaseActions_1cfe61efce4523a006aab5ab9d297d916" kind="function"><name>getPrefix</name></member>
+    <member refid="classdatabaseActions_1bc9daad89344e6062384167e5292b8f3" kind="function"><name>setType</name></member>
+    <member refid="classdatabaseActions_18b1328d75c8e9ab8682ec86fc8a0168c" kind="function"><name>getType</name></member>
+    <member refid="classdatabaseActions_1ce66df1a8957a1ebeabd27a4388571aa" kind="variable"><name>$prefix</name></member>
+    <member refid="classdatabaseActions_134c1150156e397d3edfff3180b49cf92" kind="variable"><name>$type</name></member>
+  </compound>
+  <compound refid="classdatabaseManagerTest" kind="class"><name>databaseManagerTest</name>
+    <member refid="classdatabaseManagerTest_1c758ac0d95e0736a2e1eaad20afd525b" kind="function"><name>setUp</name></member>
+    <member refid="classdatabaseManagerTest_1d3360a366c211f66f250ac06c1e1b91c" kind="function"><name>testLoadModule</name></member>
+    <member refid="classdatabaseManagerTest_18bca2775a7f3b4c76dae7790740ce044" kind="function"><name>testModuleGetAllModules</name></member>
+    <member refid="classdatabaseManagerTest_1354003efc4abc8a132ea79cb1217fd74" kind="function"><name>testModuleExists</name></member>
+  </compound>
+  <compound refid="classgroup" kind="class"><name>group</name>
+    <member refid="classgroup_1d9d5836aea085e5b55ecb077d15a6189" kind="function"><name>group</name></member>
+    <member refid="classgroup_17a33e6d817d1fcca2c70c0fa1b700c66" kind="function"><name>initFromDatabaseID</name></member>
+    <member refid="classgroup_10521080fc9afe8f16f57bb1e3f002210" kind="function"><name>initFromArray</name></member>
+    <member refid="classgroup_18a8585115712aa535094ed2ff8eb6149" kind="function"><name>addToDatabase</name></member>
+    <member refid="classgroup_139a678c2ae5232d4045fa3120a9ee645" kind="function"><name>isInDatabase</name></member>
+    <member refid="classgroup_19f3e0bf6f025bd8f05e0a2bc29e5bccc" kind="function"><name>updateToDatabase</name></member>
+    <member refid="classgroup_1c5121847d7b56fa7f9217714a2c10bf3" kind="function"><name>updateFromArray</name></member>
+    <member refid="classgroup_18cc1c3c71056de9f45248faa105d7b12" kind="function"><name>hasRight</name></member>
+    <member refid="classgroup_15618c5304b25503d4c26fff3e9c7b594" kind="function"><name>getID</name></member>
+    <member refid="classgroup_1a120f1353490ebe4639d856a9bda66e0" kind="function"><name>getName</name></member>
+    <member refid="classgroup_13ea4b701db162654e0a4260215e677c5" kind="function"><name>getOption</name></member>
+    <member refid="classgroup_19f8290e3a77196011fb9cead72e9c612" kind="function"><name>getAllUsers</name></member>
+    <member refid="classgroup_14c6d544debc68e1ec0babd0b4b98e2dd" kind="function"><name>initEmpty</name></member>
+  </compound>
+  <compound refid="classlocalizer" kind="class"><name>localizer</name>
+    <member refid="classlocalizer_1489b4506910a46c28c5b00e495ba90b9" kind="function"><name>localizer</name></member>
+    <member refid="classlocalizer_1c060eed2814ef2c97e5de1add462b5b9" kind="function"><name>loadLanguage</name></member>
+    <member refid="classlocalizer_1e61ca7ac03ff699ee83fd1f384a0dbf4" kind="function"><name>getLanguage</name></member>
+    <member refid="classlocalizer_14dc42056efd6b8bc4089434bafa6a019" kind="function"><name>loadStrings</name></member>
+    <member refid="classlocalizer_1084869e0d4c7dd388618db3faa1fd1dc" kind="function"><name>translate</name></member>
+    <member refid="classlocalizer_14a44ec1c4f1e290ed1639f682d37d892" kind="function"><name>translateError</name></member>
+  </compound>
+  <compound refid="classMorgOSSuit" kind="class"><name>MorgOSSuit</name>
+    <member refid="classMorgOSSuit_13ff4e5a1bb094fbe2f7c50daa2f24d84" kind="function"><name>MorgOSSuit</name></member>
+    <member refid="classMorgOSSuit_1158b1f4c75201d61e101b0dcfa626a60" kind="function"><name>setUp</name></member>
+  </compound>
+  <compound refid="classnewsItem" kind="class"><name>newsItem</name>
+    <member refid="classnewsItem_166da18be6919d0895d770f28db52cbb0" kind="function"><name>newsItem</name></member>
+    <member refid="classnewsItem_138e8a3ed3e43f27535980fe400e5a8c3" kind="function"><name>initFromDatabaseID</name></member>
+    <member refid="classnewsItem_1af4c118a568f445383187d017fd46b72" kind="function"><name>initFromArray</name></member>
+    <member refid="classnewsItem_18bf73e0ae309e9a0cb54cbf9fb4572b4" kind="function"><name>addToDatabase</name></member>
+    <member refid="classnewsItem_11dfbe9d491e276a6dab2dec8a4a308b8" kind="function"><name>updateToDatabase</name></member>
+    <member refid="classnewsItem_138a0859c1816a11efa02ff8da086bb53" kind="function"><name>getTopicID</name></member>
+    <member refid="classnewsItem_1e98b2ec18d059a260b24276cfb6b08a8" kind="function"><name>getMessage</name></member>
+    <member refid="classnewsItem_139f7127466ac9fb0a8d186b0b0426735" kind="function"><name>getPostDate</name></member>
+    <member refid="classnewsItem_12acfea0e3c59977b5902199fd0ecf95a" kind="function"><name>getSubject</name></member>
+    <member refid="classnewsItem_14dbbd48912175360523aee9572e8c5ed" kind="function"><name>getOption</name></member>
+    <member refid="classnewsItem_1af69acbcbcd0a501adaa20c3bbc1e20f" kind="function"><name>initEmpty</name></member>
+  </compound>
+  <compound refid="classnewsmanager" kind="class"><name>newsmanager</name>
+    <member refid="classnewsmanager_17257b7f9a3cd1a8cb31a83660a8a6b57" kind="function"><name>newsmanager</name></member>
+    <member refid="classnewsmanager_1d1854374b00446a1b90e118788155266" kind="function"><name>getAllNewsItems</name></member>
+    <member refid="classnewsmanager_16df800d4e39443362eaaa06bc92d0b2c" kind="function"><name>postNewsItem</name></member>
+    <member refid="classnewsmanager_1e0e753df0e793242a9eb9e16f59c6cae" kind="function"><name>addOptionsToNewsItem</name></member>
+    <member refid="classnewsmanager_145cc0259269e4ed26896cf7ba0b04558" kind="function"><name>getAllOptionsFromNewsItem</name></member>
+    <member refid="classnewsmanager_1907c7154143ef798be1dba9b2781f9b5" kind="function"><name>areNewsItemsGloballyDisabled</name></member>
+    <member refid="classnewsmanager_16c4c5bad2e1a5b1de84c3e8be082f89d" kind="function"><name>setNewsItemsGloballyDisabled</name></member>
+    <member refid="classnewsmanager_1e35662c65615fd00b8f5c854b511142e" kind="function"><name>getAllTopics</name></member>
+    <member refid="classnewsmanager_1c1a80983a36cbf9da3ff9372e8b9f5db" kind="function"><name>addTopicToDatabase</name></member>
+    <member refid="classnewsmanager_1b14980306b72cb2dbb809b53fecbf7ec" kind="function"><name>removeTopicFromDatabase</name></member>
+    <member refid="classnewsmanager_190f2d958de715b0d0e2f55a9335eb168" kind="function"><name>addOptionsToTopic</name></member>
+    <member refid="classnewsmanager_1ed0bf0f5f1db1d94f1ead344c79488d4" kind="function"><name>getAllOptionsFromTopic</name></member>
+    <member refid="classnewsmanager_1157e0618717e1d44d04bbf9b9aa3e828" kind="function"><name>addOptionToComments</name></member>
+    <member refid="classnewsmanager_16404918fa7aaa3addf660e5474ca444d" kind="function"><name>areCommentsGloballyDisabled</name></member>
+    <member refid="classnewsmanager_168b3d1cf55133a098e40498c3ebc4dd0" kind="function"><name>setCommentGloballyDisabled</name></member>
+    <member refid="classnewsmanager_1d32c9f4e3edf7f502f288e02272fa95f" kind="function"><name>getAllOptionsFromCommentItems</name></member>
+  </compound>
+  <compound refid="classpage" kind="class"><name>page</name>
+    <member refid="classpage_1b0cfd233d0d3381cf9a7b83e0fddc9ee" kind="function"><name>page</name></member>
+    <member refid="classpage_1730117ea116c9fd9271b30c00e588c50" kind="function"><name>initFromDatabaseID</name></member>
+    <member refid="classpage_12be57e10997d39fa6749cbb6fca06a2c" kind="function"><name>initFromArray</name></member>
+    <member refid="classpage_1903be8c4fec5488207b1c69c8efb4dda" kind="function"><name>getContent</name></member>
+    <member refid="classpage_1ec8070ab87b3638948b9d72d8c5296bf" kind="function"><name>getTitle</name></member>
+    <member refid="classpage_1341d819ecf7b3a5a85dc3e6b16f6a900" kind="function"><name>addToDatabase</name></member>
+    <member refid="classpage_15691bebdb1950dc8b2a2fc41da854c37" kind="function"><name>updateFromArray</name></member>
+    <member refid="classpage_16632a1cae359777da8a1de6f6a34dad3" kind="function"><name>updateToDatabase</name></member>
+    <member refid="classpage_1e3e4893861f0b85a148d20fb485a5e0b" kind="function"><name>getOption</name></member>
+    <member refid="classpage_17a6f358f346251a49735a9e4fb160ce2" kind="function"><name>initEmpty</name></member>
+  </compound>
+  <compound refid="classpageManager" kind="class"><name>pageManager</name>
+    <member refid="classpageManager_123d272c13c0c4ee92a5417b4551a3f01" kind="function"><name>pageManager</name></member>
+    <member refid="classpageManager_1bc9374e2e3e10211feab23c3f1cb4387" kind="function"><name>addPageToDatabase</name></member>
+    <member refid="classpageManager_136eede28ae8a2fd4923261aac5b8a18b" kind="function"><name>getMenu</name></member>
+    <member refid="classpageManager_1f3fc3c101081fb1b4641be3705ca540f" kind="function"><name>getSubMenu</name></member>
+    <member refid="classpageManager_18df84805de347cd6bec09efd228398d7" kind="function"><name>getAllPages</name></member>
+    <member refid="classpageManager_16d51e0b08965ec052be465dadfd6be12" kind="function"><name>getAllOptions</name></member>
+  </compound>
+  <compound refid="classSimpleTestListener" kind="class"><name>SimpleTestListener</name>
+    <member refid="classSimpleTestListener_120ca5c283d3f74752dce836c7d49fba5" kind="function"><name>addError</name></member>
+    <member refid="classSimpleTestListener_15292bc60b5faba8cc06c008029ecaddb" kind="function"><name>addFailure</name></member>
+    <member refid="classSimpleTestListener_1598c569ffabac1f2a406ef8cae367e5e" kind="function"><name>addIncompleteTest</name></member>
+    <member refid="classSimpleTestListener_188884d3a65c0a535fc2cbeee65669e59" kind="function"><name>startTest</name></member>
+    <member refid="classSimpleTestListener_14ffb673ef4a39bafc72f52874037dc76" kind="function"><name>endTest</name></member>
+    <member refid="classSimpleTestListener_1c239f3f9bc600528f8dfa03f3b69ffb5" kind="function"><name>startTestSuite</name></member>
+    <member refid="classSimpleTestListener_17c2ac3a520452e1321a0a6be8d9bf90a" kind="function"><name>endTestSuite</name></member>
+    <member refid="classSimpleTestListener_14ba7ed32be102b1a0d3dbb32520fc044" kind="function"><name>printBt</name></member>
+  </compound>
+  <compound refid="classtopic" kind="class"><name>topic</name>
+    <member refid="classtopic_1b3584e72b548b5e838b8adbc38897ea5" kind="function"><name>topic</name></member>
+    <member refid="classtopic_1c87257fe7d5810d2e8f04c0c5ef7558e" kind="function"><name>initFromDatabaseID</name></member>
+    <member refid="classtopic_130cab070ee5a249f09df3b8b51f9ca42" kind="function"><name>initFromArray</name></member>
+    <member refid="classtopic_18ad2cbb5b40dfa4432c9d7083e029900" kind="function"><name>addToDatabase</name></member>
+    <member refid="classtopic_1e4d1246c27f9c62f5f5cd0e71a6769a4" kind="function"><name>removeFromDatabase</name></member>
+    <member refid="classtopic_182e5ec4db4bed4db761fda17588e91ca" kind="function"><name>updateToDatabase</name></member>
+    <member refid="classtopic_1fc6e159f63ca7c2f7c9a44dddaa31550" kind="function"><name>getIconFile</name></member>
+    <member refid="classtopic_1173e81fe636abfdeca8526526ee4be4f" kind="function"><name>getAllNewsItems</name></member>
+    <member refid="classtopic_14640aaa9ccc84b9c669a1f86bf6ca32c" kind="function"><name>getOption</name></member>
+    <member refid="classtopic_1128ad6c9129f07ffe3b01ac340f203ea" kind="function"><name>initEmpty</name></member>
+  </compound>
+  <compound refid="classuser" kind="class"><name>user</name>
+    <member refid="classuser_1794768929f4ac8c9edac70dc0ee668ea" kind="function"><name>user</name></member>
+    <member refid="classuser_1d3872a34ec59fef66c20d119ab4fd000" kind="function"><name>initFromDatabaseID</name></member>
+    <member refid="classuser_1976a3767d2f519083655f9feaa522032" kind="function"><name>initFromDatabaseLogin</name></member>
+    <member refid="classuser_12436b72df873f41472bd7cfb6d42431f" kind="function"><name>initFromDatabaseEmail</name></member>
+    <member refid="classuser_1c7cc7c4f53c15e923062bd7242b5a88e" kind="function"><name>initFromArray</name></member>
+    <member refid="classuser_18e78658d3348911cbeec6cfd8b75763a" kind="function"><name>addToDatabase</name></member>
+    <member refid="classuser_1780068b490977e42d0e532ea9fa403f8" kind="function"><name>removeFromDatabase</name></member>
+    <member refid="classuser_1dd5f89bd286abaa9a94fb5ea96c56ece" kind="function"><name>updateToDatabase</name></member>
+    <member refid="classuser_1f1630f78dea3d63d1d5b426b6f2dd6b7" kind="function"><name>updateFromArray</name></member>
+    <member refid="classuser_16486b8da55ca1359d37e305dae141f29" kind="function"><name>addToGroup</name></member>
+    <member refid="classuser_145a6989491b9be205a1d61229d43ce72" kind="function"><name>hasRight</name></member>
+    <member refid="classuser_172f079340c54b810e0a4051f573d51ef" kind="function"><name>getLogin</name></member>
+    <member refid="classuser_1aea376351d2ec116b7b4b10233f62101" kind="function"><name>getEmail</name></member>
+    <member refid="classuser_110655ec3832dd0fa6d7cd3edc35bc9c9" kind="function"><name>getID</name></member>
+    <member refid="classuser_11a89ed59d21b3ca7e14b57995fa651c1" kind="function"><name>getAllGroups</name></member>
+    <member refid="classuser_1bb47c8ef74ac9063c1278bd4e2f75b15" kind="function"><name>getOption</name></member>
+    <member refid="classuser_162dbbadf7ff6113336bfc5e9330cd462" kind="variable"><name>$db</name></member>
+    <member refid="classuser_1d5a75a87aa3ada14e2975fb26698253a" kind="variable"><name>$allOptions</name></member>
+    <member refid="classuser_101043e9340b56aae3d887e7a4046ba27" kind="variable"><name>$ID</name></member>
+    <member refid="classuser_123cf72a1a458417d58bf58f400cfc9bf" kind="variable"><name>$login</name></member>
+    <member refid="classuser_12aa22b3c92ae7913ee049dd8e99f3709" kind="variable"><name>$email</name></member>
+    <member refid="classuser_1ff69e82c79919f1ee151eafd630686db" kind="function"><name>getAllOptions</name></member>
+    <member refid="classuser_1ea59bd87dded02a30f30fa01dd809ef2" kind="function"><name>setOption</name></member>
+    <member refid="classuser_1b15f38797834001e986032001a2dcace" kind="function"><name>isInDatabase</name></member>
+    <member refid="classuser_1fe230d02953b66f259ca0dbfb12aa243" kind="function"><name>initEmpty</name></member>
+  </compound>
+  <compound refid="classuserManager" kind="class"><name>userManager</name>
+    <member refid="classuserManager_1841688729b9a21852cd3b4160431ab00" kind="function"><name>userManager</name></member>
+    <member refid="classuserManager_1295fbf4c324f84e6441fb888ff49355c" kind="function"><name>newUser</name></member>
+    <member refid="classuserManager_13a6adde108c762421a258975b0d96411" kind="function"><name>loginIsRegistered</name></member>
+    <member refid="classuserManager_13a7bae052ae4ecad8c65e219b378c8f0" kind="function"><name>emailIsRegistered</name></member>
+    <member refid="classuserManager_1cd901eaf46085eb986d7677b08844cff" kind="function"><name>addUserToDatabase</name></member>
+    <member refid="classuserManager_1049a29d1f25e6bc591c9aba67289f13d" kind="function"><name>removeUserFromDatabase</name></member>
+    <member refid="classuserManager_151c06e6e754cd32718ee9a059237d5f8" kind="function"><name>addOptionToUser</name></member>
+    <member refid="classuserManager_1b5d92472eed4f12ab295b64b74cde0fe" kind="function"><name>getAllOptionsForUser</name></member>
+    <member refid="classuserManager_11d1fd066c50de74aa3517f8ac4b0b521" kind="function"><name>getAllUsers</name></member>
+    <member refid="classuserManager_135ccd83e75b22e39af56f3c5f7f4aecc" kind="function"><name>getAllUsersID</name></member>
+    <member refid="classuserManager_102f7bad76b5f7c6064000dec3c6ae8dd" kind="function"><name>groupExists</name></member>
+    <member refid="classuserManager_1398469c70b836f501ec27223d9c0de11" kind="function"><name>addGroupToDatabase</name></member>
+    <member refid="classuserManager_1f78d633283293f0835e5b80ae19b0237" kind="function"><name>addOptionToGroup</name></member>
+    <member refid="classuserManager_118d8a8e978cf2388da7aa00688fe5390" kind="function"><name>getAllOptionsForGroup</name></member>
+    <member refid="classuserManager_12c1e5e699c53ee05b8a0e023e952691e" kind="function"><name>removeGroupFromDatabase</name></member>
+    <member refid="classuserManager_1ccefb79abd5c436b3bc9536b70f32ed4" kind="function"><name>getAllGroups</name></member>
+    <member refid="classuserManager_14ef629abdeb15d7352f881c042331415" kind="variable"><name>$db</name></member>
+  </compound>
+  <compound refid="classuserManagerTest" kind="class"><name>userManagerTest</name>
+    <member refid="classuserManagerTest_14afacb58d3bb8d8c66244eb90bcefda8" kind="function"><name>setUp</name></member>
+    <member refid="classuserManagerTest_172ae702a5c18bb254277f40d34c1b7df" kind="function"><name>testEmpty</name></member>
+    <member refid="classuserManagerTest_17362b90ff36979832307406f1f51b7b8" kind="function"><name>testLoginIsRegistered</name></member>
+    <member refid="classuserManagerTest_1c4ae0d76d6d3943a498e6f58cdae7f51" kind="function"><name>testEmailIsRegistered</name></member>
+    <member refid="classuserManagerTest_1f69adc98e604d8642de0780b4e6541af" kind="function"><name>testAddUserToDatabase</name></member>
+    <member refid="classuserManagerTest_1dd06e48da6ceff1b588f1dbc1b5fdedb" kind="function"><name>testAddOptionForUser</name></member>
+    <member refid="classuserManagerTest_13c91c6146a9b1ac13285e042e4fbd3a7" kind="variable"><name>$userManager</name></member>
+    <member refid="classuserManagerTest_1520faa2f804de43d93d6082000c7617a" kind="variable"><name>$db</name></member>
+  </compound>
+  <compound refid="config_8class_8php" kind="file"><name>config.class.php</name>
+  </compound>
+  <compound refid="databasemanager_8functions_8php" kind="file"><name>databasemanager.functions.php</name>
+    <member refid="databasemanager_8functions_8php_1afbe4f93d3d14171841185703c416e13" kind="function"><name>databaseLoadModule</name></member>
+    <member refid="databasemanager_8functions_8php_1da26f4d920303d8916ab6d11b0ec1719" kind="function"><name>databaseGetAllModules</name></member>
+    <member refid="databasemanager_8functions_8php_103538f8959aa539ff2e6f8aa84b1b0d7" kind="function"><name>databaseModuleExists</name></member>
+    <member refid="databasemanager_8functions_8php_18f087e13a194d856f6a04cbb6bada5ff" kind="function"><name>databaseInstallModule</name></member>
+    <member refid="databasemanager_8functions_8php_1211e4c95881b8a06b72dfa347a21ee7f" kind="function"><name>databaseUnInstallModule</name></member>
+  </compound>
+  <compound refid="mysql_8database_8class_8php" kind="file"><name>mysql.database.class.php</name>
+    <member refid="mysql_8database_8class_8php_1b962d572447eaa6dbfa5457823a28eb5" kind="function"><name>connect</name></member>
+    <member refid="mysql_8database_8class_8php_1d7d658fbc3f533e9ed68a86af7287513" kind="function"><name>selectDatabase</name></member>
+    <member refid="mysql_8database_8class_8php_16b251c8058230359b2922377699c4f29" kind="function"><name>query</name></member>
+    <member refid="mysql_8database_8class_8php_1f37433a300db1f607ee789d22828a0a0" kind="function"><name>numRows</name></member>
+    <member refid="mysql_8database_8class_8php_17e87f0a5ac6a38d7cfb64d2691944e40" kind="function"><name>fetchArray</name></member>
+    <member refid="mysql_8database_8class_8php_1b436a849f8a80c8063b5cb9ab2baddfd" kind="function"><name>latestInsertID</name></member>
+    <member refid="mysql_8database_8class_8php_17026f06d3f2463de5ddabd276e4263e1" kind="function"><name>getAllFields</name></member>
+    <member refid="mysql_8database_8class_8php_14359cbb1ad646e63875ce5205907c680" kind="variable"><name>$allModules</name></member>
+  </compound>
+  <compound refid="i18n_8class_8php" kind="file"><name>i18n.class.php</name>
+  </compound>
+  <compound refid="newscommentitem_8class_8php" kind="file"><name>newscommentitem.class.php</name>
+  </compound>
+  <compound refid="newsitem_8class_8php" kind="file"><name>newsitem.class.php</name>
+  </compound>
+  <compound refid="newsmanager_8class_8php" kind="file"><name>newsmanager.class.php</name>
+  </compound>
+  <compound refid="newstopic_8class_8php" kind="file"><name>newstopic.class.php</name>
+  </compound>
+  <compound refid="page_8class_8php" kind="file"><name>page.class.php</name>
+  </compound>
+  <compound refid="pagemanager_8class_8php" kind="file"><name>pagemanager.class.php</name>
+  </compound>
+  <compound refid="databasemanager_8functions_8test_8php" kind="file"><name>databasemanager.functions.test.php</name>
+  </compound>
+  <compound refid="core_2tests_2index_8php" kind="file"><name>index.php</name>
+    <member refid="core_2tests_2index_8php_1902f79118bd76caa816154e42fe7af8b" kind="variable"><name>$suite</name></member>
+  </compound>
+  <compound refid="index_8php" kind="file"><name>index.php</name>
+  </compound>
+  <compound refid="testoutput_8php" kind="file"><name>testoutput.php</name>
+  </compound>
+  <compound refid="usermanager_8class_8test_8php" kind="file"><name>usermanager.class.test.php</name>
+  </compound>
+  <compound refid="user_8class_8php" kind="file"><name>user.class.php</name>
+  </compound>
+  <compound refid="usergroup_8class_8php" kind="file"><name>usergroup.class.php</name>
+  </compound>
+  <compound refid="usermanager_8class_8php" kind="file"><name>usermanager.class.php</name>
+  </compound>
+  <compound refid="varia_8functions_8php" kind="file"><name>varia.functions.php</name>
+    <member refid="varia_8functions_8php_1f993eb837dff5aeae482e8fb071ad8fe" kind="function"><name>isError</name></member>
+  </compound>
+  <compound refid="bug" kind="page"><name>bug</name>
+  </compound>
+  <compound refid="dir_9da02cdd8d9dea072b94d65d7f74228b" kind="dir"><name>core/</name>
+  </compound>
+  <compound refid="dir_e32f8c669e0ce57139834b30c6ce8c5d" kind="dir"><name>core/databases/</name>
+  </compound>
+  <compound refid="dir_30fb88d047094ccb523d36a4192c1321" kind="dir"><name>core/tests/</name>
+  </compound>
+</doxygenindex>

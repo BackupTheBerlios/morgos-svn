@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classnewsmanager" kind="class" prot="public">
+    <compoundname>newsmanager</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classnewsmanager_17257b7f9a3cd1a8cb31a83660a8a6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::newsmanager</definition>
+        <argsstring>()</argsstring>
+        <name>newsmanager</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="31" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="31" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1d1854374b00446a1b90e118788155266" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::getAllNewsItems</definition>
+        <argsstring>()</argsstring>
+        <name>getAllNewsItems</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="36" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="36" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_16df800d4e39443362eaaa06bc92d0b2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::postNewsItem</definition>
+        <argsstring>()</argsstring>
+        <name>postNewsItem</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="39" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="39" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1e0e753df0e793242a9eb9e16f59c6cae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::addOptionsToNewsItem</definition>
+        <argsstring>()</argsstring>
+        <name>addOptionsToNewsItem</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="42" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="42" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_145cc0259269e4ed26896cf7ba0b04558" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::getAllOptionsFromNewsItem</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptionsFromNewsItem</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="45" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="45" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1907c7154143ef798be1dba9b2781f9b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::areNewsItemsGloballyDisabled</definition>
+        <argsstring>()</argsstring>
+        <name>areNewsItemsGloballyDisabled</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="48" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="48" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_16c4c5bad2e1a5b1de84c3e8be082f89d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::setNewsItemsGloballyDisabled</definition>
+        <argsstring>()</argsstring>
+        <name>setNewsItemsGloballyDisabled</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="51" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="51" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1e35662c65615fd00b8f5c854b511142e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::getAllTopics</definition>
+        <argsstring>()</argsstring>
+        <name>getAllTopics</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="56" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="56" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1c1a80983a36cbf9da3ff9372e8b9f5db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::addTopicToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addTopicToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="59" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="59" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1b14980306b72cb2dbb809b53fecbf7ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::removeTopicFromDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>removeTopicFromDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="62" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="62" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_190f2d958de715b0d0e2f55a9335eb168" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::addOptionsToTopic</definition>
+        <argsstring>()</argsstring>
+        <name>addOptionsToTopic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="65" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="65" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1ed0bf0f5f1db1d94f1ead344c79488d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::getAllOptionsFromTopic</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptionsFromTopic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="68" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="68" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1157e0618717e1d44d04bbf9b9aa3e828" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::addOptionToComments</definition>
+        <argsstring>()</argsstring>
+        <name>addOptionToComments</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="73" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="73" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_16404918fa7aaa3addf660e5474ca444d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::areCommentsGloballyDisabled</definition>
+        <argsstring>()</argsstring>
+        <name>areCommentsGloballyDisabled</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="76" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="76" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_168b3d1cf55133a098e40498c3ebc4dd0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::setCommentGloballyDisabled</definition>
+        <argsstring>()</argsstring>
+        <name>setCommentGloballyDisabled</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="79" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="79" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsmanager_1d32c9f4e3edf7f502f288e02272fa95f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsmanager::getAllOptionsFromCommentItems</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptionsFromCommentItems</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="82" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="82" bodyend="83"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" line="29" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsmanager.class.php" bodystart="29" bodyend="85"/>
+    <listofallmembers>
+      <member refid="classnewsmanager_1e0e753df0e793242a9eb9e16f59c6cae" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>addOptionsToNewsItem</name></member>
+      <member refid="classnewsmanager_190f2d958de715b0d0e2f55a9335eb168" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>addOptionsToTopic</name></member>
+      <member refid="classnewsmanager_1157e0618717e1d44d04bbf9b9aa3e828" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>addOptionToComments</name></member>
+      <member refid="classnewsmanager_1c1a80983a36cbf9da3ff9372e8b9f5db" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>addTopicToDatabase</name></member>
+      <member refid="classnewsmanager_16404918fa7aaa3addf660e5474ca444d" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>areCommentsGloballyDisabled</name></member>
+      <member refid="classnewsmanager_1907c7154143ef798be1dba9b2781f9b5" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>areNewsItemsGloballyDisabled</name></member>
+      <member refid="classnewsmanager_1d1854374b00446a1b90e118788155266" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>getAllNewsItems</name></member>
+      <member refid="classnewsmanager_1d32c9f4e3edf7f502f288e02272fa95f" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>getAllOptionsFromCommentItems</name></member>
+      <member refid="classnewsmanager_145cc0259269e4ed26896cf7ba0b04558" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>getAllOptionsFromNewsItem</name></member>
+      <member refid="classnewsmanager_1ed0bf0f5f1db1d94f1ead344c79488d4" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>getAllOptionsFromTopic</name></member>
+      <member refid="classnewsmanager_1e35662c65615fd00b8f5c854b511142e" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>getAllTopics</name></member>
+      <member refid="classnewsmanager_17257b7f9a3cd1a8cb31a83660a8a6b57" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>newsmanager</name></member>
+      <member refid="classnewsmanager_16df800d4e39443362eaaa06bc92d0b2c" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>postNewsItem</name></member>
+      <member refid="classnewsmanager_1b14980306b72cb2dbb809b53fecbf7ec" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>removeTopicFromDatabase</name></member>
+      <member refid="classnewsmanager_168b3d1cf55133a098e40498c3ebc4dd0" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>setCommentGloballyDisabled</name></member>
+      <member refid="classnewsmanager_16c4c5bad2e1a5b1de84c3e8be082f89d" prot="public" virt="non-virtual"><scope>newsmanager</scope><name>setNewsItemsGloballyDisabled</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

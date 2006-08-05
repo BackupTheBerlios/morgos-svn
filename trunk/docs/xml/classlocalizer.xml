@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classlocalizer" kind="class" prot="public">
+    <compoundname>localizer</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classlocalizer_1489b4506910a46c28c5b00e495ba90b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>localizer::localizer</definition>
+        <argsstring>()</argsstring>
+        <name>localizer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="27" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="27" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classlocalizer_1c060eed2814ef2c97e5de1add462b5b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>localizer::loadLanguage</definition>
+        <argsstring>()</argsstring>
+        <name>loadLanguage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="30" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="30" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classlocalizer_1e61ca7ac03ff699ee83fd1f384a0dbf4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>localizer::getLanguage</definition>
+        <argsstring>()</argsstring>
+        <name>getLanguage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="33" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="33" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classlocalizer_14dc42056efd6b8bc4089434bafa6a019" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>localizer::loadStrings</definition>
+        <argsstring>()</argsstring>
+        <name>loadStrings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="36" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="36" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classlocalizer_1084869e0d4c7dd388618db3faa1fd1dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>localizer::translate</definition>
+        <argsstring>()</argsstring>
+        <name>translate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="39" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="39" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classlocalizer_14a44ec1c4f1e290ed1639f682d37d892" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>localizer::translateError</definition>
+        <argsstring>()</argsstring>
+        <name>translateError</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="42" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="42" bodyend="43"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" line="25" bodyfile="/home/nathan/public_html/morgos/trunk/core/i18n.class.php" bodystart="25" bodyend="45"/>
+    <listofallmembers>
+      <member refid="classlocalizer_1e61ca7ac03ff699ee83fd1f384a0dbf4" prot="public" virt="non-virtual"><scope>localizer</scope><name>getLanguage</name></member>
+      <member refid="classlocalizer_1c060eed2814ef2c97e5de1add462b5b9" prot="public" virt="non-virtual"><scope>localizer</scope><name>loadLanguage</name></member>
+      <member refid="classlocalizer_14dc42056efd6b8bc4089434bafa6a019" prot="public" virt="non-virtual"><scope>localizer</scope><name>loadStrings</name></member>
+      <member refid="classlocalizer_1489b4506910a46c28c5b00e495ba90b9" prot="public" virt="non-virtual"><scope>localizer</scope><name>localizer</name></member>
+      <member refid="classlocalizer_1084869e0d4c7dd388618db3faa1fd1dc" prot="public" virt="non-virtual"><scope>localizer</scope><name>translate</name></member>
+      <member refid="classlocalizer_14a44ec1c4f1e290ed1639f682d37d892" prot="public" virt="non-virtual"><scope>localizer</scope><name>translateError</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

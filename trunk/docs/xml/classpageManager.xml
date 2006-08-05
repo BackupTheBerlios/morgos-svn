@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classpageManager" kind="class" prot="public">
+    <compoundname>pageManager</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classpageManager_123d272c13c0c4ee92a5417b4551a3f01" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pageManager::pageManager</definition>
+        <argsstring>()</argsstring>
+        <name>pageManager</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="29" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="29" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classpageManager_1bc9374e2e3e10211feab23c3f1cb4387" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pageManager::addPageToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addPageToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="32" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="32" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classpageManager_136eede28ae8a2fd4923261aac5b8a18b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pageManager::getMenu</definition>
+        <argsstring>()</argsstring>
+        <name>getMenu</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="35" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="35" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classpageManager_1f3fc3c101081fb1b4641be3705ca540f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pageManager::getSubMenu</definition>
+        <argsstring>()</argsstring>
+        <name>getSubMenu</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="38" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="38" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classpageManager_18df84805de347cd6bec09efd228398d7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pageManager::getAllPages</definition>
+        <argsstring>()</argsstring>
+        <name>getAllPages</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="41" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="41" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="classpageManager_16d51e0b08965ec052be465dadfd6be12" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pageManager::getAllOptions</definition>
+        <argsstring>()</argsstring>
+        <name>getAllOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="44" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="44" bodyend="45"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" line="27" bodyfile="/home/nathan/public_html/morgos/trunk/core/pagemanager.class.php" bodystart="27" bodyend="47"/>
+    <listofallmembers>
+      <member refid="classpageManager_1bc9374e2e3e10211feab23c3f1cb4387" prot="public" virt="non-virtual"><scope>pageManager</scope><name>addPageToDatabase</name></member>
+      <member refid="classpageManager_16d51e0b08965ec052be465dadfd6be12" prot="public" virt="non-virtual"><scope>pageManager</scope><name>getAllOptions</name></member>
+      <member refid="classpageManager_18df84805de347cd6bec09efd228398d7" prot="public" virt="non-virtual"><scope>pageManager</scope><name>getAllPages</name></member>
+      <member refid="classpageManager_136eede28ae8a2fd4923261aac5b8a18b" prot="public" virt="non-virtual"><scope>pageManager</scope><name>getMenu</name></member>
+      <member refid="classpageManager_1f3fc3c101081fb1b4641be3705ca540f" prot="public" virt="non-virtual"><scope>pageManager</scope><name>getSubMenu</name></member>
+      <member refid="classpageManager_123d272c13c0c4ee92a5417b4551a3f01" prot="public" virt="non-virtual"><scope>pageManager</scope><name>pageManager</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.4.6">
+  <compounddef id="classnewsItem" kind="class" prot="public">
+    <compoundname>newsItem</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classnewsItem_166da18be6919d0895d770f28db52cbb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::newsItem</definition>
+        <argsstring>()</argsstring>
+        <name>newsItem</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="27" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="27" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_138e8a3ed3e43f27535980fe400e5a8c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::initFromDatabaseID</definition>
+        <argsstring>()</argsstring>
+        <name>initFromDatabaseID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="31" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="31" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_1af4c118a568f445383187d017fd46b72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::initFromArray</definition>
+        <argsstring>()</argsstring>
+        <name>initFromArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="34" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="34" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_18bf73e0ae309e9a0cb54cbf9fb4572b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::addToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>addToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="38" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="38" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_11dfbe9d491e276a6dab2dec8a4a308b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::updateToDatabase</definition>
+        <argsstring>()</argsstring>
+        <name>updateToDatabase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="41" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="41" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_138a0859c1816a11efa02ff8da086bb53" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::getTopicID</definition>
+        <argsstring>()</argsstring>
+        <name>getTopicID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="44" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="44" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_1e98b2ec18d059a260b24276cfb6b08a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::getMessage</definition>
+        <argsstring>()</argsstring>
+        <name>getMessage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="45" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="45" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_139f7127466ac9fb0a8d186b0b0426735" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::getPostDate</definition>
+        <argsstring>()</argsstring>
+        <name>getPostDate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="46" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="46" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_12acfea0e3c59977b5902199fd0ecf95a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::getSubject</definition>
+        <argsstring>()</argsstring>
+        <name>getSubject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="47" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="47" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_14dbbd48912175360523aee9572e8c5ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::getOption</definition>
+        <argsstring>()</argsstring>
+        <name>getOption</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="49" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="49" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="classnewsItem_1af69acbcbcd0a501adaa20c3bbc1e20f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>newsItem::initEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>initEmpty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="55" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="55" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" line="25" bodyfile="/home/nathan/public_html/morgos/trunk/core/newsitem.class.php" bodystart="25" bodyend="58"/>
+    <listofallmembers>
+      <member refid="classnewsItem_18bf73e0ae309e9a0cb54cbf9fb4572b4" prot="public" virt="non-virtual"><scope>newsItem</scope><name>addToDatabase</name></member>
+      <member refid="classnewsItem_1e98b2ec18d059a260b24276cfb6b08a8" prot="public" virt="non-virtual"><scope>newsItem</scope><name>getMessage</name></member>
+      <member refid="classnewsItem_14dbbd48912175360523aee9572e8c5ed" prot="public" virt="non-virtual"><scope>newsItem</scope><name>getOption</name></member>
+      <member refid="classnewsItem_139f7127466ac9fb0a8d186b0b0426735" prot="public" virt="non-virtual"><scope>newsItem</scope><name>getPostDate</name></member>
+      <member refid="classnewsItem_12acfea0e3c59977b5902199fd0ecf95a" prot="public" virt="non-virtual"><scope>newsItem</scope><name>getSubject</name></member>
+      <member refid="classnewsItem_138a0859c1816a11efa02ff8da086bb53" prot="public" virt="non-virtual"><scope>newsItem</scope><name>getTopicID</name></member>
+      <member refid="classnewsItem_1af69acbcbcd0a501adaa20c3bbc1e20f" prot="public" virt="non-virtual"><scope>newsItem</scope><name>initEmpty</name></member>
+      <member refid="classnewsItem_1af4c118a568f445383187d017fd46b72" prot="public" virt="non-virtual"><scope>newsItem</scope><name>initFromArray</name></member>
+      <member refid="classnewsItem_138e8a3ed3e43f27535980fe400e5a8c3" prot="public" virt="non-virtual"><scope>newsItem</scope><name>initFromDatabaseID</name></member>
+      <member refid="classnewsItem_166da18be6919d0895d770f28db52cbb0" prot="public" virt="non-virtual"><scope>newsItem</scope><name>newsItem</name></member>
+      <member refid="classnewsItem_11dfbe9d491e276a6dab2dec8a4a308b8" prot="public" virt="non-virtual"><scope>newsItem</scope><name>updateToDatabase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
