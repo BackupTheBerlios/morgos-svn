@@ -34,21 +34,10 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$this->userManager = new userManager ($this->db);
 	}
 	
-	function testEmpty () {
-		$result = $this->userManager->getAllUsersID ();
-		if (! isError ($result)) {
-			foreach ($result as $ID) {
-				$user = new user ($this->db, $this->userManager->getAllOptionsForUser ());
-				$user->initFromDatabaseID ($ID);
-				$r = $this->userManager->removeUserFromDatabase ($user);
-				if (isError ($r)) {
-					$this->fail ($r);
-				}
-			}
-			$this->assertEquals (0, count ($this->userManager->getAllUsersID ()));
-		} else {
-			$this->fail ($result);
-		}
+	function testNewUser () {
+		$user = $this->userManager->newUser ();
+		$this->assertTrue (is_object ($user)); // this is not waterproof!
+		// maybe we can implement something with Reflection that gets the 'type' if the obect
 	}
 	
 	function testLoginIsRegistered () {
@@ -76,6 +65,39 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$this->assertEquals (true, $loginExists);	
 		$emailExists = $this->userManager->emailIsRegistered ('THEEMAIL');
 		$this->assertEquals (true, $emailExists);
+		
+		$user = $this->userManager->newUser ();
+		if (isError ($user)) {
+			$this->fail ($user);
+		}
+		$a = array ();
+		$a['login'] = 'ANOTHERLOGIN';
+		$a['email'] = 'ANOTHEREMAIL';
+		$user->initFromArray ($a);
+		$result = $this->userManager->addUserToDatabase ($user);
+		$this->assertEquals (null, $result);
+		
+		$user = $this->userManager->newUser ();
+		if (isError ($user)) {
+			$this->fail ($user);
+		}
+		$a = array ();
+		$a['login'] = 'ANOTHERLOGIN';
+		$a['email'] = 'ANOTHERANOTHEREMAIL';
+		$user->initFromArray ($a);
+		$result = $this->userManager->addUserToDatabase ($user);
+		$this->assertEquals ("ERROR_USERMANAGER_LOGIN_EXISTS ANOTHERLOGIN", $result);
+		
+		$user = $this->userManager->newUser ();
+		if (isError ($user)) {
+			$this->fail ($user);
+		}
+		$a = array ();
+		$a['login'] = 'ANOTHERANOTHERLOGIN';
+		$a['email'] = 'ANOTHEREMAIL';
+		$user->initFromArray ($a);
+		$result = $this->userManager->addUserToDatabase ($user);
+		$this->assertEquals ("ERROR_USERMANAGER_EMAIL_EXISTS ANOTHEREMAIL", $result);
 	}
 	
 	function testAddOptionForUser () {
@@ -85,6 +107,44 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$this->assertEquals (null, $r);
 		$newAllOptions = $this->userManager->getAllOptionsForUser ();
 		$this->assertEquals ($oldAllOptions, $newAllOptions);
+		
+		$r = $this->userManager->addOptionToUser ('preName', 'varchar (255)');
+		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORUSER_EXISTS preName", $r);
+	}
+	
+	function testRemoveOptionForUser () {
+		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
+		unset ($oldAllOptions['preName']);
+		$r = $this->userManager->removeOptionToUser ('preName');
+		$this->assertEquals (null, $r);
+		$newAllOptions = $this->userManager->getAllOptionsForUser ();
+		$this->assertEquals ($oldAllOptions, $newAllOptions);
+
+		$r = $this->userManager->removeOptionToUser ('preName');
+		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORUSER_DONT_EXISTS preName", $r);
+	}
+	
+	function testGetAllUsers () {
+		// We can not test getAllUsersID but this test depends on it.
+		$allUsers = $this->userManager->getAllUsers ();
+		$this->assertEquals (2, count ($allUsers));
+	}
+	
+	function testRemoveUserFromDatabase () {
+		$user = $this->userManager->newUser ();
+		$user->initFromDatabaseLogin ('ANOTHERLOGIN');
+		$r = $this->userManager->removeUserFromDatabase ($user);
+		$this->assertEquals (null, $r);
+		
+		$user = $this->userManager->newUser ();
+		$a['login'] = 'ANOTHERANOTHERLOGIN';
+		$a['email'] = 'ANOTHERANOTHEREMAIL';
+		$user->initFromArray ($a);
+		$r = $this->userManager->removeUserFromDatabase ($user);
+		$this->assertEquals ("ERROR_USER_NOT_IN_DATABASE", $r);
+	
+		$allUsers = $this->userManager->getAllUsers ();
+		$this->assertEquals (1, count ($allUsers));
 	}
 }
 

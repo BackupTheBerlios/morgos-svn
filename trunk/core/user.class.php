@@ -66,10 +66,40 @@ class user {
 		}
 	}
 	
-	function initFromDatabaseLogin () {
+	/**
+	 * Initialize the user from the database with login $login
+	 *
+	 * @param $login (string) The database login
+	 * @return (error)
+	*/
+	function initFromDatabaseLogin ($login) {
+		$sql = "SELECT * FROM {$this->db->getPrefix ()}users WHERE login='$login'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			$this->initFromArray ($row);
+			$this->ID = $row['userID'];
+		} else {
+			return $q;
+		}
 	}
 	
-	function initFromDatabaseEmail () {
+	/**
+	 * Initialize the user from the database with email $email
+	 *
+	 * @param $email (string) The database email
+	 * @return (error)
+	*/
+	function initFromDatabaseEmail ($email) {
+		$sql = "SELECT * FROM {$this->db->getPrefix ()}users WHERE email='$email'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			$this->initFromArray ($row);
+			$this->ID = $row['userID'];
+		} else {
+			return $q;
+		}
 	}
 	
 	/**

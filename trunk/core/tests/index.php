@@ -50,6 +50,16 @@ class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
 		if (isError ($r)) {
 			die ('Wrong databasename, check your settings.');
 		}
+		foreach ($dbModule->getAllTables () as $tableName) {
+			$r = $dbModule->query ("DROP TABLE $tableName");
+			if (isError ($r)) {
+				die (var_dump ($r));
+			}
+		}
+		$r = $dbModule->query (file_get_contents ("core/tests/database.sql"));
+		if (isError ($r)) {
+			die (var_dump ($r));
+		}
 		
 		global $avModules;
 		$availableModulesINI = explode (',', $testerOptions['dbAvailableModules']);
@@ -61,14 +71,20 @@ class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
 		$this->addTestFile ('core/tests/databasemanager.functions.test.php');
 		$this->addTestFile ('core/tests/usermanager.class.test.php');
 
-		$result = new PHPUnit2_Framework_TestResult;
-		$result->addListener(new SimpleTestListener);
+		$this->result = new PHPUnit2_Framework_TestResult;
+		$this->result->addListener(new SimpleTestListener);
 
-		$this->run ($result);
+		$this->dbModule = $dbModule;
+	}
+	
+	function tearDown () {
+		$this->dbModule->disconnect ();
 	}
 
 }
 
 $suite = new MorgOSSuit ();
-
+$suite->run ($suite->result);
+$suite->tearDown ();
+$suite = null;
 ?>

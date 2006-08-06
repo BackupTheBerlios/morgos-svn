@@ -40,6 +40,7 @@ class userManager {
 	 * Do not use new user (); directly.
 	 *
 	 * @return (object user)
+	 * @public
 	*/
 	function newUser () {
 		$allOptions = $this->getAllOptionsForUser ();
@@ -145,21 +146,48 @@ class userManager {
 	 *   - text
 	 * @warning old user objects don't profit of this. 
 	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
-	 * @bug when after adding one, someone ask wich exists the new is added in.
+	 * @bug when after adding one, someone ask wich exists the new is not added in.
 	 *    if that "asker" want to do something with it on an old user object it can cause weird errors.
 	 * @return (error) if one
+	 * @public
 	*/
 	function addOptionToUser ($newOption, $sqlType) {
 		$curOptions = $this->getAllOptionsForUser ();
 		if (! isError ($curOptions)) {
-			if (array_key_exists ($newOption, $curOptions)) {
+			if (! array_key_exists ($newOption, $curOptions)) {
 				$sql = "ALTER TABLE {$this->db->getPrefix()}users ADD $newOption $sqlType";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
 				}
 			} else {
-				return "ERROR_USERMNAGER_OPTION_FORUSER_EXISTS $newOption";
+				return "ERROR_USERMANAGER_OPTION_FORUSER_EXISTS $newOption";
+			}
+		} else {
+			return $curOptions;
+		}
+	}
+	
+	/**
+	 * Removes an extra option to the database for the users.
+	 *
+	 * @param $optionName (string) the name of the option
+	 * @warning old user objects don't profit of this. 
+	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
+	 * @return (error) if one
+	 * @public
+	*/
+	function removeOptionToUser ($optionName) {
+		$curOptions = $this->getAllOptionsForUser ();
+		if (! isError ($curOptions)) {
+			if (array_key_exists ($optionName, $curOptions)) {
+				$sql = "ALTER TABLE {$this->db->getPrefix()}users DROP $optionName";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				return "ERROR_USERMANAGER_OPTION_FORUSER_DONT_EXISTS $optionName";
 			}
 		} else {
 			return $curOptions;
@@ -170,6 +198,7 @@ class userManager {
 	 * Returns an associative array with values null, and keys the name of the option
 	 *
 	 * @return (null array)
+	 * @public
 	*/
 	function getAllOptionsForUser () {
 		$fields = $this->db->getAllFields ($this->db->getPrefix ().'users');
@@ -186,11 +215,33 @@ class userManager {
 		}
 	}
 
+	/**
+	 * Returns an array of all users that are stored in the database.
+	 *
+	 * @warning newly created users that aren't yet stored in the DB are not given here.
+	 * @return (int array)
+	 * @public
+	*/
 	function getAllUsers () {
+		$usersID = $this->getAllUsersID ();
+		if (! isError ($usersID)) {
+			$allUsers = array ();
+			foreach ($usersID as $ID) {
+				$user = $this->newUser ();
+				$r = $user->initFromDatabaseID ($ID);
+				if (isError ($r)) {
+					return $r;
+				}
+				$allUsers[] = $user;
+			}
+			return $allUsers;
+		} else {
+			return $usersID;
+		}
 	}
 
 	/**
-	 * Returns an array of all users that are stored in the database.
+	 * Returns an array of all users ID that are stored in the database.
 	 *
 	 * @return (int array)
 	 * @public

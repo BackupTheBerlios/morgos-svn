@@ -32,6 +32,8 @@ if (function_exists ('mysql_connect')) {
 $allModules['EXISTINGBUTNOTWORKING'] = 'EMPTY';
 
 if (! class_exists ('mysqlDatabaseActions')) {
+	isset ($t); // trick documentor
+	
 	class mysqlDatabaseActions extends databaseActions {
 		var $dbName;	
 	
@@ -44,6 +46,10 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			if ($this->connection == false) {
 				return "ERROR_DATABASE_CONNECTION_FAILED " . mysql_error ();
 			}
+		}
+		
+		function disconnect () {
+			mysql_close ($this->connection);
 		}
 	
 		function selectDatabase ($dbName) {
@@ -85,6 +91,19 @@ if (! class_exists ('mysqlDatabaseActions')) {
 					}
 				}
 				return $allFields;
+			} else {
+				return $q;
+			}
+		}
+		
+		function getAllTables () {
+			$q = $this->query ("SHOW TABLES FROM {$this->dbName}");
+			if (! isError ($q)) {
+				$allTables = array ();
+				while ($row = mysql_fetch_assoc ($q)) {
+					$allTables[] = $row['Tables_in_'.$this->dbName];
+				}
+				return $allTables;
 			} else {
 				return $q;
 			}
