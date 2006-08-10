@@ -22,46 +22,26 @@
  * @author Nathan Samson
 */
 
-class group {
-
-	function group () {
-	}
+class group extends databaseObject {
 	
-	/*Public initters*/
-	
-	function initFromDatabaseID () {
-	}
-	
-	function initFromArray () {
+	function group ($db, $allExtraOptions, &$creator) {
+		parent::databaseObject ($db, $allExtraOptions, array ('genericName', 'genericDescription'), 'groups', 'groupID', &$creator);
 	}
 	
 	/*Public functions*/
 	
-	function addToDatabase () {
-	}
-	
-	function isInDatabase () {
-	}
-	
-	function updateToDatabase () {
-	}
-	
-	function updateFromArray () {
-	}
-	
-	function hasRight () {
-	}
-	
-	function getID () {}
-	function getName () {}
-	
-	function getOption () {
+	function hasRight ($rightName) {
 	}
 	
 	function getAllUsers () {
 	}
 	
-	/*Private initters*/
-	function initEmpty () {
+	function getGenericName () {
+		return $this->getOption ('genericName');
 	}
+	
+	function getGenericDescription () {
+		return $this->getOption ('genericDescription');
+	}
+	
 }

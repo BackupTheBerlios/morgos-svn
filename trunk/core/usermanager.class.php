@@ -45,7 +45,7 @@ class userManager {
 	function newUser () {
 		$allOptions = $this->getAllOptionsForUser ();
 		if (! isError ($allOptions)) {
-			return new user ($this->db, $allOptions);
+			return new user ($this->db, $allOptions, &$this);
 		} else {
 			return $allOptions;
 		}
@@ -262,21 +262,105 @@ class userManager {
 	
 	/*Group functions*/
 	
-	function groupExists () {
+	/**
+	 * Creates a group object. This is the only good method to create one.
+	 * Do not use new group (); directly.
+	 *
+	 * @return (object group)
+	 * @public
+	*/
+	function newGroup () {
+		return new group ($this->db, $this->getAllOptionsForGroup);
 	}	
 	
-	function addGroupToDatabase () {
+	/**
+	 * Checks that a group is already registered into the database.
+	 *
+	 * @param $groupName (string) the name of the group
+	 * @return (bool)
+	*/
+	function isGroupNameRegistered ($groupName) {
+		$sql = "SELECT COUNT(name) FROM {$this->db->getPrefix ()}groups WHERE name='$groupName'";
+		$q = $this->db->query ($q);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			if ($row['COUNT(name)'] == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return $q;
+		}
+	}	
+	
+	/**
+	 * Adds a group to the database
+	 *
+	 * @param $group (object group)
+	*/
+	function addGroupToDatabase ($group) {
+		$gIR = $this->isGroupNameRegistered ($group->getName ());
+		if (! isError ($gIR)) {
+			if ($gIR)  {
+				return $group->addToDatabase ();
+			} else {
+				return "ERROR_USERMANAGER_GROUP_ALREADY_EXISTS {$group->getName ()}";
+			}
+		} else {
+			return $gIR;
+		}
 	}
 	
 	function addOptionToGroup () {
 	}
 	
 	function getAllOptionsForGroup () {
+		return array ();
 	}
 	
-	function removeGroupFromDatabase () {
+	function removeGroupFromDatabase ($group) {
+		return $group->removeFromDatabase ();
 	}
 		
+	/**
+	 * Returns an array with all groups
+	 *
+	 * @return (object array)
+	*/
 	function getAllGroups () {
+		$groupsID = $this->getAllGroupsID ();
+		if (! isError ($groupsID)) {
+			$allGroups = array ();
+			foreach ($groupsID as $groupID) {
+				$group = $this->newGroup ();
+				$r = $group->initFromDatabaseID ($groupID);
+				if (! isError ($r)) {
+					$allGroups[] = $group;
+				} else {
+					return $r;
+				}
+			}
+			return $allGroups;
+		} else {
+			return $groupsID;
+		}
+	}
+	
+	/**
+	 * Returns an array with values of all the groups IDs.
+	 *
+	 * @return (int array)
+	*/
+	function getAllGroupsID () {
+		$sql = "SELECT groupID FROM {$this->db->getPrefix ()}groups";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$allGroups = array ();
+			while ($row = $this->db->fetchArray ($q)) {
+				$allGroups[] = $row['groupID'];
+			}
+			return $allGroups ();
+		}
 	}
 }

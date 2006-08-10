@@ -135,13 +135,16 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$user->initFromDatabaseLogin ('ANOTHERLOGIN');
 		$r = $this->userManager->removeUserFromDatabase ($user);
 		$this->assertEquals (null, $r);
+		$allUsers = $this->userManager->getAllUsers ();
+		$this->assertEquals (1, count ($allUsers));
 		
 		$user = $this->userManager->newUser ();
+		$a = array ();
 		$a['login'] = 'ANOTHERANOTHERLOGIN';
 		$a['email'] = 'ANOTHERANOTHEREMAIL';
 		$user->initFromArray ($a);
 		$r = $this->userManager->removeUserFromDatabase ($user);
-		$this->assertEquals ("ERROR_USER_NOT_IN_DATABASE", $r);
+		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $r);
 	
 		$allUsers = $this->userManager->getAllUsers ();
 		$this->assertEquals (1, count ($allUsers));
