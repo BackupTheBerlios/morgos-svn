@@ -21,7 +21,7 @@ CREATE TABLE translatedGroups (
   PRIMARY KEY (translatedGroupID)
 );
 
-CREATE TABLE user_in_group (
+CREATE TABLE group_users (
   groupID int(11) NOT NULL,
   userID int(11) NOT NULL
 );

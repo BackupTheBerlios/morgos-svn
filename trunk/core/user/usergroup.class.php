@@ -50,15 +50,23 @@ class group extends databaseObject {
 	}
 	
 	function addUserToGroup ($user) {
-		if (! $this->isUserInGroup ($user->getID ())) {
-			$sql = "INSERT INTO {$this->db->getPrefix()}group_users (groupID, userID) VALUES ('{$group->getID ()}', '{$user->getID ()}')";
-			$q = $this->db->query ($q);
-			if (isError ($q)) {
-				return $q;
+		$isInGroup = $this->isUserInGroup ($user); 
+		if (! isError ($isInGroup)) {
+			if ($isInGroup == false) {
+				$sql = "INSERT INTO {$this->db->getPrefix()}group_users (groupID, userID) VALUES ('{$this->getID ()}', '{$user->getID ()}')";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				return "ERROR_GROUP_USER_ALREADY_IN_GROUP";
 			}
 		} else {
-			return "ERROR_GROUP_USER_ALREADY_IN_GROUP";
+			return $isInGroup;			
 		}
+	}
+	
+	function removeUserFromGroup ($user) {
 	}
 	
 	function getAllUsers () {

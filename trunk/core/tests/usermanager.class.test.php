@@ -135,7 +135,6 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 	function testRemoveUserFromDatabase () {
 		$user = $this->userManager->newUser ();
 		$r = $user->initFromDatabaseLogin ('ANOTHERLOGIN');
-		var_dump ($r);
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$r = $this->userManager->removeUserFromDatabase ($user);
 		$this->assertFalse (isError ($r), 'Unexpected error');
@@ -227,13 +226,13 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$group = $this->userManager->newGroup ();
 		$group->initFromDatabaseGenericName ('existingGroupInGroup');
 		$r = $user->addToGroup ($group);
-		$this->assertFalse (isError ($r), 'Unexpected error returned');
+		$this->assertFalse (isError ($r), 'Unexpected error returned: ' . $r);
 		
 		$r = $user->addToGroup ($group);
-		$this->assertEquals ('ERROR_GROUP_USER_ALREADY_INDATABASE', $r, 'Wrong error returned');
+		$this->assertEquals ('ERROR_GROUP_USER_ALREADY_IN_GROUP', $r, 'Wrong error returned');
 	}
 	
-	/*function testUserRemoveFromGroup () {
+	function testUserRemoveFromGroup () {
 		$user = $this->userManager->newUser ();
 		$user->initFromDatabaseLogin ('abcd');
 		$group = $this->userManager->newGroup ();
@@ -242,7 +241,7 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error returned');
 		
 		$r = $user->removeFromGroup ($group);
-		$this->assertEquals ('ERROR_GROUP_USER_NOT_INDATABASE', $r, 'Wrong error returned');
+		$this->assertEquals ("ERROR_GROUP_USER_NOT_INDATABASE", $r, 'Wrong error returned');
 	}
 	
 	function testIsUserInGroup () {
@@ -256,8 +255,8 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		
 		$group->initFromDatabaseGenericName ('existingGroupNotInGroup');
 		$r = $user->isInGroup ($group);
-		$this->assertFalse ($r, 'Wrong result returned');	
-	}*/
+		$this->assertFalse ($r, 'Wrong result returned');
+	}
 }
 
 ?>

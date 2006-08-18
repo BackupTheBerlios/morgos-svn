@@ -78,9 +78,11 @@ class user extends databaseObject {
 	
 	
 	function addToGroup ($group) {
+		return $group->addUserToGroup ($this);
 	}
 	
 	function removeFromGroup ($group) {
+		return $group->removeUserFromGroup ($this);
 	}
 	
 	function isInGroup ($group) {
