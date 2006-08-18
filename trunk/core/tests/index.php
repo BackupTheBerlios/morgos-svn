@@ -53,12 +53,20 @@ class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
 		foreach ($dbModule->getAllTables () as $tableName) {
 			$r = $dbModule->query ("DROP TABLE $tableName");
 			if (isError ($r)) {
-				die (var_dump ($r));
+				var_dump ($r);
+				exit ();
 			}
 		}
-		$r = $dbModule->query (file_get_contents ("core/tests/database.sql"));
-		if (isError ($r)) {
-			die (var_dump ($r));
+		$queries = file_get_contents ("core/tests/database.sql");
+		$a = split (';', $queries);
+		foreach ($a as $sql) {
+			if (trim ($sql) != '') {
+				$r = $dbModule->query ($sql);
+				if (isError ($r)) {
+					var_dump ($r);
+					exit ();
+				}
+			}
 		}
 		
 		global $avModules;

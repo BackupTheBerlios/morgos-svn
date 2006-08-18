@@ -284,7 +284,7 @@ class databaseObject {
 	/**
 	 * Gets the ID of the object.
 	 *
-	 * @retun (int)
+	 * @return (int)
 	 * @public
 	*/	
 	function getID () {return $this->ID;}

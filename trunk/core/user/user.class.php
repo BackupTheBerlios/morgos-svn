@@ -46,9 +46,13 @@ class user extends databaseObject {
 		$sql = "SELECT * FROM {$this->db->getPrefix ()}{$this->getTableName ()} WHERE login='$login'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
-			$row = $this->db->fetchArray ($q);
-			$this->initFromArray ($row);
-			$this->ID = $row[$this->getIDName ()];
+			if ($this->db->numRows ($q) == 1) {
+				$row = $this->db->fetchArray ($q);
+				$this->initFromArray ($row);
+				$this->ID = $row[$this->getIDName ()];
+			} else {
+				return "ERROR_USER_LOGIN_DONT_EXISTS $login";
+			}
 		} else {
 			return $q;
 		}
@@ -73,10 +77,18 @@ class user extends databaseObject {
 	}
 	
 	
-	function addToGroup () {
+	function addToGroup ($group) {
 	}
 	
-	function hasRight () {
+	function removeFromGroup ($group) {
+	}
+	
+	function isInGroup ($group) {
+		return $group->isUserInGroup ($this);		
+	}
+
+	
+	function hasPermission () {
 	}
 	
 	function getLogin () { return $this->getOption ('login'); }

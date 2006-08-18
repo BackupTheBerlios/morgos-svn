@@ -23,7 +23,7 @@
 */
 
 include_once ('core/varia.functions.php');
-include_once ('core/usermanager.class.php');
+include_once ('core/user/usermanager.class.php');
 class userManagerTest extends PHPUnit2_Framework_TestCase {
 	var $userManager;
 	var $db;
@@ -38,6 +38,8 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$user = $this->userManager->newUser ();
 		$this->assertTrue (is_object ($user)); // this is not waterproof!
 		// maybe we can implement something with Reflection that gets the 'type' if the obect
+		$r = $user->initFromDatabaseLogin ('notExistingLogin');
+		$this->assertEquals ("ERROR_USER_LOGIN_DONT_EXISTS notExistingLogin", $r, 'Wrong error returned');
 	}
 	
 	function testLoginIsRegistered () {
@@ -132,11 +134,13 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 	
 	function testRemoveUserFromDatabase () {
 		$user = $this->userManager->newUser ();
-		$user->initFromDatabaseLogin ('ANOTHERLOGIN');
+		$r = $user->initFromDatabaseLogin ('ANOTHERLOGIN');
+		var_dump ($r);
+		$this->assertFalse (isError ($r), 'Unexpected error');
 		$r = $this->userManager->removeUserFromDatabase ($user);
-		$this->assertEquals (null, $r);
+		$this->assertFalse (isError ($r), 'Unexpected error');
 		$allUsers = $this->userManager->getAllUsers ();
-		$this->assertEquals (1, count ($allUsers));
+		$this->assertEquals (1, count ($allUsers), 'Not expected nymber users in DB');
 		
 		$user = $this->userManager->newUser ();
 		$a = array ();
@@ -144,11 +148,116 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 		$a['email'] = 'ANOTHERANOTHEREMAIL';
 		$user->initFromArray ($a);
 		$r = $this->userManager->removeUserFromDatabase ($user);
-		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $r);
+		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $r, 'Wrong error');
 	
 		$allUsers = $this->userManager->getAllUsers ();
-		$this->assertEquals (1, count ($allUsers));
+		$this->assertEquals (1, count ($allUsers), 'Not expected number users in DB2');
 	}
+	
+	/*=== Group Tests ===*/
+	function testNewGroup () {
+		$group = $this->userManager->newGroup ($group);
+		$this->assertTrue (is_object ($group)); // this is not waterproof!
+		// maybe we can implement something with Reflection that gets the 'type' if the obect
+		
+		$r = $group->initFromDatabaseGenericName ('notExistingGroup');
+		$this->assertEquals ('ERROR_GROUP_GENERICNAME_DONT_EXISTS notExistingGroup', $r);
+	}
+	
+	function testIsGroupNameRegistered () {
+		$isRegistered = $this->userManager->isGroupNameRegistered ('administrator');
+		$this->assertTrue ($isRegistered);
+		$isRegistered = $this->userManager->isGroupNameRegistered ('normal');
+		$this->assertFalse ($isRegistered);	
+	}	
+	
+	function testAddGroupToDatabase () {
+		$group = $this->userManager->newGroup ();
+		$groupA = array ('genericName' => 'aGroup', 'genericDescription' => 'A group');
+		$group->initFromArray ($groupA);
+		$result = $this->userManager->addGroupToDatabase ($group);
+		$this->assertFalse (isError ($result));
+		$this->assertTrue ($this->userManager->isGroupNameRegistered ($group->getGenericName ()));
+		
+		$group = $this->userManager->newGroup ();
+		$groupA = array ('genericName' => 'aGroup', 'genericDescription' => 'A group');
+		$group->initFromArray ($groupA);
+		$result = $this->userManager->addGroupToDatabase ($group);
+		$this->assertEquals ("ERROR_USERMANAGER_GROUP_ALREADY_EXISTS aGroup", $result);
+	}
+	
+	function testRemoveGroupFromDatabase () {
+		$group = $this->userManager->newGroup ();
+		$result = $this->userManager->removeGroupFromDatabase ($group);
+		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $result, "Not a correct errormessage");
+		
+		$result = $group->initFromDatabaseGenericName ('aGroup');
+		$this->assertFalse (isError ($result), "An unexpected error is returnd");
+		$result = $this->userManager->removeGroupFromDatabase ($group);
+		$this->assertFalse (isError ($result), "An unexpected error is returnd");
+		$this->assertFalse ($this->userManager->isGroupNameRegistered ('aGroup'), "group is not deleted");
+	}
+	
+	function testAddGroupOption () {
+		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Options are not empty');
+		$r = $this->userManager->addOptionToGroup ('anOption', 'varchar(255)');
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals (array ('anOption' => null), $this->userManager->getAllOptionsForGroup (), 'Not added');
+		$r = $this->userManager->addOptionToGroup ('anOption', 'varchar(255)');
+		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS anOption", $r, 'Wrong error returned');
+	}
+	
+	function testRemoveGroupOption () {
+		$r = $this->userManager->removeOptionFromGroup ('anOption');
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Not removed');
+		$r = $this->userManager->removeOptionFromGroup ('anOption');
+		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORGROUP_DONT_EXISTS anOption", $r, 'Wrong error returned');
+	}
+	
+	function testGetAllGroups () {
+		$allGroups = $this->userManager->getAllGroups ();
+		$this->assertFalse (isError ($allGroups), 'Unexpected error');
+		$this->assertEquals (1, count ($allGroups), 'Not the expected number of groups');
+	}	
+	
+	function testUserAddToGroup () {
+		$user = $this->userManager->newUser ();
+		$user->initFromDatabaseLogin ('abcd');
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('existingGroupInGroup');
+		$r = $user->addToGroup ($group);
+		$this->assertFalse (isError ($r), 'Unexpected error returned');
+		
+		$r = $user->addToGroup ($group);
+		$this->assertEquals ('ERROR_GROUP_USER_ALREADY_INDATABASE', $r, 'Wrong error returned');
+	}
+	
+	/*function testUserRemoveFromGroup () {
+		$user = $this->userManager->newUser ();
+		$user->initFromDatabaseLogin ('abcd');
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('existingGroupInGroup');
+		$r = $user->removeFromGroup ($group);
+		$this->assertFalse (isError ($r), 'Unexpected error returned');
+		
+		$r = $user->removeFromGroup ($group);
+		$this->assertEquals ('ERROR_GROUP_USER_NOT_INDATABASE', $r, 'Wrong error returned');
+	}
+	
+	function testIsUserInGroup () {
+		$user = $this->userManager->newUser ();
+		$user->initFromDatabaseLogin ('abcd');
+		$group = $this->userManager->newGroup ();
+		
+		$group->initFromDatabaseGenericName ('existingGroupInGroup');
+		$r = $user->isInGroup ($group);
+		$this->assertTrue ($r, 'Wrong result returned');
+		
+		$group->initFromDatabaseGenericName ('existingGroupNotInGroup');
+		$r = $user->isInGroup ($group);
+		$this->assertFalse ($r, 'Wrong result returned');	
+	}*/
 }
 
 ?>

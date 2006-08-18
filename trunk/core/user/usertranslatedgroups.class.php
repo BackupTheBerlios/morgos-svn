@@ -15,33 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file usergroup.class.php
- * File that take care of one group
+/** \file usertranslatedgroup.class.php
+ * File that take care of one translated group
  *
  * @since 0.2
  * @author Nathan Samson
 */
 
-class group extends databaseObject {
-	
-	function group ($db, $allExtraOptions, &$creator) {
-		parent::databaseObject ($db, $allExtraOptions, array ('genericName', 'genericDescription'), 'groups', 'groupID', &$creator);
+class translatedGroup extends databaseObject {
+
+	function translatedGroup ($db, $allExtraOptions, &$creator) {
+		parent::databaseObject ($db, $allExtraOptions, array ('name', 'description', 'groupID'), 'translatedGroups', 'translatedGroupID', &$creator);
 	}
-	
-	/*Public functions*/
-	
-	function hasRight ($rightName) {
-	}
-	
-	function getAllUsers () {
-	}
-	
-	function getGenericName () {
-		return $this->getOption ('genericName');
-	}
-	
-	function getGenericDescription () {
-		return $this->getOption ('genericDescription');
-	}
-	
+
 }
+
+?>

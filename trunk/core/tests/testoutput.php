@@ -4,17 +4,17 @@ require_once 'PHPUnit2/Framework/TestListener.php';
 class SimpleTestListener implements PHPUnit2_Framework_TestListener {
 	public function addError(PHPUnit2_Framework_Test $test, Exception $e) {
 		$test->failed = true;
-		echo '<td class="error">Fout ('.$e->getMessage () .' '. $e->getFile () .' '.$e->getLine ().')</td>';
+		echo '<td class="error">Fout ('.$e->getMessage () /*.' '. $e->getFile () .' '.$e->getLine ()*/.')</td>';
 	}
  
 	public function addFailure(PHPUnit2_Framework_Test $test, PHPUnit2_Framework_AssertionFailedError $e) {
 		$test->failed = true;
-		echo '<td class="failure">Gefaald ('.$e->getMessage () .' '. $e->getFile ().' '.$e->getLine ().')</td>';
+		echo '<td class="failure">Gefaald ('.$e->getMessage () /*.' '. $e->getFile ().' '.$e->getLine ()*/.')</td>';
   	}
  
 	public function addIncompleteTest(PHPUnit2_Framework_Test $test, Exception $e) {
 		$test->failed = true;
-		echo '<td class="inc">Incomplete ('.$e->getMessage () .' '. $e->getFile .' '.$e->getLine ().')</td>';
+		echo '<td class="inc">Incomplete ('.$e->getMessage () /*.' '. $e->getFile .' '.$e->getLine ()*/.')</td>';
 		
 	}
  

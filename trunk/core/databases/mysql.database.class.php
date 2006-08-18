@@ -69,7 +69,8 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			}
 		}
 	        
-		function numRows () {
+		function numRows ($query) {
+			return mysql_num_rows ($query);
 		}
 	        
 		function fetchArray ($query) {

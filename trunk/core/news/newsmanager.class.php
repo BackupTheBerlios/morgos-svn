@@ -22,9 +22,9 @@
  * @author Nathan Samson
 */
 
-include_once ('core/newscommentitem.class.php');
-include_once ('core/newstopic.class.php');
-include_once ('core/newsitem.class.php');
+include_once ('core/news/newscommentitem.class.php');
+include_once ('core/news/newstopic.class.php');
+include_once ('core/news/newsitem.class.php');
 
 class newsmanager {
 

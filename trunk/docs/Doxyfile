@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = MorgOS
 PROJECT_NUMBER         = 0.2
-OUTPUT_DIRECTORY       = /home/nathan/public_html/morgos/trunk/docs/
+OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
@@ -23,12 +23,12 @@ ABBREVIATE_BRIEF       = "The $name class" \
                          an \
                          the
 ALWAYS_DETAILED_SEC    = NO
-INLINE_INHERITED_MEMB  = NO
+INLINE_INHERITED_MEMB  = YES
 FULL_PATH_NAMES        = YES
 STRIP_FROM_PATH        = /home/nathan/public_html/morgos/trunk/
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
-JAVADOC_AUTOBRIEF      = NO
+JAVADOC_AUTOBRIEF      = YES
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
@@ -76,9 +76,9 @@ QUIET                  = NO
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
-WARN_NO_PARAMDOC       = NO
+WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = 
+WARN_LOGFILE           = output.log
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------

@@ -22,8 +22,8 @@
  * @author Nathan Samson
 */
 
-include_once ('core/user.class.php');
-include_once ('core/usergroup.class.php');
+include_once ('core/user/user.class.php');
+include_once ('core/user/usergroup.class.php');
 
 class userManager {
 	var $db;
@@ -270,7 +270,7 @@ class userManager {
 	 * @public
 	*/
 	function newGroup () {
-		return new group ($this->db, $this->getAllOptionsForGroup);
+		return new group ($this->db, $this->getAllOptionsForGroup (), $this);
 	}	
 	
 	/**
@@ -280,16 +280,17 @@ class userManager {
 	 * @return (bool)
 	*/
 	function isGroupNameRegistered ($groupName) {
-		$sql = "SELECT COUNT(name) FROM {$this->db->getPrefix ()}groups WHERE name='$groupName'";
-		$q = $this->db->query ($q);
+		$sql = "SELECT COUNT(groupID) FROM {$this->db->getPrefix ()}groups WHERE genericName='$groupName'";
+		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
-			if ($row['COUNT(name)'] == 0) {
+			if ($row['COUNT(groupID)'] == 0) {
 				return false;
 			} else {
 				return true;
 			}
 		} else {
+			var_dump ($q);
 			return $q;
 		}
 	}	
@@ -300,24 +301,67 @@ class userManager {
 	 * @param $group (object group)
 	*/
 	function addGroupToDatabase ($group) {
-		$gIR = $this->isGroupNameRegistered ($group->getName ());
+		$gIR = $this->isGroupNameRegistered ($group->getGenericName ());
 		if (! isError ($gIR)) {
-			if ($gIR)  {
+			if ($gIR == false)  {
 				return $group->addToDatabase ();
 			} else {
-				return "ERROR_USERMANAGER_GROUP_ALREADY_EXISTS {$group->getName ()}";
+				return "ERROR_USERMANAGER_GROUP_ALREADY_EXISTS {$group->getGenericName ()}";
 			}
 		} else {
 			return $gIR;
 		}
 	}
 	
-	function addOptionToGroup () {
+	function addOptionToGroup ($newOption, $sqlType) {
+		$curOptions = $this->getAllOptionsForGroup ();
+		if (! isError ($curOptions)) {
+			if (! array_key_exists ($newOption, $curOptions)) {
+				$sql = "ALTER TABLE {$this->db->getPrefix()}groups ADD $newOption $sqlType";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				return "ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS $newOption";
+			}
+		} else {
+			return $curOptions;
+		}
 	}
 	
 	function getAllOptionsForGroup () {
-		return array ();
+		$fields = $this->db->getAllFields ($this->db->getPrefix ().'groups');
+		if (! isError ($fields)) {
+			$allOptions = array ();
+			foreach ($fields as $field) {
+				if (! ($field == 'groupID' or $field == 'genericDescription' or $field == 'genericName')) {
+					$allOptions[$field] = null;
+				}
+			}
+			return $allOptions;
+		} else {
+			return $fields;
+		}
 	}
+	
+	function removeOptionFromGroup ($optionName) {
+		$curOptions = $this->getAllOptionsForGroup ();
+		if (! isError ($curOptions)) {
+			if (array_key_exists ($optionName, $curOptions)) {
+				$sql = "ALTER TABLE {$this->db->getPrefix()}groups DROP $optionName";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				return "ERROR_USERMANAGER_OPTION_FORGROUP_DONT_EXISTS $optionName";
+			}
+		} else {
+			return $curOptions;
+		}
+	}
+	
 	
 	function removeGroupFromDatabase ($group) {
 		return $group->removeFromDatabase ();
@@ -360,7 +404,7 @@ class userManager {
 			while ($row = $this->db->fetchArray ($q)) {
 				$allGroups[] = $row['groupID'];
 			}
-			return $allGroups ();
+			return $allGroups;
 		}
 	}
 }
