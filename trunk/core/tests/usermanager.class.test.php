@@ -24,7 +24,7 @@
 
 include_once ('core/varia.functions.php');
 include_once ('core/user/usermanager.class.php');
-class userManagerTest extends PHPUnit2_Framework_TestCase {
+class userManagerTest extends TestCase {
 	var $userManager;
 	var $db;
 

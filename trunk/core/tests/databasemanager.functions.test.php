@@ -23,7 +23,7 @@
 */
 
 include_once ('core/databasemanager.functions.php');
-class databaseManagerTest extends PHPUnit2_Framework_TestCase {
+class databaseManagerTest extends TestCase {
 
 	function setUp () {
 		global $avModules;
@@ -32,7 +32,7 @@ class databaseManagerTest extends PHPUnit2_Framework_TestCase {
 	
 	function testLoadModule () {
 		$m = databaseLoadModule ('NOTEXISTINGMODULE');
-		$this->assertSame ("ERROR_DATABASEMANAGER_MODULE_DOES_NOT_EXITS NOTEXISTINGMODULE", $m);
+		$this->assertEquals ("ERROR_DATABASEMANAGER_MODULE_DOES_NOT_EXITS NOTEXISTINGMODULE", $m);
 		
 		$m = databaseLoadModule ('MySQL');
 		$newMySQL = new mysqlDatabaseActions ();
@@ -44,14 +44,14 @@ class databaseManagerTest extends PHPUnit2_Framework_TestCase {
 		$allModulesExpected = array ();
 		$allModulesExpected['MySQL'] = 'mysqlDatabaseActions';
 		$allModulesExpected['EXISTINGBUTNOTWORKING'] = 'EMPTY';
-		$this->assertSame ($allModulesExpected, $allModules);
+		$this->assertEquals ($allModulesExpected, $allModules);
 		
 		$allModules = databaseGetAllModules (true);
 		$allModulesExpected = $this->availableModules;
 		foreach ($allModulesExpected as $key => $value) {
 			$allModulesExpected[$key] = $allModules[$key];
 		}
-		$this->assertSame ($allModulesExpected, $allModules);
+		$this->assertEquals ($allModulesExpected, $allModules);
 	}
 	
 	function testModuleExists () {

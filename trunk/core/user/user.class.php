@@ -43,7 +43,8 @@ class user extends databaseObject {
 	 * @return (error)
 	*/
 	function initFromDatabaseLogin ($login) {
-		$sql = "SELECT * FROM {$this->db->getPrefix ()}{$this->getTableName ()} WHERE login='$login'";
+		$fullTableName = $this->getFullTableName ();
+		$sql = "SELECT * FROM ".$fullTableName." WHERE login='$login'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {
@@ -65,7 +66,8 @@ class user extends databaseObject {
 	 * @return (error)
 	*/
 	function initFromDatabaseEmail ($email) {
-		$sql = "SELECT * FROM {$this->db->getPrefix ()}{$this->getTableName ()} WHERE email='$email'";
+		$fullTableName = $this->getFullTableName ();
+		$sql = "SELECT * FROM $fullTableName WHERE email='$email'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);

@@ -59,7 +59,8 @@ class userManager {
 	 * @public
 	*/
 	function loginIsRegistered ($login) {
-		$sql = "SELECT COUNT(login) FROM {$this->db->getPrefix ()}users WHERE login='$login'";
+		$prefix = $this->db->getPrefix ();
+		$sql = "SELECT COUNT(login) FROM ".$prefix."users WHERE login='$login'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
@@ -81,7 +82,8 @@ class userManager {
 	 * @public
 	*/
 	function emailIsRegistered ($email) {
-		$sql = "SELECT COUNT(email) FROM {$this->db->getPrefix ()}users WHERE email='$email'";
+		$prefix = $this->db->getPrefix ();
+		$sql = "SELECT COUNT(email) FROM ".$prefix."users WHERE email='$email'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
@@ -110,14 +112,16 @@ class userManager {
 				return $user->addToDatabase ();
 			} else {
 				if (! isError ($eIR)) {
-					return "ERROR_USERMANAGER_EMAIL_EXISTS {$user->getEmail ()}";
+					$email = $user->getEmail ();
+					return "ERROR_USERMANAGER_EMAIL_EXISTS $email";
 				} else {
 					return $eIR;
 				}
 			}
 		} else {
 			if (! isError ($lIR)) {
-				return "ERROR_USERMANAGER_LOGIN_EXISTS {$user->getLogin ()}";
+				$login = $user->getLogin ();
+				return "ERROR_USERMANAGER_LOGIN_EXISTS $login";
 			} else {
 				return $lIR;
 			}
@@ -155,7 +159,8 @@ class userManager {
 		$curOptions = $this->getAllOptionsForUser ();
 		if (! isError ($curOptions)) {
 			if (! array_key_exists ($newOption, $curOptions)) {
-				$sql = "ALTER TABLE {$this->db->getPrefix()}users ADD $newOption $sqlType";
+				$prefix = $this->db->getPrefix ();
+				$sql = "ALTER TABLE ".$prefix."users ADD $newOption $sqlType";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -181,7 +186,8 @@ class userManager {
 		$curOptions = $this->getAllOptionsForUser ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$sql = "ALTER TABLE {$this->db->getPrefix()}users DROP $optionName";
+				$prefix = $this->db->getPrefix ();
+				$sql = "ALTER TABLE ".$prefix."users DROP $optionName";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -247,7 +253,8 @@ class userManager {
 	 * @public
 	*/
 	function getAllUsersID () {
-		$sql = "SELECT userID FROM {$this->db->getPrefix ()}users";
+		$prefix = $this->db->getPrefix ();
+		$sql = "SELECT userID FROM ".$prefix."users";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allUsers = array ();
@@ -280,7 +287,8 @@ class userManager {
 	 * @return (bool)
 	*/
 	function isGroupNameRegistered ($groupName) {
-		$sql = "SELECT COUNT(groupID) FROM {$this->db->getPrefix ()}groups WHERE genericName='$groupName'";
+		$prefix = $this->db->getPrefix ();
+		$sql = "SELECT COUNT(groupID) FROM ".$prefix."groups WHERE genericName='$groupName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
@@ -306,7 +314,8 @@ class userManager {
 			if ($gIR == false)  {
 				return $group->addToDatabase ();
 			} else {
-				return "ERROR_USERMANAGER_GROUP_ALREADY_EXISTS {$group->getGenericName ()}";
+				$groupName = $group->getGenericName ();
+				return "ERROR_USERMANAGER_GROUP_ALREADY_EXISTS $groupName";
 			}
 		} else {
 			return $gIR;
@@ -317,7 +326,8 @@ class userManager {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
 			if (! array_key_exists ($newOption, $curOptions)) {
-				$sql = "ALTER TABLE {$this->db->getPrefix()}groups ADD $newOption $sqlType";
+				$prefix = $this->db->getPrefix();
+				$sql = "ALTER TABLE ".$prefix."groups ADD $newOption $sqlType";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -349,7 +359,8 @@ class userManager {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$sql = "ALTER TABLE {$this->db->getPrefix()}groups DROP $optionName";
+				$prefix = $this->db->getPrefix();
+				$sql = "ALTER TABLE ".$prefix."groups DROP $optionName";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -397,7 +408,8 @@ class userManager {
 	 * @return (int array)
 	*/
 	function getAllGroupsID () {
-		$sql = "SELECT groupID FROM {$this->db->getPrefix ()}groups";
+		$prefix = $this->db->getPrefix ();
+		$sql = "SELECT groupID FROM ".$prefix."groups";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();

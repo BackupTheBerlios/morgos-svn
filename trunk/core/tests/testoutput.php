@@ -1,6 +1,6 @@
 <?php
+
 require_once 'PHPUnit2/Framework/TestListener.php';
- 
 class SimpleTestListener implements PHPUnit2_Framework_TestListener {
 	public function addError(PHPUnit2_Framework_Test $test, Exception $e) {
 		$test->failed = true;

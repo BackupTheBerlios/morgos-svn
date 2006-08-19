@@ -29,7 +29,8 @@ class group extends databaseObject {
 	}
 	
 	function initFromDatabaseGenericName ($genericName) {
-		$sql = "SELECT * FROM {$this->db->getPrefix ()}groups WHERE genericName='$genericName'";
+		$fullTableName = $this->getFullTableName ();
+		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q)) {
@@ -53,7 +54,10 @@ class group extends databaseObject {
 		$isInGroup = $this->isUserInGroup ($user); 
 		if (! isError ($isInGroup)) {
 			if ($isInGroup == false) {
-				$sql = "INSERT INTO {$this->db->getPrefix()}group_users (groupID, userID) VALUES ('{$this->getID ()}', '{$user->getID ()}')";
+				$prefix = $this->db->getPrefix();
+				$groupID = $this->getID ();
+				$userID = $user->getID ();
+				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('.$groupID', '$userID')";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -81,7 +85,9 @@ class group extends databaseObject {
 	}
 	
 	function getAllUsersID () {
-		$sql = "SELECT userID FROM {$this->db->getPrefix ()}group_users WHERE groupID='{$this->getID ()}'";
+		$prefix = $this->db->getPrefix ();
+		$groupID = $this->getID ();
+		$sql = "SELECT userID FROM ".$prefix."group_users WHERE groupID='$groupID'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allUsers = array ();
@@ -142,7 +148,8 @@ class group extends databaseObject {
 	}
 	
 	function getAllTranslatedGroupsID () {
-		$sql = "SELECT translatedGroupID FROM {$this->db->getPrefix ()}translatedgroups";
+		$prefix = $this->db->getPrefix ();
+		$sql = "SELECT translatedGroupID FROM ".$prefix."translatedgroups";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();

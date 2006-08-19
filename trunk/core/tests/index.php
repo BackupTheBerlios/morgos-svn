@@ -22,12 +22,41 @@
  * @author Nathan Samson
 */
 
-require_once 'PHPUnit2/Framework/TestSuite.php';
-require_once 'PHPUnit2/Util/TestDox/ResultPrinter/HTML.php';
-chdir ('../../');
-require_once 'core/tests/testoutput.php';
+if (version_compare (PHP_VERSION, '5', '<=')) {
+	$php = "4";
+	require_once 'PHPUnit/TestSuite.php';
+	//require_once 'PHPUnit/Util/TestDox/ResultPrinter/HTML.php';
+	
+	class TestSuite extends PHPUnit_TestSuite  {
+	}
+	
+	class TestCase extends PHPUnit_TestCase {
+	}
+	
+	class TestResult extends PHPUnit_TestResult {
+	}
+} elseif (version_compare (PHP_VERSION, '5', '>=')) {
+	$php = "5";
+	require_once 'PHPUnit2/Framework/TestSuite.php';
+	require_once 'PHPUnit2/Util/TestDox/ResultPrinter/HTML.php';
+	
+	class TestSuite extends PHPUnit2_Framework_TestSuite  {
+	}
+	
+	class TestCase extends PHPUnit2_Framework_TestCase {
+	}
+	
+	class TestResult extends PHPUnit2_Framework_TestResult {
+	}
+} else {
+	die ('Unsupported PHP version');
+}
 
-class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
+chdir ('../../');
+if ($php == "5") {
+	require_once 'core/tests/testoutput.php';
+}
+class MorgOSSuit extends TestSuite {
 
 	function MorgOSSuit () {
 		$this->setUp ();
@@ -76,11 +105,22 @@ class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
 		}
 	
 		$this->setName ('MorgOS automated Tester: results');
-		$this->addTestFile ('core/tests/databasemanager.functions.test.php');
-		$this->addTestFile ('core/tests/usermanager.class.test.php');
+		global $php;
+		if ($php == "4") {
+			include_once ('core/tests/databasemanager.functions.test.php');
+			include_once ('core/tests/usermanager.class.test.php');
+			//var_dump ();
+			$this->addTest (new databaseManagerTest ('databaseManagerTest'));
+			$this->addTest (new userManagerTest ('testNewUser'));
+		} elseif ($php == "5") {
+			$this->addTestFile ('core/tests/databasemanager.functions.test.php');
+			$this->addTestFile ('core/tests/usermanager.class.test.php');
+		}
 
-		$this->result = new PHPUnit2_Framework_TestResult;
-		$this->result->addListener(new SimpleTestListener);
+		$this->result = new TestResult;
+		if ($php == "5") {
+			$this->result->addListener(new SimpleTestListener);
+		}
 
 		$this->dbModule = $dbModule;
 	}
@@ -92,7 +132,17 @@ class MorgOSSuit extends PHPUnit2_Framework_TestSuite {
 }
 
 $suite = new MorgOSSuit ();
-$suite->run ($suite->result);
-$suite->tearDown ();
+if ($php == "4") {
+	require_once ('PHPUnit/GUI/HTML.php');
+	$databasesuite = new TestSuite ('databaseManagerTest');
+	$usersuite = new TestSuite ('userManagerTest');
+	$suite->addTestSuite ($databasesuite);
+	$suite->addTestSuite ($usersuite);
+	$GUI = new PHPUnit_GUI_HTML (array ($databasesuite, $usersuite));
+	$GUI->show ();
+} elseif ($php == "5") {
+	$suite->run ($suite->result);
+	$suite->tearDown ();
+}
 $suite = null;
 ?>

@@ -23,6 +23,7 @@
  * @author Sam Heijens
 */
 
+include_once ('core/compatible.functions.php');
 /**
  * Loads a database module. Returns the newly created class.
  *
@@ -138,7 +139,10 @@ class databaseObject {
 	 * @public
 	*/
 	function initFromDatabaseID ($ID) {
-		$sql = "SELECT * FROM {$this->db->getPrefix ()}{$this->getTableName ()} WHERE {$this->getIDName ()}='$ID'";
+		$prefix = $this->db->getPrefix ();
+		$tableName = $this->getTableName ();
+		$IDName = $this->getIDName ();
+		$sql = "SELECT * FROM $prefix$tableName WHERE $IDName='$ID'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
@@ -242,7 +246,10 @@ class databaseObject {
 	*/
 	function addToDatabase () {
 		if (! $this->isInDatabase ()) {
-			$sql = "INSERT into {$this->db->getPrefix()}{$this->getTableName ()} (";
+			$prefix = $this->db->getPrefix ();
+			$tableName = $this->getTableName ();
+			//$IDName = $this->getIDName ();
+			$sql = "INSERT into $prefix$tableName (";
 			$allOptions = $this->getAllOptions ();
 			foreach ($allOptions as $name => $value) {
 				$sql.= "$name,";
@@ -266,7 +273,11 @@ class databaseObject {
 	
 	function removeFromDatabase () {
 		if ($this->ID >= 0) {
-			$sql = "DELETE FROM {$this->db->getPrefix ()}{$this->getTableName ()} WHERE {$this->getIDName ()}='{$this->getID ()}'";
+			$prefix = $this->db->getPrefix ();
+			$tableName = $this->getTableName ();
+			$IDName = $this->getIDName ();
+			$ID = $this->getID ();
+			$sql = "DELETE FROM $prefix$tableName WHERE $IDName='$ID'";
 			$q = $this->db->query ($sql);
 			if (! isError ($q)) {
 				$this->ID = -1;
@@ -325,6 +336,14 @@ class databaseObject {
 	 * @return (string)
 	*/
 	function getTableName () {return $this->tableName;}
+	
+	/**
+	 * Returns the full tablename where the object is stored (with prefix)
+	 *
+	 * @protected
+	 * @return (string)
+	*/
+	function getFullTableName () {return $this->db->getPrefix () . $this->getTableName ();}
 	
 	/**
 	 * Set the creator of the object.
