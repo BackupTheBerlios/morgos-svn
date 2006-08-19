@@ -155,7 +155,7 @@ class userManagerTest extends PHPUnit2_Framework_TestCase {
 	
 	/*=== Group Tests ===*/
 	function testNewGroup () {
-		$group = $this->userManager->newGroup ($group);
+		$group = $this->userManager->newGroup ();
 		$this->assertTrue (is_object ($group)); // this is not waterproof!
 		// maybe we can implement something with Reflection that gets the 'type' if the obect
 		

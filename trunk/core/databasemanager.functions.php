@@ -125,7 +125,7 @@ class databaseObject {
 		$this->setBasicOptions ($basicOptions);
 		$this->setTableName ($tableName);
 		$this->setIDName ($IDName);
-		$this->setCreator (&$creator);
+		$this->setCreator ($creator);
 		$this->initEmpty ();
 	}	
 	

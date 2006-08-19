@@ -25,7 +25,7 @@
 class group extends databaseObject {
 	
 	function group ($db, $allExtraOptions, &$creator) {
-		parent::databaseObject ($db, $allExtraOptions, array ('genericName', 'genericDescription'), 'groups', 'groupID', &$creator);
+		parent::databaseObject ($db, $allExtraOptions, array ('genericName', 'genericDescription'), 'groups', 'groupID', $creator);
 	}
 	
 	function initFromDatabaseGenericName ($genericName) {

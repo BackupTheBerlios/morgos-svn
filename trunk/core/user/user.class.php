@@ -31,7 +31,7 @@ class user extends databaseObject {
 	 * @param $parent (object)
 	*/
 	function user ($db, $allOptions, &$parent) {
-		parent::databaseObject ($db, $allOptions, array ('login', 'email'), 'users', 'userID', &$parent);
+		parent::databaseObject ($db, $allOptions, array ('login', 'email'), 'users', 'userID', $parent);
 	}
 	
 	/*Public initters*/

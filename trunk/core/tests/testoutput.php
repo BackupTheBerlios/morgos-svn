@@ -26,7 +26,7 @@ class SimpleTestListener implements PHPUnit2_Framework_TestListener {
  
 	public function endTest(PHPUnit2_Framework_Test $test) {
 		if (! $test->failed) {
-			echo '<td class="ok">'.Geslaagd.'</td>';
+			echo '<td class="ok">Geslaagd</td>';
 		}
 		echo '</tr>';
 	}

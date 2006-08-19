@@ -45,7 +45,7 @@ class userManager {
 	function newUser () {
 		$allOptions = $this->getAllOptionsForUser ();
 		if (! isError ($allOptions)) {
-			return new user ($this->db, $allOptions, &$this);
+			return new user ($this->db, $allOptions, $this);
 		} else {
 			return $allOptions;
 		}
