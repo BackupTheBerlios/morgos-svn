@@ -147,7 +147,7 @@ class databaseObject {
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
 			$this->initFromArray ($row);
-			$this->ID = $row[$this->getIDName ()];
+			$this->setOption ('ID', $row[$this->getIDName ()]);
 		} else {
 			return $q;
 		}
@@ -186,6 +186,8 @@ class databaseObject {
 		$allOptions = $this->getAllOptions ();
 		if (array_key_exists ($name, $allOptions)) {
 			return $allOptions[$name];
+		} elseif ($name == 'ID') {
+			return $this->ID;
 		} else {
 			return "ERROR_DATABASEOBJECT_OPTION_DOES_NOT_EXISTS $name";
 		}
@@ -205,6 +207,8 @@ class databaseObject {
 			$this->extraOptions[$name] = $value;
 		} elseif (array_key_exists ($name, $allBasicOptions)) {
 			$this->basicOptions[$name] = $value;
+		} elseif ($name == 'ID') {
+			$this->ID = $value;
 		} else {
 			return "ERROR_DATABASEOBJECT_OPTION_DOES_NOT_EXISTS $name";
 		}
@@ -298,7 +302,7 @@ class databaseObject {
 	 * @return (int)
 	 * @public
 	*/	
-	function getID () {return $this->ID;}
+	function getID () {return $this->getOption ('ID');}
 	
 	/*Protected functions*/
 	

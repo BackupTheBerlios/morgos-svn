@@ -26,4 +26,5 @@ CREATE TABLE group_users (
   userID int(11) NOT NULL
 );
 
+INSERT INTO users (login, email) VALUES ('administrator', 'admin@host.org');
 INSERT INTO groups (genericName, genericDescription) VALUES('administrator', 'This is the administrator group.');

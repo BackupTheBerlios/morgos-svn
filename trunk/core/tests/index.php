@@ -104,6 +104,10 @@ class MorgOSSuit extends TestSuite {
 			$avModules[$value] = null;
 		}
 	
+		include_once ('core/user/usermanager.class.php');
+		global $u;
+		$u = new userManager ($dbModule);	
+	
 		$this->setName ('MorgOS automated Tester: results');
 		global $php;
 		if ($php == "4") {

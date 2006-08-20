@@ -29,9 +29,9 @@ class userManagerTest extends TestCase {
 	var $db;
 
 	function setUp () {
-		global $dbModule;
+		global $dbModule, $u;
 		$this->db = $dbModule;
-		$this->userManager = new userManager ($this->db);
+		$this->userManager = $u;/*new userManager ($this->db);*/
 	}
 	
 	function testNewUser () {
@@ -54,9 +54,7 @@ class userManagerTest extends TestCase {
 	
 	function testAddUserToDatabase () {
 		$user = $this->userManager->newUser ();
-		if (isError ($user)) {
-			$this->fail ($user);
-		}
+		$this->assertFalse (isError ($user));
 		$a = array ();
 		$a['login'] = 'THELOGIN';
 		$a['email'] = 'THEEMAIL';
@@ -69,9 +67,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (true, $emailExists);
 		
 		$user = $this->userManager->newUser ();
-		if (isError ($user)) {
-			$this->fail ($user);
-		}
+		$this->assertFalse (isError ($user));
 		$a = array ();
 		$a['login'] = 'ANOTHERLOGIN';
 		$a['email'] = 'ANOTHEREMAIL';
@@ -80,9 +76,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (null, $result);
 		
 		$user = $this->userManager->newUser ();
-		if (isError ($user)) {
-			$this->fail ($user);
-		}
+		$this->assertFalse (isError ($user));
 		$a = array ();
 		$a['login'] = 'ANOTHERLOGIN';
 		$a['email'] = 'ANOTHERANOTHEREMAIL';
@@ -91,9 +85,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals ("ERROR_USERMANAGER_LOGIN_EXISTS ANOTHERLOGIN", $result);
 		
 		$user = $this->userManager->newUser ();
-		if (isError ($user)) {
-			$this->fail ($user);
-		}
+		$this->assertFalse (isError ($user));
 		$a = array ();
 		$a['login'] = 'ANOTHERANOTHERLOGIN';
 		$a['email'] = 'ANOTHEREMAIL';
@@ -106,7 +98,7 @@ class userManagerTest extends TestCase {
 		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
 		$oldAllOptions['preName'] = null;
 		$r = $this->userManager->addOptionToUser ('preName', 'varchar (255)');
-		$this->assertEquals (null, $r);
+		$this->assertFalse (isError ($r));
 		$newAllOptions = $this->userManager->getAllOptionsForUser ();
 		$this->assertEquals ($oldAllOptions, $newAllOptions);
 		
@@ -129,7 +121,7 @@ class userManagerTest extends TestCase {
 	function testGetAllUsers () {
 		// We can not test getAllUsersID but this test depends on it.
 		$allUsers = $this->userManager->getAllUsers ();
-		$this->assertEquals (2, count ($allUsers));
+		$this->assertEquals (3, count ($allUsers));
 	}
 	
 	function testRemoveUserFromDatabase () {
@@ -139,7 +131,7 @@ class userManagerTest extends TestCase {
 		$r = $this->userManager->removeUserFromDatabase ($user);
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$allUsers = $this->userManager->getAllUsers ();
-		$this->assertEquals (1, count ($allUsers), 'Not expected nymber users in DB');
+		$this->assertEquals (2, count ($allUsers), 'Not expected number users in DB');
 		
 		$user = $this->userManager->newUser ();
 		$a = array ();
@@ -150,7 +142,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $r, 'Wrong error');
 	
 		$allUsers = $this->userManager->getAllUsers ();
-		$this->assertEquals (1, count ($allUsers), 'Not expected number users in DB2');
+		$this->assertEquals (2, count ($allUsers), 'Not expected number users in DB2');
 	}
 	
 	/*=== Group Tests ===*/
@@ -218,13 +210,15 @@ class userManagerTest extends TestCase {
 		$allGroups = $this->userManager->getAllGroups ();
 		$this->assertFalse (isError ($allGroups), 'Unexpected error');
 		$this->assertEquals (1, count ($allGroups), 'Not the expected number of groups');
-	}	
+	}
 	
 	function testUserAddToGroup () {
 		$user = $this->userManager->newUser ();
-		$user->initFromDatabaseLogin ('abcd');
+		$r = $user->initFromDatabaseLogin ('administrator');
+		$this->assertFalse (isError ($r), 'Unexpected error');
 		$group = $this->userManager->newGroup ();
-		$group->initFromDatabaseGenericName ('existingGroupInGroup');
+		$r = $group->initFromDatabaseGenericName ('administrator');
+		$this->assertFalse (isError ($r), 'Unexpected error');
 		$r = $user->addToGroup ($group);
 		$this->assertFalse (isError ($r), 'Unexpected error returned: ' . $r);
 		
@@ -234,9 +228,9 @@ class userManagerTest extends TestCase {
 	
 	function testUserRemoveFromGroup () {
 		$user = $this->userManager->newUser ();
-		$user->initFromDatabaseLogin ('abcd');
+		$user->initFromDatabaseLogin ('administrator');
 		$group = $this->userManager->newGroup ();
-		$group->initFromDatabaseGenericName ('existingGroupInGroup');
+		$group->initFromDatabaseGenericName ('administrator');
 		$r = $user->removeFromGroup ($group);
 		$this->assertFalse (isError ($r), 'Unexpected error returned');
 		
@@ -251,11 +245,11 @@ class userManagerTest extends TestCase {
 		
 		$group->initFromDatabaseGenericName ('existingGroupInGroup');
 		$r = $user->isInGroup ($group);
-		$this->assertTrue ($r, 'Wrong result returned');
+		$this->assertTrue ($r, 'Wrong result returned, should be true');
 		
 		$group->initFromDatabaseGenericName ('existingGroupNotInGroup');
 		$r = $user->isInGroup ($group);
-		$this->assertFalse ($r, 'Wrong result returned');
+		$this->assertFalse ($r, 'Wrong result returned, should be false');
 	}
 }
 

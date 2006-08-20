@@ -27,9 +27,13 @@ include_once ('core/user/usergroup.class.php');
 
 class userManager {
 	var $db;
+	var $allOptionsForUser;
+	var $allOptionsForGroup;
 
 	function userManager ($db) {
 		$this->db = $db;
+		$this->allOptionsForUser = null;
+		$this->allOptionsForGroup = null;
 	}
 	
 	/*Public functions*/
@@ -165,6 +169,7 @@ class userManager {
 				if (isError ($q)) {
 					return $q;
 				}
+				$this->allOptionsForUser[$newOption] = null;
 			} else {
 				return "ERROR_USERMANAGER_OPTION_FORUSER_EXISTS $newOption";
 			}
@@ -192,6 +197,7 @@ class userManager {
 				if (isError ($q)) {
 					return $q;
 				}
+				unset ($this->allOptionsForUser[$optionName]);
 			} else {
 				return "ERROR_USERMANAGER_OPTION_FORUSER_DONT_EXISTS $optionName";
 			}
@@ -207,17 +213,22 @@ class userManager {
 	 * @public
 	*/
 	function getAllOptionsForUser () {
-		$fields = $this->db->getAllFields ($this->db->getPrefix ().'users');
-		if (! isError ($fields)) {
-			$allOptions = array ();
-			foreach ($fields as $field) {
-				if (! ($field == 'userID' or $field == 'login' or $field == 'email')) {
-					$allOptions[$field] = null;
+		if ($this->allOptionsForUser === null) {
+			$fields = $this->db->getAllFields ($this->db->getPrefix ().'users');
+			if (! isError ($fields)) {
+				$allOptions = array ();
+				foreach ($fields as $field) {
+					if (! ($field == 'userID' or $field == 'login' or $field == 'email')) {
+						$allOptions[$field] = null;
+					}
 				}
+				$this->allOptionsForUser = $allOptions;
+				return $allOptions;
+			} else {
+				return $fields;
 			}
-			return $allOptions;
 		} else {
-			return $fields;
+			return $this->allOptionsForUser;
 		}
 	}
 
@@ -332,6 +343,7 @@ class userManager {
 				if (isError ($q)) {
 					return $q;
 				}
+				$this->allOptionsForGroup[$newOption] = null;
 			} else {
 				return "ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS $newOption";
 			}
@@ -341,17 +353,22 @@ class userManager {
 	}
 	
 	function getAllOptionsForGroup () {
-		$fields = $this->db->getAllFields ($this->db->getPrefix ().'groups');
-		if (! isError ($fields)) {
-			$allOptions = array ();
-			foreach ($fields as $field) {
-				if (! ($field == 'groupID' or $field == 'genericDescription' or $field == 'genericName')) {
-					$allOptions[$field] = null;
+		if ($this->allOptionsForGroup === null) {
+			$fields = $this->db->getAllFields ($this->db->getPrefix ().'groups');
+			if (! isError ($fields)) {
+				$allOptions = array ();
+				foreach ($fields as $field) {
+					if (! ($field == 'groupID' or $field == 'genericDescription' or $field == 'genericName')) {
+						$allOptions[$field] = null;
+					}
 				}
+				$this->allOptionsForGroup = $allOptions;
+				return $allOptions;
+			} else {
+				return $fields;
 			}
-			return $allOptions;
 		} else {
-			return $fields;
+			return $this->allOptionsForGroup;
 		}
 	}
 	
@@ -365,6 +382,7 @@ class userManager {
 				if (isError ($q)) {
 					return $q;
 				}
+				unset ($this->allOptionsForGroup[$optionName]);
 			} else {
 				return "ERROR_USERMANAGER_OPTION_FORGROUP_DONT_EXISTS $optionName";
 			}

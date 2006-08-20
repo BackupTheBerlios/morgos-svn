@@ -23,15 +23,15 @@
 */
 
 function isError ($test) {
-	if (is_string ($test)) {
+	//if (is_string ($test)) {
 		if (ereg ('^ERROR_', $test)) {
 			return true;
 		} else {
 			return false;
 		}		
-	} else {
+	/*} else {
 		return false;
-	}
+	}*/
 }
 
 

@@ -36,7 +36,7 @@ class group extends databaseObject {
 			if ($this->db->numRows ($q)) {
 				$row = $this->db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->ID = $row['groupID'];
+				$this->setOption ('ID',$row['groupID']);
 			} else {
 				return "ERROR_GROUP_GENERICNAME_DONT_EXISTS $genericName";
 			}
@@ -57,7 +57,7 @@ class group extends databaseObject {
 				$prefix = $this->db->getPrefix();
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
-				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('.$groupID', '$userID')";
+				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('$groupID', '$userID')";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;

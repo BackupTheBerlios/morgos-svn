@@ -50,7 +50,7 @@ class user extends databaseObject {
 			if ($this->db->numRows ($q) == 1) {
 				$row = $this->db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->ID = $row[$this->getIDName ()];
+				$this->setOption ('ID', $row[$this->getIDName ()]);
 			} else {
 				return "ERROR_USER_LOGIN_DONT_EXISTS $login";
 			}
@@ -72,7 +72,7 @@ class user extends databaseObject {
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
 			$this->initFromArray ($row);
-			$this->ID = $row[$this->getIDName ()];
+			$this->setOption ('ID', $row[$this->getIDName ()]);
 		} else {
 			return $q;
 		}
