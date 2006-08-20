@@ -71,6 +71,23 @@ class group extends databaseObject {
 	}
 	
 	function removeUserFromGroup ($user) {
+		$isInGroup = $this->isUserInGroup ($user); 
+		if (! isError ($isInGroup)) {
+			if ($isInGroup == true) {
+				$prefix = $this->db->getPrefix();
+				$groupID = $this->getID ();
+				$userID = $user->getID ();
+				$sql = "DELETE FROM ".$prefix."group_users WHERE groupID='$groupID' AND userID='$userID'";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				return "ERROR_GROUP_USER_NOT_IN_GROUP";
+			}
+		} else {
+			return $isInGroup;			
+		}
 	}
 	
 	function getAllUsers () {

@@ -27,4 +27,6 @@ CREATE TABLE group_users (
 );
 
 INSERT INTO users (login, email) VALUES ('administrator', 'admin@host.org');
+INSERT INTO users (login, email) VALUES ('normalUser', 'normalUser@host.org');
 INSERT INTO groups (genericName, genericDescription) VALUES('administrator', 'This is the administrator group.');
+INSERT INTO groups (genericName, genericDescription) VALUES('normalUsers', 'This is the normal users group');
