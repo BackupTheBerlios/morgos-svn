@@ -84,30 +84,92 @@ function databaseInstallModule () {
 function databaseUnInstallModule () {
 }
 
+/**
+ * Base class for all databasemodules.
+*/
 class databaseActions {
 
+	/**
+	 * The prefix for databasetables
+	 * @protected
+	*/
 	var $prefix;
+	/**
+	 * The type of the database. Should be uniqe for each database. Examples: MySQL, MySQLi, PgSQL, ...
+	 * @protected
+	*/
 	var $type;
 	
+	/**
+	 * Set the database tablenames prefix.
+	 *
+	 * @param $prefix (string)
+	 * @public
+	*/
 	function setPrefix ($prefix) {
 		$this->prefix = $prefix;
 	}
 
+	/**
+	 * Returns the prefix of the tablenames
+	 *
+	 * @public
+	 * @return (string)
+	*/
 	function getPrefix () {return $this->prefix;}
 	
+	/**
+	 * Sets the type of the database
+	 *
+	 * @param $type (string)
+	 * @protected
+	*/
 	function setType ($type) {
 		$this->type = $type;
 	}
 	
+	/**
+	 * Returns the databasetype
+	 *
+	 * @return (string)
+	 * @public
+	*/
 	function getType () {return $this->type;}
 }
 
+/**
+ * A databaseobject. All objects that are stored in the database must be derived from this one.
+*/
 class databaseObject {
+	/**
+	 * A mixed array of all basic options with their values
+	 * @private 
+	*/
 	var $basicOptions;
+	/**
+	 * A mixed array of all extra options with their values
+	 * @private
+	*/
 	var $extraOptions;
+	/**
+	 * The databasemodule object
+	 * @protected
+	*/
 	var $db;
+	/**
+	 * The value of the ID. negative if not yet stored
+	 * @private
+	*/
 	var $ID;
+	/**
+	 * The name of the database table for the ID
+	 * @private
+	*/
 	var $IDName;
+	/**
+	 * The creator of the object
+	 * @private
+	*/
 	var $creator;
 	
 	/**
@@ -274,7 +336,12 @@ class databaseObject {
 			return "ERROR_DATABASEOBJECT_ALREADY_IN_DATABASE";
 		}
 	}
-	
+
+	/**
+	 * Removes the object form the database.
+	 *
+	 * @public
+	*/	
 	function removeFromDatabase () {
 		if ($this->ID >= 0) {
 			$prefix = $this->db->getPrefix ();
