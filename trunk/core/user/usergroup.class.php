@@ -24,10 +24,23 @@
 
 class group extends databaseObject {
 	
+	/**
+	 * Constructor
+	 *
+	 * @param $db (object database) the database module
+	 * @param $allExtraOptions (null array) an array with empty values. The keys are the extra options.
+	 * @param $creator (object)
+	*/
 	function group ($db, $allExtraOptions, &$creator) {
 		parent::databaseObject ($db, $allExtraOptions, array ('genericName', 'genericDescription'), 'groups', 'groupID', $creator);
 	}
 	
+	/**
+	 * Initializes the group from the genericname.
+	 *
+	 * @param $genericName (string)
+	 * @public
+	*/
 	function initFromDatabaseGenericName ($genericName) {
 		$fullTableName = $this->getFullTableName ();
 		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
@@ -50,6 +63,12 @@ class group extends databaseObject {
 	function hasPermission ($permissionName) {
 	}
 	
+	/**
+	 * Adds a user to the group.
+	 *
+	 * @param $user (object user) The user to add.
+	 * @public
+	*/
 	function addUserToGroup ($user) {
 		$isInGroup = $this->isUserInGroup ($user); 
 		if (! isError ($isInGroup)) {
@@ -70,6 +89,12 @@ class group extends databaseObject {
 		}
 	}
 	
+	/**
+	 * Removes a user from a group
+	 *
+	 * @param $user (object user) The user to remove.
+	 * @public
+	*/
 	function removeUserFromGroup ($user) {
 		$isInGroup = $this->isUserInGroup ($user); 
 		if (! isError ($isInGroup)) {
@@ -90,6 +115,12 @@ class group extends databaseObject {
 		}
 	}
 	
+	/**
+	 * Returns all users that are in this group.
+	 *
+	 * @public
+	 * @return (object user array)
+	*/
 	function getAllUsers () {
 		$allIDS = $this->getAllUsersID ();
 		$allUsers = array ();
@@ -101,6 +132,12 @@ class group extends databaseObject {
 		return $allUsers;
 	}
 	
+	/**
+	 * Return all IDS of users that are in the group
+	 *
+	 * @public
+	 * @return (int array)
+	*/
 	function getAllUsersID () {
 		$prefix = $this->db->getPrefix ();
 		$groupID = $this->getID ();
@@ -117,6 +154,13 @@ class group extends databaseObject {
 		}
 	}
 	
+	/**
+	 * Returns if a specific user is in the group.
+	 *
+	 * @param $user (object user)
+	 * @public
+	 * @return (bool)
+	*/
 	function isUserInGroup ($user) {
 		$allIDS = $this->getAllUsersID ();
 		if (! isError ($allIDS)) {
@@ -131,10 +175,22 @@ class group extends databaseObject {
 		}
 	}
 	
+	/**
+	 * Returns the generic name of the group
+	 *
+	 * @public
+	 * @return (string)
+	*/
 	function getGenericName () {
 		return $this->getOption ('genericName');
 	}
 	
+	/**
+	 * Returns the generic description of the group
+	 *
+	 * @public
+	 * @return (string)
+	*/
 	function getGenericDescription () {
 		return $this->getOption ('genericDescription');
 	}	
@@ -149,6 +205,12 @@ class group extends databaseObject {
 	function removeOptionForTranslatedGroup () {
 	}
 	
+	/**
+	 * Returns all translated groups that are part of this group
+	 *
+	 * @public
+	 * @return (object translatedGroup array)
+	*/
 	function getAllTranslatedGroups () {
 		$allTranslatedGroupsIDS = $this->getAllTranslatedGroupsID ();
 		if (! isError ($allTranslatedGroupsIDS)) {
@@ -164,6 +226,12 @@ class group extends databaseObject {
 		}
 	}
 	
+	/**
+	 * Returns all IDS of groups
+	 *
+	 * @public
+	 * @return (int array)
+	*/
 	function getAllTranslatedGroupsID () {
 		$prefix = $this->db->getPrefix ();
 		$sql = "SELECT translatedGroupID FROM ".$prefix."translatedgroups";
@@ -179,14 +247,32 @@ class group extends databaseObject {
 		}
 	}
 	
+	/**
+	 * Creates a new translated group.
+	 *
+	 * @public
+	 * @return (object translatedGroup)
+	*/
 	function newTranslatedGroup () {
 		return new translatedGroup ($this->db, $this->getAllOptions, $this);
 	}
 	
+	/**
+	 * Adds a translated group to this group.
+	 *
+	 * @param $translatedGroup (object translatedGroup)
+	 * @public
+	*/
 	function addTranslatedGroupToDatabase ($translatedGroup) {
 		return $translatedGroup->addToDatabase ();
 	}
 	
+	/**
+	 * Removes a translated group from this group.
+	 *
+	 * @param $translatedGroup (object translatedGroup)
+	 * @public
+	*/
 	function removeTranslatedGroupFromDatabase ($translatedGroup) {
 		return $translatedGroup->removeFromDatabase ();
 	}

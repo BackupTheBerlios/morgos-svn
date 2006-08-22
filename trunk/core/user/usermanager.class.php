@@ -26,10 +26,27 @@ include_once ('core/user/user.class.php');
 include_once ('core/user/usergroup.class.php');
 
 class userManager {
+	/**
+	 * The database module
+	 * @protected
+	*/
 	var $db;
+	/**
+	 * An array of all options of the users. Can be null
+	 * @protected
+	*/
 	var $allOptionsForUser;
+	/**
+	 * An array of all options of the groups. Can be null
+	 * @protected
+	*/
 	var $allOptionsForGroup;
 
+	/**
+	 * The constructor
+	 *
+	 * @param $db (dbModule object)
+	*/
 	function userManager ($db) {
 		$this->db = $db;
 		$this->allOptionsForUser = null;
@@ -333,6 +350,13 @@ class userManager {
 		}
 	}
 	
+	/**
+	 * Adds an option for a group item.
+	 *
+	 * @param $newOption (string) the name of the option
+	 * @param $sqlType (string) The sqltype
+	 * @public
+	*/
 	function addOptionToGroup ($newOption, $sqlType) {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
@@ -352,26 +376,11 @@ class userManager {
 		}
 	}
 	
-	function getAllOptionsForGroup () {
-		if ($this->allOptionsForGroup === null) {
-			$fields = $this->db->getAllFields ($this->db->getPrefix ().'groups');
-			if (! isError ($fields)) {
-				$allOptions = array ();
-				foreach ($fields as $field) {
-					if (! ($field == 'groupID' or $field == 'genericDescription' or $field == 'genericName')) {
-						$allOptions[$field] = null;
-					}
-				}
-				$this->allOptionsForGroup = $allOptions;
-				return $allOptions;
-			} else {
-				return $fields;
-			}
-		} else {
-			return $this->allOptionsForGroup;
-		}
-	}
-	
+	/**
+	 * Removes a group option
+	 *
+	 * @param $optionName (string) The name of the option
+	*/
 	function removeOptionFromGroup ($optionName) {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
@@ -391,7 +400,38 @@ class userManager {
 		}
 	}
 	
+	/**
+	 * Gets an array of all options for a groupitem
+	 *
+	 * @return (null array)
+	 * @public
+	*/
+	function getAllOptionsForGroup () {
+		if ($this->allOptionsForGroup === null) {
+			$fields = $this->db->getAllFields ($this->db->getPrefix ().'groups');
+			if (! isError ($fields)) {
+				$allOptions = array ();
+				foreach ($fields as $field) {
+					if (! ($field == 'groupID' or $field == 'genericDescription' or $field == 'genericName')) {
+						$allOptions[$field] = null;
+					}
+				}
+				$this->allOptionsForGroup = $allOptions;
+				return $allOptions;
+			} else {
+				return $fields;
+			}
+		} else {
+			return $this->allOptionsForGroup;
+		}
+	}	
 	
+	/**
+	 * Removes a group from the database
+	 *
+	 * @param $group (group object) The group to be removed
+	 * @public
+	*/
 	function removeGroupFromDatabase ($group) {
 		return $group->removeFromDatabase ();
 	}
@@ -400,6 +440,7 @@ class userManager {
 	 * Returns an array with all groups
 	 *
 	 * @return (object array)
+	 * @public
 	*/
 	function getAllGroups () {
 		$groupsID = $this->getAllGroupsID ();
@@ -424,6 +465,7 @@ class userManager {
 	 * Returns an array with values of all the groups IDs.
 	 *
 	 * @return (int array)
+	 * @public
 	*/
 	function getAllGroupsID () {
 		$prefix = $this->db->getPrefix ();

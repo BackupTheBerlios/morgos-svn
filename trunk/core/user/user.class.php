@@ -41,6 +41,7 @@ class user extends databaseObject {
 	 *
 	 * @param $login (string) The database login
 	 * @return (error)
+	 * @public
 	*/
 	function initFromDatabaseLogin ($login) {
 		$fullTableName = $this->getFullTableName ();
@@ -64,6 +65,7 @@ class user extends databaseObject {
 	 *
 	 * @param $email (string) The database email
 	 * @return (error)
+	 * @public
 	*/
 	function initFromDatabaseEmail ($email) {
 		$fullTableName = $this->getFullTableName ();
@@ -78,15 +80,33 @@ class user extends databaseObject {
 		}
 	}
 	
-	
+	/**
+	 * Add the user to a group
+	 *
+	 * @param $group (group object) The group where it should be added to
+	 * @public
+	*/
 	function addToGroup ($group) {
 		return $group->addUserToGroup ($this);
 	}
 	
+	/**
+	 * Removes the user from a group
+	 *
+	 * @param $group (group object) The group
+	 * @public
+	*/	
 	function removeFromGroup ($group) {
 		return $group->removeUserFromGroup ($this);
 	}
 	
+	/**
+	 * Checks that a user is in a group
+	 *
+	 * @param $group (group object) The group
+	 * @return (bool)
+	 * @public
+	*/
 	function isInGroup ($group) {
 		return $group->isUserInGroup ($this);		
 	}
@@ -95,7 +115,28 @@ class user extends databaseObject {
 	function hasPermission () {
 	}
 	
+	/**
+	 * Returns the login of the user.
+	 *
+	 * @return (string)
+	 * @public
+	*/
 	function getLogin () { return $this->getOption ('login'); }
+	
+	/**
+	 * Returns the email of the user.
+	 *
+	 * @return (string)
+	 * @public
+	*/
 	function getEmail () { return $this->getOption ('email'); }
+	
+	/**
+	 * Gets all the groups where the user is ing
+	 * @warning Unimplemented
+	 *
+	 * @returns (nothing)
+	 * @public
+	*/	
 	function getAllGroups () {}
 }

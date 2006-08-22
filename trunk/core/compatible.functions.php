@@ -26,12 +26,12 @@ if (!function_exists ('scandir')) {
 	gettype ($_POST); // this is here only to trick Doxygen
     /**
 	 * List files and directories inside the specified path
-	 * \warning this is not fully compatible with the one defined in PHP 5 (missing context param)
-	 * \warning sorting doesn't happen with natural sorting order, you need to do this manually
+	 * @warning this is not fully compatible with the one defined in PHP 5 (missing context param)
+	 * @warning sorting doesn't happen with natural sorting order, you need to do this manually
 	 *
-	 * \param $directory (string)
-	 * \param $sortingError (int) 1 if descending, otherwise ascending
-	 * \return (array | false)
+	 * @param $directory (string)
+	 * @param $sortingOrder (int) 1 if descending, otherwise ascending
+	 * @return (array | false)
     */
 	function scandir ($directory, $sortingOrder = 0) {
 		if (! file_exists ($directory)) {
