@@ -23,15 +23,15 @@
 */
 
 function isError ($test) {
-	//if (is_string ($test)) {
-		if (ereg ('^ERROR_', $test)) {
+	if (is_string ($test)) {
+		if ((substr ($test, 0, 6) === "ERROR_") and (strlen ($test) > 6 )) {
 			return true;
 		} else {
 			return false;
 		}		
-	/*} else {
+	} else {
 		return false;
-	}*/
+	}
 }
 
 

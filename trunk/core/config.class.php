@@ -50,6 +50,24 @@ function checkType ($value, $type) {
 	}
 }
 
+/**
+ * Guess the type of a variable.
+ *
+ * @param $value (mixed) the var
+ * @return (const type)
+*/
+function guessType ($value) {
+	if (is_bool ($value)) {
+		return BOOL;
+	} elseif (is_real ($value)) {
+		return REAL;
+	} elseif (is_int ($value)) {
+		return NUMERIC;
+	} else {
+		return STRING;
+	}
+}
+
 class configItem {
 	/**
 	 * The name of the item.
@@ -156,31 +174,186 @@ class configItem {
 		return $this->type;
 	}
 
+	/**
+	 * Returns the name of the item.
+	 *
+	 * @public
+	 * @return (string)
+	*/
+	function getName () {
+		return $this->name;
+	}
 }
 
 class configurator {
+	/**
+	 * All config items that this manager stores.
+	 * @private
+	*/
+	var $allConfigItems;
 
 	function configurator () {
+		$this->allConfigItems = array ();
 	}
 	
-	function loadConfigFile () {
+	/**
+	 * Loads all items from a config file.
+	 *
+	 * @param $file (string) The filename.
+	 * @public
+	*/
+	function loadConfigFile ($fileName) {
+		if (file_exists ($fileName)) {
+			if (is_readable ($fileName)) {
+				include ($fileName);
+				$this->loadConfigArray ($configItems);
+			} else {
+				return "ERROR_CONFIGURATOR_CANT_READ_FILE $fileName";
+			}
+		} else {
+			return "ERROR_CONFIGURATOR_CANT_READ_FILE $fileName";
+		}
 	}
 	
-	function loadConfigArray () {
+	/**
+	 * Loads all items from an array
+	 *
+	 * @param $array (mixed array)
+	 * @public
+	*/
+	function loadConfigArray ($array) {
+		foreach ($array as $name => $value) {
+			$type = guessType ($value);
+			if (! isError ($type)) {
+				$item = new configItem ($name, $type);
+				$item->setValue ($value);
+				$this->addOption ($item);
+			} else {
+				return $type;
+			}
+		}
 	}
 	
-	function getOption () {
+	/**
+	 * Returns an item with type string.
+	 *
+	 * @param $name (string)
+	 * @public
+	 * @return (string)
+	*/
+	function getStringItem ($name) {
+		return $this->getItemValue ($name, STRING);
+	}
+	
+	/**
+	 * Returns an item with type bool.
+	 *
+	 * @param $name (string)
+	 * @public
+	 * @return (bool)
+	*/
+	function getBoolItem ($name) {
+		return $this->getItemValue ($name, BOOL);
+	}	
+	
+	/**
+	 * Returns an item with type numeric.
+	 *
+	 * @param $name (string)
+	 * @public
+	 * @return (integer)
+	*/
+	function getNumericItem ($name) {
+		return $this->getItemValue ($name, NUMERIC);
+	}
+	
+	/**
+	 * Returns an item with type real.
+	 *
+	 * @param $name (string)
+	 * @public
+	 * @return (real)
+	*/
+	function getRealItem ($name) {
+		return $this->getItemValue ($name, REAL);
+	}
+	
+	/**
+	 * Adds an option.
+	 *
+	 * @param $option (object configItem)
+	 * @public
+	*/
+	function addOption ($option) {
+		if (! $this->existsItem ($option->getName ())) {
+			$fullName = '/'.$option->getType () . $option->getName ();
+			$this->allConfigItems[$fullName] = $option;
+		} else {
+			return "ERROR_CONFIGURATOR_OPTION_EXISTS ".$option->getName ();
+		}
 	}
 
-	function setOption () {
+	/**
+	 * Returns if an item exists
+	 *
+	 * @param $name (string) the name of the option
+	*/
+	function existsItem ($name) {
+		if ($this->existsItemStrict ($name, STRING)) {
+			return true;
+		} elseif ($this->existsItemStrict ($name, STRING)) {
+			return true;
+		} elseif ($this->existsItemStrict ($name, STRING)) {
+			return true;
+		} elseif ($this->existsItemStrict ($name, STRING)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	function addOption () {
+	/**
+	 * Returns an item with name and type.
+	 *
+	 * @param $name (string)
+	 * @param $type (const type)
+	 * @public
+	 * @return (mixed)
+	*/
+	function getItem ($name, $type) {
+		if ($this->existsItemStrict ($name, $type)) {
+			$fullName = $fullName = '/'.$type.$name;
+			return $this->allConfigItems[$fullName];
+		} else {
+			return "ERROR_CONFIGURATOR_ITEM_DOESNT_EXISTS $name";
+		}
 	}
 	
-	function saveConfigFile () {
+	/**
+	 * Returns an item value with name and type.
+	 *
+	 * @param $name (string)
+	 * @param $type (const type)
+	 * @private
+	 * @return (mixed)
+	*/
+	function getItemValue ($name, $type) {
+		$item = $this->getItem ($name, $type);
+		if (! isError ($item)) {
+			return $item->getCurrentValue ();
+		} else {
+			return $item;
+		}
 	}
-
+	
+	function existsItemStrict ($name, $type) {
+		if (array_key_exists ('/'.$type.$name, $this->allConfigItems)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 }
 
 ?>

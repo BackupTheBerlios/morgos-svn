@@ -112,15 +112,18 @@ class MorgOSSuit extends TestSuite {
 		global $php;
 		if ($php == "4") {
 			include_once ('core/tests/databasemanager.functions.test.php');
+			include_once ('core/tests/config.class.test.php');
 			include_once ('core/tests/usermanager.class.test.php');
 			include_once ('core/tests/varia.functions.test.php');
 			include_once ('core/tests/comaptible.functions.test.php');
 			$this->addTest (new databaseManagerTest ('databaseManagerTest'));
+			$this->addTest (new databaseManagerTest ('configTest'));
 			$this->addTest (new userManagerTest ('testNewUser'));
 			$this->addTest (new variaTests ('variaTests'));
 			$this->addTest (new compatibleTests ('compatibleTests'));
 		} elseif ($php == "5") {
 			$this->addTestFile ('core/tests/databasemanager.functions.test.php');
+			$this->addTestFile ('core/tests/config.class.test.php');
 			$this->addTestFile ('core/tests/usermanager.class.test.php');
 			$this->addTestFile ('core/tests/varia.functions.test.php');
 			$this->addTestFile ('core/tests/compatible.functions.test.php');
