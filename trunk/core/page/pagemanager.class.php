@@ -22,7 +22,7 @@
  * @author Nathan Samson
 */
 
-include_once ('core/page.class.php');
+include_once ('core/page/page.class.php');
 
 class pageManager {
 	/**

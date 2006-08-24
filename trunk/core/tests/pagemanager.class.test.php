@@ -22,7 +22,7 @@
  * @author Nathan Samson
 */
 
-include_once ('core/pagemanager.class.php');
+include_once ('core/page/pagemanager.class.php');
 class pageManagerTest extends TestCase {
 	function setUp () {
 		global $dbModule;
