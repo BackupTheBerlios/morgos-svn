@@ -33,8 +33,15 @@ class pageManager {
 	
 	/**
 	 * Cached array for options for a page
+	 * @private
 	*/
 	var $allOptionsForPage;
+	
+	/**
+	 * Cached array for options for a translated page
+	 * @private
+	*/
+	var $allOptionsForTranslatedPage;
 
 	/**
 	 * Constructor
@@ -44,9 +51,73 @@ class pageManager {
 	function pageManager ($db) {
 		$this->db = $db;
 		$this->allOptionsForPage = null;
+		$this->allOptionsForTranslatedPage = null;
 	}
 	
-	function addPageToDatabase () {
+	/**
+	 * Add a page to the database. If needed it reoders the menu items.
+	 *  When a page is inserted, all pages with the same, or a higher place in the menu are placed upwards.
+	 *  If it has no placeInMenu value (if it is zero) it is placed after all other menu items
+	 * 
+	 * @param $page (object page)
+	 * @public 
+	*/
+	function addPageToDatabase ($page) {
+		$pageName = $page->getGenericName ();
+		$pageExists = $this->pageExists ($pageName);
+		if ($pageExists) {
+			return "ERROR_PAGEMANAGER_PAGE_EXISTS $pageName";
+		}	
+	
+		if ($page->getPlaceInMenu () == 0) {
+			$parentPageID = $page->getParentPageID ();
+			$pagesTableName = $this->db->getPrefix ().'pages';
+			$sql = "SELECT MAX(placeInMenu) FROM $pagesTableName WHERE parentPageID='$parentPageID'";
+			$q = $this->db->query ($sql);
+			if (! isError ($q)) {
+				$row = $this->db->fetchArray ($q);
+				$a['placeInMenu'] = $row['MAX(placeInMenu)']+1;
+				$page->updateFromArray ($a);
+			} else {
+				return $q;
+			}
+		} else {
+			$place = $page->getPlaceInMenu ();
+			$parentPageID = $page->getParentPageID ();
+			$pagesTableName = $this->db->getPrefix ().'pages';
+			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu>=$place AND parentPageID='$parentPageID'";
+			$q = $this->db->query ($sql);
+			if (isError ($q)) {
+				return $q;
+			}
+		}
+		
+		return $page->addToDatabase ();
+	}
+	
+	/**
+	 * Deletes a page from the database.
+	 *
+	 * @param $page (object page)
+	 * @public
+	*/
+	function removePageFromDatabase ($page) {
+		$pageName = $page->getGenericName ();
+		$pageExists = $this->pageExists ($pageName);
+		if (! $pageExists) {
+			return "ERROR_PAGEMANAGER_PAGE_DOESNT_EXISTS $pageName";
+		}
+		
+		$placeInMenu = $page->getPlaceInMenu ();
+		$pagesDatabaseName = $this->db->getPrefix ().'pages';
+		$parentPageID = $page->getParentPageID ();
+		$sql = "UPDATE $pagesDatabaseName SET placeInMenu=(placeInMenu-1) WHERE placeInMenu>=$placeInMenu AND parentPageID='$parentPageID'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			return $page->removeFromDatabase ();
+		} else {
+			return $q;
+		}
 	}
 	
 	/**
@@ -57,6 +128,29 @@ class pageManager {
 	*/
 	function newPage () {
 		return new page ($this->db, $this->getAllOptionsForPage (), $this);
+	}
+	
+	/**
+	 * Checks that a page exists.
+	 *
+	 * @param $pageName (string) The pagename
+	 * @public
+	 * @return (bool)
+	*/
+	function pageExists ($pageName) {
+		$fullPagesTableName = $this->db->getPrefix ().'pages';
+		$sql = "SELECT COUNT(pageID) FROM $fullPagesTableName WHERE genericName='$pageName'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			if ($row['COUNT(pageID)'] == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return $q;
+		}
 	}
 	
 	/**
@@ -168,6 +262,93 @@ class pageManager {
 			}
 		} else {
 			return $this->allOptionsForPage;
+		}
+	}
+	
+	/**
+	 * Adds an extra option to the database for the translated pages.
+	 *
+	 * @param $newOption (string) the name of the new option
+	 * @param $sqlType (string) the sqltype possible options: 
+	 *   - Varchar (length)
+	 *   - Int
+	 *   - enum('a', 'b', 'c')
+	 *   - text
+	 * @warning old translated page objects don't profit of this. 
+	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
+	 * @bug when after adding one, someone ask wich exists the new is not added in.
+	 *    if that "asker" want to do something with it on an old translatedpage object it can cause weird errors.
+	 * @public
+	*/
+	function addOptionToTranslatedPage ($newOption, $sqlType) {
+		$curOptions = $this->getAllOptionsForTranslatedPage ();
+		if (! isError ($curOptions)) {
+			if (! array_key_exists ($newOption, $curOptions)) {
+				$prefix = $this->db->getPrefix ();
+				$sql = "ALTER TABLE ".$prefix."translatedPages ADD $newOption $sqlType";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+				$this->allOptionsForTranslatedPage[$newOption] = null;
+			} else {
+				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS $newOption";
+			}
+		} else {
+			return $curOptions;
+		}
+	}
+	
+	/**
+	 * Removes an extra option to the database for the translatdepages.
+	 *
+	 * @param $optionName (string) the name of the option
+	 * @warning old translatedpage objects don't profit of this. 
+	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
+	 * @public
+	*/
+	function removeOptionForTranslatedPage ($optionName) {
+		$curOptions = $this->getAllOptionsForTranslatedPage ();
+		if (! isError ($curOptions)) {
+			if (array_key_exists ($optionName, $curOptions)) {
+				$prefix = $this->db->getPrefix ();
+				$sql = "ALTER TABLE ".$prefix."translatedPages DROP $optionName";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+				unset ($this->allOptionsForTranslatedPage[$optionName]);
+			} else {
+				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS $optionName";
+			}
+		} else {
+			return $curOptions;
+		}
+	}	
+	
+	/**
+	 * Returns an associative array with values null, and keys the name of the option
+	 *
+	 * @return (null array)
+	 * @public
+	*/
+	function getAllOptionsForTranslatedPage () {
+		if ($this->allOptionsForTranslatedPage === null) {
+			$fields = $this->db->getAllFields ($this->db->getPrefix ().'translatedPages');
+			if (! isError ($fields)) {
+				$allOptions = array ();
+				foreach ($fields as $field) {
+					if (! ($field == 'translatedPageID' or $field == 'translatedName' or $field == 'translatedContent' or $field == 'pageID' or $field == 'languageCode')) {
+						$allOptions[$field] = null;
+					}
+				}
+				$this->allOptionsForTranslatedPage = $allOptions;
+				return $allOptions;
+			} else {
+				return $fields;
+			}
+		} else {
+			return $this->allOptionsForTranslatedPage;
 		}
 	}
 

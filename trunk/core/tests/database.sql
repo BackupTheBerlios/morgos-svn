@@ -38,6 +38,16 @@ CREATE TABLE pages (
   UNIQUE KEY (genericName)
 );
 
+CREATE TABLE translatedPages (
+  translatedPageID int(11) auto_increment NOT NULL,
+  translatedName varchar(255) NOT NULL,
+  translatedContent text,
+  pageID int(11) NOT NULL,
+  languageCode varchar(5),
+  PRIMARY KEY (translatedPageID),
+  UNIQUE KEY (pageID, languageCode)
+);
+
 INSERT INTO users (login, email) VALUES ('administrator', 'admin@host.org');
 INSERT INTO users (login, email) VALUES ('normalUser', 'normalUser@host.org');
 INSERT INTO groups (genericName, genericDescription) VALUES('administrator', 'This is the administrator group.');

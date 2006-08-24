@@ -243,6 +243,7 @@ class databaseObject {
 	 *
 	 * @param $name (string) the name of the option
 	 * @public
+	 * @return (string) the value of the option
 	*/
 	function getOption ($name) {
 		$allOptions = $this->getAllOptions ();
@@ -257,6 +258,7 @@ class databaseObject {
 	
 	/**
 	 * Sets the value of an option
+	 * @warning all values are converted to a string.
 	 *
 	 * @param $name (string) the name of the option
 	 * @param $value (mixed) the new value
@@ -266,11 +268,11 @@ class databaseObject {
 		$allExtraOptions = $this->getExtraOptions ();
 		$allBasicOptions = $this->getBasicOptions ();
 		if (array_key_exists ($name, $allExtraOptions)) {
-			$this->extraOptions[$name] = $value;
+			$this->extraOptions[$name] = strval ($value);
 		} elseif (array_key_exists ($name, $allBasicOptions)) {
-			$this->basicOptions[$name] = $value;
+			$this->basicOptions[$name] = strval ($value);
 		} elseif ($name == 'ID') {
-			$this->ID = $value;
+			$this->ID = strval ($value);
 		} else {
 			return "ERROR_DATABASEOBJECT_OPTION_DOES_NOT_EXISTS $name";
 		}
@@ -328,7 +330,7 @@ class databaseObject {
 			$sql[strlen ($sql)-1] = ')'; // remove latest , with )	
 			$q = $this->db->query ($sql);			
 			if (! isError ($q)) {
-				$this->ID = $this->db->latestInsertID ($q);
+				$this->setOption ('ID', $this->db->latestInsertID ($q));
 			} else {
 				return $q;
 			}
@@ -493,7 +495,7 @@ class databaseObject {
 		$this->ID = -1;
 		$allOptions = $this->getAllOptions ();
 		foreach ($allOptions as $name => $value) {
-			$this->setOption ($name, 'NOT SET');
+			$this->setOption ($name, null);
 		}
 	}
 

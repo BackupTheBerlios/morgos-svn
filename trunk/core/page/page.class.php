@@ -32,7 +32,7 @@ class page extends databaseObject {
 	 * @param $parent (object) The creator
 	*/	
 	function page ($db, $allOptions, &$parent) {
-		parent::databaseObject ($db, $allOptions, array ('genericName', 'genericContents', 'parentPageID', 'placeInMenu'), 'pages', 'pageID', $parent);
+		parent::databaseObject ($db, $allOptions, array ('genericName', 'genericContent', 'parentPageID', 'placeInMenu'), 'pages', 'pageID', $parent);
 	}
 
 	/**
@@ -46,9 +46,13 @@ class page extends databaseObject {
 		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
-			$row = $this->db->fetchArray ($q);
-			$this->initFromArray ($row);
-			$this->setOption ('ID', $row[$this->getIDName ()]);
+			if ($this->db->numRows ($q) == 1) {
+				$row = $this->db->fetchArray ($q);
+				$this->initFromArray ($row);
+				$this->setOption ('ID', $row[$this->getIDName ()]);
+			} else {
+				return "ERROR_PAGE_GENERICNAME_DOESNT_EXISTS $genericName";
+			}
 		} else {
 			return $q;
 		}
@@ -77,6 +81,14 @@ class page extends databaseObject {
 	 * @return (int)
 	*/
 	function getParentPageID () {return $this->getOption ('parentPageID');}
+	
+	/**
+	 * Returns the place in the menu
+	 * 
+	 * @public
+	 * @return (int)
+	*/
+	function getPlaceInMenu () {return $this->getOption ('placeInMenu');}
 	
 	/**
 	 * Returns the parentPage.
