@@ -22,42 +22,72 @@
  * @author Nathan Samson
 */
 
-class page {
+class page extends databaseObject {
 
-	function page () {
-	}
-	
-	/*Public initters*/	
-	
-	function initFromDatabaseID () {
-	}
-	
-	function initFromArray () {
-	}
-	
-	/*Public functions*/	
-	
-	function getContent () {
-	}
-	
-	function getTitle () {
-	}
-	
-	function addToDatabase () {
-	}
-	
-	function updateFromArray () {
-	}
-	
-	function updateToDatabase () {
-	}
-	
-	function getOption () {
-	}
-	
-	/*Private initters*/
-	function initEmpty () {
+	/**
+	 * Constructor
+	 *
+	 * @param $db (object dbModule)
+	 * @param $allOptions (null array)
+	 * @param $parent (object) The creator
+	*/	
+	function page ($db, $allOptions, &$parent) {
+		parent::databaseObject ($db, $allOptions, array ('genericName', 'genericContents', 'parentPageID', 'placeInMenu'), 'pages', 'pageID', $parent);
 	}
 
+	/**
+	 * Initializes the page from a generic name
+	 *
+	 * @param $genericName (string) The generic name
+	 * @public
+	*/
+	function initFromGenericName ($genericName) {
+		$fullTableName = $this->getFullTableName ();
+		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			$this->initFromArray ($row);
+			$this->setOption ('ID', $row[$this->getIDName ()]);
+		} else {
+			return $q;
+		}
+	}
+	
+	/**
+	 * Returns the content
+	 *
+	 * @public
+	 * @return (string)
+	*/
+	function getGenericContent () {return $this->getOption ('genericContent');}
+	
+	/**
+	 * Returns the generic name (title) of the page
+	 *
+	 * @public
+	 * @return (string)
+	*/
+	function getGenericName () {return $this->getOption ('genericName');}
+	
+	/**
+	 * Returns the ID of the parentPage. 0 if it is a root element.
+	 *
+	 * @public
+	 * @return (int)
+	*/
+	function getParentPageID () {return $this->getOption ('parentPageID');}
+	
+	/**
+	 * Returns the parentPage.
+	 *
+	 * @public
+	 * @return (object)
+	*/
+	function getParentPage () {
+		$parentPage = $parent->newPage ();
+		$parentPage->initFromPageID ($this->getParentPageID ());
+		return $parentPage;
+	}
 }
 ?>

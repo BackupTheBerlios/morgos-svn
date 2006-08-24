@@ -115,18 +115,15 @@ class MorgOSSuit extends TestSuite {
 			include_once ('core/tests/config.class.test.php');
 			include_once ('core/tests/usermanager.class.test.php');
 			include_once ('core/tests/varia.functions.test.php');
-			include_once ('core/tests/comaptible.functions.test.php');
-			$this->addTest (new databaseManagerTest ('databaseManagerTest'));
-			$this->addTest (new databaseManagerTest ('configTest'));
-			$this->addTest (new userManagerTest ('testNewUser'));
-			$this->addTest (new variaTests ('variaTests'));
-			$this->addTest (new compatibleTests ('compatibleTests'));
+			include_once ('core/tests/compatible.functions.test.php');
+			include_once ('core/tests/pagemanager.class.test.php');
 		} elseif ($php == "5") {
 			$this->addTestFile ('core/tests/databasemanager.functions.test.php');
 			$this->addTestFile ('core/tests/config.class.test.php');
 			$this->addTestFile ('core/tests/usermanager.class.test.php');
 			$this->addTestFile ('core/tests/varia.functions.test.php');
 			$this->addTestFile ('core/tests/compatible.functions.test.php');
+			$this->addTestFile ('core/tests/pagemanager.class.test.php');
 		}
 
 		$this->result = new TestResult;
@@ -143,16 +140,20 @@ class MorgOSSuit extends TestSuite {
 
 }
 
+
 $suite = new MorgOSSuit ();
 if ($php == "4") {
 	require_once ('PHPUnit/GUI/HTML.php');
 	$databasesuite = new TestSuite ('databaseManagerTest');
 	$usersuite = new TestSuite ('userManagerTest');
-	$suite->addTestSuite ($databasesuite);
-	$suite->addTestSuite ($usersuite);
-	$GUI = new PHPUnit_GUI_HTML (array ($databasesuite, $usersuite));
+	$configsuite = new TestSuite ('configTest');
+	$variasuite = new TestSuite ('variaTest');
+	$compatiblesuite = new TestSuite ('compatibleTests');
+	$pagemanagersuite = new TestSuite ('pageManagerTest');
+	$GUI = new PHPUnit_GUI_HTML (array ($databasesuite, $variasuite, $compatiblesuite, $configsuite, $usersuite, $pagemanagersuite));
 	$GUI->show ();
 } elseif ($php == "5") {
+
 	$suite->run ($suite->result);
 	$suite->tearDown ();
 }

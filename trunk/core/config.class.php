@@ -76,7 +76,7 @@ class configItem {
 	var $name;
 	/**
 	 * The type of the item
-	 * @privete
+	 * @private
 	*/
 	var $type;
 	/**
@@ -199,7 +199,7 @@ class configurator {
 	/**
 	 * Loads all items from a config file.
 	 *
-	 * @param $file (string) The filename.
+	 * @param $fileName (string) The filename.
 	 * @public
 	*/
 	function loadConfigFile ($fileName) {
