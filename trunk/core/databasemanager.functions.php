@@ -119,6 +119,16 @@ class databaseActions {
 	function getPrefix () {return $this->prefix;}
 	
 	/**
+	 * Preventing a string from SQL injection
+	*/		
+	function escapeString ($value) {
+		if (magiq_quotes_gcp ()) {
+			$value = stripslashes ($value);
+		}
+		return addslashes ($value);
+	}
+	
+	/**
 	 * Sets the type of the database
 	 *
 	 * @param $type (string)
@@ -201,6 +211,9 @@ class databaseObject {
 	 * @public
 	*/
 	function initFromDatabaseID ($ID) {
+		if (! is_numeric ($ID)) {
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+		}
 		$prefix = $this->db->getPrefix ();
 		$tableName = $this->getTableName ();
 		$IDName = $this->getIDName ();
@@ -325,6 +338,7 @@ class databaseObject {
 			$sql[strlen ($sql)-1] = ')'; // remove latest , with )			
 			$sql .= ' VALUES(';
 			foreach ($allOptions as $name => $value) {
+				$value = $this->db->escapeString ($value);
 				$sql.= "'$value',";
 			}
 			$sql[strlen ($sql)-1] = ')'; // remove latest , with )	
@@ -350,6 +364,9 @@ class databaseObject {
 			$tableName = $this->getTableName ();
 			$IDName = $this->getIDName ();
 			$ID = $this->getID ();
+			if (! is_numeric ($ID)) {
+				return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			}
 			$sql = "DELETE FROM $prefix$tableName WHERE $IDName='$ID'";
 			$q = $this->db->query ($sql);
 			if (! isError ($q)) {

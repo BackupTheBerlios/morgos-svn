@@ -45,6 +45,7 @@ class user extends databaseObject {
 	*/
 	function initFromDatabaseLogin ($login) {
 		$fullTableName = $this->getFullTableName ();
+		$login = $this->db->escapeString ($login);
 		$sql = "SELECT * FROM ".$fullTableName." WHERE login='$login'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
@@ -69,6 +70,7 @@ class user extends databaseObject {
 	*/
 	function initFromDatabaseEmail ($email) {
 		$fullTableName = $this->getFullTableName ();
+		$email = $this->db->escapeString ($email);
 		$sql = "SELECT * FROM $fullTableName WHERE email='$email'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {

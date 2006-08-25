@@ -43,6 +43,7 @@ class group extends databaseObject {
 	*/
 	function initFromDatabaseGenericName ($genericName) {
 		$fullTableName = $this->getFullTableName ();
+		$genericName = $this->db->escapeString ($genericName);
 		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
@@ -76,6 +77,13 @@ class group extends databaseObject {
 				$prefix = $this->db->getPrefix();
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
+				if (! is_numeric ($groupID)) {
+					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+				}
+				
+				if (! is_numeric ($userID)) {
+					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+				}				
 				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('$groupID', '$userID')";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
@@ -102,6 +110,14 @@ class group extends databaseObject {
 				$prefix = $this->db->getPrefix();
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
+				if (! is_numeric ($groupID)) {
+					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+				}
+				
+				if (! is_numeric ($userID)) {
+					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+				}
+				
 				$sql = "DELETE FROM ".$prefix."group_users WHERE groupID='$groupID' AND userID='$userID'";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {

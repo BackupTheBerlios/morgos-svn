@@ -69,8 +69,12 @@ class pageManager {
 			return "ERROR_PAGEMANAGER_PAGE_EXISTS $pageName";
 		}	
 	
+		$parentPageID = $page->getParentPageID ();
+		if (! is_numeric ($parentPageID)) {
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+		}	
+	
 		if ($page->getPlaceInMenu () == 0) {
-			$parentPageID = $page->getParentPageID ();
 			$pagesTableName = $this->db->getPrefix ().'pages';
 			$sql = "SELECT MAX(placeInMenu) FROM $pagesTableName WHERE parentPageID='$parentPageID'";
 			$q = $this->db->query ($sql);
@@ -83,7 +87,9 @@ class pageManager {
 			}
 		} else {
 			$place = $page->getPlaceInMenu ();
-			$parentPageID = $page->getParentPageID ();
+			if (! is_numeric ($place)) {
+				return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			}
 			$pagesTableName = $this->db->getPrefix ().'pages';
 			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu>=$place AND parentPageID='$parentPageID'";
 			$q = $this->db->query ($sql);
@@ -111,6 +117,12 @@ class pageManager {
 		$placeInMenu = $page->getPlaceInMenu ();
 		$pagesDatabaseName = $this->db->getPrefix ().'pages';
 		$parentPageID = $page->getParentPageID ();
+		if (! is_numeric ($placeInMenu)) {
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+		}
+		if (! is_numeric ($parentPageID)) {
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+		}
 		$sql = "UPDATE $pagesDatabaseName SET placeInMenu=(placeInMenu-1) WHERE placeInMenu>=$placeInMenu AND parentPageID='$parentPageID'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
@@ -139,6 +151,7 @@ class pageManager {
 	*/
 	function pageExists ($pageName) {
 		$fullPagesTableName = $this->db->getPrefix ().'pages';
+		$pageName = $this->db->escapeString ($pageName);
 		$sql = "SELECT COUNT(pageID) FROM $fullPagesTableName WHERE genericName='$pageName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
@@ -163,6 +176,9 @@ class pageManager {
 	function getMenu ($rootPage) {
 		$tableName = $this->db->getPrefix ().'pages';
 		$parentPageID = $rootPage->getID ();
+		if (! is_numeric ($parentPageID)) {
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+		}
 		$sql = "SELECT pageID FROM $tableName WHERE parentPageID='$parentPageID' ORDER BY placeInMenu ASC";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {

@@ -109,6 +109,14 @@ if (! class_exists ('mysqlDatabaseActions')) {
 				return $q;
 			}
 		}
+		
+		function escapeString ($value) {
+			if (get_magic_quotes_gpc ()) {
+				$value = stripslashes ($value);
+			}
+			return mysql_real_escape_string ($value, $this->connection);
+		}
+	
 	}
 }
 

@@ -81,6 +81,7 @@ class userManager {
 	*/
 	function loginIsRegistered ($login) {
 		$prefix = $this->db->getPrefix ();
+		$login = $this->db->escapeString ($login);
 		$sql = "SELECT COUNT(login) FROM ".$prefix."users WHERE login='$login'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
@@ -104,6 +105,7 @@ class userManager {
 	*/
 	function emailIsRegistered ($email) {
 		$prefix = $this->db->getPrefix ();
+		$email = $this->db->escapeString ($email);
 		$sql = "SELECT COUNT(email) FROM ".$prefix."users WHERE email='$email'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
@@ -316,6 +318,7 @@ class userManager {
 	*/
 	function isGroupNameRegistered ($groupName) {
 		$prefix = $this->db->getPrefix ();
+		$groupName = $this->db->escapeString ($groupName);
 		$sql = "SELECT COUNT(groupID) FROM ".$prefix."groups WHERE genericName='$groupName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {

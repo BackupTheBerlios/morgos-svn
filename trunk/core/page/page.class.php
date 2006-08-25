@@ -43,6 +43,7 @@ class page extends databaseObject {
 	*/
 	function initFromGenericName ($genericName) {
 		$fullTableName = $this->getFullTableName ();
+		$genericName = $this->db->escapeString ($genericName);
 		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
