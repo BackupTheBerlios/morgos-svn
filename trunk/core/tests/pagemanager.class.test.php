@@ -58,12 +58,18 @@ class pageManagerTest extends TestCase {
 	}
 	
 	function testOptionsForPage () {
-		$r = $this->pageManager->addOptionToPage ('optionName', 'varchar (20)');
+		$optionName = new dbField ('optionName', 'varchar(255)');
+		$oldOptions = $this->pageManager->getAllOptionsForPage ();
+		$optionName2 = $optionName;
+		$optionName2->canBeNull = true;
+		$oldOptions['optionName'] = $optionName2;
+		
+		$r = $this->pageManager->addOptionToPage ($optionName);
 		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals (array ('optionName'=>null), $this->pageManager->getAllOptionsForPage (), 'Wrong options 1');
-		$r = $this->pageManager->addOptionToPage ('optionName', 'varchar(20)');
+		$this->assertEquals ($oldOptions, $this->pageManager->getAllOptionsForPage (), 'Wrong options 1');		
+		$r = $this->pageManager->addOptionToPage ($optionName);
 		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORPAGE_EXISTS optionName", $r, 'Wrong error');
-		$this->assertEquals (array ('optionName'=>null), $this->pageManager->getAllOptionsForPage (), 'Wrong options 2');
+		$this->assertEquals ($oldOptions, $this->pageManager->getAllOptionsForPage (), 'Wrong options 2');
 		
 		$r = $this->pageManager->removeOptionForPage ('optionName');
 		$this->assertFalse (isError ($r), 'Unexpected error 2');
@@ -94,19 +100,18 @@ class pageManagerTest extends TestCase {
 		$packages->initFromGenericName ('Packages');	
 		
 		$siteMenu = $this->pageManager->getMenu ($root);	
-		$this->assertEquals (array ($home, $news, $development, $packages), $siteMenu, 'Wronge menu order');
 		
+		$this->assertEquals (array ($home, $news, $development, $packages), $siteMenu, 'Wronge menu order');
 		$appendPage = $this->pageManager->newPage ();
 		$array = array ();
 		$array['genericName'] = 'lastPage';
 		$array['genericContent'] = 'This is the last page in the menu.';
 		$array['parentPageID'] = $root->getID ();
-		$array['placeInMenu'] = 0;
 		$a = $appendPage->initFromArray ($array);
 		$r = $this->pageManager->addPageToDatabase ($appendPage);
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$siteMenu = $this->pageManager->getMenu ($root);	
-		$this->assertEquals ('5', $appendPage->getPlaceInMenu ());
+		$this->assertEquals (5, $appendPage->getPlaceInMenu ());
 		$this->assertEquals (array ($home, $news, $development, $packages, $appendPage), $siteMenu, 'Wronge menu order');
 		
 		$r = $this->pageManager->addPageToDatabase ($appendPage);
@@ -137,7 +142,7 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals (array ($home, $news, $packages, $lastPage), $siteMenu, 'Wronge menu order');
 		$packages = $this->pageManager->newPage ();
 		$packages->initFromGenericName ('Packages');
-		$this->assertEquals ('3', $packages->getPlaceInMenu ());	
+		$this->assertEquals (3, $packages->getPlaceInMenu ());	
 					
 		$r = $this->pageManager->removePageFromDatabase ($lastPage);
 		$this->assertFalse (isError ($r), 'Unexpected error 2');
@@ -151,12 +156,15 @@ class pageManagerTest extends TestCase {
 	}
 	
 	function testOptionsForTranslatedPage () {
-		$r = $this->pageManager->addOptionToTranslatedPage ('translator', 'int (11)');
+		$translator = new dbField ('translator', 'int(11)');
+		$translator2 = cloneob ($translator);
+		$translator2->canBeNull = true;
+		$r = $this->pageManager->addOptionToTranslatedPage ($translator);
 		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals (array ('translator'=>null), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 1');
-		$r = $this->pageManager->addOptionToTranslatedPage ('translator', 'varchar(20)');
+		$this->assertEquals (array ('translator'=>$translator2), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 1');
+		$r = $this->pageManager->addOptionToTranslatedPage ($translator);
 		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS translator", $r, 'Wrong error');
-		$this->assertEquals (array ('translator'=>null), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 2');
+		$this->assertEquals (array ('translator'=>$translator2), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 2');
 		
 		$r = $this->pageManager->removeOptionForTranslatedPage ('translator');
 		$this->assertFalse (isError ($r), 'Unexpected error 2');

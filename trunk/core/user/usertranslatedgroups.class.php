@@ -25,7 +25,19 @@
 class translatedGroup extends databaseObject {
 
 	function translatedGroup ($db, $allExtraOptions, &$creator) {
-		parent::databaseObject ($db, $allExtraOptions, array ('name', 'description', 'groupID'), 'translatedGroups', 'translatedGroupID', &$creator);
+		$name = new dbField ();
+		$name->name = 'name';
+		$name->type = 'varchar (255)';
+		
+		$description = new dbField ();
+		$description->name = 'description';
+		$description->type = 'text';		
+		
+		$groupID = new dbField ();
+		$groupID->name = 'groupID';
+		$groupID->type = 'int (11)';			
+	
+		parent::databaseObject ($db, $allExtraOptions, array ('name'=>$name, 'description'=>$description, 'groupID'=>$groupID), 'translatedGroups', 'translatedGroupID', &$creator);
 	}
 
 }

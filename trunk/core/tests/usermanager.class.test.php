@@ -62,9 +62,9 @@ class userManagerTest extends TestCase {
 		$result = $this->userManager->addUserToDatabase ($user);
 		$this->assertEquals (null, $result);
 		$loginExists = $this->userManager->loginIsRegistered ('THELOGIN');
-		$this->assertEquals (true, $loginExists);	
+		$this->assertTrue ($loginExists, 'Login not found');	
 		$emailExists = $this->userManager->emailIsRegistered ('THEEMAIL');
-		$this->assertEquals (true, $emailExists);
+		$this->assertTrue ($emailExists, 'Email not found');
 		
 		$user = $this->userManager->newUser ();
 		$this->assertFalse (isError ($user));
@@ -95,15 +95,25 @@ class userManagerTest extends TestCase {
 	}
 	
 	function testAddOptionForUser () {
+		$preName = new dbField ();
+		$preName->name = 'preName';
+		$preName->type = 'varchar(255)';
 		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
-		$oldAllOptions['preName'] = null;
-		$r = $this->userManager->addOptionToUser ('preName', 'varchar (255)');
-		$this->assertFalse (isError ($r));
+		$preName2 = $preName;
+		$preName2->canBeNull = true;
+		$oldAllOptions['preName'] = $preName2;
+		$r = $this->userManager->addOptionToUser ($preName);
+		$this->assertFalse (isError ($r), 'Unexpectd error');
 		$newAllOptions = $this->userManager->getAllOptionsForUser ();
-		$this->assertEquals ($oldAllOptions, $newAllOptions);
+		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
 		
-		$r = $this->userManager->addOptionToUser ('preName', 'varchar (255)');
+		$r = $this->userManager->addOptionToUser ($preName);
 		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORUSER_EXISTS preName", $r);
+		
+		/*Hack to clean allOptionsForUser cache*/
+		$this->userManager->allOptionsForUser = null;
+		$newAllOptions = $this->userManager->getAllOptionsForUser ();
+		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
 	}
 	
 	function testRemoveOptionForUser () {
@@ -191,11 +201,23 @@ class userManagerTest extends TestCase {
 	
 	function testAddGroupOption () {
 		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Options are not empty');
-		$r = $this->userManager->addOptionToGroup ('anOption', 'varchar(255)');
+		$anOption = new dbField ();
+		$anOption->name = 'anOption';
+		$anOption->type = 'varchar(255)';
+		$anOption2 = $anOption;
+		$anOption2->canBeNull = true;
+		$r = $this->userManager->addOptionToGroup ($anOption);
+		$oldAllOptions = $this->userManager->getAllOptionsForGroup ();
+		$oldAllOptions['anOption'] = $anOption2;
 		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals (array ('anOption' => null), $this->userManager->getAllOptionsForGroup (), 'Not added');
-		$r = $this->userManager->addOptionToGroup ('anOption', 'varchar(255)');
+		$this->assertEquals ($oldAllOptions, $this->userManager->getAllOptionsForGroup (), 'Not added');
+		$r = $this->userManager->addOptionToGroup ($anOption);
 		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS anOption", $r, 'Wrong error returned');
+		
+		/*Hack to clean allOptionsForGroup cache*/
+		$this->userManager->allOptionsForGroup = null;
+		$newAllOptions = $this->userManager->getAllOptionsForGroup ();
+		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
 	}
 	
 	function testRemoveGroupOption () {

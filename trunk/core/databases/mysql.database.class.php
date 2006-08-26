@@ -83,18 +83,36 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		}
 		
 		function getAllFields ($tableName) {
+			$tableName = $this->escapeString ($tableName);
 			$q = $this->query ("SHOW COLUMNS FROM $tableName");
 			if (! isError ($q)) {
 				$allFields = array ();
 				if (mysql_num_rows ($q) > 0) {
 					while ($row = mysql_fetch_assoc ($q)) {
-						$allFields[] = $row['Field'];
+						$allFields[] = $row;
 					}
 				}
 				return $allFields;
 			} else {
 				return $q;
 			}
+		}
+		
+		function getAlldbFields ($tableName, $filter = array ()) {
+			$allFields = $this->getAllFields ($tableName);
+			$alldbFields = array ();
+			foreach ($allFields as $field) {
+				$dbField = new dbField ();
+				$dbField->name = $field['Field'];
+				$dbField->type = $field['Type'];
+				if ($field['Null']) {
+					$dbField->canBeNull = true;
+				}
+				if (! in_array ($dbField->name, $filter)) {
+					$alldbFields[$dbField->name] = $dbField;
+				}
+			}
+			return $alldbFields;
 		}
 		
 		function getAllTables () {

@@ -32,7 +32,15 @@ class group extends databaseObject {
 	 * @param $creator (object)
 	*/
 	function group ($db, $allExtraOptions, &$creator) {
-		parent::databaseObject ($db, $allExtraOptions, array ('genericName', 'genericDescription'), 'groups', 'groupID', $creator);
+		$genericName = new dbField ();
+		$genericName->name = 'genericName';
+		$genericName->type = 'varchar (255)';
+
+		$genericDescription = new dbField ();
+		$genericDescription->name = 'genericDescription';
+		$genericDescription->type = 'text';
+		
+		parent::databaseObject ($db, $allExtraOptions, array ('genericName'=>$genericName, 'genericDescription'=>$genericDescription), 'groups', 'groupID', $creator);
 	}
 	
 	/**

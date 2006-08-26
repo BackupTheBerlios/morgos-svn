@@ -165,12 +165,8 @@ class userManager {
 	/**
 	 * Adds an extra option to the database for the users.
 	 *
-	 * @param $newOption (string) the name of the new option
-	 * @param $sqlType (string) the sqltype possible options: 
-	 *   - Varchar (length)
-	 *   - Int
-	 *   - enum('a', 'b', 'c')
-	 *   - text
+	 * @param $newOption (object dbField) the new option
+	 *
 	 * @warning old user objects don't profit of this. 
 	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
 	 * @bug when after adding one, someone ask wich exists the new is not added in.
@@ -178,19 +174,19 @@ class userManager {
 	 * @return (error) if one
 	 * @public
 	*/
-	function addOptionToUser ($newOption, $sqlType) {
+	function addOptionToUser ($newOption) {
 		$curOptions = $this->getAllOptionsForUser ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption, $curOptions)) {
-				$prefix = $this->db->getPrefix ();
-				$sql = "ALTER TABLE ".$prefix."users ADD $newOption $sqlType";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+			if (! array_key_exists ($newOption->name, $curOptions)) {
+				$newOption->canBeNull = true;
+				$r = $this->db->addNewField ($newOption, $this->db->prefix.'users');
+				if (! isError ($r)) {
+					$this->allOptionsForUser[$newOption->name] = $newOption;
+				} else {
+					return $r;
 				}
-				$this->allOptionsForUser[$newOption] = null;
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORUSER_EXISTS $newOption";
+				return "ERROR_USERMANAGER_OPTION_FORUSER_EXISTS {$newOption->name}";
 			}
 		} else {
 			return $curOptions;
@@ -210,13 +206,12 @@ class userManager {
 		$curOptions = $this->getAllOptionsForUser ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$prefix = $this->db->getPrefix ();
-				$sql = "ALTER TABLE ".$prefix."users DROP $optionName";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+				$r = $this->db->removeField ($optionName, $this->db->getPrefix ().'users');
+				if (! isError ($r)) {
+					unset ($this->allOptionsForUser[$optionName]);
+				} else {
+					return $r;
 				}
-				unset ($this->allOptionsForUser[$optionName]);
 			} else {
 				return "ERROR_USERMANAGER_OPTION_FORUSER_DONT_EXISTS $optionName";
 			}
@@ -233,16 +228,10 @@ class userManager {
 	*/
 	function getAllOptionsForUser () {
 		if ($this->allOptionsForUser === null) {
-			$fields = $this->db->getAllFields ($this->db->getPrefix ().'users');
+			$fields = $this->db->getAlldbFields ($this->db->getPrefix ().'users', array ('userID','login', 'email'));
 			if (! isError ($fields)) {
-				$allOptions = array ();
-				foreach ($fields as $field) {
-					if (! ($field == 'userID' or $field == 'login' or $field == 'email')) {
-						$allOptions[$field] = null;
-					}
-				}
-				$this->allOptionsForUser = $allOptions;
-				return $allOptions;
+				$this->allOptionsForUser = $fields;
+				return $fields;
 			} else {
 				return $fields;
 			}
@@ -329,7 +318,6 @@ class userManager {
 				return true;
 			}
 		} else {
-			var_dump ($q);
 			return $q;
 		}
 	}	
@@ -356,23 +344,22 @@ class userManager {
 	/**
 	 * Adds an option for a group item.
 	 *
-	 * @param $newOption (string) the name of the option
-	 * @param $sqlType (string) The sqltype
+	 * @param $newOption (object dbField) the  the option
 	 * @public
 	*/
-	function addOptionToGroup ($newOption, $sqlType) {
+	function addOptionToGroup ($newOption) {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption, $curOptions)) {
-				$prefix = $this->db->getPrefix();
-				$sql = "ALTER TABLE ".$prefix."groups ADD $newOption $sqlType";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+			if (! array_key_exists ($newOption->name, $curOptions)) {
+				$newOption->canBeNull = true;
+				$r = $this->db->addNewField ($newOption, $this->db->getPrefix().'groups');
+				if (! isError ($r)) {
+					$this->allOptionsForGroup[$newOption->name] = $newOption;
+				} else {
+					return $r;
 				}
-				$this->allOptionsForGroup[$newOption] = null;
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS $newOption";
+				return "ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS {$newOption->name}";
 			}
 		} else {
 			return $curOptions;
@@ -388,13 +375,12 @@ class userManager {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$prefix = $this->db->getPrefix();
-				$sql = "ALTER TABLE ".$prefix."groups DROP $optionName";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+				$r = $this->db->removeField ($optionName, $this->db->getPrefix ().'groups');
+				if (! isError ($r)) {
+					unset ($this->allOptionsForGroup[$optionName]);
+				} else {
+					return $r;
 				}
-				unset ($this->allOptionsForGroup[$optionName]);
 			} else {
 				return "ERROR_USERMANAGER_OPTION_FORGROUP_DONT_EXISTS $optionName";
 			}
@@ -411,14 +397,9 @@ class userManager {
 	*/
 	function getAllOptionsForGroup () {
 		if ($this->allOptionsForGroup === null) {
-			$fields = $this->db->getAllFields ($this->db->getPrefix ().'groups');
+			$fields = $this->db->getAlldbFields ($this->db->getPrefix ().'groups');
 			if (! isError ($fields)) {
-				$allOptions = array ();
-				foreach ($fields as $field) {
-					if (! ($field == 'groupID' or $field == 'genericDescription' or $field == 'genericName')) {
-						$allOptions[$field] = null;
-					}
-				}
+				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'groups', array ('groupID', 'genericDescription', 'genericName'));
 				$this->allOptionsForGroup = $allOptions;
 				return $allOptions;
 			} else {

@@ -129,6 +129,33 @@ class databaseActions {
 	}
 	
 	/**
+	 * Add a new field to the database
+	 *
+	 * @param $newField (object dbField)
+	 * @param $dbName (string)
+	*/
+	function addNewField ($newField, $dbName) {
+		$sql = "ALTER TABLE $dbName ADD {$newField->name} {$newField->type}";
+		if (! $newField->canBeNull) {
+			$sql .= " NOT NULL";
+		}
+		return $this->query ($sql);
+	}
+	
+	/**
+	 * Remove a field from a table
+	 *
+	 * @param $fieldName (string)
+	 * @param $tableName (string)
+	 * @public
+	*/
+	function removeField ($fieldName, $tableName) {
+		$sql = "ALTER TABLE ".$tableName." DROP $fieldName";
+		return $this->query ($sql);
+		
+	}
+	
+	/**
 	 * Sets the type of the database
 	 *
 	 * @param $type (string)
@@ -145,6 +172,42 @@ class databaseActions {
 	 * @public
 	*/
 	function getType () {return $this->type;}
+}
+
+class dbField {
+	var $name;
+	var $type;
+	var $canBeNull;
+	var $value;
+	
+	function dbField ($name = null, $type = null) {
+		$this->canBeNull = false;
+		$this->type = $type;
+		$this->name = $name;
+		$this->value = null;
+	}	
+	
+	function setValue ($newValue) {
+		if ($this->getNonDBType () == 'string') {
+			$this->value = strval ($newValue);
+		} elseif ($this->getNonDBType () == 'int') {
+			$this->value = (int) ($newValue);
+		} else {
+			$this->value = $newValue;
+		}
+	}
+	
+	function getValue () {
+		return $this->value;
+	}
+	
+	function getNonDBType () {
+		if (substr ($this->type, 0, 3) == 'int') {
+			return 'int';
+		} else {
+			return 'string';
+		}
+	}
 }
 
 /**
@@ -186,8 +249,8 @@ class databaseObject {
 	 * The constructor
 	 *
 	 * @param $db (databaseModule)
-	 * @param $extraOptions (empty array)
-	 * @param $basicOptions (empty array)
+	 * @param $extraOptions (object option array)
+	 * @param $basicOptions (object option array)
 	 * @param $tableName (string)
 	 * @param $IDName (int)
 	 * @param $creator (object)
@@ -239,12 +302,15 @@ class databaseObject {
 	function initFromArray ($array) {
 		$this->initEmpty ();
 		$allOptions = $this->getAllOptions ();
-		foreach ($allOptions as $name => $value) {
+		foreach ($allOptions as $dbField) {
+			$name = $dbField->name;
 			if (array_key_exists ($name, $array)) {
 				$this->setOption ($name, $array[$name]);
 			} else {
-				$this->initEmpty ();
-				return "ERROR_DATABASEOBJECT_KEY_NOT_EXISTS $name";
+				if (! $dbField->canBeNull) {
+					$this->initEmpty ();
+					return "ERROR_DATABASEOBJECT_KEY_NOT_EXISTS $name";
+				}
 			}
 		}
 	}
@@ -261,7 +327,7 @@ class databaseObject {
 	function getOption ($name) {
 		$allOptions = $this->getAllOptions ();
 		if (array_key_exists ($name, $allOptions)) {
-			return $allOptions[$name];
+			return $allOptions[$name]->getValue ();
 		} elseif ($name == 'ID') {
 			return $this->ID;
 		} else {
@@ -281,11 +347,11 @@ class databaseObject {
 		$allExtraOptions = $this->getExtraOptions ();
 		$allBasicOptions = $this->getBasicOptions ();
 		if (array_key_exists ($name, $allExtraOptions)) {
-			$this->extraOptions[$name] = strval ($value);
+			$this->extraOptions[$name]->setValue ($value);
 		} elseif (array_key_exists ($name, $allBasicOptions)) {
-			$this->basicOptions[$name] = strval ($value);
+			$this->basicOptions[$name]->setValue ($value);
 		} elseif ($name == 'ID') {
-			$this->ID = strval ($value);
+			$this->ID = (int) $value;
 		} else {
 			return "ERROR_DATABASEOBJECT_OPTION_DOES_NOT_EXISTS $name";
 		}
@@ -332,19 +398,21 @@ class databaseObject {
 			//$IDName = $this->getIDName ();
 			$sql = "INSERT into $prefix$tableName (";
 			$allOptions = $this->getAllOptions ();
-			foreach ($allOptions as $name => $value) {
+			foreach ($allOptions as $dbField) {
+				$name = $dbField->name;
 				$sql.= "$name,";
 			}
 			$sql[strlen ($sql)-1] = ')'; // remove latest , with )			
 			$sql .= ' VALUES(';
-			foreach ($allOptions as $name => $value) {
-				$value = $this->db->escapeString ($value);
+			foreach ($allOptions as $dbField) {
+				$value = $this->db->escapeString ($dbField->getValue ());
 				$sql.= "'$value',";
 			}
 			$sql[strlen ($sql)-1] = ')'; // remove latest , with )	
 			$q = $this->db->query ($sql);			
 			if (! isError ($q)) {
-				$this->setOption ('ID', $this->db->latestInsertID ($q));
+				$ID = $this->db->latestInsertID ($q);
+				$this->setOption ('ID', $ID);
 			} else {
 				return $q;
 			}
@@ -456,14 +524,11 @@ class databaseObject {
 	/**
 	 * Set all extra options that should be stored in the db.
 	 *
-	 * @param $array (string array) the values are the options/field names
+	 * @param $array (object dbField array)
 	 * @protected
 	*/
 	function setExtraOptions ($array) {
-		$this->extraOptions = array ();
-		foreach ($array as $option) {
-			$this->extraOptions[$option] = null;
-		}
+		$this->extraOptions = $array;
 	}
 	
 	/**
@@ -477,14 +542,11 @@ class databaseObject {
 	/**
 	 * Set all basic options (without ID) that should be stored in the DB.
 	 *
-	 * @param $array (string array) the values are the options/field names
+	 * @param $array (object dbField)
 	 * @protected
 	*/
 	function setBasicOptions ($array) {
-		$this->basicOptions = array ();
-		foreach ($array as $option) {
-			$this->basicOptions[$option] = null;
-		}
+		$this->basicOptions = $array;
 	}
 	
 	/**

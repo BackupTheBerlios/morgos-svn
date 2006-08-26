@@ -62,7 +62,7 @@ class pageManager {
 	 * @param $page (object page)
 	 * @public 
 	*/
-	function addPageToDatabase ($page) {
+	function addPageToDatabase (&$page) {
 		$pageName = $page->getGenericName ();
 		$pageExists = $this->pageExists ($pageName);
 		if ($pageExists) {
@@ -71,10 +71,10 @@ class pageManager {
 	
 		$parentPageID = $page->getParentPageID ();
 		if (! is_numeric ($parentPageID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED ". __FILE__."::".__LINE__;
 		}	
 	
-		if ($page->getPlaceInMenu () == 0) {
+		if (($page->getPlaceInMenu () == 0) or ($page->getPlaceInMenu () == null)) {
 			$pagesTableName = $this->db->getPrefix ().'pages';
 			$sql = "SELECT MAX(placeInMenu) FROM $pagesTableName WHERE parentPageID='$parentPageID'";
 			$q = $this->db->query ($sql);
@@ -197,31 +197,26 @@ class pageManager {
 	/**
 	 * Adds an extra option to the database for the pages.
 	 *
-	 * @param $newOption (string) the name of the new option
-	 * @param $sqlType (string) the sqltype possible options: 
-	 *   - Varchar (length)
-	 *   - Int
-	 *   - enum('a', 'b', 'c')
-	 *   - text
+	 * @param $newOption (object dbField) the new option
 	 * @warning old page objects don't profit of this. 
 	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
 	 * @bug when after adding one, someone ask wich exists the new is not added in.
 	 *    if that "asker" want to do something with it on an old page object it can cause weird errors.
 	 * @public
 	*/
-	function addOptionToPage ($newOption, $sqlType) {
+	function addOptionToPage ($newOption) {
 		$curOptions = $this->getAllOptionsForPage ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption, $curOptions)) {
-				$prefix = $this->db->getPrefix ();
-				$sql = "ALTER TABLE ".$prefix."pages ADD $newOption $sqlType";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+			if (! array_key_exists ($newOption->name, $curOptions)) {
+				$newOption->canBeNull = true;
+				$r = $this->db->addNewField ($newOption, $this->db->prefix.'pages');
+				if (! isError ($r)) {
+					$this->allOptionsForPage[$newOption->name] = $newOption;
+				} else {
+					return $r;
 				}
-				$this->allOptionsForPage[$newOption] = null;
 			} else {
-				return "ERROR_PAGEMANAGER_OPTION_FORPAGE_EXISTS $newOption";
+				return "ERROR_PAGEMANAGER_OPTION_FORPAGE_EXISTS {$newOption->name}";
 			}
 		} else {
 			return $curOptions;
@@ -240,13 +235,12 @@ class pageManager {
 		$curOptions = $this->getAllOptionsForPage ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$prefix = $this->db->getPrefix ();
-				$sql = "ALTER TABLE ".$prefix."pages DROP $optionName";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+				$r = $this->db->removeField ($optionName, $this->db->getPrefix ().'pages');
+				if (! isError ($r)) {
+					unset ($this->allOptionsForPage[$optionName]);
+				} else {
+					return $r;
 				}
-				unset ($this->allOptionsForPage[$optionName]);
 			} else {
 				return "ERROR_PAGEMANAGER_OPTION_FORPAGE_DOESNT_EXISTS $optionName";
 			}
@@ -263,19 +257,11 @@ class pageManager {
 	*/
 	function getAllOptionsForPage () {
 		if ($this->allOptionsForPage === null) {
-			$fields = $this->db->getAllFields ($this->db->getPrefix ().'pages');
-			if (! isError ($fields)) {
-				$allOptions = array ();
-				foreach ($fields as $field) {
-					if (! ($field == 'pageID' or $field == 'genericName' or $field == 'genericContent' or $field == 'placeInMenu' or $field == 'parentPageID')) {
-						$allOptions[$field] = null;
-					}
-				}
+			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', array ('pageID', 'genericName', 'genericContent', 'parentPageID', 'placeInMenu'));
+			if (! isError ($allOptions)) {
 				$this->allOptionsForPage = $allOptions;
-				return $allOptions;
-			} else {
-				return $fields;
 			}
+			return $allOptions;
 		} else {
 			return $this->allOptionsForPage;
 		}
@@ -284,31 +270,26 @@ class pageManager {
 	/**
 	 * Adds an extra option to the database for the translated pages.
 	 *
-	 * @param $newOption (string) the name of the new option
-	 * @param $sqlType (string) the sqltype possible options: 
-	 *   - Varchar (length)
-	 *   - Int
-	 *   - enum('a', 'b', 'c')
-	 *   - text
+	 * @param $newOption (object dbField) the  new option
 	 * @warning old translated page objects don't profit of this. 
 	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
 	 * @bug when after adding one, someone ask wich exists the new is not added in.
 	 *    if that "asker" want to do something with it on an old translatedpage object it can cause weird errors.
 	 * @public
 	*/
-	function addOptionToTranslatedPage ($newOption, $sqlType) {
+	function addOptionToTranslatedPage ($newOption) {
 		$curOptions = $this->getAllOptionsForTranslatedPage ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption, $curOptions)) {
-				$prefix = $this->db->getPrefix ();
-				$sql = "ALTER TABLE ".$prefix."translatedPages ADD $newOption $sqlType";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+			if (! array_key_exists ($newOption->name, $curOptions)) {
+				$newOption->canBeNull = true;
+				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedpages');
+				if (! isError ($r)) {
+					$this->allOptionsForTranslatedPage[$newOption->name] = $newOption;
+				} else {
+					return $r;
 				}
-				$this->allOptionsForTranslatedPage[$newOption] = null;
 			} else {
-				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS $newOption";
+				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS {$newOption->name}";
 			}
 		} else {
 			return $curOptions;
@@ -327,13 +308,12 @@ class pageManager {
 		$curOptions = $this->getAllOptionsForTranslatedPage ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$prefix = $this->db->getPrefix ();
-				$sql = "ALTER TABLE ".$prefix."translatedPages DROP $optionName";
-				$q = $this->db->query ($sql);
-				if (isError ($q)) {
-					return $q;
+				$r = $this->db->removeField ($optionName, $this->db->getPrefix().'translatedpages');
+				if (! isError ($r)) {
+					unset ($this->allOptionsForTranslatedPage[$optionName]);					
+				} else {
+					return $r;
 				}
-				unset ($this->allOptionsForTranslatedPage[$optionName]);
 			} else {
 				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS $optionName";
 			}
@@ -352,13 +332,10 @@ class pageManager {
 		if ($this->allOptionsForTranslatedPage === null) {
 			$fields = $this->db->getAllFields ($this->db->getPrefix ().'translatedPages');
 			if (! isError ($fields)) {
-				$allOptions = array ();
-				foreach ($fields as $field) {
-					if (! ($field == 'translatedPageID' or $field == 'translatedName' or $field == 'translatedContent' or $field == 'pageID' or $field == 'languageCode')) {
-						$allOptions[$field] = null;
-					}
+				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedpages', array ('translatedPageID', 'translatedName', 'translatedContent', 'pageID', 'languageCode'));
+				if (! isError ($allOptions)) {
+					$this->allOptionsForTranslatedPage = $allOptions;
 				}
-				$this->allOptionsForTranslatedPage = $allOptions;
 				return $allOptions;
 			} else {
 				return $fields;

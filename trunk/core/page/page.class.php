@@ -32,7 +32,13 @@ class page extends databaseObject {
 	 * @param $parent (object) The creator
 	*/	
 	function page ($db, $allOptions, &$parent) {
-		parent::databaseObject ($db, $allOptions, array ('genericName', 'genericContent', 'parentPageID', 'placeInMenu'), 'pages', 'pageID', $parent);
+		$genericName = new dbField ('genericName', 'varchar (255)');
+		$genericContent = new dbField ('genericContent', 'text');
+		$parentPageID = new dbField ('parentPageID', 'int(11)');
+		$placeInMenu = new dbField ('placeInMenu', 'int(4)');
+		$placeInMenu->canBeNull = true;
+		
+		parent::databaseObject ($db, $allOptions, array ('genericName'=>$genericName, 'genericContent'=>$genericContent, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu), 'pages', 'pageID', $parent);
 	}
 
 	/**

@@ -61,4 +61,20 @@ if (!function_exists ('scandir')) {
 	}
 }
 
+
+/**
+ * Clones an object.
+ * It just returns the object.
+ *
+ * @param $ob (object)
+ * @return (object) cloned object (if PHP 4, unmodified object)
+*/
+function cloneob ($ob) {
+	if (version_compare (PHP_VERSION, 5, '<=')) {
+		return $ob;
+	} else {
+		return clone ($ob);
+	}
+}
+
 ?>
