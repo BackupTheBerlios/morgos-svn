@@ -87,6 +87,8 @@ class MorgOSSuit extends TestSuite {
 			}
 		}
 		$queries = file_get_contents ("core/tests/database.sql");
+		$queries = str_replace ('{prefix}', $testerOptions['dbPrefix'], $queries);
+		$dbModule->setPrefix ($testerOptions['dbPrefix']);
 		$a = split (';', $queries);
 		foreach ($a as $sql) {
 			if (trim ($sql) != '') {
