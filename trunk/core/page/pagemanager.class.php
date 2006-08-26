@@ -23,6 +23,7 @@
 */
 
 include_once ('core/page/page.class.php');
+include_once ('core/page/translatedpage.class.php');
 
 class pageManager {
 	/**
@@ -250,9 +251,9 @@ class pageManager {
 	}
 	
 	/**
-	 * Returns an associative array with values null, and keys the name of the option
+	 * Returns an associative array with values of object dbField
 	 *
-	 * @return (null array)
+	 * @return (object dbField array)
 	 * @public
 	*/
 	function getAllOptionsForPage () {
@@ -282,7 +283,7 @@ class pageManager {
 		if (! isError ($curOptions)) {
 			if (! array_key_exists ($newOption->name, $curOptions)) {
 				$newOption->canBeNull = true;
-				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedpages');
+				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedPages');
 				if (! isError ($r)) {
 					$this->allOptionsForTranslatedPage[$newOption->name] = $newOption;
 				} else {
@@ -308,7 +309,7 @@ class pageManager {
 		$curOptions = $this->getAllOptionsForTranslatedPage ();
 		if (! isError ($curOptions)) {
 			if (array_key_exists ($optionName, $curOptions)) {
-				$r = $this->db->removeField ($optionName, $this->db->getPrefix().'translatedpages');
+				$r = $this->db->removeField ($optionName, $this->db->getPrefix().'translatedPages');
 				if (! isError ($r)) {
 					unset ($this->allOptionsForTranslatedPage[$optionName]);					
 				} else {
@@ -323,16 +324,16 @@ class pageManager {
 	}	
 	
 	/**
-	 * Returns an associative array with values null, and keys the name of the option
+	 * Returns an associative array with values of type object dbField
 	 *
-	 * @return (null array)
+	 * @return (object dbField array)
 	 * @public
 	*/
 	function getAllOptionsForTranslatedPage () {
 		if ($this->allOptionsForTranslatedPage === null) {
 			$fields = $this->db->getAllFields ($this->db->getPrefix ().'translatedPages');
 			if (! isError ($fields)) {
-				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedpages', array ('translatedPageID', 'translatedName', 'translatedContent', 'pageID', 'languageCode'));
+				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedPages', array ('translatedPageID', 'translatedName', 'translatedContent', 'pageID', 'languageCode'));
 				if (! isError ($allOptions)) {
 					$this->allOptionsForTranslatedPage = $allOptions;
 				}
@@ -345,4 +346,13 @@ class pageManager {
 		}
 	}
 
+	/**
+	 * Returns a new object translatedPage.
+	 *
+	 * @public
+	 * @returns (object translatedPage)
+	*/
+	function newTranslatedPage () {
+		return new translatedPage ($this->db, $this->getAllOptionsForTranslatedPage (), $this);
+	}
 }

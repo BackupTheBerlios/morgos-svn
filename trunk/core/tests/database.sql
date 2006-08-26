@@ -56,3 +56,8 @@ INSERT INTO pages (genericName, genericContent, placeInMenu, parentPageID) VALUE
 INSERT INTO pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('Home', '', 1, 1);
 INSERT INTO pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('News', '', 2, 1);
 INSERT INTO pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('Packages', '', 3, 1);
+
+INSERT INTO pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('TranslatedPage', '', 0, 2);
+INSERT INTO translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES('NL-NL', 'This is the dutch (Netherlands) translation. (NL-NL)', '5', 'NL-NL');
+INSERT INTO translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES('NL', 'This is the dutch (generic) translation. (NL)', '5', 'NL');
+INSERT INTO translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES('FR-FR', 'This is the french (french) translation. (FR-FR)', '5', 'FR-FR');

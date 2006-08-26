@@ -173,7 +173,57 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS translator", $r, 'Wrong error 2');		
 	}
 	
+	function testGetTranslation () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('TranslatedPage');
+		$translatedPageNL_NL = $page->getTranslation ('NL-NL');
+		$this->assertFalse (isError ($translatedPageNL_NL), 'Unexpected NL_NL error');
+		$this->assertEquals ('This is the dutch (Netherlands) translation. (NL-NL)', $translatedPageNL_NL->getContent (), 'Normal translation failed');
+		
+		$translatedPageNL_BE = $page->getTranslation ('NL-BE');
+		$this->assertFalse (isError ($translatedPageNL_BE), 'Unexpected NL_BE error');
+		$this->assertEquals ('This is the dutch (generic) translation. (NL)', $translatedPageNL_BE->getContent (), 'Main language translation failed');
+		
+		$translatedPageFR_BE = $page->getTranslation ('FR-BE');
+		$this->assertFalse (isError ($translatedPageFR_BE), 'Unexpected - hehem - FR_BE error');
+		$this->assertEquals ('This is the french (french) translation. (FR-FR)', $translatedPageFR_BE->getContent (), 'Select other dialect failed (NYI)');
+	}
+	
+	function testGetAllTranslations () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('TranslatedPage');
+		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslations ());
+	}
+	
+	function testAddTranslation () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('TranslatedPage');
+		$translationNL_BE = $this->pageManager->newTranslatedPage ();
+		$a['translatedName'] = 'NL_BE';
+		$a['translatedContent'] = 'NL_BE translation';
+		$a['languageCode'] = 'NL-BE'; 
+		$r = $translationNL_BE->initFromArray ($a);
+		$this->assertFalse (isError ($r), 'Unexpected init error');
+		$r = $page->addTranslation ($translationNL_BE);
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals (array ('FR-FR', 'NL', 'NL-BE', 'NL-NL'), $page->getAllTranslations ());
+		
+		$r = $page->addTranslation ($translationNL_BE);
+		$this->assertEquals ("ERROR_PAGE_TRANSLATION_EXISTS NL-BE", $r);
+	}
+	
+	function testRemoveTranslation () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('TranslatedPage');
+		$translationNL_BE = $this->pageManager->newTranslatedPage ();
+		$translationNL_BE->initFromDatabasePageIDandLanguageCode ($page->getID (), 'NL-BE');
+		
+		$r = $page->removeTranslation ($translationNL_BE);
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslations (), 'Not deleted');
+		
+		$r = $page->removeTranslation ($translationNL_BE);
+		$this->assertEquals ("ERROR_PAGE_TRANSLATION_DOESNT_EXISTS NL-BE", $r, 'Wrong error returned');
+	}
 }
-
-
 ?>

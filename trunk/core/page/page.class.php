@@ -108,5 +108,78 @@ class page extends databaseObject {
 		$parentPage->initFromPageID ($this->getParentPageID ());
 		return $parentPage;
 	}
+	
+	/**
+	 * Returns a translated object that is inited.
+	 *
+	 * @param $languageCode (string)
+	 * @public
+	 * @return (object translatedPage) 
+	*/
+	function getTranslation ($languageCode) {
+		$languageCode = $this->db->escapeString ($languageCode);
+		$fullTranslationTableName = $this->db->getPrefix ().'translatedPages';
+		$sql = "SELECT translatedPageID FROM $fullTranslationTableName WHERE pageID='{$this->getID ()}' AND languageCode='$languageCode'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			if ($this->db->numRows ($q) == 1) {
+				$row = $this->db->fetchArray ($q);
+				$tPage = $this->getCreator ()->newTranslatedPage ();
+				$tPage->initFromDatabaseID ($row['translatedPageID']);
+				return $tPage;
+			} else {
+				if (strlen ($languageCode) > 2) {
+					$firstLang = substr ($languageCode, 0, 2);
+					return $this->getTranslation ($firstLang);
+				} else {
+					return "ERROR_PAGE_TRANSLATION_NOT_FOUND";
+				}
+			} 
+			return $tPage;
+		} else {
+			return $q;
+		}
+	}
+	
+	function getAllTranslations () {
+		$fullTranslationTableName = $this->db->getPrefix ().'translatedPages';
+		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE pageID='{$this->getID ()}' ORDER BY languageCode ASC";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$lCodes = array ();
+			while ($row = $this->db->fetchArray ($q)) {
+				$lCodes[] = $row['languageCode'];
+			}
+			return $lCodes;
+		} else {
+			return $q;
+		}
+	}
+	
+	function addTranslation ($translation) {
+		if (! $this->translationExists ($translation->getLanguageCode ())) {
+			$a['pageID'] = $this->getID ();
+			$translation->updateFromArray ($a);
+			return $translation->addToDatabase ();
+		} else {
+			return "ERROR_PAGE_TRANSLATION_EXISTS {$translation->getLanguageCode ()}";
+		}
+	}
+	
+	function removeTranslation ($translation) {
+		if ($this->translationExists ($translation->getLanguageCode ())) {
+			return $translation->removeFromDatabase ();
+		} else {
+			return "ERROR_PAGE_TRANSLATION_DOESNT_EXISTS {$translation->getLanguageCode ()}";
+		}
+	}
+	
+	function translationExists ($languageCode) {
+		if (in_array ($languageCode, $this->getAllTranslations ())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 ?>
