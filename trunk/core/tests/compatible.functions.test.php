@@ -27,7 +27,7 @@ class compatibleTests extends TestCase {
 
 	function testScanDir () {
 		$r = scandir ('core/tests/scandir/');
-		$this->assertEquals (array ('.', '..', '.svn', 'a1', 'empty',  'file1', 'file2'), $r, 'Regular dir fails');
+		$this->assertEquals (array ('.', '..', '.svn','1','10','11','12','2','3','4', 'a1', 'empty',  'file1', 'file2'), $r, 'Regular dir fails');
 		
 		$r = scandir ('core/tests/scandir/empty'); // hmm, it is not really empty
 		$this->assertEquals (array ('.', '..', '.svn'), $r, 'Empty dir fails');
