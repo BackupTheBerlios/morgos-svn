@@ -19,7 +19,7 @@ CREATE TABLE {prefix}translatedGroups (
   groupID int(11) NOT NULL,
   name varchar(255) NOT NULL,
   description varchar(255) NOT NULL,
-  codeLang varchar(5) NOT NULL,
+  languageCode varchar(5) NOT NULL,
   PRIMARY KEY (translatedGroupID)
 );
 
@@ -52,6 +52,12 @@ INSERT INTO {prefix}users (login, email) VALUES ('administrator', 'admin@host.or
 INSERT INTO {prefix}users (login, email) VALUES ('normalUser', 'normalUser@host.org');
 INSERT INTO {prefix}groups (genericName, genericDescription) VALUES('administrator', 'This is the administrator group.');
 INSERT INTO {prefix}groups (genericName, genericDescription) VALUES('normalUsers', 'This is the normal users group');
+
+INSERT INTO {prefix}groups (genericName, genericDescription) VALUES('translatedGroup', 'This is a translated group');
+INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES(3, 'NL-NL', 'Netherlands', 'NL-NL');
+INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES(3, 'NL', 'Netherlands generic', 'NL');
+INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES(3, 'FR-FR', 'French', 'FR-FR');
+
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('site', '', 0, 0);
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('Home', '', 1, 1);
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('News', '', 2, 1);

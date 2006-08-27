@@ -24,6 +24,13 @@
 
 class translatedGroup extends databaseObject {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param $db (dbModule)
+	 * @param $allExtraOptions (object dbField array)
+	 * @param $creator (object)
+	*/
 	function translatedGroup ($db, $allExtraOptions, &$creator) {
 		$name = new dbField ();
 		$name->name = 'name';
@@ -35,11 +42,77 @@ class translatedGroup extends databaseObject {
 		
 		$groupID = new dbField ();
 		$groupID->name = 'groupID';
-		$groupID->type = 'int (11)';			
+		$groupID->type = 'int (11)';
+		$groupID->canBeNull = true;	
+		
+		$lCode = new dbField ('languageCode', 'varchar(5)');		
 	
-		parent::databaseObject ($db, $allExtraOptions, array ('name'=>$name, 'description'=>$description, 'groupID'=>$groupID), 'translatedGroups', 'translatedGroupID', &$creator);
+		parent::databaseObject ($db, $allExtraOptions, array ('name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', &$creator);
 	}
 
+	/**
+	 * Initializes the object.
+	 *
+	 * @param $groupID (int)
+	 * @param $lCode (string) the language code
+	 * @public
+	*/
+	function initFromDatabaseGroupIDandLanguageCode ($groupID, $lCode) {
+		if (! is_numeric ($groupID)) {
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_FAILED ".__FILE__." ".__LINE__;
+		}
+		$languageCode = $this->db->escapeString ($lCode);
+		$sql = "SELECT * FROM {$this->getFullTableName ()} WHERE $groupID='$groupID' AND languageCode='$languageCode'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			if ($this->db->numRows ($q) == 1) {
+				$row = $this->db->fetchArray ($q);
+				$this->initFromArray ($row);
+				$this->setOption ('ID', $row['translatedGroupID']);
+			} else {
+				return "ERROR_TRANSLATEDGROUP_CANTFIND_GROUP $groupID $languageCode";
+			}
+		} else {
+			return $q;
+		}
+	}
+
+	/**
+	 * Returns the name.
+	 * @public
+	 * @return (string)
+	*/
+	function getName () {return $this->getOption ('name');}
+	/**
+	 * Returns the description.
+	 * @public
+	 * @return (string)
+	*/
+	function getDescription () {return $this->getOption ('description');}
+	/**
+	 * Returns the language code.
+	 * @public
+	 * @return (string)
+	*/
+	function getLanguageCode () {return $this->getOption ('languageCode');}
+	/**
+	 * Returns the groupID.
+	 * @public
+	 * @return (int)
+	*/
+	function getGroupID () {return $this->getOption ('groupID');}
+	
+	/**
+	 * Returns the group
+	 * @public
+	 * @return (object group)
+	*/
+	function getGroup () {
+		$c = $this->getCreator ();
+		$p = $c->newGroup ();
+		$p->initFromDatabaseID ($this->getGroupID ());
+		return $p;
+	}
 }
 
 ?>

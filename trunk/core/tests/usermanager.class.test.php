@@ -231,7 +231,7 @@ class userManagerTest extends TestCase {
 	function testGetAllGroups () {
 		$allGroups = $this->userManager->getAllGroups ();
 		$this->assertFalse (isError ($allGroups), 'Unexpected error');
-		$this->assertEquals (2, count ($allGroups), 'Not the expected number of groups');
+		$this->assertEquals (3, count ($allGroups), 'Not the expected number of groups');
 	}
 	
 	function testUserAddToGroup () {
@@ -274,6 +274,94 @@ class userManagerTest extends TestCase {
 		$r = $user->isInGroup ($group);
 		$this->assertFalse ($r, 'Wrong result returned, should be false');
 	}
+	
+	/*translated groups functions*/
+	
+	function testGetTranslation () {
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('translatedGroup');
+		
+		$gNL_NL = $group->getTranslation ('NL-NL');
+		$this->assertFalse (isError ($gNL_NL));
+		$this->assertEquals ('NL-NL', $gNL_NL->getName ());
+		
+		$gNL_BE = $group->getTranslation ('NL-BE'); // doesn't exists, NL exists
+		$this->assertFalse (isError ($gNL_BE));
+		$this->assertEquals ('NL', $gNL_BE->getName ());
+		
+		$gFR_BE = $group->getTranslation ('FR-BE'); // doesn't exists, FR-FR exists
+		$this->assertFalse (isError ($gFR_BE), 'Unexpected error?');
+		$this->assertEquals ('NL', $gNL_BE->getName ());
+	}	
+	
+	function testGetAllTranslations () {
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('translatedGroup');
+		$this->assertEquals (array ( 'FR-FR','NL', 'NL-NL'), $group->getAllTranslations ());
+	}	
+	
+	function testAddTranslatedGroupToDatabase () {
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('translatedGroup');
+		
+		$groupFR_BE = $this->userManager->newTranslatedGroup ();
+		$a = array ();
+		$a['languageCode'] = 'FR-BE';
+		$a['name'] = 'FR-BE';
+		$a['description'] = 'French';
+		$b = $groupFR_BE->initFromArray ($a);
+		$this->assertFalse (isError ($b), 'Wrong array initialization');
+		$r = $group->addTranslationToDatabase ($groupFR_BE);		
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals (array ('FR-BE','FR-FR','NL', 'NL-NL'), $group->getAllTranslations (), 'Returned wrong languages');
+		
+		$r = $group->addTranslationToDatabase ($groupFR_BE);		
+		$this->assertEquals ("ERROR_GROUP_TRANSLATION_EXISTS FR-BE", $r);
+	}	
+	
+	function testRemoveTranslatedGroupFromDatabase () {
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('translatedGroup');
+		
+		$groupFR_BE = $this->userManager->newTranslatedGroup ();
+		$groupFR_BE->initFromDatabaseGroupIDandLanguageCode ($group->getID (), 'FR-BE');
+		$r = $group->removeTranslationFromDatabase ($groupFR_BE);		
+		$this->assertFalse (isError ($r));
+		$this->assertEquals (array ('FR-FR','NL', 'NL-NL'), $group->getAllTranslations ());
+		
+		$r = $group->removeTranslationFromDatabase ($groupFR_BE);	
+		$this->assertEquals ("ERROR_GROUP_TRANSLATION_DOESNT_EXISTS FR-BE", $r);
+	}
+	
+	function testAddTranslatedGroupOption () {
+		var_dump ($this->userManager->getAllOptionsForTranslatedGroup ());
+		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Options are not empty');
+		$anOption = new dbField ();
+		$anOption->name = 'anOption';
+		$anOption->type = 'varchar(255)';
+		$anOption2 = $anOption;
+		$anOption2->canBeNull = true;
+		$r = $this->userManager->addOptionToTranslatedGroup ($anOption);
+		$oldAllOptions = $this->userManager->getAllOptionsForTranslatedGroup ();
+		$oldAllOptions['anOption'] = $anOption2;
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals ($oldAllOptions, $this->userManager->getAllOptionsForTranslatedGroup (), 'Not added');
+		$r = $this->userManager->addOptionToTranslatedGroup ($anOption);
+		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS anOption", $r, 'Wrong error returned');
+		
+		/*Hack to clean allOptionsForGroup cache*/
+		$this->userManager->allOptionsForTranslatedGroup = null;
+		$newAllOptions = $this->userManager->getAllOptionsForTranslatedGroup ();
+		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
+	}
+	
+	function testTranslatedGroupOption () {
+		$r = $this->userManager->removeOptionFromTranslatedGroup ('anOption');
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Not removed');
+		$r = $this->userManager->removeOptionFromTranslatedGroup ('anOption');
+		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS anOption", $r, 'Wrong error returned');
+	}
+	
 }
-
 ?>

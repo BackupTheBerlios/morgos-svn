@@ -24,6 +24,7 @@
 
 include_once ('core/user/user.class.php');
 include_once ('core/user/usergroup.class.php');
+include_once ('core/user/usertranslatedgroups.class.php');
 
 class userManager {
 	/**
@@ -41,6 +42,11 @@ class userManager {
 	 * @protected
 	*/
 	var $allOptionsForGroup;
+	/**
+	 * An array of all options of the translatedgroups. Can be null
+	 * @protected
+	*/
+	var $allOptionsForTranslatedGroup;
 
 	/**
 	 * The constructor
@@ -51,6 +57,7 @@ class userManager {
 		$this->db = $db;
 		$this->allOptionsForUser = null;
 		$this->allOptionsForGroup = null;
+		$this->allOptionsForTranslatedGroup = null;
 	}
 	
 	/*Public functions*/
@@ -461,6 +468,93 @@ class userManager {
 				$allGroups[] = $row['groupID'];
 			}
 			return $allGroups;
+		}
+	}
+	
+	/**
+	 * Creates a new translated group.
+	 *
+	 * @public
+	 * @return (object translatedGroup)
+	*/
+	function newTranslatedGroup () {
+		return new translatedGroup ($this->db, $this->getAllOptionsForTranslatedGroup (), $this);
+	}
+	
+	/**
+	 * Adds an extra option to the database for translated group.
+	 *
+	 * @param $newOption (object dbField) the new option
+	 *
+	 * @warning old translated group objects don't profit of this. 
+	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
+	 * @bug when after adding one, someone ask wich exists the new is not added in.
+	 *    if that "asker" want to do something with it on an old translated group object it can cause weird errors.
+	 * @public
+	*/
+	function addOptionToTranslatedGroup ($newOption) {
+		$curOptions = $this->getAllOptionsForTranslatedGroup ();
+		if (! isError ($curOptions)) {
+			if (! array_key_exists ($newOption->name, $curOptions)) {
+				$newOption->canBeNull = true;
+				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedGroups');
+				if (! isError ($r)) {
+					$this->allOptionsForTranslatedGroup[$newOption->name] = $newOption;
+				} else {
+					return $r;
+				}
+			} else {
+				return "ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS {$newOption->name}";
+			}
+		} else {
+			return $curOptions;
+		}
+	}
+	
+	/**
+	 * Removes an extra option to the database for the translated groups.
+	 *
+	 * @param $optionName (string) the name of the option
+	 * @warning old translated group objects don't profit of this. 
+	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
+	 * @return (error) if one
+	 * @public
+	*/
+	function removeOptionFromTranslatedGroup ($optionName) {
+		$curOptions = $this->getAllOptionsForTranslatedGroup ();
+		if (! isError ($curOptions)) {
+			if (array_key_exists ($optionName, $curOptions)) {
+				$r = $this->db->removeField ($optionName, $this->db->getPrefix ().'translatedGroups');
+				if (! isError ($r)) {
+					unset ($this->allOptionsForTranslatedGroup[$optionName]);
+				} else {
+					return $r;
+				}
+			} else {
+				return "ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS $optionName";
+			}
+		} else {
+			return $curOptions;
+		}
+	}
+	
+	/**
+	 * Returns an associative array with values of type object dbField
+	 *
+	 * @return (object dbField array)
+	 * @public
+	*/
+	function getAllOptionsForTranslatedGroup () {
+		if ($this->allOptionsForTranslatedGroup === null) {
+			$fields = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedGroups', array ('translatedGroupID','groupID', 'name', 'description', 'languageCode'));
+			if (! isError ($fields)) {
+				$this->allOptionsForTranslated = $fields;
+				return $fields;
+			} else {
+				return $fields;
+			}
+		} else {
+			return $this->allOptionsForTranslatedGroup;
 		}
 	}
 }

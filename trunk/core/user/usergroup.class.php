@@ -219,16 +219,6 @@ class group extends databaseObject {
 		return $this->getOption ('genericDescription');
 	}	
 	
-	function getAllOptionsForTranslatedGroup () {
-		return array ();
-	}
-	
-	function addOptionForTranslatedGroup () {
-	}
-	
-	function removeOptionForTranslatedGroup () {
-	}
-	
 	/**
 	 * Returns all translated groups that are part of this group
 	 *
@@ -272,13 +262,62 @@ class group extends databaseObject {
 	}
 	
 	/**
-	 * Creates a new translated group.
+	 * Checks that a translation already exists.
 	 *
+	 * @param $lCode (string) the languageCode
+	 * @public
+	 * @return (bool)
+	*/
+	function existsTranslatedGroup ($lCode) {
+		if (in_array ($lCode, $this->getAllTranslations ())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns all languagecodes the group is translated to.
+	 *
+	 * @public
+	 * @return (string array)
+	*/
+	function getAllTranslations () {
+		$fullTranslationTableName = $this->db->getPrefix ().'translatedGroups';
+		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE groupID='{$this->getID ()}' ORDER BY languageCode ASC";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$lCodes = array ();
+			while ($row = $this->db->fetchArray ($q)) {
+				$lCodes[] = $row['languageCode'];
+			}
+			return $lCodes;
+		} else {
+			return $q;
+		}
+	}
+	
+	/**
+	 * Returns a specific translation of the group.
+	 *
+	 * @param $lCode (string) If not found the main language translation is returned.
 	 * @public
 	 * @return (object translatedGroup)
 	*/
-	function newTranslatedGroup () {
-		return new translatedGroup ($this->db, $this->getAllOptions, $this);
+	function getTranslation ($lCode) {
+		if ($this->existsTranslatedGroup ($lCode)) {
+			$c = $this->getCreator ();
+			$tPage = $c->newTranslatedGroup ();
+			$tPage->initFromDatabaseGroupIDandLanguageCode ($this->getID (), $lCode);
+			return $tPage;
+		} else {
+			if (strlen ($lCode) > 2) {
+				$lLang = substr ($lCode, 0, 2);
+				return $this->getTranslation ($lLang);
+			} else {
+				return "ERROR_GROUP_TRANSLATION_DOESNT_EXISTS";
+			}
+		}
 	}
 	
 	/**
@@ -287,8 +326,13 @@ class group extends databaseObject {
 	 * @param $translatedGroup (object translatedGroup)
 	 * @public
 	*/
-	function addTranslatedGroupToDatabase ($translatedGroup) {
-		return $translatedGroup->addToDatabase ();
+	function addTranslationToDatabase ($translatedGroup) {
+		if (! $this->existsTranslatedGroup ($translatedGroup->getLanguageCode ())) {
+			$translatedGroup->setOption ('groupID', $this->getID ());
+			return $translatedGroup->addToDatabase ();
+		} else {
+			return "ERROR_GROUP_TRANSLATION_EXISTS {$translatedGroup->getLanguageCode ()}";
+		}
 	}
 	
 	/**
@@ -297,8 +341,12 @@ class group extends databaseObject {
 	 * @param $translatedGroup (object translatedGroup)
 	 * @public
 	*/
-	function removeTranslatedGroupFromDatabase ($translatedGroup) {
-		return $translatedGroup->removeFromDatabase ();
+	function removeTranslationFromDatabase ($translatedGroup) {
+		if ($this->existsTranslatedGroup ($translatedGroup->getLanguageCode ())) {
+			return $translatedGroup->removeFromDatabase ();
+		} else {
+			return "ERROR_GROUP_TRANSLATION_DOESNT_EXISTS {$translatedGroup->getLanguageCode ()}";
+		}
 	}
 
 }
