@@ -69,8 +69,73 @@ class group extends databaseObject {
 	
 	/*Public functions*/
 	
+	/**
+	 * Returns that a group (or better the users) has a permission
+	 *
+	 * @param $permessionName (string)
+	 * @public
+	 * @return (bool)
+	*/
 	function hasPermission ($permissionName) {
+		$permissionName = $this->db->escapeString ($permissionName);
+		$sql = "SELECT enabled FROM {$this->db->getPrefix ()}groupPermissions WHERE groupID='{$this->getID ()}' AND permissionName='$permissionName'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			if ($this->db->numRows ($q) == 1) {
+				$row = $this->db->fetchArray ($q);
+				if ($row['enabled'] == 'Y') {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			return $q;
+		}
 	}
+	
+	/**
+	 * Assign a permission to a group
+	 *
+	 * @param $permissionName (string)
+	 * @param $enabled (bool) If true group can do it.
+	 * @public
+	*/
+	function assignPermission ($permissionName, $enabled) {
+		$permissionName = $this->db->escapeString ($permissionName);
+		$sql = "SELECT enabled FROM {$this->db->getPrefix ()}groupPermissions WHERE groupID='{$this->getID ()}' AND permissionName='$permissionName'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			if ($this->db->numRows ($q) == 1) {
+				if ($enabled) {
+					$enabled = 'Y';
+				} else {
+					$enabled = 'N';
+				}
+				$sql = "UPDATE {$this->db->getPrefix ()}groupPermissions SET enabled='$enabled' WHERE groupID='{$this->getID ()}' AND permissionName='$permissionName'";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			} else {
+				if ($enabled) {
+					$enabled = 'Y';
+				} else {
+					$enabled = 'N';
+				}
+				$groupID = $this->getID ();
+				$sql = "INSERT INTO {$this->db->getPrefix ()}groupPermissions (groupID, permissionName, enabled) VALUES ('$groupID', '$permissionName', '$enabled')";
+				$q = $this->db->query ($sql);
+				if (isError ($q)) {
+					return $q;
+				}
+			}
+		} else {
+			return $q;
+		}
+	}	
 	
 	/**
 	 * Adds a user to the group.

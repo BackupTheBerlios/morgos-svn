@@ -122,7 +122,20 @@ class user extends databaseObject {
 	}
 
 	
-	function hasPermission () {
+	/**
+	 * Returns that a user has a permission to do something
+	 *
+	 * @param $permissionName
+	 * @public
+	 * @return (bool)
+	*/
+	function hasPermission ($permissionName) {
+		foreach ($this->getAllGroups () as $group) {
+			if ($group->hasPermission ($permissionName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -142,11 +155,24 @@ class user extends databaseObject {
 	function getEmail () { return $this->getOption ('email'); }
 	
 	/**
-	 * Gets all the groups where the user is ing
-	 * @warning Unimplemented
+	 * Gets all the groups where the user is in
 	 *
-	 * @returns (nothing)
 	 * @public
+	 * @return (object group array)
 	*/	
-	function getAllGroups () {}
+	function getAllGroups () {
+		$sql = "SELECT groupID FROM {$this->db->getPrefix ()}group_users WHERE userID='{$this->getID ()}'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$allGroups = array ();
+			while ($row = $this->db->fetchArray ($q)) {
+				$g = $this->getCreator ()->newGroup ();
+				$g->initFromDatabaseID ($row['groupID']);
+				$allGroups[] = $g;
+			}
+			return $allGroups;
+		} else {
+			return $q;
+		}
+	}
 }

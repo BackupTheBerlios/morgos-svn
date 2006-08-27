@@ -258,6 +258,7 @@ class userManagerTest extends TestCase {
 		
 		$r = $user->removeFromGroup ($group);
 		$this->assertEquals ("ERROR_GROUP_USER_NOT_IN_GROUP", $r, 'Wrong error returned: '.$r);
+		$user->addToGroup ($group);
 	}
 	
 	function testIsUserInGroup () {
@@ -274,6 +275,37 @@ class userManagerTest extends TestCase {
 		$r = $user->isInGroup ($group);
 		$this->assertFalse ($r, 'Wrong result returned, should be false');
 	}
+	
+	
+	function testAssignPermission () {
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('normalUsers');
+		$group->assignPermission ('read_admin', false);
+		$this->assertFalse ($group->hasPermission ('read_admin'), 'Wrong user permission');		
+		$this->assertFalse ($group->hasPermission ('not_existing_permission'), 'Wrong not existing permission');
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('administrator');
+		$group->assignPermission ('read_admin', true);
+		$this->assertTrue ($group->hasPermission ('read_admin'), 'Wrong admin permission');
+		$group->assignPermission ('read_admin', false);
+		$this->assertFalse ($group->hasPermission ('read_admin'), 'Wrong admin permission (update 1)');
+		$group->assignPermission ('read_admin', true);
+		$this->assertTrue ($group->hasPermission ('read_admin'), 'Wrong admin permission (update 2)');
+	}
+	
+	function testUserHasPermission () {
+		$admin = $this->userManager->newGroup ();
+		$admin->initFromDatabaseGenericName ('administrator');
+		$group = $this->userManager->newGroup ();
+		$group->initFromDatabaseGenericName ('normalUsers');
+		$administrator = $this->userManager->newUser ();
+		$administrator->initFromDatabaseLogin ('administrator');
+		$administrator->addToGroup ($group);
+		$this->assertTrue ($administrator->hasPermission ('read_admin'), 'Admin error');
+		$user = $this->userManager->newUser ();
+		$user->initFromDatabaseLogin ('normalUser');
+		$this->assertFalse ($user->hasPermission ('read_admin'), 'User error');
+	}	
 	
 	/*translated groups functions*/
 	
@@ -334,7 +366,6 @@ class userManagerTest extends TestCase {
 	}
 	
 	function testAddTranslatedGroupOption () {
-		var_dump ($this->userManager->getAllOptionsForTranslatedGroup ());
 		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Options are not empty');
 		$anOption = new dbField ();
 		$anOption->name = 'anOption';
@@ -362,6 +393,5 @@ class userManagerTest extends TestCase {
 		$r = $this->userManager->removeOptionFromTranslatedGroup ('anOption');
 		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS anOption", $r, 'Wrong error returned');
 	}
-	
 }
 ?>

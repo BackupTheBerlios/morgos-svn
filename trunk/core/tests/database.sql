@@ -25,7 +25,15 @@ CREATE TABLE {prefix}translatedGroups (
 
 CREATE TABLE {prefix}group_users (
   groupID int(11) NOT NULL,
-  userID int(11) NOT NULL
+  userID int(11) NOT NULL,
+  UNIQUE KEY (groupID, userID)
+);
+
+CREATE TABLE {prefix}groupPermissions (
+  groupID int(11) NOT NULL,
+  permissionName varchar(255) NOT NULL,
+  enabled ENUM('Y', 'N') NOT NULL,
+  UNIQUE KEY (groupID, permissionName)
 );
 
 CREATE TABLE {prefix}pages (
