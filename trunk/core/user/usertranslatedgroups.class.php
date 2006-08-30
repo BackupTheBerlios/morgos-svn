@@ -47,7 +47,7 @@ class translatedGroup extends databaseObject {
 		
 		$lCode = new dbField ('languageCode', 'varchar(5)');		
 	
-		parent::databaseObject ($db, $allExtraOptions, array ('name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', &$creator);
+		parent::databaseObject ($db, $allExtraOptions, array ('name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', $creator);
 	}
 
 	/**
