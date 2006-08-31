@@ -78,46 +78,49 @@ class eventManagerTest extends TestCase {
 	}
 	
 	function testAddCallback () {
-		$this->runEvent->addCallback ($this->onRunCallback);
-		$this->assertTrue ($this->runEvent->existsCallback ('onRun'), 'Not added');
-		$r = $this->runEvent->addCallback ($this->onRunCallback);
+		$this->eventManager->addEvent ($this->runEvent);
+		$r = $this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
+		$this->assertFalse (isError ($r));
+		$this->assertTrue ($this->eventManager->getEvent ('run')->existsCallback ($this->onRunCallback->getName ()) , 'Not added');
+		$r = $this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$this->assertEquals ($r, "ERROR_EVENT_CALLBACK_EXISTS onRun", 'Wrong error returned');
 	}
 	
 	function testRemoveCallback () {
-		$r = $this->runEvent->removeCallback ($this->onRunCallback->getName ());
+		$this->eventManager->addEvent ($this->runEvent);
+		$r = $this->eventManager->unSubscribeFromEvent ('run', $this->onRunCallback);
 		$this->assertEquals ($r, "ERROR_EVENT_CALLBACK_DOESNT_EXISTS onRun", 'Wrong error');
 		
-		$this->runEvent->addCallback ($this->onRunCallback);
-		$r = $this->runEvent->removeCallback ($this->onRunCallback->getName ());
+		$this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
+		$r = $this->eventManager->unSubscribeFromEvent ('run', $this->onRunCallback);
 		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertFalse ($this->runEvent->existsCallback ('onRun'), 'Not removed');
+		$this->assertFalse ($this->eventManager->getEvent ('run')->existsCallback ('onRun'), 'Not removed');
 	}
 	
 	function testTriggerWithoutParams () {
 		$this->eventManager->addEvent ($this->runEvent);
-		$this->runEvent->addCallback ($this->onRunCallback);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$a = $this->eventManager->triggerEvent ('run');
 		$this->assertEquals (array ('onRun'=> false), $a);
 	}
 	
 	function testTriggerMultiple () {
 		$this->eventManager->addEvent ($this->runEvent);
-		$this->runEvent->addCallback ($this->onRunCallback);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$this->onRunCallback2 = new callback ('onRun2', 'onRun2');
-		$this->runEvent->addCallback ($this->onRunCallback2);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunCallback2);
 		$a = $this->eventManager->triggerEvent ('run');
 		$this->assertEquals (array ('onRun'=> false, 'onRun2'=>true), $a);
 	}
 	
 	function testTriggerWithParams () {
 		$this->eventManager->addEvent ($this->runEvent);
-		$this->runEvent->addCallback ($this->onRunCallback);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$test1 = 0;
 		$ob = new testObject ();
 		$ob->testValue = -1;
 		$this->onRunWithParams = new callback ('onRunWithParams', 'onRunWithParams',  array (&$test1, $ob));
-		$this->runEvent->addCallback ($this->onRunWithParams);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunWithParams);
 		$test1 = 3;
 		$ob->testValue = 5;
 		$a = $this->eventManager->triggerEvent ('run');
@@ -127,7 +130,7 @@ class eventManagerTest extends TestCase {
 	function testTriggerWithStaticObject () {
 		$this->eventManager->addEvent ($this->runEvent);
 		$this->onRunWithStaticObject = new callback ('onRunWithStaticObject', array ('testObject', 'staticFunction'));
-		$this->runEvent->addCallback ($this->onRunWithStaticObject);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunWithStaticObject);
 		$a = $this->eventManager->triggerEvent ('run');
 		$this->assertEquals (array ('onRunWithStaticObject'=> 'static'), $a);
 	}
@@ -137,7 +140,7 @@ class eventManagerTest extends TestCase {
 		$ob = new testObject ();
 		$ob->testValue = 0;
 		$this->onRunWithNonStaticObject = new callback ('onRunWithNonStaticObject', array ($ob, 'nonStaticFunction'));
-		$this->runEvent->addCallback ($this->onRunWithNonStaticObject);
+		$this->eventManager->subscribeToEvent ('run', $this->onRunWithNonStaticObject);
 		$ob->testValue = 7;
 		$a = $this->eventManager->triggerEvent ('run');
 		$this->assertEquals (array ('onRunWithNonStaticObject'=> 7), $a);
@@ -149,7 +152,7 @@ class eventManagerTest extends TestCase {
 		$tCallback = new callback ('someCallback', array ($this, 'remoteEvent'), array ('param1', &$a, 'param2', &$b));
 		$a = 3;
 		$b = 4;
-		$tEvent->addCallback ($tCallback);
+		$this->eventManager->subscribeToEvent ('someEvent', $tCallback);
 		$a = $this->remoteTrigger ();
 		$this->assertEquals (array ('someCallback'=> true), $a);
 	}

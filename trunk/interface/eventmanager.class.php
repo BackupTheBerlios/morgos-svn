@@ -189,8 +189,8 @@ class eventManager {
 	 * @public
 	*/
 	function subscribeToEvent ($eventName, $callback) {
-		if ($this->exitsEvent ($eventName)) {
-			return $this->getEvent->addCallback ($callback);
+		if ($this->existsEvent ($eventName)) {
+			return $this->getEvent ($eventName)->addCallback ($callback);
 		} else {
 			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
 		}
@@ -200,12 +200,12 @@ class eventManager {
 	 * Unsunscribes from an event
 	 *
 	 * @param $eventName (string)
-	 * @param $callbackName (object callback)
+	 * @param $callback (object callback)
 	 * @public
 	*/
-	function unsubscribeFromEvent ($eventName, $callbackName) {
-		if ($this->exitsEvent ($eventName)) {
-			return $this->getEvent->removeCallback ($callbackName);
+	function unsubscribeFromEvent ($eventName, $callback) {
+		if ($this->existsEvent ($eventName)) {
+			return $this->getEvent ($eventName)->removeCallback ($callback->getName ());
 		} else {
 			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
 		}
