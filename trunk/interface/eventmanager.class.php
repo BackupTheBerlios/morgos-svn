@@ -142,9 +142,11 @@ class event {
 	*/
 	function addCallback ($callback) {
 		if (! $this->existsCallback ($callback->getName ())) {
-			$this->_callbacksList[$callback->getName ()] = $callback;
+			$this->_callbacksList[$callback->getName ()] = &$callback;
+			$a = $this->existsCallback ($callback->getName ());
 		} else {
-			return "ERROR_EVENT_CALLBACK_EXISTS {$callback->getName ()}";
+			$callbackName = $callback->getName ();
+			return "ERROR_EVENT_CALLBACK_EXISTS $callbackName";
 		}
 	}
 	
@@ -189,8 +191,12 @@ class eventManager {
 	 * @public
 	*/
 	function subscribeToEvent ($eventName, $callback) {
+		
 		if ($this->existsEvent ($eventName)) {
-			return $this->getEvent ($eventName)->addCallback ($callback);
+			$event = &$this->getEvent ($eventName);
+			$a = $event->addCallback ($callback);
+			$this->_eventsList[$eventName] = $event;
+			return $a;
 		} else {
 			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
 		}
@@ -205,7 +211,10 @@ class eventManager {
 	*/
 	function unsubscribeFromEvent ($eventName, $callback) {
 		if ($this->existsEvent ($eventName)) {
-			return $this->getEvent ($eventName)->removeCallback ($callback->getName ());
+			$event = &$this->getEvent ($eventName);
+			$a = $event->removeCallback ($callback->getName ());
+			$this->_eventsList[$eventName] = $event;
+			return $a;
 		} else {
 			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
 		}
@@ -221,7 +230,8 @@ class eventManager {
 		if (! $this->existsEvent ($event->getName ())) {
 			$this->_eventsList[$event->getName ()] = $event;
 		} else {
-			return "ERROR_EVENTMANAGER_EVENT_EXISTS {$event->getName ()}";
+			$eventName = $event->getName ();
+			return "ERROR_EVENTMANAGER_EVENT_EXISTS $eventName";
 		}
 	}
 	
@@ -249,7 +259,8 @@ class eventManager {
 	*/
 	function triggerEvent ($eventName, $eventParams = array ()) {
 		if ($this->existsEvent ($eventName)) {
-			return $this->getEvent ($eventName)->trigger ($eventParams);
+			$eventName = $this->getEvent ($eventName);
+			return $eventName->trigger ($eventParams);
 		} else {
 			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
 		}

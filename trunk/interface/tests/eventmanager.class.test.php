@@ -81,7 +81,8 @@ class eventManagerTest extends TestCase {
 		$this->eventManager->addEvent ($this->runEvent);
 		$r = $this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$this->assertFalse (isError ($r));
-		$this->assertTrue ($this->eventManager->getEvent ('run')->existsCallback ($this->onRunCallback->getName ()) , 'Not added');
+		$runEvent = $this->eventManager->getEvent ('run');
+		$this->assertTrue ($runEvent->existsCallback ($this->onRunCallback->getName ()) , 'Not added');
 		$r = $this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$this->assertEquals ($r, "ERROR_EVENT_CALLBACK_EXISTS onRun", 'Wrong error returned');
 	}
@@ -91,10 +92,11 @@ class eventManagerTest extends TestCase {
 		$r = $this->eventManager->unSubscribeFromEvent ('run', $this->onRunCallback);
 		$this->assertEquals ($r, "ERROR_EVENT_CALLBACK_DOESNT_EXISTS onRun", 'Wrong error');
 		
-		$this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
+		$r = $this->eventManager->subscribeToEvent ('run', $this->onRunCallback);
 		$r = $this->eventManager->unSubscribeFromEvent ('run', $this->onRunCallback);
 		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertFalse ($this->eventManager->getEvent ('run')->existsCallback ('onRun'), 'Not removed');
+		$runEvent = $this->eventManager->getEvent ('run');
+		$this->assertFalse ($runEvent->existsCallback ('onRun'), 'Not removed');
 	}
 	
 	function testTriggerWithoutParams () {
@@ -119,7 +121,7 @@ class eventManagerTest extends TestCase {
 		$test1 = 0;
 		$ob = new testObject ();
 		$ob->testValue = -1;
-		$this->onRunWithParams = new callback ('onRunWithParams', 'onRunWithParams',  array (&$test1, $ob));
+		$this->onRunWithParams = new callback ('onRunWithParams', 'onRunWithParams',  array (&$test1, &$ob));
 		$this->eventManager->subscribeToEvent ('run', $this->onRunWithParams);
 		$test1 = 3;
 		$ob->testValue = 5;
@@ -139,7 +141,7 @@ class eventManagerTest extends TestCase {
 		$this->eventManager->addEvent ($this->runEvent);
 		$ob = new testObject ();
 		$ob->testValue = 0;
-		$this->onRunWithNonStaticObject = new callback ('onRunWithNonStaticObject', array ($ob, 'nonStaticFunction'));
+		$this->onRunWithNonStaticObject = new callback ('onRunWithNonStaticObject', array (&$ob, 'nonStaticFunction'));
 		$this->eventManager->subscribeToEvent ('run', $this->onRunWithNonStaticObject);
 		$ob->testValue = 7;
 		$a = $this->eventManager->triggerEvent ('run');
