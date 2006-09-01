@@ -25,7 +25,14 @@ class XMLBackend {
 		}
 	}
 	
-	public function dropTable ($table) {
+	public function dropTable ($tableName) {
+		if ($this->existsTable ($tableName)) {
+			$q = new SQLActionQuery ($this->_tables[$tableName]->getNumRows ());
+			unset ($this->_tables[$tableName]);
+			return $q;
+		} else {
+			return "ERROR_XMLSQL_TABLE_NOT_FOUND $tableName";
+		}
 	}
 	
 	public function select ($from, $fields, $where, $order, $limit) {
@@ -33,15 +40,28 @@ class XMLBackend {
 			$table = $this->_tables[$from];
 			if ($fields == '*') {
 				$fields = $table->getAllFieldNames ();
+				$functions = array ();
 			} else {
 				$fields = explode (',', $fields);
-				foreach ($fields as &$field) {
+				$functions = array ();
+				foreach ($fields as $k => &$field) {
 					$field = trim ($field);
+					if (strpos ($field, '(') !== false) {
+						$function = substr ($field, 0, strpos ($field, '('));
+						$parameters = substr ($field, strpos ($field, '(') + 1, strpos ($field, ')') - strpos ($field, '(') - 1);
+						unset ($fields[$k]);
+						$func = new SQLFunction ($function, $parameters, $field); 
+						$functions[] = $func;
+					}	
 				}
 			}
-			return new SQLSelectQuery ($from, $fields, $table->selectRows ($fields, $where, $order, $limit));
+			//var_dump ($fields);
+			//var_dump ($functions);
+			$rows = $table->selectRows ($fields, $functions, $where, $order, $limit);
+			//var_dump ($rows);
+			return new SQLSelectQuery ($from, $fields, $rows);
 		} else {
-			return "ERROR_TABLE_NOT_FOUND $from";
+			return "ERROR_XMLSQL_TABLE_NOT_FOUND $from";
 		}
 	}
 	
@@ -77,6 +97,10 @@ class XMLBackend {
 			$values[$node->getAttribute ('field')] = $node->nodeValue;
 		}
 		return new row ($allFields, $values, $ID);
+	}
+	
+	function getTable ($tableName) {
+		return $this->_tables[$tableName];
 	}
 }
 ?>

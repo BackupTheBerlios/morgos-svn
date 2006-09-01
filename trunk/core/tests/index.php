@@ -63,6 +63,7 @@ class MorgOSSuit extends TestSuite {
 				$r = $dbModule->query ($sql);
 				if (isError ($r)) {
 					var_dump ($r);
+					var_dump ($sql);
 					exit ();
 				}
 			}
@@ -89,12 +90,12 @@ class MorgOSSuit extends TestSuite {
 			include_once ('core/tests/pagemanager.class.test.php');
 			include_once ('core/tests/xmlsql.class.test.php');
 		} elseif ($php == "5") {
-			//$this->addTestFile ('core/tests/databasemanager.functions.test.php');
-			//$this->addTestFile ('core/tests/config.class.test.php');
-			//$this->addTestFile ('core/tests/usermanager.class.test.php');
-			//$this->addTestFile ('core/tests/varia.functions.test.php');
-			//$this->addTestFile ('core/tests/compatible.functions.test.php');
-			//$this->addTestFile ('core/tests/pagemanager.class.test.php');
+			$this->addTestFile ('core/tests/databasemanager.functions.test.php');
+			$this->addTestFile ('core/tests/config.class.test.php');
+			$this->addTestFile ('core/tests/usermanager.class.test.php');
+			$this->addTestFile ('core/tests/varia.functions.test.php');
+			$this->addTestFile ('core/tests/compatible.functions.test.php');
+			$this->addTestFile ('core/tests/pagemanager.class.test.php');
 			$this->addTestFile ('core/tests/xmlsql.class.test.php');
 		}
 

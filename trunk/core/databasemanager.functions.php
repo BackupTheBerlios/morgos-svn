@@ -122,7 +122,7 @@ class databaseActions {
 	 * Preventing a string from SQL injection
 	*/		
 	function escapeString ($value) {
-		if (magiq_quotes_gcp ()) {
+		if (get_magic_quotes_gpc ()) {
 			$value = stripslashes ($value);
 		}
 		return addslashes ($value);

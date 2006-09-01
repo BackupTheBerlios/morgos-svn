@@ -58,20 +58,20 @@ CREATE TABLE {prefix}translatedPages (
 
 INSERT INTO {prefix}users (login, email) VALUES ('administrator', 'admin@host.org');
 INSERT INTO {prefix}users (login, email) VALUES ('normalUser', 'normalUser@host.org');
-INSERT INTO {prefix}groups (genericName, genericDescription) VALUES('administrator', 'This is the administrator group.');
-INSERT INTO {prefix}groups (genericName, genericDescription) VALUES('normalUsers', 'This is the normal users group');
+INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('administrator', 'This is the administrator group.');
+INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('normalUsers', 'This is the normal users group');
 
-INSERT INTO {prefix}groups (genericName, genericDescription) VALUES('translatedGroup', 'This is a translated group');
-INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES(3, 'NL-NL', 'Netherlands', 'NL-NL');
-INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES(3, 'NL', 'Netherlands generic', 'NL');
-INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES(3, 'FR-FR', 'French', 'FR-FR');
+INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('translatedGroup', 'This is a translated group');
+INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES (3, 'NL-NL', 'Netherlands', 'NL-NL');
+INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES (3, 'NL', 'Netherlands generic', 'NL');
+INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) VALUES (3, 'FR-FR', 'French', 'FR-FR');
 
-INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('site', '', 0, 0);
-INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('Home', '', 1, 1);
-INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('News', '', 2, 1);
-INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('Packages', '', 3, 1);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('site', '', 0, 0);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('Home', '', 1, 1);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('News', '', 2, 1);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('Packages', '', 3, 1);
 
-INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES('TranslatedPage', '', 0, 2);
-INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES('NL-NL', 'This is the dutch (Netherlands) translation. (NL-NL)', '5', 'NL-NL');
-INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES('NL', 'This is the dutch (generic) translation. (NL)', '5', 'NL');
-INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES('FR-FR', 'This is the french (french) translation. (FR-FR)', '5', 'FR-FR');
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('TranslatedPage', '', 0, 2);
+INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL-NL', 'This is the dutch (Netherlands) translation. (NL-NL)', '5', 'NL-NL');
+INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL', 'This is the dutch (generic) translation. (NL)', '5', 'NL');
+INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('FR-FR', 'This is the french (french) translation. (FR-FR)', '5', 'FR-FR');

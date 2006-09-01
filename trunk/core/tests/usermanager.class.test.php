@@ -60,7 +60,7 @@ class userManagerTest extends TestCase {
 		$a['email'] = 'THEEMAIL';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
-		$this->assertEquals (null, $result);
+		$this->assertFalse (isError ($result), 'Unexpecter error');
 		$loginExists = $this->userManager->loginIsRegistered ('THELOGIN');
 		$this->assertTrue ($loginExists, 'Login not found');	
 		$emailExists = $this->userManager->emailIsRegistered ('THEEMAIL');

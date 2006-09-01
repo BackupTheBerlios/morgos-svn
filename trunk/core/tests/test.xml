@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<database>
+	<table name="books">
+		<field type="varchar(255)">Title</field>
+		<field type="int(11)">Author</field>
+		<field type="int(1)">Rating</field>
+		<row>
+			<value field="Title">Book 1</value>
+			<value field="Author">1</value>
+			<value field="Rating">6</value>
+		</row>
+		<row>
+			<value field="Title">Book 2</value>
+			<value field="Author">1</value>
+			<value field="Rating">5</value>
+		</row>
+		<row>
+			<value field="Title">Book 3</value>
+			<value field="Author">1</value>
+			<value field="Rating">4</value>
+		</row>
+	</table>
+	<!--<table name="authors">
+		<field></field>
+		<field></field>
+	</table>-->
+</database>
