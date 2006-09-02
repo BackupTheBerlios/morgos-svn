@@ -2,6 +2,7 @@
 class XMLBackend {
 	private $_tables;
 	private $_xml;
+	private $_saveFile;
 	
 	function __construct () {
 		$this->_tables = array ();
@@ -10,11 +11,16 @@ class XMLBackend {
 
 	public function load ($database, $user, $pass) {
 		$this->_xml->load ($database.'.xml');
+		$this->_saveFile = $database.'.xml';
 		$allTablesList = $this->_xml->getElementsByTagName ('table');
 		for ($i = 0; $i<$allTablesList->length; $i++) {
 			$tableNode = $allTablesList->item ($i);
 			$this->addTable ($this->parseTable ($tableNode));
 		}
+	}
+	
+	public function save () {
+		$this->_xml->save ($this->_saveFile);
 	}
 
 	public function addTable (table $table) {

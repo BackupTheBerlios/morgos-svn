@@ -27,7 +27,8 @@ class XMLSQLTest extends TestCase {
 
 	function setUp () {
 		$this->_dbModule = databaseLoadModule ('XML');
-		$this->_dbModule->connect ('core/tests/test', 'nathan', 'nopass');
+		$this->_dbModule->connect ('core/tests', 'nathan', 'nopass');
+		$this->_dbModule->selectDatabase ('test');
 	}
 	
 	function testSimpleSelect () {
@@ -145,6 +146,18 @@ class XMLSQLTest extends TestCase {
 		$this->fail ('Not Yet implemented');
 	}
 	
+	function testInsertUniqueKey () {
+		$this->fail ('Not Yet implemented');
+	}
+	
+	function testInsertAutoIncrement () {
+		$this->fail ('Not Yet implemented');
+	}
+	
+	function testInsertNotNull () {
+		$this->fail ('Not Yet implemented');
+	}
+	
 	function testDropTable () {
 		$sql = 'DROP TABLE books';
 		$query = $this->_dbModule->query ($sql);
@@ -168,14 +181,6 @@ class XMLSQLTest extends TestCase {
 		$query = $this->_dbModule->query ('SELECT * FROM editors');
 		$this->assertFalse (isError ($query), 'Unexpecter error');
 		$this->assertEquals (0, $this->_dbModule->numRows ($query), 'Wrong data SELECT returned');
-	}
-	
-	function testUniqueKey () {
-		$this->fail ('Not Yet implemented');
-	}
-	
-	function testAutoIncrement () {
-		$this->fail ('Not Yet implemented');
 	}
 	
 	function testUpdate () {

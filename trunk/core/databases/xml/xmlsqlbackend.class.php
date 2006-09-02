@@ -252,13 +252,26 @@ class table {
 
 class XMLSQLBackend {
 	var $_XMLBackend;
+	var $_HostDir;
+	var $_User;
+	var $_Password;
 	
 	function XMLSQLBackend () {
 		$this->_XMLBackend = new XMLBackend ();
 	}
 	
-	function load ($database, $user, $password) {
-		$this->_XMLBackend->load ($database, $user, $password);
+	function connect ($dir, $user, $password) {
+		$this->_HostDir = $dir;
+		$this->_User = $user;
+		$this->_Password = $password;
+	}
+	
+	function disconnect () {
+		$this->_XMLBackend->save ();
+	}
+	
+	function load ($databaseName) {
+		$this->_XMLBackend->load ($this->_HostDir.'/'.$databaseName, $this->_User, $this->_Password);
 	}
 
 	function parseCommand ($sqlCommand) {

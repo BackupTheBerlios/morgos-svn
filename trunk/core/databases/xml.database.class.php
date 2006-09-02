@@ -12,10 +12,19 @@ class XMLDatabase extends databaseActions {
 	function XMLDatabase () {
 		include_once ('core/databases/XML/xmlsqlbackend.class.php');
 		$this->_XMLSQLBackend = new XMLSQLBackend ();
+		$this->setType ('XMLSQL');
 	}
 	
 	function connect ($db, $user, $pass) {
-		$this->_XMLSQLBackend->load ($db, $user, $pass);
+		$this->_XMLSQLBackend->connect ($db, $user, $pass);
+	}
+	
+	function disconnect () {
+		$this->_XMLSQLBackend->disconnect ();
+	}
+	
+	function selectDatabase ($dbName) {
+		$this->_XMLSQLBackend->load ($dbName);
 	}
 	
 	function query ($sql) {
@@ -25,9 +34,6 @@ class XMLDatabase extends databaseActions {
 	function fetchArray ($query) {
 		return $query->fetchArray ();
 		
-	}
-	
-	function selectDatabase ($a) {
 	}
 	
 	function numRows ($query) {
