@@ -12,7 +12,6 @@ class XMLBackend {
 		$this->_xml->load ($database.'.xml');
 		$allTablesList = $this->_xml->getElementsByTagName ('table');
 		for ($i = 0; $i<$allTablesList->length; $i++) {
-			//var_dump ($i);
 			$tableNode = $allTablesList->item ($i);
 			$this->addTable ($this->parseTable ($tableNode));
 		}
@@ -43,6 +42,10 @@ class XMLBackend {
 				$functions = array ();
 			} else {
 				$fields = explode (',', $fields);
+				foreach ($fields as $key => $field) {
+					$field = trim ($field);
+					$fields[$key] = $field;
+				}
 				$functions = array ();
 				foreach ($fields as $k => &$field) {
 					$field = trim ($field);
@@ -55,10 +58,7 @@ class XMLBackend {
 					}	
 				}
 			}
-			//var_dump ($fields);
-			//var_dump ($functions);
 			$rows = $table->selectRows ($fields, $functions, $where, $order, $limit);
-			//var_dump ($rows);
 			return new SQLSelectQuery ($from, $fields, $rows);
 		} else {
 			return "ERROR_XMLSQL_TABLE_NOT_FOUND $from";

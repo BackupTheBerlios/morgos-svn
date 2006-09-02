@@ -75,16 +75,70 @@ class XMLSQLTest extends TestCase {
 		$this->fail ('Not Yet implemented');
 	}
 	
-	function testSelectWithWhere () {
-		$this->fail ('Not Yet implemented');
+	function testSelectWithSimpleLiteralWhere () {
+		$sql = 'SELECT * FROM books WHERE Title=\'Book 1\'';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
+		$this->assertEquals (array ($row1), $allRows);
+		$this->assertEquals (1, $this->_dbModule->numRows ($query));
 	}
 	
 	function testAdvancedSelect () {
 		$this->fail ('Not Yet implemented');
 	}
 	
+	function testSelectWithCount () {
+		$sql = 'SELECT COUNT(Title), Title, Rating FROM books';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$row1 = array ('COUNT(Title)'=>3, 'Title'=>'Book 1', 'Rating'=>'6');
+		$row2 = array ('COUNT(Title)'=>3, 'Title'=>'Book 2', 'Rating'=>'5');
+		$row3 = array ('COUNT(Title)'=>3, 'Title'=>'Book 3', 'Rating'=>'4');
+		$this->assertEquals (array ($row1, $row2, $row3), $allRows);
+		$this->assertEquals (3, $this->_dbModule->numRows ($query));
+	}
+		
+	function testSelectWithCountAndLimit () {
+		$sql = 'SELECT COUNT(Title), Title, Rating FROM books LIMIT 2';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$row1 = array ('COUNT(Title)'=>2, 'Title'=>'Book 1', 'Rating'=>'6');
+		$row2 = array ('COUNT(Title)'=>2, 'Title'=>'Book 2', 'Rating'=>'5');
+		$this->assertEquals (array ($row1, $row2), $allRows);
+		$this->assertEquals (2, $this->_dbModule->numRows ($query));
+	}
+	
 	function testSimpleInsert () {
-		$this->fail ('Not Yet implemented');
+		$sql = 'INSERT INTO books (Title, Author, Rating) VALUES (\'Book 4\', \'1\', \'3\')';
+		$query = $this->_dbModule->query ($sql);
+		$sql = 'INSERT INTO books (Title, Author, Rating) VALUES(\'Book 5\', \'1\', \'2\')';
+		$query = $this->_dbModule->query ($sql);
+		$this->assertFalse (isError ($query), 'Unexpected error');
+		$sql = 'SELECT * FROM books';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
+		$row2 = array ('Title'=>'Book 2', 'Author'=>'1', 'Rating'=>'5');
+		$row3 = array ('Title'=>'Book 3', 'Author'=>'1', 'Rating'=>'4');
+		$row4 = array ('Title'=>'Book 4', 'Author'=>'1', 'Rating'=>'3');
+		$row5 = array ('Title'=>'Book 5', 'Author'=>'1', 'Rating'=>'2');
+
+		$this->assertEquals (array ($row1, $row2, $row3, $row4, $row5), $allRows);
+		$this->assertEquals (5, $this->_dbModule->numRows ($query));
+		
 	}
 	
 	function testInsertWithDefaultValues () {

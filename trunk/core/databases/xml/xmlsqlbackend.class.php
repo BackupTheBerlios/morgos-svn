@@ -103,8 +103,15 @@ class row {
 	
 	function areConditionsTrue ($conditions) {
 		foreach ($conditions as $condition) {
+			$condition = cloneob ($condition);
 			$fieldName = $condition->getFieldName ();
-			var_dump ($fieldName);
+			$val = trim ($condition->_value2);
+			if ($val[0] == '\'') {
+				$val = substr ($val, 1, strlen ($val)-2);
+			} else {
+				$val = $this->_values[$val];
+			}
+			$condition->_value2 = $val; //TODO: fix hack
 			if (! $condition->isTrue ($this->_values[$fieldName])) {
 				return false;
 			}
@@ -329,22 +336,26 @@ class XMLSQLBackend {
 	function parseInsert ($sqlSequence) {
 		$tableName = $this->getDataAfterKeyword ($sqlSequence, 'INTO');
 		$orderOfFields = explode (',', substr ($sqlSequence, strpos ($sqlSequence, '(')+1, strpos ($sqlSequence, ')')-strpos ($sqlSequence, '(')-1));
+		foreach ($orderOfFields as $key => $field) {
+			$field = trim ($field);
+			$orderOfFields[$key] = $field;
+		}
 		$valuesString = $this->getAllDataAfterKeyword ($sqlSequence, 'VALUES');
 		$valuesString = trim ($valuesString);
 		$valuesString[0] = ' ';
 		$valuesString[strlen ($valuesString)-1] = ' ';
 		$valuesString = trim ($valuesString);
 		$valuesFields = $this->splitData (',', $valuesString);
-		
+
 		if (count ($orderOfFields) != count ($valuesFields)) {
 			return "ERROR_XMLSQL_PARSE_ERROR";
 		}
 		$table = $this->_XMLBackend->getTable ($tableName);
 		$tableFields = $table->getFields ();
 		foreach ($tableFields as $field) {
-			if ($key = array_search ($field->getName (), $orderOfFields)) {
-				//$key = key ($field->getName (), $orderOfFields);
-				$value = $valuesFields[$key];
+			$key = array_search ($field->getName (), $orderOfFields);
+			if ($key !== false) {
+				$value = $this->parseBetweenTwoChars ('\'', '\'', $valuesFields[$key]);
 			} else {
 				$value = NULL;
 			}
@@ -360,16 +371,13 @@ class XMLSQLBackend {
 	}
 	
 	function parseWhere ($sqlSequence) {
-		var_dump ($sqlSequence);
-		
 		$data = trim ($this->findDataUntilNextKeyword ($this->getAllDataAfterKeyword ($sqlSequence, 'WHERE')));
 		$allConditions = array ();
 		if (strlen ($data) !== 0) {
+			//var_dump ($this->findDataUntilNextKeyword ($this->getAllDataAfterKeyword ($sqlSequence, 'WHERE')));
 			$fieldName = substr ($data, 0, strpos ($data, '='));
-			$value = substr ($data, strpos ($data, '='));
+			$value = substr ($data, strpos ($data, '=')+1);
 			$condition = new SQLCondition ($fieldName, '=', $value);
-			var_dump ($data);
-			echo '<br />';
 			$allConditions[] = $condition;
 		}
 		return $allConditions;
@@ -391,10 +399,14 @@ class XMLSQLBackend {
 	}
 	
 	function getAllDataAfterKeyword ($sqlSequence, $keyword) {
-		$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, " $keyword ")+strlen($keyword)+2);
-		$afterKeyword = trim ($afterKeyword);
-		$data = substr ($afterKeyword, 0);
-		return $data;
+		if (stripos ($sqlSequence, $keyword)) {
+			$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, $keyword)+strlen($keyword));
+			$afterKeyword = trim ($afterKeyword);
+			$data = substr ($afterKeyword, 0);
+			return $data;
+		} else {
+			return '';
+		}
 	}
 	
 	function findDataUntilNextKeyword ($sqlSequence) {
@@ -406,12 +418,12 @@ class XMLSQLBackend {
 		$i = 0;
 		while ($i < strlen ($sqlSequence)) {
 			if ($i != 0) {
-				if ($sqlSequence[$i-1] == ' ') {
+				if (($sqlSequence[$i-1] == ' ') and ($inString == false)) {
 					$data .= $latestWord;
 					$latestWord = '';
 				}
 			}
-			
+			$latestWord .= $sqlSequence[$i];
 			if ($sqlSequence[$i] == "'"){
 				if ($i != 0) {
 					if ($sqlSequence[$i-1] !== '\\') { 
@@ -420,20 +432,16 @@ class XMLSQLBackend {
 						} else {
 							$inString = true;
 						}
-					} else {
-						$latestWord .= $sqlSequence[$i];
 					}
-				} else {
-					$latestWord .= $sqlSequence[$i];
 				}
-			} else {
-				$latestWord .= $sqlSequence[$i];
 			}
+
 			if ((in_array ($latestWord, $allKeywords)) and ($inString == false)) {
 				return $data;
 			}
 			$i++;
 		}
+		$data .= $latestWord;
 		return $data;
 	}
 	

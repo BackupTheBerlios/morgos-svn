@@ -81,6 +81,10 @@ class XMLDatabase extends databaseActions {
 		}*/
 		return array ();
 	}
+	
+	function latestInsertID () {
+		return 1;
+	}
 }
 }
 

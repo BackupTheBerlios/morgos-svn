@@ -403,7 +403,7 @@ class databaseObject {
 				$sql.= "$name,";
 			}
 			$sql[strlen ($sql)-1] = ')'; // remove latest , with )			
-			$sql .= ' VALUES(';
+			$sql .= ' VALUES (';
 			foreach ($allOptions as $dbField) {
 				$value = $this->db->escapeString ($dbField->getValue ());
 				$sql.= "'$value',";
