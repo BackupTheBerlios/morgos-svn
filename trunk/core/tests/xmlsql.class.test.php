@@ -46,16 +46,44 @@ class XMLSQLTest extends TestCase {
 	}
 	
 	function testSelectWithLimit () {
+		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
+		$row2 = array ('Title'=>'Book 2', 'Author'=>'1', 'Rating'=>'5');
+		$row3 = array ('Title'=>'Book 3', 'Author'=>'1', 'Rating'=>'4');
 		$sql = 'SELECT * FROM books LIMIT 2';
 		$query = $this->_dbModule->query ($sql);
 		$allRows = array ();
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
-		$row2 = array ('Title'=>'Book 2', 'Author'=>'1', 'Rating'=>'5');
 		$this->assertEquals (array ($row1, $row2), $allRows);
 		$this->assertEquals (2, $this->_dbModule->numRows ($query));
+		
+		$sql = 'SELECT * FROM books LIMIT 1,2';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$this->assertEquals (array ($row2, $row3), $allRows);
+		$this->assertEquals (2, $this->_dbModule->numRows ($query));
+		
+		$sql = 'SELECT * FROM books LIMIT 1,5';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$this->assertEquals (array ($row2, $row3), $allRows);
+		$this->assertEquals (2, $this->_dbModule->numRows ($query));
+		
+		$sql = 'SELECT * FROM books LIMIT 4,5';
+		$query = $this->_dbModule->query ($sql);
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$this->assertEquals (array (), $allRows);
+		$this->assertEquals (0, $this->_dbModule->numRows ($query));
 	}
 	
 	function testSelectOnlySomeFields () {
@@ -88,7 +116,7 @@ class XMLSQLTest extends TestCase {
 		$this->assertEquals (1, $this->_dbModule->numRows ($query));
 	}
 	
-	function testAdvancedSelect () {
+	function testSelectAdvanced () {
 		$this->fail ('Not Yet implemented');
 	}
 	
@@ -119,7 +147,7 @@ class XMLSQLTest extends TestCase {
 		$this->assertEquals (2, $this->_dbModule->numRows ($query));
 	}
 	
-	function testSimpleInsert () {
+	function testInsertSimple () {
 		$sql = 'INSERT INTO books (Title, Author, Rating) VALUES (\'Book 4\', \'1\', \'3\')';
 		$query = $this->_dbModule->query ($sql);
 		$sql = 'INSERT INTO books (Title, Author, Rating) VALUES(\'Book 5\', \'1\', \'2\')';
@@ -139,7 +167,6 @@ class XMLSQLTest extends TestCase {
 
 		$this->assertEquals (array ($row1, $row2, $row3, $row4, $row5), $allRows);
 		$this->assertEquals (5, $this->_dbModule->numRows ($query));
-		
 	}
 	
 	function testInsertWithDefaultValues () {

@@ -275,7 +275,7 @@ class databaseObject {
 	*/
 	function initFromDatabaseID ($ID) {
 		if (! is_numeric ($ID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED". __FILE__."::".__LINE__;
 		}
 		$prefix = $this->db->getPrefix ();
 		$tableName = $this->getTableName ();
@@ -433,7 +433,7 @@ class databaseObject {
 			$IDName = $this->getIDName ();
 			$ID = $this->getID ();
 			if (! is_numeric ($ID)) {
-				return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+				return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED". __FILE__."::".__LINE__;
 			}
 			$sql = "DELETE FROM $prefix$tableName WHERE $IDName='$ID'";
 			$q = $this->db->query ($sql);

@@ -43,6 +43,7 @@ class databaseManagerTest extends TestCase {
 		$allModules = databaseGetAllModules ();
 		$allModulesExpected = array ();
 		$allModulesExpected['MySQL'] = 'mysqlDatabaseActions';
+		//$allModulesExpected['XML'] = 'XMLDatabase';
 		$allModulesExpected['EXISTINGBUTNOTWORKING'] = 'EMPTY';
 		$this->assertEquals ($allModulesExpected, $allModules);
 		

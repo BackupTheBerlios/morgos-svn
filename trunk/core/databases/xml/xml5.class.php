@@ -40,7 +40,7 @@ class XMLBackend {
 		}
 	}
 	
-	public function select ($from, $fields, $where, $order, $limit) {
+	public function select ($from, $fields, $where, $order,  $startlimit, $limitlength) {
 		if ($this->existsTable ($from)) {
 			$table = $this->_tables[$from];
 			if ($fields == '*') {
@@ -64,7 +64,7 @@ class XMLBackend {
 					}	
 				}
 			}
-			$rows = $table->selectRows ($fields, $functions, $where, $order, $limit);
+			$rows = $table->selectRows ($fields, $functions, $where, $order, $startlimit, $limitlength);
 			return new SQLSelectQuery ($from, $fields, $rows);
 		} else {
 			return "ERROR_XMLSQL_TABLE_NOT_FOUND $from";

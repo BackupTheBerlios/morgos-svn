@@ -177,7 +177,7 @@ class table {
 	function getRows () {return $this->_rows;}
 	function getFields () {return $this->_fields;}
 	
-	function selectRows ($fieldNames, $functions, $conditions, $order, $limit) {
+	function selectRows ($fieldNames, $functions, $conditions, $order,  $startlimit, $limitlength) {
 		$rows = array ();
 		
 		foreach ($this->getRows () as $row) {
@@ -193,9 +193,15 @@ class table {
 
 		//order rows
 		
-		if (($limit != 0) and (count ($rows) > $limit )) {
-			$rows = array_slice ($rows, 0, $limit);
-		}	
+		if ($limitlength !== 0) {
+			if (count ($rows) > $startlimit + $limitlength) {
+				$rows = array_slice ($rows, $startlimit, $limitlength);
+			} elseif (count ($rows) > $startlimit) {
+				$rows = array_slice ($rows, $startlimit);
+			} else {
+				return (array ());
+			} 
+		}
 		
 				
 		foreach ($functions as &$func) {
@@ -305,8 +311,22 @@ class XMLSQLBackend {
 		$fieldData = trim ($this->findDataUntilNextKeyword ($sqlSequence));
 		$where = $this->parseWhere ($sqlSequence);
 		$order = "";
-		$limit = $this->getDataAfterKeyword ($sqlSequence, 'LIMIT');
-		return $this->_XMLBackend->select ($from, $fieldData, $where, $order, $limit);
+		list ($startlimit, $lengthlimit) = $this->parseLimit ($sqlSequence);
+		return $this->_XMLBackend->select ($from, $fieldData, $where, $order, $startlimit, $lengthlimit);
+	}
+	
+	function parseLimit ($sqlSequence) {
+		$data = $this->getDataAfterKeyword ($sqlSequence, 'LIMIT');
+		if (strlen (trim ($data)) == 0) {
+			$start = 0;
+			$length = 0;
+		} elseif (strpos ($data, ',') === false){
+			$start = 0;
+			$length = trim ($data);
+		} else {
+			list ($start, $length) = explode (',', $data);
+		}
+		return (array ($start, $length));
 	}
 	
 
@@ -401,14 +421,18 @@ class XMLSQLBackend {
 	}
 	
 	function getDataAfterKeyword ($sqlSequence, $keyword) {
-		$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, " $keyword ")+strlen($keyword)+2);
-		$afterKeyword = trim ($afterKeyword);
-		if ($this->firstSpace ($afterKeyword)) {
-			$data = substr ($afterKeyword, 0, $this->firstSpace ($afterKeyword));
+		if (stripos ($sqlSequence, " $keyword ") !== false) {
+			$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, " $keyword ")+strlen($keyword)+2);
+			$afterKeyword = trim ($afterKeyword);
+			if ($this->firstSpace ($afterKeyword)) {
+				$data = substr ($afterKeyword, 0, $this->firstSpace ($afterKeyword));
+			} else {
+				$data = substr ($afterKeyword, 0);
+			}
+			return $data;
 		} else {
-			$data = substr ($afterKeyword, 0);
-		}
-		return $data;
+			return '';
+		} 
 	}
 	
 	function getAllDataAfterKeyword ($sqlSequence, $keyword) {
