@@ -42,7 +42,8 @@ if ($php == "4") {
 	$suite = new MorgOSInterfaceSuite ();
 	//$eventTest = new PHPUnit2_Framework_TestSuite('eventManagerTest');
 	$suite->addTestFile ('interface/tests/eventmanager.class.test.php');
-		$result = new TestResult;
+	$suite->addTestFile ('interface/tests/pluginmanager.class.test.php');
+	$result = new TestResult;
 	$result->addListener(new SimpleTestListener);
 	$suite->run ($result);
 	$suite = null;

@@ -72,7 +72,7 @@ class group extends databaseObject {
 	/**
 	 * Returns that a group (or better the users) has a permission
 	 *
-	 * @param $permessionName (string)
+	 * @param $permissionName (string)
 	 * @public
 	 * @return (bool)
 	*/

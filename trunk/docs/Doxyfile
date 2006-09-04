@@ -125,7 +125,9 @@ FILE_PATTERNS          = *.c \
                          *.MM \
                          *.PY
 RECURSIVE              = YES
-EXCLUDE                = 
+EXCLUDE                = ../interface/tests \
+			 ../core/tests \
+			 ../core/databases/xml
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 

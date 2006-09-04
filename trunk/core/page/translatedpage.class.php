@@ -45,8 +45,8 @@ class translatedPage extends databaseObject {
 	/**
 	 * Initializes the object for a page and translation.
 	 *
-	 * @pageID (int)
-	 * @languageCode (string)
+	 * @param $pageID (int)
+	 * @param $languageCode (string)
 	 * @public
 	*/
 	function initFromDatabasePageIDandLanguageCode ($pageID, $languageCode) {
