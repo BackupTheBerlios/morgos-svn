@@ -222,7 +222,7 @@ class table {
 		}
 		
 				
-		foreach ($functions as &$func) {
+		foreach ($functions as $key=>$func) {
 			switch ($func->getFunction ()) {
 				case 'COUNT':
 					$func->setResult (count ($rows));
@@ -230,12 +230,14 @@ class table {
 				default:
 					return "ERROR_XMLSQL_PARSE_ERRROR";
 			}
+			$functions[$key] = $func;
 		}
 		
-		foreach ($rows as &$row) {
+		foreach ($rows as $key=>$row) {
 			foreach ($functions as $func) {
 				$row[$func->getAlias ()] = $func->getResult ();
 			}
+			$rows[$key] = $row;
 		}
 
 		return $rows;
@@ -393,8 +395,8 @@ class XMLSQLBackend {
 		}
 		$valuesString = $this->getAllDataAfterKeyword ($sqlSequence, 'VALUES');
 		$valuesString = trim ($valuesString);
-		$valuesString[0] = ' ';
-		$valuesString[strlen ($valuesString)-1] = ' ';
+		$valuesString{0} = ' ';
+		$valuesString{strlen ($valuesString)-1} = ' ';
 		$valuesString = trim ($valuesString);
 		$valuesFields = $this->splitData (',', $valuesString);
 
