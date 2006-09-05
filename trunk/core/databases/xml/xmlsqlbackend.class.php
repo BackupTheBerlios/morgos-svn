@@ -102,21 +102,40 @@ class row {
 	}
 	
 	function areConditionsTrue ($conditions) {
+		$curCheck = true;
+		$prevCond = 'AND';
 		foreach ($conditions as $condition) {
-			$condition = cloneob ($condition);
-			$fieldName = $condition->getFieldName ();
-			$val = trim ($condition->_value2);
-			if ($val[0] == '\'') {
-				$val = substr ($val, 1, strlen ($val)-2);
+			if (is_string ($condition)) {
+				$prevCond = $condition;
 			} else {
-				$val = $this->_values[$val];
-			}
-			$condition->_value2 = $val; //TODO: fix hack
-			if (! $condition->isTrue ($this->_values[$fieldName])) {
-				return false;
+				$condition = cloneob ($condition);
+				$fieldName = $condition->getFieldName ();
+				$val = trim ($condition->_value2);
+				if ($val[0] == '\'') {
+					$val = substr ($val, 1, strlen ($val)-2);
+				} else {
+					
+					$val = $this->_values[$val];
+				}
+				$condition->_value2 = $val; //TODO: fix hack
+				$this->_values[$fieldName];
+				if ($prevCond == 'AND') {
+					if ($condition->isTrue ($this->_values[$fieldName])) {
+						// no change
+					} else {
+						$curCheck = false;
+					}
+					
+				} else {
+					if ($condition->isTrue ($this->_values[$fieldName])) {
+						$curCheck = true;
+					} else {
+						// no change
+					}
+				}
 			}
 		}
-		return true;
+		return $curCheck;
 	}
 	
 	function getID () {return $this->_ID;}
@@ -179,7 +198,6 @@ class table {
 	
 	function selectRows ($fieldNames, $functions, $conditions, $order,  $startlimit, $limitlength) {
 		$rows = array ();
-		
 		foreach ($this->getRows () as $row) {
 			if ($row->areConditionsTrue ($conditions)) {
 				$rowToAdd = array ();
@@ -404,20 +422,63 @@ class XMLSQLBackend {
 	}
 	
 	function parseWhere ($sqlSequence) {
-		$data = trim ($this->findDataUntilNextKeyword ($this->getAllDataAfterKeyword ($sqlSequence, 'WHERE')));
+		$data = $this->getAllDataAfterKeyword ($sqlSequence, 'WHERE');
+		if (strlen (trim ($data)) == 0) {
+			return array ();
+		}
 		$allConditions = array ();
-		if (strlen ($data) !== 0) {
-			//var_dump ($this->findDataUntilNextKeyword ($this->getAllDataAfterKeyword ($sqlSequence, 'WHERE')));
-			$fieldName = substr ($data, 0, strpos ($data, '='));
-			$value = substr ($data, strpos ($data, '=')+1);
-			$condition = new SQLCondition ($fieldName, '=', $value);
+		$i = 0;
+		while (true) {
+			$nextkeyword = trim ($this->getNextKeyword ($data));
+			$datacond = trim ($this->findDataUntilNextKeyword ($data));
+			$data = $this->getAllDataAfterKeyword ($data, $nextkeyword);
+			list ($fieldName, $value2) = $this->splitData ('=', $datacond);
+			$operator = '=';
+			$condition = new SQLCondition ($fieldName, $operator, $value2);
 			$allConditions[] = $condition;
+			if ($nextkeyword == 'AND' or $nextkeyword == 'OR' or count ($allConditions) == 0) {
+				$allConditions[] = $nextkeyword;
+			} else {		
+				break;
+			}
 		}
 		return $allConditions;
 	}
 	
 	function firstSpace ($string) {
 		return stripos ($string, ' ');
+	}
+	
+	function getNextKeyword ($sqlSequence) {
+		$inString = false;
+		$allKeywords = array ('INSERT', 'INTO', 'VALUES', 'SELECT', 'FROM', 'ORDER', 'BY', 'WHERE', 'OR', 'AND');
+		$latestWord = '';
+		$i = 0;
+		while ($i < strlen ($sqlSequence)) {
+			if ($i != 0) {
+				if (($sqlSequence[$i-1] == ' ') and ($inString == false)) {
+					$latestWord = '';
+				}
+			}
+			$latestWord .= $sqlSequence[$i];
+			if ($sqlSequence[$i] == "'"){
+				if ($i != 0) {
+					if ($sqlSequence[$i-1] !== '\\') { 
+						if ($inString) {
+							$inString = false;
+						} else {
+							$inString = true;
+						}
+					}
+				}
+			}
+
+			if ((in_array ($latestWord, $allKeywords)) and ($inString == false)) {
+				return $latestWord;
+			}
+			$i++;
+		}
+		return '';
 	}
 	
 	function getDataAfterKeyword ($sqlSequence, $keyword) {
@@ -436,8 +497,8 @@ class XMLSQLBackend {
 	}
 	
 	function getAllDataAfterKeyword ($sqlSequence, $keyword) {
-		if (stripos ($sqlSequence, $keyword)) {
-			$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, $keyword)+strlen($keyword));
+		if (stripos ($sqlSequence, ' '.$keyword)) {
+			$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, ' '.$keyword)+strlen($keyword)+1);
 			$afterKeyword = trim ($afterKeyword);
 			$data = substr ($afterKeyword, 0);
 			return $data;
@@ -447,7 +508,6 @@ class XMLSQLBackend {
 	}
 	
 	function findDataUntilNextKeyword ($sqlSequence) {
-		$found = false;
 		$inString = false;
 		$allKeywords = array ('INSERT', 'INTO', 'VALUES', 'SELECT', 'FROM', 'ORDER', 'BY', 'WHERE', 'OR', 'AND');
 		$latestWord = '';

@@ -19,6 +19,11 @@
 			<value field="Author">1</value>
 			<value field="Rating">4</value>
 		</row>
+		<row>
+			<value field="Title">Book 4</value>
+			<value field="Author">2</value>
+			<value field="Rating">7</value>
+		</row>
 	</table>
 	<!--<table name="authors">
 		<field></field>
