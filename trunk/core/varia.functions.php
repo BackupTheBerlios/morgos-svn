@@ -34,6 +34,80 @@ function isError ($test) {
 	}
 }
 
+/**
+ * compares 2 version numbers. A version looks like "1.2.*" or "1.2" (which is the same)
+ * \warning 1.2.0 > 1 does return false, this is intended
+ *
+ * \param $version1 (string)
+ * \param $version2 (string)
+ * \param $operator (string) >= <= > < == !=
+ * \return (bool)
+*/
+function versionCompare ($version1, $version2, $operator) {
+	$version1 = explode ('.', $version1);
+	$version2 = explode ('.', $version2);
+	$result = 0;
+	foreach ($version1 as $key => $value) {
+		if (! array_key_exists ($key, $version2)) {
+			$result = 0;
+			break;
+		}
+		if (($version1[$key] == '*') or ($version2[$key] == '*')) {
+			$result = 0; 
+		} elseif ($version1[$key] > $version2[$key]) {
+			$result = 1;
+			break;
+		} elseif ($version1[$key] < $version2[$key]) {
+			$result = -1;
+			break;
+		} else {
+			$result = 0;
+		}
+	}
+	
+	switch ($operator) {
+		case '>=':
+			if ($result >= 0) {
+				return true;
+			} else {
+				return false;
+			}
+		case '<=':
+			if ($result <= 0) {
+				return true;
+			} else {
+				return false;
+			}
+		case '>':
+			if ($result > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		case '<':
+			if ($result < 0) {
+				return true;
+			} else {
+				return false;
+			}
+		case '==':
+			if ($result == 0) {
+				return true;
+			} else {
+				return false;
+			}
+		case '!=':
+			if ($result != 0) {
+				return true;
+			} else {
+				return false;
+			}
+		default:
+			trigger_error ('ERROR: Operator doesn\'t exists.');
+			return false;
+	}
+}
+
 
 
 ?>

@@ -23,16 +23,11 @@
  * @author Nathan Samson
 */
 
-include ('core/databasemanager.functions.php');
-include ('core/newsmanager.class.php');
-include ('core/usermanager.class.php');
-include ('core/varia.functions.php');
-include ('core/i18n.class.php');
+include ('interface/morgos.class.php');
 
 //emulate register_globals off
 //This function is copied from php.net
-function unregister_GLOBALS()
-{
+function unregister_GLOBALS () {
    if (!ini_get('register_globals')) {
        return;
    }
@@ -60,6 +55,14 @@ function unregister_GLOBALS()
    }
 }
 
-unregister_GLOBALS();
+unregister_GLOBALS ();
+startMorgOS ();
+
+
+function startMorgOS () {
+	$morgos = new morgos ();
+	$morgos->run ();
+	$morgos->shutdown ();
+}
 
 ?>

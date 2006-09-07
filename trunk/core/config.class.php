@@ -205,6 +205,7 @@ class configurator {
 	function loadConfigFile ($fileName) {
 		if (file_exists ($fileName)) {
 			if (is_readable ($fileName)) {
+				$configItems = array ();
 				include ($fileName);
 				$this->loadConfigArray ($configItems);
 			} else {

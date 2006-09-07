@@ -75,20 +75,33 @@ class action {
 	 * @return (mixed)
 	*/
 	function execute () {
-		if ($method == 'GET') {
+		if ($this->_method == 'GET') {
 			$a = $_GET;
 		} else {
 			$a = $_POST;
 		}
 		
-		foreach ($_requiredOptions as $key=>$option) {
-			if (! array_key_exists ($key, $a)) {
-				return "ERROR_ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND $key";
+		$vals = array ();
+		foreach ($this->_requiredOptions as $option) {
+			if (array_key_exists ($option, $a)) {
+				$vals[$option] = $a[$option];
+			} else {
+				return "ERROR_ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND $option";
 			}
 		}
 		
-		return call_user_func_array ($this->executor, $a);
+		foreach ($this->_notRequiredOptions as $option) {
+			if (array_key_exists ($option, $a)) {
+				$vals[$option] = $a[$option];
+			} else {
+				$vals[$option] = null;
+			}
+		}
+		
+		return call_user_func_array ($this->_executor, $vals);
 	}
+	
+	function getName () {return $this->_name;}
 }
 
 class actionManager {
@@ -105,6 +118,24 @@ class actionManager {
 		$this->_actionsList = array ();
 	}
 	
+	/**
+	 * Executes an action.
+	 * @param $actionName (string)
+	*/	
+	function executeAction ($actionName) {
+		if ($this->existsAction ($actionName)) {
+			$action = $this->getAction ($actionName);
+			return $action->execute ();
+		} else {
+			return "ERROR_ACTIONMANAGER_ACTION_NOT_FOUND $actionName";
+		}
+	}
+	
+	/**
+	 * Adds an action
+	 * @param $action (object action)
+	 * @public
+	*/
 	function addAction ($action) {
 		$actionName = $action->getName ();
 		if (! $this->existsAction ($actionName)) {
@@ -132,7 +163,7 @@ class actionManager {
 	 * @return (object action)
 	*/
 	function getAction ($actionName) {
-		if (existsAction ($actionName)) {
+		if ($this->existsAction ($actionName)) {
 			return $this->_actionsList[$actionName];
 		} else {
 			return "ERROR_ACTION_MANAGER_ACTION_NOT_FOUND $actionName";

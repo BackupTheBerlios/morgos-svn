@@ -1,0 +1,1 @@
+<div id="footer">Copyright Nathan Samson</div>

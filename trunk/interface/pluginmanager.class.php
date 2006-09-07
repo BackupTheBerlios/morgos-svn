@@ -21,7 +21,6 @@
  * @since 0.2
  * @author Nathan Samson
 */
-define ('MORGOS_VERSION', '0.2');
 
 class plugin {
 	/**
@@ -144,7 +143,7 @@ class plugin {
 	 * @return (bool)
 	*/
 	function isMinVersionReached () {
-		return version_compare (MORGOS_VERSION, $this->_minMorgOSVersion, '>=');
+		return versionCompare (MORGOS_VERSION, $this->_minMorgOSVersion, '>=');
 	}
 	
 	/**
@@ -153,7 +152,7 @@ class plugin {
 	 * @return (bool)
 	*/
 	function isMaxVersionExceeded () {
-		return version_compare (MORGOS_VERSION, $this->_maxMorgOSVersion, '>');
+		return versionCompare (MORGOS_VERSION, $this->_maxMorgOSVersion, '>');
 	}
 }
 
