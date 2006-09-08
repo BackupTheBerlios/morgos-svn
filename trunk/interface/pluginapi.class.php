@@ -23,14 +23,24 @@
 */
 
 class pluginAPI {
+	var $_dbModule;
 	var $_configManager;
+	var $_userManager;
+	var $_pageManager;
+	
 	var $_pluginManager;
 	var $_eventManager;
 	var $_actionManager;
 	var $_smarty;
 
+	function setDBModule (&$dbModule) {$this->_dbModule = $dbModule;}
+	function getDBModule () {return $this->_dbModule;}
+
 	function setConfigManager (&$configManager) {$this->_configManager = $configManager;}
 	function getConfigManager () {return $this->_configManager;}
+	
+	function setUserManager (&$userManager) {$this->_userManager = $userManager;}
+	function getUserManager () {return $this->_userManager;}
 	
 	function setPageManager (&$pageManager) {$this->_pageManager = $pageManager;}
 	function getPageManager () {return $this->_pageManager;}

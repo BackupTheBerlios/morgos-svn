@@ -28,6 +28,7 @@ include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
 include_once ('core/varia.functions.php');
 include_once ('core/databasemanager.functions.php');
+include_once ('core/user/usermanager.class.php');
 include_once ('core/page/pagemanager.class.php');
 include_once ('interface/actionmanager.class.php');
 include_once ('interface/pluginmanager.class.php');
@@ -70,6 +71,11 @@ class morgos {
 	 * @private
 	*/
 	var $_pageManager;
+	/**
+	 * The user manager
+	 * @private
+	*/
+	var $_userManager;
 	
 
 	/**
@@ -88,11 +94,14 @@ class morgos {
 			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
 			$this->_dbModule = databaseLoadModule ('MySQL');
+			$this->_userManager = new userManager ($this->_dbModule);
 			$this->_pageManager = new pageManager ($this->_dbModule);
 			$this->_actionManager = new actionManager ();
 			$this->_smarty = new Smarty ();
 			//$this->_smarty->debugging = true;
 			$this->_pluginAPI = new pluginAPI ();
+			$this->_pluginAPI->setUserManager ($this->_userManager);
+			$this->_pluginAPI->setDBModule ($this->_dbModule);
 			$this->_pluginAPI->setConfigManager ($this->_configManager);
 			$this->_pluginAPI->setActionManager ($this->_actionManager);
 			$this->_pluginAPI->setPageManager ($this->_pageManager);
