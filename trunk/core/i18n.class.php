@@ -36,10 +36,12 @@ class localizer {
 	function loadStrings () {
 	}
 
-	function translate () {
+	function translate ($s) {
+		return $s;
 	}
 	
 	function translateError () {
 	}
+	
 
 }
