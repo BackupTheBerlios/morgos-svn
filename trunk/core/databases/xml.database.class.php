@@ -10,7 +10,7 @@ class XMLDatabase extends databaseActions {
 	var $_XMLSQLBackend;
 	
 	function XMLDatabase () {
-		include_once ('core/databases/XML/xmlsqlbackend.class.php');
+		include_once ('core/databases/xml/xmlsqlbackend.class.php');
 		$this->_XMLSQLBackend = new XMLSQLBackend ();
 		$this->setType ('XMLSQL');
 	}
