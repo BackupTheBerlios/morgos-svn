@@ -37,12 +37,12 @@ class page extends databaseObject {
 		$parentPageID = new dbField ('parentPageID', 'int(11)');
 		$placeInMenu = new dbField ('placeInMenu', 'int(4)');
 		$placeInMenu->canBeNull = true;
-		$script = new dbField ('script', 'varchar(255)');
-		$script->canBeNull = true;
-		$link = new dbField ('link', 'varchar(255)');
-		$link->canBeNull = true;		
+		$action = new dbField ('action', 'varchar(255)');
+		$action->canBeNull = true;
+		$pluginID = new dbField ('pluginID', 'varchar(36)');
+		$pluginID->canBeNull = true;
 				
-		parent::databaseObject ($db, $allOptions, array ('genericName'=>$genericName, 'genericContent'=>$genericContent, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu, 'script'=>$script, 'link'=>$link), 'pages', 'pageID', $parent);
+		parent::databaseObject ($db, $allOptions, array ('genericName'=>$genericName, 'genericContent'=>$genericContent, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu, 'action'=>$action, 'pluginID'=>$pluginID), 'pages', 'pageID', $parent);
 	}
 
 	/**
@@ -62,7 +62,7 @@ class page extends databaseObject {
 				$this->initFromArray ($row);
 				$this->setOption ('ID', $row[$this->getIDName ()]);
 			} else {
-				return "ERROR_PAGE_GENERICNAME_DOESNT_EXISTS $genericName";
+				return new Error ('PAGE_GENERICNAME_DOESNT_EXISTS', $genericName);
 			}
 		} else {
 			return $q;
@@ -102,18 +102,12 @@ class page extends databaseObject {
 	function getPlaceInMenu () {return $this->getOption ('placeInMenu');}
 
 	/**
-	 * If the page needs a special script returns it.
+	 * If the page needs a special action returns it.
 	 * @public
 	 * @return (string)
 	*/
-	function getScript () {return $this->getOption ('script');}
+	function getAction () {return $this->getOption ('action');}
 
-	/**
-	 * If the page needs is a (relative) link returns it.
-	 * @public
-	 * @return (string)
-	*/
-	function getLink () {return;}
 	
 	/**
 	 * Returns the parentPage.
@@ -150,7 +144,7 @@ class page extends databaseObject {
 					$firstLang = substr ($languageCode, 0, 2);
 					return $this->getTranslation ($firstLang);
 				} else {
-					return "ERROR_PAGE_TRANSLATION_NOT_FOUND";
+					return new Error ('PAGE_TRANSLATION_NOT_FOUND');
 				}
 			} 
 			return $tPage;
@@ -180,7 +174,7 @@ class page extends databaseObject {
 			$translation->updateFromArray ($a);
 			return $translation->addToDatabase ();
 		} else {
-			return "ERROR_PAGE_TRANSLATION_EXISTS {$translation->getLanguageCode ()}";
+			return new Error ('PAGE_TRANSLATION_EXISTS', $translation->getLanguageCode ());
 		}
 	}
 	
@@ -188,7 +182,7 @@ class page extends databaseObject {
 		if ($this->translationExists ($translation->getLanguageCode ())) {
 			return $translation->removeFromDatabase ();
 		} else {
-			return "ERROR_PAGE_TRANSLATION_DOESNT_EXISTS {$translation->getLanguageCode ()}";
+			return new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', $translation->getLanguageCode ());
 		}
 	}
 	

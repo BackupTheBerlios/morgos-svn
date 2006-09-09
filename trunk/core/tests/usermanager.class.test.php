@@ -39,7 +39,7 @@ class userManagerTest extends TestCase {
 		$this->assertTrue (is_object ($user)); // this is not waterproof!
 		// maybe we can implement something with Reflection that gets the 'type' if the obect
 		$r = $user->initFromDatabaseLogin ('notExistingLogin');
-		$this->assertEquals ("ERROR_USER_LOGIN_DONT_EXISTS notExistingLogin", $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('USER_LOGIN_DONT_EXISTS', 'notExistingLogin'), $r, 'Wrong error returned');
 	}
 	
 	function testLoginIsRegistered () {
@@ -85,7 +85,7 @@ class userManagerTest extends TestCase {
 		$a['password'] = 'APASS';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
-		$this->assertEquals ("ERROR_USERMANAGER_LOGIN_EXISTS ANOTHERLOGIN", $result);
+		$this->assertEquals (new Error ('USERMANAGER_LOGIN_EXISTS', 'ANOTHERLOGIN'), $result);
 		
 		$user = $this->userManager->newUser ();
 		$this->assertFalse (isError ($user));
@@ -95,7 +95,7 @@ class userManagerTest extends TestCase {
 		$a['password'] = 'APASS';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
-		$this->assertEquals ("ERROR_USERMANAGER_EMAIL_EXISTS ANOTHEREMAIL", $result);
+		$this->assertEquals (new Error ('USERMANAGER_EMAIL_EXISTS', 'ANOTHEREMAIL'), $result);
 	}
 	
 	function testAddOptionForUser () {
@@ -112,7 +112,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
 		
 		$r = $this->userManager->addOptionToUser ($preName);
-		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORUSER_EXISTS preName", $r);
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', 'preName'), $r);
 		
 		/*Hack to clean allOptionsForUser cache*/
 		$this->userManager->allOptionsForUser = null;
@@ -129,7 +129,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals ($oldAllOptions, $newAllOptions);
 
 		$r = $this->userManager->removeOptionToUser ('preName');
-		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORUSER_DONT_EXISTS preName", $r);
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_DONT_EXISTS', 'preName'), $r);
 	}
 	
 	function testGetAllUsers () {
@@ -153,7 +153,7 @@ class userManagerTest extends TestCase {
 		$a['email'] = 'ANOTHERANOTHEREMAIL';
 		$user->initFromArray ($a);
 		$r = $this->userManager->removeUserFromDatabase ($user);
-		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $r, 'Wrong error');
+		$this->assertEquals (new Error ('DATABASEOBJECT_NOT_IN_DATABASE'), $r, 'Wrong error');
 	
 		$allUsers = $this->userManager->getAllUsers ();
 		$this->assertEquals (3, count ($allUsers), 'Not expected number users in DB2');
@@ -166,7 +166,7 @@ class userManagerTest extends TestCase {
 		// maybe we can implement something with Reflection that gets the 'type' if the obect
 		
 		$r = $group->initFromDatabaseGenericName ('notExistingGroup');
-		$this->assertEquals ('ERROR_GROUP_GENERICNAME_DONT_EXISTS notExistingGroup', $r);
+		$this->assertEquals (new Error ('GROUP_GENERICNAME_DONT_EXISTS', 'notExistingGroup'), $r);
 	}
 	
 	function testIsGroupNameRegistered () {
@@ -188,13 +188,13 @@ class userManagerTest extends TestCase {
 		$groupA = array ('genericName' => 'aGroup', 'genericDescription' => 'A group');
 		$group->initFromArray ($groupA);
 		$result = $this->userManager->addGroupToDatabase ($group);
-		$this->assertEquals ("ERROR_USERMANAGER_GROUP_ALREADY_EXISTS aGroup", $result);
+		$this->assertEquals (new Error ('USERMANAGER_GROUP_ALREADY_EXISTS', 'aGroup'), $result);
 	}
 	
 	function testRemoveGroupFromDatabase () {
 		$group = $this->userManager->newGroup ();
 		$result = $this->userManager->removeGroupFromDatabase ($group);
-		$this->assertEquals ("ERROR_DATABASEOBJECT_NOT_IN_DATABASE", $result, "Not a correct errormessage");
+		$this->assertEquals (new Error ('DATABASEOBJECT_NOT_IN_DATABASE'), $result, "Not a correct errormessage");
 		
 		$result = $group->initFromDatabaseGenericName ('aGroup');
 		$this->assertFalse (isError ($result), "An unexpected error is returnd");
@@ -216,7 +216,7 @@ class userManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$this->assertEquals ($oldAllOptions, $this->userManager->getAllOptionsForGroup (), 'Not added');
 		$r = $this->userManager->addOptionToGroup ($anOption);
-		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS anOption", $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORGROUP_EXISTS', 'anOption'), $r, 'Wrong error returned');
 		
 		/*Hack to clean allOptionsForGroup cache*/
 		$this->userManager->allOptionsForGroup = null;
@@ -229,7 +229,7 @@ class userManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Not removed');
 		$r = $this->userManager->removeOptionFromGroup ('anOption');
-		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORGROUP_DONT_EXISTS anOption", $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORGROUP_DONT_EXISTS', 'anOption'), $r, 'Wrong error returned');
 	}
 	
 	function testGetAllGroups () {
@@ -249,7 +249,7 @@ class userManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error returned: ' . $r);
 		
 		$r = $user->addToGroup ($group);
-		$this->assertEquals ('ERROR_GROUP_USER_ALREADY_IN_GROUP', $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('GROUP_USER_ALREADY_IN_GROUP'), $r, 'Wrong error returned');
 	}
 	
 	function testUserRemoveFromGroup () {
@@ -261,7 +261,7 @@ class userManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error returned: '. $r);
 		
 		$r = $user->removeFromGroup ($group);
-		$this->assertEquals ("ERROR_GROUP_USER_NOT_IN_GROUP", $r, 'Wrong error returned: '.$r);
+		$this->assertEquals (new Error ('GROUP_USER_NOT_IN_GROUP'), $r, 'Wrong error returned: '.$r);
 		$user->addToGroup ($group);
 	}
 	
@@ -352,7 +352,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (array ('FR-BE','FR-FR','NL', 'NL-NL'), $group->getAllTranslations (), 'Returned wrong languages');
 		
 		$r = $group->addTranslationToDatabase ($groupFR_BE);		
-		$this->assertEquals ("ERROR_GROUP_TRANSLATION_EXISTS FR-BE", $r);
+		$this->assertEquals (new Error ('GROUP_TRANSLATION_EXISTS', 'FR-BE'), $r);
 	}	
 	
 	function testRemoveTranslatedGroupFromDatabase () {
@@ -366,7 +366,7 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (array ('FR-FR','NL', 'NL-NL'), $group->getAllTranslations ());
 		
 		$r = $group->removeTranslationFromDatabase ($groupFR_BE);	
-		$this->assertEquals ("ERROR_GROUP_TRANSLATION_DOESNT_EXISTS FR-BE", $r);
+		$this->assertEquals (new Error ('GROUP_TRANSLATION_DOESNT_EXISTS', 'FR-BE'), $r);
 	}
 	
 	function testAddTranslatedGroupOption () {
@@ -382,7 +382,7 @@ class userManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$this->assertEquals ($oldAllOptions, $this->userManager->getAllOptionsForTranslatedGroup (), 'Not added');
 		$r = $this->userManager->addOptionToTranslatedGroup ($anOption);
-		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS anOption", $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS', 'anOption'), $r, 'Wrong error returned');
 		
 		/*Hack to clean allOptionsForGroup cache*/
 		$this->userManager->allOptionsForTranslatedGroup = null;
@@ -395,7 +395,7 @@ class userManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Not removed');
 		$r = $this->userManager->removeOptionFromTranslatedGroup ('anOption');
-		$this->assertEquals ("ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS anOption", $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS', 'anOption'), $r, 'Wrong error returned');
 	}
 }
 ?>

@@ -44,7 +44,7 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		function connect($host,$userName,$password) {
 			$this->connection = @mysql_connect ($host,$userName,$password);
 			if ($this->connection == false) {
-				return "ERROR_DATABASE_CONNECTION_FAILED " . mysql_error ();
+				return new Error ('DATABASE_CONNECTION_FAILED', mysql_error ());
 			}
 		}
 		
@@ -55,7 +55,7 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		function selectDatabase ($dbName) {
 			$result = @mysql_select_db ($dbName, $this->connection);
 			if ($result == false) {
-				return "ERROR_DATABASE_SELECTDB_FAILED " . mysql_error ();
+				return new Error ('DATABASE_SELECTDB_FAILED', mysql_error ());
 			}
 			$this->dbName = $dbName;
 		}
@@ -65,7 +65,7 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			if ($result !== false) {
 				return $result;
 			} else {
-				return "ERROR_DATABASE_QUERY_FAILED " . mysql_error ();
+				return new Error ('DATABASE_QUERY_FAILED', mysql_error ());
 			}
 		}
 	        

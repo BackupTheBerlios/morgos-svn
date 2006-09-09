@@ -60,7 +60,7 @@ class group extends databaseObject {
 				$this->initFromArray ($row);
 				$this->setOption ('ID',$row['groupID']);
 			} else {
-				return "ERROR_GROUP_GENERICNAME_DONT_EXISTS $genericName";
+				return new Error ('GROUP_GENERICNAME_DONT_EXISTS', $genericName);
 			}
 		} else {
 			return $q;
@@ -151,11 +151,11 @@ class group extends databaseObject {
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
 				if (! is_numeric ($groupID)) {
-					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}
 				
 				if (! is_numeric ($userID)) {
-					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}				
 				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('$groupID', '$userID')";
 				$q = $this->db->query ($sql);
@@ -163,7 +163,7 @@ class group extends databaseObject {
 					return $q;
 				}
 			} else {
-				return "ERROR_GROUP_USER_ALREADY_IN_GROUP";
+				return new Error ('GROUP_USER_ALREADY_IN_GROUP');
 			}
 		} else {
 			return $isInGroup;			
@@ -184,11 +184,11 @@ class group extends databaseObject {
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
 				if (! is_numeric ($groupID)) {
-					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}
 				
 				if (! is_numeric ($userID)) {
-					return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}
 				
 				$sql = "DELETE FROM ".$prefix."group_users WHERE groupID='$groupID' AND userID='$userID'";
@@ -197,7 +197,7 @@ class group extends databaseObject {
 					return $q;
 				}
 			} else {
-				return "ERROR_GROUP_USER_NOT_IN_GROUP";
+				return new Error ('GROUP_USER_NOT_IN_GROUP');
 			}
 		} else {
 			return $isInGroup;			
@@ -380,7 +380,7 @@ class group extends databaseObject {
 				$lLang = substr ($lCode, 0, 2);
 				return $this->getTranslation ($lLang);
 			} else {
-				return "ERROR_GROUP_TRANSLATION_DOESNT_EXISTS";
+				return new Error ('GROUP_TRANSLATION_DOESNT_EXISTS');
 			}
 		}
 	}
@@ -396,7 +396,7 @@ class group extends databaseObject {
 			$translatedGroup->setOption ('groupID', $this->getID ());
 			return $translatedGroup->addToDatabase ();
 		} else {
-			return "ERROR_GROUP_TRANSLATION_EXISTS {$translatedGroup->getLanguageCode ()}";
+			return new Error ('GROUP_TRANSLATION_EXISTS', $translatedGroup->getLanguageCode ());
 		}
 	}
 	
@@ -410,7 +410,7 @@ class group extends databaseObject {
 		if ($this->existsTranslatedGroup ($translatedGroup->getLanguageCode ())) {
 			return $translatedGroup->removeFromDatabase ();
 		} else {
-			return "ERROR_GROUP_TRANSLATION_DOESNT_EXISTS {$translatedGroup->getLanguageCode ()}";
+			return new Error ('GROUP_TRANSLATION_DOESNT_EXISTS', $translatedGroup->getLanguageCode ());
 		}
 	}
 

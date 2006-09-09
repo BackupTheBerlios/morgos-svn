@@ -59,7 +59,7 @@ class translatedGroup extends databaseObject {
 	*/
 	function initFromDatabaseGroupIDandLanguageCode ($groupID, $lCode) {
 		if (! is_numeric ($groupID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_FAILED ".__FILE__." ".__LINE__;
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_FAILED',__FILE__,__LINE__);
 		}
 		$languageCode = $this->db->escapeString ($lCode);
 		$sql = "SELECT * FROM {$this->getFullTableName ()} WHERE $groupID='$groupID' AND languageCode='$languageCode'";
@@ -70,7 +70,7 @@ class translatedGroup extends databaseObject {
 				$this->initFromArray ($row);
 				$this->setOption ('ID', $row['translatedGroupID']);
 			} else {
-				return "ERROR_TRANSLATEDGROUP_CANTFIND_GROUP $groupID $languageCode";
+				return new Error ('TRANSLATEDGROUP_CANTFIND_GROUP', $groupID, $languageCode);
 			}
 		} else {
 			return $q;

@@ -144,7 +144,7 @@ class userManager {
 			} else {
 				if (! isError ($eIR)) {
 					$email = $user->getEmail ();
-					return "ERROR_USERMANAGER_EMAIL_EXISTS $email";
+					return new Error ('USERMANAGER_EMAIL_EXISTS', $email);
 				} else {
 					return $eIR;
 				}
@@ -152,7 +152,7 @@ class userManager {
 		} else {
 			if (! isError ($lIR)) {
 				$login = $user->getLogin ();
-				return "ERROR_USERMANAGER_LOGIN_EXISTS $login";
+				return new Error ('USERMANAGER_LOGIN_EXISTS', $login);
 			} else {
 				return $lIR;
 			}
@@ -194,7 +194,7 @@ class userManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORUSER_EXISTS {$newOption->name}";
+				return new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', $newOption->name);
 			}
 		} else {
 			return $curOptions;
@@ -221,7 +221,7 @@ class userManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORUSER_DONT_EXISTS $optionName";
+				return new Error ('USERMANAGER_OPTION_FORUSER_DONT_EXISTS', $optionName);
 			}
 		} else {
 			return $curOptions;
@@ -306,7 +306,7 @@ class userManager {
 			if ($u->isValidPassword ($_SESSION['userPassword'])) {
 				return $u;
 			} else {
-				return "ERROR_USERMANAGER_INVALID_LOGIN";
+				return new Error ('USERMANAGER_INVALID_LOGIN');
 			}
 		} else {
 			return null;
@@ -405,7 +405,7 @@ class userManager {
 				return $group->addToDatabase ();
 			} else {
 				$groupName = $group->getGenericName ();
-				return "ERROR_USERMANAGER_GROUP_ALREADY_EXISTS $groupName";
+				return new Error ('USERMANAGER_GROUP_ALREADY_EXISTS', $groupName);
 			}
 		} else {
 			return $gIR;
@@ -430,7 +430,7 @@ class userManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORGROUP_EXISTS {$newOption->name}";
+				return new Error ('USERMANAGER_OPTION_FORGROUP_EXISTS', $newOption->name);
 			}
 		} else {
 			return $curOptions;
@@ -453,7 +453,7 @@ class userManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORGROUP_DONT_EXISTS $optionName";
+				return new Error ('USERMANAGER_OPTION_FORGROUP_DONT_EXISTS', $optionName);
 			}
 		} else {
 			return $curOptions;
@@ -568,7 +568,7 @@ class userManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS {$newOption->name}";
+				return new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS', $newOption->name);
 			}
 		} else {
 			return $curOptions;
@@ -595,7 +595,7 @@ class userManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS $optionName";
+				return new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS', $optionName);
 			}
 		} else {
 			return $curOptions;

@@ -37,7 +37,7 @@ class pageManagerTest extends TestCase {
 	function testPageInitFromGenericName () {
 		$page = $this->pageManager->newPage ();
 		$r = $page->initFromGenericName ('notExistingPage');
-		$this->assertEquals ($r, "ERROR_PAGE_GENERICNAME_DOESNT_EXISTS notExistingPage");
+		$this->assertEquals ($r, new Error ('PAGE_GENERICNAME_DOESNT_EXISTS', 'notExistingPage'));
 	}	
 	
 	function testGetMenu () {
@@ -68,14 +68,14 @@ class pageManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$this->assertEquals ($oldOptions, $this->pageManager->getAllOptionsForPage (), 'Wrong options 1');		
 		$r = $this->pageManager->addOptionToPage ($optionName);
-		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORPAGE_EXISTS optionName", $r, 'Wrong error');
+		$this->assertEquals (new Error ('PAGEMANAGER_OPTION_FORPAGE_EXISTS', 'optionName'), $r, 'Wrong error');
 		$this->assertEquals ($oldOptions, $this->pageManager->getAllOptionsForPage (), 'Wrong options 2');
 		
 		$r = $this->pageManager->removeOptionForPage ('optionName');
 		$this->assertFalse (isError ($r), 'Unexpected error 2');
 		$this->assertEquals (array (), $this->pageManager->getAllOptionsForPage (), 'Wrong options 3');
 		$r = $this->pageManager->removeOptionForPage ('optionName');
-		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORPAGE_DOESNT_EXISTS optionName", $r, 'Wrong error 2');
+		$this->assertEquals (new Error ('PAGEMANAGER_OPTION_FORPAGE_DOESNT_EXISTS', 'optionName'), $r, 'Wrong error 2');
 	}
 	
 	function testAddPageToDatabase () {
@@ -115,7 +115,7 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals (array ($home, $news, $development, $packages, $appendPage), $siteMenu, 'Wronge menu order');
 		
 		$r = $this->pageManager->addPageToDatabase ($appendPage);
-		$this->assertEquals ("ERROR_PAGEMANAGER_PAGE_EXISTS lastPage", $r, "Wrong error returned");
+		$this->assertEquals (new Error ('PAGEMANAGER_PAGE_EXISTS', 'lastPage'), $r, "Wrong error returned");
 	}
 	
 	function testRemovePageFromDatabase () {
@@ -150,7 +150,7 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals (array ($home, $news, $packages), $siteMenu, 'Wronge menu order');
 		
 		$r = $this->pageManager->removePageFromDatabase ($lastPage);
-		$this->assertEquals ("ERROR_PAGEMANAGER_PAGE_DOESNT_EXISTS lastPage", $r, 'Wrong error');
+		$this->assertEquals (new Error ('PAGEMANAGER_PAGE_DOESNT_EXISTS', 'lastPage'), $r, 'Wrong error');
 		$siteMenu = $this->pageManager->getMenu ($root);
 		$this->assertEquals (array ($home, $news, $packages), $siteMenu, 'Wronge menu order');
 	}
@@ -163,14 +163,14 @@ class pageManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$this->assertEquals (array ('translator'=>$translator2), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 1');
 		$r = $this->pageManager->addOptionToTranslatedPage ($translator);
-		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS translator", $r, 'Wrong error');
+		$this->assertEquals (new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS', 'translator'), $r, 'Wrong error');
 		$this->assertEquals (array ('translator'=>$translator2), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 2');
 		
 		$r = $this->pageManager->removeOptionForTranslatedPage ('translator');
 		$this->assertFalse (isError ($r), 'Unexpected error 2');
 		$this->assertEquals (array (), $this->pageManager->getAllOptionsForTranslatedPage (), 'Wrong options 3');
 		$r = $this->pageManager->removeOptionForTranslatedPage ('translator');
-		$this->assertEquals ("ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS translator", $r, 'Wrong error 2');		
+		$this->assertEquals (new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS', 'translator'), $r, 'Wrong error 2');		
 	}
 	
 	function testGetTranslation () {
@@ -209,7 +209,7 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals (array ('FR-FR', 'NL', 'NL-BE', 'NL-NL'), $page->getAllTranslations ());
 		
 		$r = $page->addTranslation ($translationNL_BE);
-		$this->assertEquals ("ERROR_PAGE_TRANSLATION_EXISTS NL-BE", $r);
+		$this->assertEquals (new Error ('PAGE_TRANSLATION_EXISTS', 'NL-BE'), $r);
 	}
 	
 	function testRemoveTranslation () {
@@ -223,7 +223,7 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslations (), 'Not deleted');
 		
 		$r = $page->removeTranslation ($translationNL_BE);
-		$this->assertEquals ("ERROR_PAGE_TRANSLATION_DOESNT_EXISTS NL-BE", $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', 'NL-BE'), $r, 'Wrong error returned');
 	}
 }
 ?>

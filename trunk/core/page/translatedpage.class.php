@@ -51,7 +51,7 @@ class translatedPage extends databaseObject {
 	*/
 	function initFromDatabasePageIDandLanguageCode ($pageID, $languageCode) {
 		if (! is_numeric ($pageID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_FAILED ".__FILE__." ".__LINE__;
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		$languageCode = $this->db->escapeString ($languageCode);
 		$sql = "SELECT * FROM {$this->getFullTableName ()} WHERE $pageID='$pageID' AND languageCode='$languageCode'";
@@ -62,7 +62,7 @@ class translatedPage extends databaseObject {
 				$this->initFromArray ($row);
 				$this->setOption ('ID', $row['translatedPageID']);
 			} else {
-				return "ERROR_TRANSLATEDPAGE_CANTFIND_PAGE $pageID $languageCode";
+				return new Error ('ERROR_TRANSLATEDPAGE_CANTFIND_PAGE', $pageID, $languageCode);
 			}
 		} else {
 			return $q;

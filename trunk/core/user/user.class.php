@@ -66,7 +66,7 @@ class user extends databaseObject {
 				$this->initFromArray ($row);
 				$this->setOption ('ID', $row[$this->getIDName ()]);
 			} else {
-				return "ERROR_USER_LOGIN_DONT_EXISTS $login";
+				return new Error ('USER_LOGIN_DONT_EXISTS', $login);
 			}
 		} else {
 			return $q;

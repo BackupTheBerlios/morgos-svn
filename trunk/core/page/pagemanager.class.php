@@ -67,12 +67,12 @@ class pageManager {
 		$pageName = $page->getGenericName ();
 		$pageExists = $this->pageExists ($pageName);
 		if ($pageExists) {
-			return "ERROR_PAGEMANAGER_PAGE_EXISTS $pageName";
+			return new Error ('PAGEMANAGER_PAGE_EXISTS', $pageName);
 		}	
 	
 		$parentPageID = $page->getParentPageID ();
 		if (! is_numeric ($parentPageID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED ". __FILE__."::".__LINE__;
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}	
 	
 		if (($page->getPlaceInMenu () == 0) or ($page->getPlaceInMenu () == null)) {
@@ -89,7 +89,7 @@ class pageManager {
 		} else {
 			$place = $page->getPlaceInMenu ();
 			if (! is_numeric ($place)) {
-				return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+				return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 			}
 			$pagesTableName = $this->db->getPrefix ().'pages';
 			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu>=$place AND parentPageID='$parentPageID'";
@@ -112,17 +112,17 @@ class pageManager {
 		$pageName = $page->getGenericName ();
 		$pageExists = $this->pageExists ($pageName);
 		if (! $pageExists) {
-			return "ERROR_PAGEMANAGER_PAGE_DOESNT_EXISTS $pageName";
+			return new Error ('PAGEMANAGER_PAGE_DOESNT_EXISTS', $pageName);
 		}
 		
 		$placeInMenu = $page->getPlaceInMenu ();
 		$pagesDatabaseName = $this->db->getPrefix ().'pages';
 		$parentPageID = $page->getParentPageID ();
 		if (! is_numeric ($placeInMenu)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		if (! is_numeric ($parentPageID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		$sql = "UPDATE $pagesDatabaseName SET placeInMenu=(placeInMenu-1) WHERE placeInMenu>=$placeInMenu AND parentPageID='$parentPageID'";
 		$q = $this->db->query ($sql);
@@ -178,7 +178,7 @@ class pageManager {
 		$tableName = $this->db->getPrefix ().'pages';
 		$parentPageID = $rootPage->getID ();
 		if (! is_numeric ($parentPageID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED __FILE__::__LINE__";
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		$sql = "SELECT pageID FROM $tableName WHERE parentPageID='$parentPageID' ORDER BY placeInMenu ASC";
 		$q = $this->db->query ($sql);
@@ -217,7 +217,7 @@ class pageManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_PAGEMANAGER_OPTION_FORPAGE_EXISTS {$newOption->name}";
+				return new Error ('PAGEMANAGER_OPTION_FORPAGE_EXISTS', $newOption->name);
 			}
 		} else {
 			return $curOptions;
@@ -243,7 +243,7 @@ class pageManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_PAGEMANAGER_OPTION_FORPAGE_DOESNT_EXISTS $optionName";
+				return new Error ('PAGEMANAGER_OPTION_FORPAGE_DOESNT_EXISTS', $optionName);
 			}
 		} else {
 			return $curOptions;
@@ -258,7 +258,7 @@ class pageManager {
 	*/
 	function getAllOptionsForPage () {
 		if ($this->allOptionsForPage === null) {
-			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', array ('pageID', 'genericName', 'genericContent', 'parentPageID', 'placeInMenu', 'script', 'link'));
+			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', array ('pageID', 'genericName', 'genericContent', 'parentPageID', 'placeInMenu', 'action', 'pluginID'));
 			if (! isError ($allOptions)) {
 				$this->allOptionsForPage = $allOptions;
 			}
@@ -290,7 +290,7 @@ class pageManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS {$newOption->name}";
+				return new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS', $newOption->name);
 			}
 		} else {
 			return $curOptions;
@@ -316,7 +316,7 @@ class pageManager {
 					return $r;
 				}
 			} else {
-				return "ERROR_PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS $optionName";
+				return new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS', $optionName);
 			}
 		} else {
 			return $curOptions;

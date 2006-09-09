@@ -43,6 +43,8 @@ CREATE TABLE {prefix}pages (
   genericContent text,
   parentPageID int(11) NOT NULL,
   placeInMenu int(3) NOT NULL,
+  action varchar(255),
+  pluginID varchar(36),
   PRIMARY KEY (pageID),
   UNIQUE KEY (genericName)
 );
