@@ -21,6 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
+session_start ();
 
 include_once ('core/user/user.class.php');
 include_once ('core/user/usergroup.class.php');
@@ -235,7 +236,7 @@ class userManager {
 	*/
 	function getAllOptionsForUser () {
 		if ($this->allOptionsForUser === null) {
-			$fields = $this->db->getAlldbFields ($this->db->getPrefix ().'users', array ('userID','login', 'email'));
+			$fields = $this->db->getAlldbFields ($this->db->getPrefix ().'users', array ('userID','login', 'email', 'password'));
 			if (! isError ($fields)) {
 				$this->allOptionsForUser = $fields;
 				return $fields;
@@ -291,7 +292,70 @@ class userManager {
 		} else {
 			return $q;
 		}
-	}	
+	}
+	
+	/**
+	 * Returns the current logged in user. If not logged in returns null.
+	 * @public
+	 * @return (object user|null)
+	*/
+	function getCurrentUser () {
+		if ($this->isLoggedIn ()) {
+			$u = $this->newUser ();
+			$u->initFromDatabaseID ($_SESSION['userID']);
+			if ($u->isValidPassword ($_SESSION['userPassword'])) {
+				return $u;
+			} else {
+				return "ERROR_USERMANAGER_INVALID_LOGIN";
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Checks that the current user is logged in.
+	 * @warning Does not try of it is a valid login.
+	 * @public
+	 * @return (bool)
+	*/
+	function isLoggedIn () {
+		if (array_key_exists ('userID', $_SESSION)) {
+			if (array_key_exists ('userPassword', $_SESSION)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Logs a user in.
+	 *
+	 * @param $login (string)
+	 * @param $password (string)
+	*/
+	function login ($login, $password) {
+		$u = $this->newUser ();
+		$a = $u->initFromDatabaseLogin ($login);
+		if (! isError ($a)) {
+			if ($u->isValidPassword ($password)) {
+				$_SESSION['userID'] = $u->getID ();
+				$_SESSION['userPassword'] = md5 ($password);
+			} else {
+				return new Error ("USERMANAGER_LOGIN_FAILED");
+			}
+		} else {
+			return $a;
+		}
+	}
+	
+	/**
+	 * Logs the current user off
+	*/
+	function logout () {
+		unset ($_SESSION['userID']);
+		unset ($_SESSION['userPassword']);
+	}
 	
 	/*Group functions*/
 	

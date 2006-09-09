@@ -22,6 +22,25 @@
  * @author Nathan Samson
 */
 
+class Error {
+	var $_error;
+	var $_params;
+
+	function Error ($error) {
+		$this->_error = $error;
+	}
+	
+	function is ($otherError) {
+		if (isString ($otherError)) {
+			return $this->_error == $otherError;
+		} else {
+			return $this->_error == $otherError->getError ();
+		}
+	}
+	
+	function getError () {return $this->_error;}
+}
+
 function isError ($test) {
 	if (is_string ($test)) {
 		if ((substr ($test, 0, 6) === "ERROR_") and (strlen ($test) > 6 )) {

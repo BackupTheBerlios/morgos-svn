@@ -38,8 +38,12 @@ class user extends databaseObject {
 		$email = new dbField ();
 		$email->name = 'email';
 		$email->type = 'varchar (255)';
+		
+		$pass = new dbField ();
+		$pass->name = 'password';
+		$pass->type = 'varchar (32)';
 	
-		parent::databaseObject ($db, $allOptions, array ('login'=>$login, 'email'=>$email), 'users', 'userID', $parent);
+		parent::databaseObject ($db, $allOptions, array ('login'=>$login, 'email'=>$email, 'password'=>$pass), 'users', 'userID', $parent);
 	}
 	
 	/*Public initters*/
@@ -174,5 +178,15 @@ class user extends databaseObject {
 		} else {
 			return $q;
 		}
+	}
+	
+	/**
+	 * Checks that a password is valid for this user.
+	 *
+	 * @param $password (string) Can be both md5-ed or plain
+	*/
+	function isValidPassword ($password) {
+		return (($this->getOption ('password') == $password) OR 
+			($this->getOption ('password') == md5 ($password))); 
 	}
 }

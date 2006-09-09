@@ -25,6 +25,7 @@
 class pluginAPI {
 	var $_dbModule;
 	var $_configManager;
+	var $_i18nManager;
 	var $_userManager;
 	var $_pageManager;
 	
@@ -38,6 +39,9 @@ class pluginAPI {
 
 	function setConfigManager (&$configManager) {$this->_configManager = $configManager;}
 	function getConfigManager () {return $this->_configManager;}
+	
+	function setI18NManager (&$i18nManager) {$this->_i18nManager = $i18nManager;}
+	function getI18NManager () {return $this->_i18nManager;}	
 	
 	function setUserManager (&$userManager) {$this->_userManager = $userManager;}
 	function getUserManager () {return $this->_userManager;}
@@ -56,6 +60,21 @@ class pluginAPI {
 	
 	function setSmarty (&$smarty) {$this->_smarty = $smarty;}
 	function getSmarty () {return $this->_smarty;}
+	
+	/**
+	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
+	 * @bug this doen't shutdown morgos
+	 * 
+	 * @param $action (string)
+	 * @param $params (string array) The params that shopuld be given.
+	*/
+	function doAction ($action, $params = array ()) {
+		$loc = 'index.php?action='.$action;
+		foreach ($params as $name=>$value) {
+			$loc .= '&'.$name.'='.$value;
+		}
+		header ('Location: '.$loc);
+	}
 }
 
 ?>

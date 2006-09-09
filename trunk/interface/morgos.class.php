@@ -23,11 +23,13 @@
 */
 define ('MORGOS_VERSION', '0.2.0');
 define ('MORGOS_VIEWPAGE_PLUGINID', '{529e4a98-02a7-46bb-be2a-671a7dfc852f}');
+define ('MORGOS_ADMIN_PLUGINID', '{b8731582-9309-4629-a3d9-647f26a5a345}');
 
 include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
 include_once ('core/varia.functions.php');
 include_once ('core/databasemanager.functions.php');
+include_once ('core/i18n.class.php');
 include_once ('core/user/usermanager.class.php');
 include_once ('core/page/pagemanager.class.php');
 include_once ('interface/actionmanager.class.php');
@@ -76,6 +78,11 @@ class morgos {
 	 * @private
 	*/
 	var $_userManager;
+	/**
+	 * The translation manager
+	 * @private
+	*/
+	var $_i18nManager;
 	
 
 	/**
@@ -86,13 +93,14 @@ class morgos {
 	}	
 
 	/**
-	 * Init the system (if possible otherwise try a lowInit).
+	 * Init the system (if possible otherwise try a tinyInit).
 	 * @public
 	*/
 	function init () {
 		if ($this->isInstalled ()) {
 			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
+			$this->_i18nManager = new localizer ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
 			$this->_userManager = new userManager ($this->_dbModule);
 			$this->_pageManager = new pageManager ($this->_dbModule);
@@ -106,6 +114,7 @@ class morgos {
 			$this->_pluginAPI->setActionManager ($this->_actionManager);
 			$this->_pluginAPI->setPageManager ($this->_pageManager);
 			$this->_pluginAPI->setSmarty ($this->_smarty);
+			$this->_pluginAPI->setI18NManager ($this->_i18nManager);
 			$this->_pluginManager = new pluginManager ($this->_pluginAPI);
 			$this->_pluginAPI->setPluginManager ($this->_pluginManager);
 						
@@ -113,7 +122,9 @@ class morgos {
 			$this->_smarty->template_dir = 'skins/default/';
 			$this->_smarty->compile_dir = 'skins_c/default/';
 			$this->_smarty->cache_dir = 'cache/default/';
+			$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';
 			$this->_smarty->config_dir = 'configs/';
+			$this->_smarty->assign_by_ref ('t', $this->_i18nManager);
 			
 			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
 								  $this->_configManager->getStringItem ('/databases/user'), 
@@ -128,6 +139,7 @@ class morgos {
 			
 			// load for the moment only the viewpage plugin;
 			$a = $this->_pluginManager->setPluginToLoad (MORGOS_VIEWPAGE_PLUGINID);
+			$a = $this->_pluginManager->setPluginToLoad (MORGOS_ADMIN_PLUGINID);
 			if (isError ($a)) {
 				var_dump ($a);
 			}
@@ -145,7 +157,7 @@ class morgos {
 	/**
 	 * An intialization function that does't read config files and doesn't connect with database.
 	*/
-	function lowInit () {
+	function tinyInit () {
 		$this->_actionManager = new actionManager ();
 		
 		$this->_smarty = new Smarty ();
@@ -218,11 +230,18 @@ class morgos {
 	function run () {
 		if (isset ($_GET['action'])) {
 			$r = $this->_actionManager->executeAction ($_GET['action']);
+		} elseif (isset ($_POST['action'])) {
+			$r = $this->_actionManager->executeAction ($_POST['action']);
 		} else {
 			$r = $this->_actionManager->executeAction ('viewPage');
 		}
 		if (isError ($r)) {
-			die ('Unexpected error. ' . $r);
+			var_dump ($r);
+			if ($r == "ERROR_ACTIONMANAGER_ACTION_NOT_FOUND") {
+				$this->error ($this->_i18nManager->translate ('You can\'t do this.'), true);
+			} else {
+				$this->error ($this->_i18nManager->translate ('Unexpected error.'), true);
+			}
 		}
 	}
 	
