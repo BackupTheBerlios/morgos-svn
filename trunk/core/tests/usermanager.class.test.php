@@ -58,6 +58,7 @@ class userManagerTest extends TestCase {
 		$a = array ();
 		$a['login'] = 'THELOGIN';
 		$a['email'] = 'THEEMAIL';
+		$a['password'] = 'APASS';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
 		$this->assertFalse (isError ($result), 'Unexpecter error');
@@ -71,6 +72,7 @@ class userManagerTest extends TestCase {
 		$a = array ();
 		$a['login'] = 'ANOTHERLOGIN';
 		$a['email'] = 'ANOTHEREMAIL';
+		$a['password'] = 'APASS';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
 		$this->assertEquals (null, $result);
@@ -80,6 +82,7 @@ class userManagerTest extends TestCase {
 		$a = array ();
 		$a['login'] = 'ANOTHERLOGIN';
 		$a['email'] = 'ANOTHERANOTHEREMAIL';
+		$a['password'] = 'APASS';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
 		$this->assertEquals ("ERROR_USERMANAGER_LOGIN_EXISTS ANOTHERLOGIN", $result);
@@ -89,6 +92,7 @@ class userManagerTest extends TestCase {
 		$a = array ();
 		$a['login'] = 'ANOTHERANOTHERLOGIN';
 		$a['email'] = 'ANOTHEREMAIL';
+		$a['password'] = 'APASS';
 		$user->initFromArray ($a);
 		$result = $this->userManager->addUserToDatabase ($user);
 		$this->assertEquals ("ERROR_USERMANAGER_EMAIL_EXISTS ANOTHEREMAIL", $result);

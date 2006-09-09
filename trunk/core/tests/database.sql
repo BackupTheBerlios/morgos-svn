@@ -2,6 +2,7 @@ CREATE TABLE {prefix}users (
   userID int(11) auto_increment NOT NULL,
   login varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
+  password varchar(32) NOT NULL,
   PRIMARY KEY (userID),
   UNIQUE KEY (login)
 );
@@ -56,8 +57,8 @@ CREATE TABLE {prefix}translatedPages (
   UNIQUE KEY (pageID, languageCode)
 );
 
-INSERT INTO {prefix}users (login, email) VALUES ('administrator', 'admin@host.org');
-INSERT INTO {prefix}users (login, email) VALUES ('normalUser', 'normalUser@host.org');
+INSERT INTO {prefix}users (login, email, password) VALUES ('administrator', 'admin@host.org', '098f6bcd4621d373cade4e832627b4f6');
+INSERT INTO {prefix}users (login, email, password) VALUES ('normalUser', 'normalUser@host.org', '098f6bcd4621d373cade4e832627b4f6');
 INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('administrator', 'This is the administrator group.');
 INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('normalUsers', 'This is the normal users group');
 
