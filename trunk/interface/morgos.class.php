@@ -150,7 +150,7 @@ class morgos {
 			$this->_smarty->assign ('SkinPath', 'skins/default');
 		} else {
 			$this->lowInit ();
-			$this->error ("ERROR_MORGOS_NOT_INSTALLED", true);
+			$this->error (new Error ('MORGOS_NOT_INSTALLED'), true);
 		}
 	}
 	
@@ -236,8 +236,7 @@ class morgos {
 			$r = $this->_actionManager->executeAction ('viewPage');
 		}
 		if (isError ($r)) {
-			var_dump ($r);
-			if ($r == "ERROR_ACTIONMANAGER_ACTION_NOT_FOUND") {
+			if ($r->is ('ACTIONMANAGER_ACTION_NOT_FOUND')) {
 				$this->error ($this->_i18nManager->translate ('You can\'t do this.'), true);
 			} else {
 				$this->error ($this->_i18nManager->translate ('Unexpected error.'), true);

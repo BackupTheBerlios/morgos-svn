@@ -64,12 +64,12 @@ class eventManagerTest extends TestCase {
 		$this->_eventManager->addEvent ($this->_runEvent);
 		$this->assertTrue ($this->_eventManager->existsEvent ('run'));
 		$r = $this->_eventManager->addEvent ($this->_runEvent);
-		$this->assertEquals ($r, "ERROR_EVENTMANAGER_EVENT_EXISTS run");
+		$this->assertEquals (new Error ('EVENTMANAGER_EVENT_EXISTS', 'run'), $r);
 	}
 	
 	function testRemoveEvent () {
 		$r = $this->_eventManager->removeEvent ($this->_runEvent->getName ());
-		$this->assertEquals ($r, "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS run");
+		$this->assertEquals (new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', 'run'), $r);
 		
 		$this->_eventManager->addEvent ($this->_runEvent);
 		$r = $this->_eventManager->removeEvent ($this->_runEvent->getName ());
@@ -84,13 +84,13 @@ class eventManagerTest extends TestCase {
 		$runEvent = $this->_eventManager->getEvent ('run');
 		$this->assertTrue ($runEvent->existsCallback ($this->_onRunCallback->getName ()) , 'Not added');
 		$r = $this->_eventManager->subscribeToEvent ('run', $this->_onRunCallback);
-		$this->assertEquals ($r, "ERROR_EVENT_CALLBACK_EXISTS onRun", 'Wrong error returned');
+		$this->assertEquals (new Error ('EVENT_CALLBACK_EXISTS', 'onRun'), $r, 'Wrong error returned');
 	}
 	
 	function testRemoveCallback () {
 		$this->_eventManager->addEvent ($this->_runEvent);
 		$r = $this->_eventManager->unSubscribeFromEvent ('run', $this->_onRunCallback);
-		$this->assertEquals ($r, "ERROR_EVENT_CALLBACK_DOESNT_EXISTS onRun", 'Wrong error');
+		$this->assertEquals (new Error ('EVENT_CALLBACK_DOESNT_EXISTS', 'onRun'), $r, 'Wrong error');
 		
 		$r = $this->_eventManager->subscribeToEvent ('run', $this->_onRunCallback);
 		$r = $this->_eventManager->unSubscribeFromEvent ('run', $this->_onRunCallback);

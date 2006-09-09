@@ -130,7 +130,7 @@ class event {
 		if ($this->existsCallback ($callbackName)) {
 			unset ($this->_callbacksList[$callbackName]);
 		} else {
-			return "ERROR_EVENT_CALLBACK_DOESNT_EXISTS $callbackName";
+			return new Error ('EVENT_CALLBACK_DOESNT_EXISTS', $callbackName);
 		}
 	}
 	
@@ -146,7 +146,7 @@ class event {
 			$a = $this->existsCallback ($callback->getName ());
 		} else {
 			$callbackName = $callback->getName ();
-			return "ERROR_EVENT_CALLBACK_EXISTS $callbackName";
+			return new Error ('EVENT_CALLBACK_EXISTS', $callbackName);
 		}
 	}
 	
@@ -198,7 +198,7 @@ class eventManager {
 			$this->_eventsList[$eventName] = $event;
 			return $a;
 		} else {
-			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
+			return new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', $eventName);
 		}
 	}
 	
@@ -216,7 +216,7 @@ class eventManager {
 			$this->_eventsList[$eventName] = $event;
 			return $a;
 		} else {
-			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
+			return new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', $eventName);
 		}
 	}
 	
@@ -231,7 +231,7 @@ class eventManager {
 			$this->_eventsList[$event->getName ()] = $event;
 		} else {
 			$eventName = $event->getName ();
-			return "ERROR_EVENTMANAGER_EVENT_EXISTS $eventName";
+			return new Error ('EVENTMANAGER_EVENT_EXISTS', $eventName);
 		}
 	}
 	
@@ -245,7 +245,7 @@ class eventManager {
 		if ($this->existsEvent ($eventName)) {
 			unset ($this->_eventsList[$eventName]);
 		} else {
-			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
+			return new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', $eventName);
 		}
 	}
 	
@@ -262,7 +262,7 @@ class eventManager {
 			$eventName = $this->getEvent ($eventName);
 			return $eventName->trigger ($eventParams);
 		} else {
-			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
+			return new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', $eventName);
 		}
 	}
 	
@@ -288,7 +288,7 @@ class eventManager {
 		if ($this->existsEvent ($eventName)) {
 			return $this->_eventsList[$eventName];
 		} else {
-			return "ERROR_EVENTMANAGER_EVENT_DOESNT_EXISTS $eventName";
+			return new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', $eventName);
 		}
 	}
 }

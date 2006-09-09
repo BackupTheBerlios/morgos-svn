@@ -86,7 +86,7 @@ class action {
 			if (array_key_exists ($option, $a)) {
 				$vals[$option] = $a[$option];
 			} else {
-				return "ERROR_ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND $option";
+				return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
 			}
 		}
 		
@@ -127,7 +127,7 @@ class actionManager {
 			$action = $this->getAction ($actionName);
 			return $action->execute ();
 		} else {
-			return "ERROR_ACTIONMANAGER_ACTION_NOT_FOUND $actionName";
+			return new Error ('ACTIONMANAGER_ACTION_NOT_FOUND', $actionName);
 		}
 	}
 	
@@ -141,7 +141,7 @@ class actionManager {
 		if (! $this->existsAction ($actionName)) {
 			$this->_actionsList[$actionName] = $action;
 		} else {
-			return "ERROR_ACTIONMANAGER_ACTION_EXISTS $actionName";
+			return new Error ('ACTIONMANAGER_ACTION_EXISTS', $actionName);
 		}
 	}
 	
@@ -166,7 +166,7 @@ class actionManager {
 		if ($this->existsAction ($actionName)) {
 			return $this->_actionsList[$actionName];
 		} else {
-			return "ERROR_ACTION_MANAGER_ACTION_NOT_FOUND $actionName";
+			return new Error ('ACTION_MANAGER_ACTION_NOT_FOUND', $actionName);
 		}
 	}
 	

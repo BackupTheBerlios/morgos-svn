@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-
+define ('MORGOS_VERSION', '0.2');
 include_once ('core/varia.functions.php');
 include_once ('interface/pluginmanager.class.php');
 
@@ -92,15 +92,15 @@ class pluginManagerTest extends TestCase {
 	
 	function testIsCompatible () {
 		$r = $this->_pluginManager->setPluginToLoad ($this->_notCompatible->getID ());
-		$this->assertEquals ("ERROR_PLUGINMANAGER_MINIMALVERSION_NOT_REACHED 0.3", $r, 'Min version check fails');
+		$this->assertEquals (new Error ('PLUGINMANAGER_MINIMALVERSION_NOT_REACHED', '0.3'), $r, 'Min version check fails');
 		
 		$r = $this->_pluginManager->setPluginToLoad ($this->_notCompatible2->getID ());
-		$this->assertEquals ("ERROR_PLUGINMANAGER_MAXVERSION_REACHED 0.1", $r, 'Max version check fails');
+		$this->assertEquals (new Error ('PLUGINMANAGER_MAXVERSION_REACHED', '0.1'), $r, 'Max version check fails');
 	}
 			
 	function testIsPHPCompatible () {
 		$r = $this->_pluginManager->setPluginToLoad ($this->_notCompatibleWithPHP->getID ());
-		$this->assertEquals ("ERROR_PLUGINMANAGER_NOT_COMPATIBLE", $r, 'PHP check fails');
+		$this->assertEquals (new Error ('PLUGINMANAGER_NOT_COMPATIBLE'), $r, 'PHP check fails');
 	}
 }
 ?>

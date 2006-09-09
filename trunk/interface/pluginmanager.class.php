@@ -222,16 +222,16 @@ class pluginManager {
 					if ($this->_foundPlugins[$pluginID]->isCompatible ()) {
 						$this->_pluginsToLoad[$pluginID] = $this->_foundPlugins[$pluginID];
 					} else {
-						return "ERROR_PLUGINMANAGER_NOT_COMPATIBLE";
+						return new Error ('PLUGINMANAGER_NOT_COMPATIBLE');
 					}
 				} else {
-					return "ERROR_PLUGINMANAGER_MAXVERSION_REACHED {$this->_foundPlugins[$pluginID]->_maxMorgOSVersion}";
+					return new Error ('PLUGINMANAGER_MAXVERSION_REACHED', $this->_foundPlugins[$pluginID]->_maxMorgOSVersion);
 				}
 			} else {
-				return "ERROR_PLUGINMANAGER_MINIMALVERSION_NOT_REACHED {$this->_foundPlugins[$pluginID]->_minMorgOSVersion}";
+				return new Error ('PLUGINMANAGER_MINIMALVERSION_NOT_REACHED', $this->_foundPlugins[$pluginID]->_minMorgOSVersion);
 			}
 		} else {
-			return "ERROR_PLUGINMANAGER_PLUGIN_NOT_FOUND $pluginID";
+			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $pluginID);
 		}
 	}
 	
@@ -293,7 +293,7 @@ class pluginManager {
 		if ($this->existsLoadedPluginID ($ID)) {
 			return $this->_loadedPlugins[$ID];
 		} else {
-			return "ERROR_PLUGINMANAGER_PLUGIN_NOT_FOUND $ID";
+			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $ID);
 		}
 	}
 	
