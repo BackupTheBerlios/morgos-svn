@@ -28,10 +28,13 @@ class Error {
 
 	function Error ($error) {
 		$this->_error = $error;
+		for ($i = 1; $i < func_num_args (); $i++) {
+			$this->_params[] = func_get_arg ($i);
+		}
 	}
 	
 	function is ($otherError) {
-		if (isString ($otherError)) {
+		if (is_string ($otherError)) {
 			return $this->_error == $otherError;
 		} else {
 			return $this->_error == $otherError->getError ();
@@ -48,6 +51,8 @@ function isError ($test) {
 		} else {
 			return false;
 		}		
+	} elseif (get_class ($test) == 'Error') {
+		return true;
 	} else {
 		return false;
 	}

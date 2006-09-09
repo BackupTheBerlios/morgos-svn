@@ -40,13 +40,13 @@ function checkType ($value, $type) {
 		case BOOL     : $r = is_bool     ($value); break;
 		case NUMERIC  : $r = is_int      ($value); break;
 		case REAL     : $r = (is_real ($value) or is_int ($value)); break;
-		default       : return "ERROR_TYPE_NOT_RECOGNIZED"; 
+		default       : return new Error ('TYPE_NOT_RECOGNIZED'); 
 	}
 	
 	if ($r === true) {
 		return true;
 	} else {
-		return "ERROR_TYPE_MISMATCH_VALUE $type $value";
+		return new Error ('TYPE_MISMATCH_VALUE', $type, $value);
 	}
 }
 
@@ -209,10 +209,10 @@ class configurator {
 				include ($fileName);
 				$this->loadConfigArray ($configItems);
 			} else {
-				return "ERROR_CONFIGURATOR_CANT_READ_FILE $fileName";
+				return new Error ('CONFIGURATOR_CANT_READ_FILE', $fileName);
 			}
 		} else {
-			return "ERROR_CONFIGURATOR_CANT_READ_FILE $fileName";
+			return new Error ('CONFIGURATOR_CANT_READ_FILE', $fileName);
 		}
 	}
 	
@@ -290,7 +290,7 @@ class configurator {
 			$fullName = '/'.$option->getType () . $option->getName ();
 			$this->allConfigItems[$fullName] = $option;
 		} else {
-			return "ERROR_CONFIGURATOR_OPTION_EXISTS ".$option->getName ();
+			return new Error ('CONFIGURATOR_OPTION_EXISTS', $option->getName ());
 		}
 	}
 
@@ -326,7 +326,7 @@ class configurator {
 			$fullName = $fullName = '/'.$type.$name;
 			return $this->allConfigItems[$fullName];
 		} else {
-			return "ERROR_CONFIGURATOR_ITEM_DOESNT_EXISTS $name";
+			return new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', $name);
 		}
 	}
 	

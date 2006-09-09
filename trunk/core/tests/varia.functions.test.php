@@ -30,12 +30,28 @@ class variaTest extends TestCase {
 		$this->assertTrue (isError ("ERROR_SOMETHING var1"));
 		$this->assertTrue (isError ("ERROR_SOMETHING var1 var2"));
 		
+		$this->assertTrue (isError (new Error ('TEST')));
+		
 		$this->assertFalse (isError ("ERROR_"));
 		$this->assertFalse (isError (null));
 		$this->assertFalse (isError (false));
 		$this->assertFalse (isError (""));
 		$this->assertFalse (isError ("error"));
 		$this->assertFalse (isError ("error_"));
+	}
+	
+	function testErrorIsError () {
+		$a = new Error ('SOME_ERROR', 1, 2, 3);
+		$b = new Error ('SOME_ERROR', 4, 5, 6);
+		$c = new Error ('SOME_ERROR', 4, 5, 6);
+		$d = new Error ('SOME_OTHER_ERROR');
+		$this->assertTrue ($a->is ('SOME_ERROR'), 'String comp fails');
+		$this->assertTrue ($a->is ($b), 'Object comp fails (diff params)');
+		$this->assertTrue ($b->is ($c), 'Object comp fails (same params)');
+		$this->assertTrue ($b == $c, 'Object == fails (same)');
+		
+		$this->assertFalse ($a == $c, 'Object == fails (different)');
+		$this->assertFalse ($a->is ($d), 'Object comp fails (diff error)');
 	}
 }
 ?>

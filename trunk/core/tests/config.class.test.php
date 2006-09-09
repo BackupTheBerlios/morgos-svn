@@ -144,11 +144,11 @@ class configTest extends TestCase {
 		
 		$newOption = new configItem ('/newItem', STRING);
 		$r = $this->configurator->addOption ($newOption);
-		$this->assertEquals ("ERROR_CONFIGURATOR_OPTION_EXISTS /newItem", $r, "Wrong error 1");
+		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r, "Wrong error 1");
 		
 		$newOption = new configItem ('/newItem', BOOL);
 		$r = $this->configurator->addOption ($newOption);
-		$this->assertEquals ("ERROR_CONFIGURATOR_OPTION_EXISTS /newItem", $r, "Wrong error 2");
+		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r, "Wrong error 2");
 	}
 	
 	function testGetItem () {
@@ -172,7 +172,7 @@ class configTest extends TestCase {
 		$this->configurator->addOption ($real);
 		$this->assertEquals (3.22, $this->configurator->getRealItem ('/aReal'), 'Wrong value');
 		
-		$this->assertEquals ("ERROR_CONFIGURATOR_ITEM_DOESNT_EXISTS /aReal", $this->configurator->getBoolItem ('/aReal'), "Wrong error");
+		$this->assertEquals (new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', '/aReal'), $this->configurator->getBoolItem ('/aReal'), "Wrong error");
 	}
 	
 	function testLoadFromFile () {

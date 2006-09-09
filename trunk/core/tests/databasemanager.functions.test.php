@@ -32,7 +32,7 @@ class databaseManagerTest extends TestCase {
 	
 	function testLoadModule () {
 		$m = databaseLoadModule ('NOTEXISTINGMODULE');
-		$this->assertEquals ("ERROR_DATABASEMANAGER_MODULE_DOES_NOT_EXITS NOTEXISTINGMODULE", $m);
+		$this->assertEquals (new Error ('DATABASEMANAGER_MODULE_DOES_NOT_EXITS', 'NOTEXISTINGMODULE'), $m);
 		
 		$m = databaseLoadModule ('MySQL');
 		$newMySQL = new mysqlDatabaseActions ();

@@ -35,7 +35,7 @@ function databaseLoadModule ($module) {
 		$dbClass = new $allModules[$module] ();
 		return $dbClass;
 	} else {
-		return "ERROR_DATABASEMANAGER_MODULE_DOES_NOT_EXITS $module";
+		return new Error ('DATABASEMANAGER_MODULE_DOES_NOT_EXITS', $module);
 	}
 }
 
@@ -275,7 +275,7 @@ class databaseObject {
 	*/
 	function initFromDatabaseID ($ID) {
 		if (! is_numeric ($ID)) {
-			return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED". __FILE__."::".__LINE__;
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__,__LINE__);
 		}
 		$prefix = $this->db->getPrefix ();
 		$tableName = $this->getTableName ();
@@ -309,7 +309,7 @@ class databaseObject {
 			} else {
 				if (! $dbField->canBeNull) {
 					$this->initEmpty ();
-					return "ERROR_DATABASEOBJECT_KEY_NOT_EXISTS $name";
+					return new Error ('DATABASEOBJECT_KEY_NOT_EXISTS', $name);
 				}
 			}
 		}
@@ -331,7 +331,7 @@ class databaseObject {
 		} elseif ($name == 'ID') {
 			return $this->ID;
 		} else {
-			return "ERROR_DATABASEOBJECT_OPTION_DOES_NOT_EXISTS $name";
+			return new Error ('DATABASEOBJECT_OPTION_DOES_NOT_EXISTS', $name);
 		}
 	}
 	
@@ -353,7 +353,7 @@ class databaseObject {
 		} elseif ($name == 'ID') {
 			$this->ID = (int) $value;
 		} else {
-			return "ERROR_DATABASEOBJECT_OPTION_DOES_NOT_EXISTS $name";
+			return new Error ('DATABASEOBJECT_OPTION_DOES_NOT_EXISTS', $name);
 		}
 	}	
 	
@@ -417,7 +417,7 @@ class databaseObject {
 				return $q;
 			}
 		} else {
-			return "ERROR_DATABASEOBJECT_ALREADY_IN_DATABASE";
+			return new Error ('DATABASEOBJECT_ALREADY_IN_DATABASE');
 		}
 	}
 
@@ -433,7 +433,7 @@ class databaseObject {
 			$IDName = $this->getIDName ();
 			$ID = $this->getID ();
 			if (! is_numeric ($ID)) {
-				return "ERROR_DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED". __FILE__."::".__LINE__;
+				return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__,__LINE__);
 			}
 			$sql = "DELETE FROM $prefix$tableName WHERE $IDName='$ID'";
 			$q = $this->db->query ($sql);
@@ -443,7 +443,7 @@ class databaseObject {
 				return $q;
 			}
 		} else {
-			return "ERROR_DATABASEOBJECT_NOT_IN_DATABASE";
+			return new Error ('DATABASEOBJECT_NOT_IN_DATABASE');
 		}
 	}
 	
