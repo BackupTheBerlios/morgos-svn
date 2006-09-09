@@ -36,6 +36,7 @@ class adminCorePlugin extends plugin {
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('admin', 'GET',  array (&$this, 'onViewAdmin'), array (), array ('pageID', 'pageLang')));
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), array ('adminLogin', 'adminPassword'), array ()));
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), array ()));
+		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminPageManager', 'GET',  array (&$this, 'onViewPageManager'), array (), array ('pageID', 'pageLang')));
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {
@@ -50,7 +51,21 @@ class adminCorePlugin extends plugin {
 		$user = $userManager->getCurrentUser ();
 		if ($user) {
 			if ($user->hasPermission ('read_admin')) {
-				echo 'Congrats, you are viewing the admin';
+				$pageManager = $this->_pluginAPI->getPageManager ();
+				$page = $pageManager->newPage ();
+				if ($pageID) {
+					$page->initFromDatabaseID ($pageID);
+				} else {
+					$page->initFromGenericName ('Admin Home');
+				}
+				$sm = $this->_pluginAPI->getSmarty ();
+				$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
+				if ($page->getScript ()) {
+					$sm->display ($page->getScript ());
+				} elseif ($page->getLink ()) {
+				} else {
+					$sm->display ('admin/genericpage.tpl');
+				}
 			} else {
 				return "ERROR_PLUGIN_NOT_PERMISSION";
 			}
@@ -77,6 +92,25 @@ class adminCorePlugin extends plugin {
 			return $a;
 		} else {
 			$this->_pluginAPI->doAction ('admin');
+		}
+	}
+	
+	function onViewPageManager ($pageID, $pageLang) {
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->_pluginAPI->userCanViewPage ()) {
+			$pageManager = $this->_pluginAPI->getPageManager ();
+			$page = $pageManager->newPage ();			
+			$page->initFromGenericName ('Admin Pagemanager');
+			
+			$parentPage = $pageManager->newPage ();
+			$parentPage->initFromDatabaseID ($pageID);
+			$childPages = $parentPage->getAllChilds (); 
+			$sm->assign ('MorgOS_PagesList', $childPages);
+			$sm->assign_by_ref ('MorgOS_ParentPage', $parentPage);
+			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
+			$sm->display ('admin/pagemanager.tpl'); 
+		} else {
+			$sm->display ('admin/login.tpl');
 		}
 	}
 }

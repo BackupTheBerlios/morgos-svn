@@ -37,8 +37,12 @@ class page extends databaseObject {
 		$parentPageID = new dbField ('parentPageID', 'int(11)');
 		$placeInMenu = new dbField ('placeInMenu', 'int(4)');
 		$placeInMenu->canBeNull = true;
-		
-		parent::databaseObject ($db, $allOptions, array ('genericName'=>$genericName, 'genericContent'=>$genericContent, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu), 'pages', 'pageID', $parent);
+		$script = new dbField ('script', 'varchar(255)');
+		$script->canBeNull = true;
+		$link = new dbField ('link', 'varchar(255)');
+		$link->canBeNull = true;		
+				
+		parent::databaseObject ($db, $allOptions, array ('genericName'=>$genericName, 'genericContent'=>$genericContent, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu, 'script'=>$script, 'link'=>$link), 'pages', 'pageID', $parent);
 	}
 
 	/**
@@ -96,6 +100,20 @@ class page extends databaseObject {
 	 * @return (int)
 	*/
 	function getPlaceInMenu () {return $this->getOption ('placeInMenu');}
+
+	/**
+	 * If the page needs a special script returns it.
+	 * @public
+	 * @return (string)
+	*/
+	function getScript () {return $this->getOption ('script');}
+
+	/**
+	 * If the page needs is a (relative) link returns it.
+	 * @public
+	 * @return (string)
+	*/
+	function getLink () {return;}
 	
 	/**
 	 * Returns the parentPage.
@@ -180,6 +198,18 @@ class page extends databaseObject {
 		} else {
 			return false;
 		}
+	}
+	
+	function getAllChilds () {
+		$sql = "SELECT pageID FROM {$this->getFullTableName ()} WHERE parentPageID='{$this->getID ()}'";
+		$q = $this->db->query ($sql);
+		$childPages = array ();
+		while ($row = $this->db->fetchArray ($q)) {
+			$childPage = $this->getCreator ()->newPage ();
+			$childPage->initFromDatabaseID ($row['pageID']);
+			$childPages[] = $childPage;
+		}
+		return $childPages;
 	}
 }
 ?>

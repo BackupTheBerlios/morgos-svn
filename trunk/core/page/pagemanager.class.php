@@ -258,7 +258,7 @@ class pageManager {
 	*/
 	function getAllOptionsForPage () {
 		if ($this->allOptionsForPage === null) {
-			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', array ('pageID', 'genericName', 'genericContent', 'parentPageID', 'placeInMenu'));
+			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', array ('pageID', 'genericName', 'genericContent', 'parentPageID', 'placeInMenu', 'script', 'link'));
 			if (! isError ($allOptions)) {
 				$this->allOptionsForPage = $allOptions;
 			}

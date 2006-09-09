@@ -75,6 +75,10 @@ class pluginAPI {
 		}
 		header ('Location: '.$loc);
 	}
+	
+	function userCanViewPage () {
+		return true;
+	}
 }
 
 ?>
