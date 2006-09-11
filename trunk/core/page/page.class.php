@@ -107,6 +107,35 @@ class page extends databaseObject {
 	 * @return (string)
 	*/
 	function getAction () {return $this->getOption ('action');}
+	/**
+	 * Returns the link for the page.
+	 * @public
+	 * @return (string)
+	*/
+	function getLink () {
+		$baseLink = 'index.php';
+		if ($this->getAction ()) {
+			return $baseLink .= '?action='.$this->getAction ();
+		} elseif ($this->isAdminPage ()) {
+			return $baseLink .= '?action=admin&pageID='.$this->getID ();
+		} else {
+			return $baseLink .= '?action=viewPage&pageID='.$this->getID ();
+		}
+	}
+	
+	/**
+	 * Returns of the page is in the admin site
+	 * @public
+	 * @return (bool)
+	*/
+	function isAdminPage () {
+		if ($this->getGenericName () == 'admin') {
+			return true;
+		} else {
+			$parentPage = $this->getParentPage ();
+			return $parentPage->isAdminPage ();
+		}
+	}
 
 	
 	/**
@@ -116,8 +145,9 @@ class page extends databaseObject {
 	 * @return (object)
 	*/
 	function getParentPage () {
+		$parent = $this->getCreator ();
 		$parentPage = $parent->newPage ();
-		$parentPage->initFromPageID ($this->getParentPageID ());
+		$parentPage->initFromDatabaseID ($this->getParentPageID ());
 		return $parentPage;
 	}
 	

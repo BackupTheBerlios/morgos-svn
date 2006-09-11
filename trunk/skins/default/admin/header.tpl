@@ -11,6 +11,7 @@
 	<body>
 		<div>
 			<div id="header">
-				THIS IS THE SITEHEADER
+				MorgOS Admin
 			</div>
-			{include file="sidebar.tpl"}
+			{include file="admin/nav.tpl"}
+			{include file="admin/sidebar.tpl"}

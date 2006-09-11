@@ -59,6 +59,11 @@ class morgos {
 	*/
 	var $_actionManager;
 	/**
+	 * The event manager
+	 * @private
+	*/
+	var $_eventManager;
+	/**
 	 * The plugin API
 	 * @private
 	*/
@@ -98,6 +103,7 @@ class morgos {
 	*/
 	function init () {
 		if ($this->isInstalled ()) {
+			$this->_eventManager = new eventManager ();
 			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
 			$this->_i18nManager = new localizer ();
@@ -108,6 +114,7 @@ class morgos {
 			$this->_smarty = new Smarty ();
 			//$this->_smarty->debugging = true;
 			$this->_pluginAPI = new pluginAPI ();
+			$this->_pluginAPI->setEventManager ($this->_eventManager);
 			$this->_pluginAPI->setUserManager ($this->_userManager);
 			$this->_pluginAPI->setDBModule ($this->_dbModule);
 			$this->_pluginAPI->setConfigManager ($this->_configManager);

@@ -37,6 +37,9 @@ class adminCorePlugin extends plugin {
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), array ('adminLogin', 'adminPassword'), array ()));
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), array ()));
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminPageManager', 'GET',  array (&$this, 'onViewPageManager'), array (), array ('pageID', 'pageLang')));
+		
+		$this->_pluginAPI->getEventManager ()->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
+		$this->_pluginAPI->getEventManager ()->subscribeToEvent ('viewAnyAdminPage', new callback ('setAdminVars', array (&$this, 'setAdminVars'), array ('pageID')));
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {
@@ -46,7 +49,7 @@ class adminCorePlugin extends plugin {
 				return;
 			}
 		}*/
-			
+		
 		$userManager = $this->_pluginAPI->getUserManager ();
 		$user = $userManager->getCurrentUser ();
 		if ($user) {
@@ -57,12 +60,14 @@ class adminCorePlugin extends plugin {
 					$page->initFromDatabaseID ($pageID);
 				} else {
 					$page->initFromGenericName ('Admin Home');
+					$pageID = $page->getID ();
 				}
+
+				$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 				$sm = $this->_pluginAPI->getSmarty ();
 				$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
-				if ($page->getScript ()) {
-					$sm->display ($page->getScript ());
-				} elseif ($page->getLink ()) {
+				if ($page->getAction ()) {
+					$this->_pluginAPI->getActionManager ()->executeAction ($page->getAction ());
 				} else {
 					$sm->display ('admin/genericpage.tpl');
 				}
@@ -96,6 +101,7 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onViewPageManager ($pageID, $pageLang) {
+		$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->_pluginAPI->userCanViewPage ()) {
 			$pageManager = $this->_pluginAPI->getPageManager ();
@@ -112,6 +118,17 @@ class adminCorePlugin extends plugin {
 		} else {
 			$sm->display ('admin/login.tpl');
 		}
+	}
+	
+	function setAdminVars ($pageID) {
+		$sm = $this->_pluginAPI->getSmarty ();	
+	
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$rootPage = $pageManager->newPage ();
+		$rootPage->initFromGenericName ('admin');
+		$adminNav = $rootPage->getAllChilds ();
+		
+		$sm->assign_by_ref ('MorgOS_AdminNav', $adminNav);
 	}
 }
 ?>
