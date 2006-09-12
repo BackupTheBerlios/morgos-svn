@@ -89,7 +89,7 @@ class XMLDatabase extends databaseActions {
 	}
 	
 	function latestInsertID () {
-		return 1;
+		return $this->_XMLSQLBackend->latestInsertID ();
 	}
 }
 }

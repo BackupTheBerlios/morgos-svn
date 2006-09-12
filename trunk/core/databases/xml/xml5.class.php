@@ -83,11 +83,24 @@ class XMLBackend {
 			$table->addField ($this->parseField ($fieldNode));
 		}
 		
+		$utags = $tableNode->getElementsByTagName ('unique');
+		$ftag = $utags->item (0);
+		$uniqueKeys = $ftag->nodeValue; //only one unique key supported
+		$table->addUniqueKeys (explode (',', $uniqueKeys));
+		
+		$utags = $tableNode->getElementsByTagName ('primary');
+		$ftag = $utags->item (0);
+		$pKey = $ftag->nodeValue;
+		$table->setPrimaryAutocountKey ($pKey);
+		
 		$allRowsList = $tableNode->getElementsByTagName ('row');
 		for ($i = 0; $i<$allRowsList->length; $i++) {
 			$rowNode = $allRowsList->item ($i);
 			$table->addRow ($this->parseRow ($rowNode, $table->getFields (), $i));
 		}
+
+		$table->setNewID ($tableNode->getAttribute ('newID')); 
+
 		return $table;
 	}
 	
@@ -108,5 +121,6 @@ class XMLBackend {
 	function getTable ($tableName) {
 		return $this->_tables[$tableName];
 	}
+	
 }
 ?>

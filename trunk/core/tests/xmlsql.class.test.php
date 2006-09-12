@@ -38,19 +38,19 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
-		$row2 = array ('Title'=>'Book 2', 'Author'=>'1', 'Rating'=>'5');
-		$row3 = array ('Title'=>'Book 3', 'Author'=>'1', 'Rating'=>'4');
-		$row4 = array ('Title'=>'Book 4', 'Author'=>'2', 'Rating'=>'7');
+		$row1 = array ('bookID' => 1, 'Title'=>'Book 1', 'Author'=>1, 'Rating'=>6);
+		$row2 = array ('bookID' => 2, 'Title'=>'Book 2', 'Author'=>1, 'Rating'=>5);
+		$row3 = array ('bookID' => 3, 'Title'=>'Book 3', 'Author'=>1, 'Rating'=>4);
+		$row4 = array ('bookID' => 4, 'Title'=>'Book 4', 'Author'=>2, 'Rating'=>7);
 		$this->assertEquals (array ($row1, $row2, $row3, $row4), $allRows);
 		$this->assertEquals (4, $this->_dbModule->numRows ($query));
 	}
 	
 	function testSelectWithLimit () {
-		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
-		$row2 = array ('Title'=>'Book 2', 'Author'=>'1', 'Rating'=>'5');
-		$row3 = array ('Title'=>'Book 3', 'Author'=>'1', 'Rating'=>'4');
-		$row4 = array ('Title'=>'Book 4', 'Author'=>'2', 'Rating'=>'7');
+		$row1 = array ('bookID' => 1, 'Title'=>'Book 1', 'Author'=>1, 'Rating'=>6);
+		$row2 = array ('bookID' => 2, 'Title'=>'Book 2', 'Author'=>1, 'Rating'=>5);
+		$row3 = array ('bookID' => 3, 'Title'=>'Book 3', 'Author'=>1, 'Rating'=>4);
+		$row4 = array ('bookID' => 4, 'Title'=>'Book 4', 'Author'=>2, 'Rating'=>7);
 		$sql = 'SELECT * FROM books LIMIT 2';
 		$query = $this->_dbModule->query ($sql);
 		$allRows = array ();
@@ -95,10 +95,10 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('Title'=>'Book 1', 'Rating'=>'6');
-		$row2 = array ('Title'=>'Book 2', 'Rating'=>'5');
-		$row3 = array ('Title'=>'Book 3', 'Rating'=>'4');
-		$row4 = array ('Title'=>'Book 4', 'Rating'=>'7');
+		$row1 = array ('Title'=>'Book 1', 'Rating'=>6);
+		$row2 = array ('Title'=>'Book 2', 'Rating'=>5);
+		$row3 = array ('Title'=>'Book 3', 'Rating'=>4);
+		$row4 = array ('Title'=>'Book 4', 'Rating'=>7);
 		$this->assertEquals (array ($row1, $row2, $row3, $row4), $allRows);
 		$this->assertEquals (4, $this->_dbModule->numRows ($query));
 	}
@@ -114,7 +114,7 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
+		$row1 = array ('bookID' => 1, 'Title'=>'Book 1', 'Author'=>1, 'Rating'=>6);
 		$this->assertEquals (array ($row1), $allRows);
 		$this->assertEquals (1, $this->_dbModule->numRows ($query));
 	}
@@ -126,8 +126,8 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
-		$row4 = array ('Title'=>'Book 4', 'Author'=>'2', 'Rating'=>'7');
+		$row1 = array ('bookID' => 1, 'Title'=>'Book 1', 'Author'=>1, 'Rating'=>6);
+		$row4 = array ('bookID' => 4, 'Title'=>'Book 4', 'Author'=>2, 'Rating'=>7);
 		$this->assertEquals (array ($row1, $row4), $allRows);
 		$this->assertEquals (2, $this->_dbModule->numRows ($query));
 	}
@@ -143,10 +143,10 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('COUNT(Title)'=>4, 'Title'=>'Book 1', 'Rating'=>'6');
-		$row2 = array ('COUNT(Title)'=>4, 'Title'=>'Book 2', 'Rating'=>'5');
-		$row3 = array ('COUNT(Title)'=>4, 'Title'=>'Book 3', 'Rating'=>'4');
-		$row4 = array ('COUNT(Title)'=>4, 'Title'=>'Book 4', 'Rating'=>'7');
+		$row1 = array ('COUNT(Title)'=>4, 'Title'=>'Book 1', 'Rating'=>6);
+		$row2 = array ('COUNT(Title)'=>4, 'Title'=>'Book 2', 'Rating'=>5);
+		$row3 = array ('COUNT(Title)'=>4, 'Title'=>'Book 3', 'Rating'=>4);
+		$row4 = array ('COUNT(Title)'=>4, 'Title'=>'Book 4', 'Rating'=>7);
 		$this->assertEquals (array ($row1, $row2, $row3, $row4), $allRows);
 		$this->assertEquals (4, $this->_dbModule->numRows ($query));
 	}
@@ -158,8 +158,8 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('COUNT(Title)'=>2, 'Title'=>'Book 1', 'Rating'=>'6');
-		$row2 = array ('COUNT(Title)'=>2, 'Title'=>'Book 2', 'Rating'=>'5');
+		$row1 = array ('COUNT(Title)'=>2, 'Title'=>'Book 1', 'Rating'=>6);
+		$row2 = array ('COUNT(Title)'=>2, 'Title'=>'Book 2', 'Rating'=>5);
 		$this->assertEquals (array ($row1, $row2), $allRows);
 		$this->assertEquals (2, $this->_dbModule->numRows ($query));
 	}
@@ -176,12 +176,12 @@ class XMLSQLTest extends TestCase {
 		while ($row = $this->_dbModule->fetchArray ($query)) {
 			$allRows[] = $row;
 		}
-		$row1 = array ('Title'=>'Book 1', 'Author'=>'1', 'Rating'=>'6');
-		$row2 = array ('Title'=>'Book 2', 'Author'=>'1', 'Rating'=>'5');
-		$row3 = array ('Title'=>'Book 3', 'Author'=>'1', 'Rating'=>'4');
-		$row4 = array ('Title'=>'Book 4', 'Author'=>'2', 'Rating'=>'7');
-		$row5 = array ('Title'=>'Book 5', 'Author'=>'1', 'Rating'=>'3');
-		$row6 = array ('Title'=>'Book 6', 'Author'=>'1', 'Rating'=>'2');
+		$row1 = array ('bookID' => 1, 'Title'=>'Book 1', 'Author'=>1, 'Rating'=>6);
+		$row2 = array ('bookID' => 2, 'Title'=>'Book 2', 'Author'=>1, 'Rating'=>5);
+		$row3 = array ('bookID' => 3, 'Title'=>'Book 3', 'Author'=>1, 'Rating'=>4);
+		$row4 = array ('bookID' => 4, 'Title'=>'Book 4', 'Author'=>2, 'Rating'=>7);
+		$row5 = array ('bookID' => 5, 'Title'=>'Book 5', 'Author'=>1, 'Rating'=>3);
+		$row6 = array ('bookID' => 6, 'Title'=>'Book 6', 'Author'=>1, 'Rating'=>2);
 
 		$this->assertEquals (array ($row1, $row2, $row3, $row4, $row5, $row6), $allRows);
 		$this->assertEquals (6, $this->_dbModule->numRows ($query));
@@ -192,11 +192,15 @@ class XMLSQLTest extends TestCase {
 	}
 	
 	function testInsertUniqueKey () {
-		$this->fail ('Not Yet implemented');
+		$sql = 'INSERT INTO books (Title, Author, Rating) VALUES (\'Book 3\', \'1\', \'3\')';
+		$query = $this->_dbModule->query ($sql);
+		$this->assertEquals (new Error ('XMLSQL_INSERT_ERROR', 'Duplicate entry for unique key'), $query);
 	}
 	
 	function testInsertAutoIncrement () {
-		$this->fail ('Not Yet implemented');
+		$sql = 'INSERT INTO books (Title, Author, Rating) VALUES (\'Book 5\', \'1\', \'3\')';
+		$query = $this->_dbModule->query ($sql);
+		$this->assertEquals (5, $this->_dbModule->latestInsertID ());
 	}
 	
 	function testInsertNotNull () {
@@ -220,12 +224,31 @@ class XMLSQLTest extends TestCase {
 	}
 	
 	function testCreateTable () {
-		$sql = 'CREATE TABLE editors (ID int(11) auto_increment, name varchar (255) NOT NULL, isNice ENUM(\'Y\', \'N\'), number int(5), UNIQUE KEY (name), PRIMARY KEY (ID) )';
+		$sql = 'CREATE TABLE editors (ID int(11) auto_increment, name varchar (255) NOT NULL, isNice ENUM(\'Y\', \'N\'), number int(5), UNIQUE  KEY (name), PRIMARY  KEY (ID) )';
 		$query = $this->_dbModule->query ($sql);
 		$this->assertEquals (0, $this->_dbModule->numRows ($query), 'Wrong data CREATE returned');
+		//var_dump ($this->_dbModule->_XMLSQLBackend->_XMLBackend->getTable ('editors'));
 		$query = $this->_dbModule->query ('SELECT * FROM editors');
 		$this->assertFalse (isError ($query), 'Unexpecter error');
 		$this->assertEquals (0, $this->_dbModule->numRows ($query), 'Wrong data SELECT returned');
+		
+		$query = $this->_dbModule->query ("INSERT INTO editors (name, isNice, number) VALUES ('nathan and co', 'Y', '3')");
+		$this->assertFalse (isError ($query), 'Unexpecter error');
+		$query = $this->_dbModule->query ("INSERT INTO editors (name, isNice, number) VALUES ('nathan and co2', 'Y', '5')");
+		$this->assertFalse (isError ($query), 'Unexpecter error');
+		$query = $this->_dbModule->query ("INSERT INTO editors (name, isNice, number) VALUES ('nathan and co', 'Y', '3')");
+		$this->assertTrue (isError ($query), 'Unexpecter un-error double unique key');
+		$query = $this->_dbModule->query ("INSERT INTO editors (name, isNice, number) VALUES ('nathan and co', 'A', '3')");
+		$this->assertTrue (isError ($query), 'Unexpecter un-error, wrong enum value');
+		
+		$query = $this->_dbModule->query ('SELECT * FROM editors');
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$row1 = array ('ID' => 1, 'name'=>'nathan and co', 'isNice'=>'Y', 'number'=>3);
+		$row2 = array ('ID' => 2, 'name'=>'nathan and co2', 'isNice'=>'Y', 'number'=>5);
+		$this->assertEquals (array ($row1, $row2), $allRows, 'Wrong data SELECT returned');
 	}
 	
 	function testUpdate () {

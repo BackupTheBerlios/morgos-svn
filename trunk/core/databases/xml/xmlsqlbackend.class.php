@@ -15,10 +15,21 @@ class SQLQuery {
 
 class SQLActionQuery extends SQLQuery {
 	
-	function SQLActionQuery ($numRowsDeleted) {
-		$this->_numRows = $numRowsDeleted;
+	function SQLActionQuery ($numRowsAffected) {
+		$this->_numRows = $numRowsAffected;
 	}
 	
+}
+
+class SQLInsertQuery extends SQLActionQuery {
+	var $_ID;
+	
+	function SQLInsertQuery ($ID) {
+		parent::SQLActionQuery (1);
+		$this->_ID = $ID;
+	}
+	
+	function getID () {return $this->_ID;}
 }
 
 class SQLSelectQuery extends SQLQuery {
@@ -96,9 +107,11 @@ class row {
 	var $_ID;
 	
 	function row (&$fields, $values, $ID) {
-		$this->_values = $values;
 		$this->_fields = $fields;
 		$this->_ID = $ID;
+		foreach ($values as $k=>$v) {
+			$this->setValue ($k, $v);
+		}
 	}
 	
 	function areConditionsTrue ($conditions) {
@@ -114,7 +127,6 @@ class row {
 				if ($val[0] == '\'') {
 					$val = substr ($val, 1, strlen ($val)-2);
 				} else {
-					
 					$val = $this->_values[$val];
 				}
 				$condition->_value2 = $val; //TODO: fix hack
@@ -140,6 +152,12 @@ class row {
 	
 	function getID () {return $this->_ID;}
 	function getValue ($fieldName) {return $this->_values[$fieldName];}
+	function setValue ($fieldName, $v) {
+		if (substr ($this->_fields[$fieldName]->getType (), 0, 3) == 'int') {
+			$v = (int) $v;
+		}
+		$this->_values[$fieldName] = $v;
+	}
 }
 
 class field {
@@ -155,6 +173,7 @@ class field {
 	
 	function getDefaultValue () {return null;}
 	function getName () {return $this->_name;}
+	function getType () {return $this->_type;}
 }
 
 class table {
@@ -163,13 +182,18 @@ class table {
 	var $_rows;
 	var $_data;
 	var $_uniqueKey;
-	var $_primaryKey;
+	var $_autocountKey;
+	
+	var $_newID;
 	
 	function table ($name) {
 		$this->_name = $name;
 		$this->_fields = array ();
 		$this->_rows = array ();
 		$this->_data = array ();
+		$this->_uniqueKey = array ();
+		$this->_autocountKey = '';
+		$this->_newID = 1;
 	}
 	
 	function addField ($field) {
@@ -185,10 +209,33 @@ class table {
 	
 	function addRow ($row) {
 		if (! $this->existsRow ($row->getID ())) {
+			if ($this->_uniqueKey != array ()) {
+				$allConds = array ();
+				foreach ($this->_uniqueKey as $unique) {
+					if (count ($allConds) != 0) {
+						$allConds[] = 'AND';
+					}
+					$allConds[] = new SQLCondition ($unique, '=', '\''.$row->getValue ($unique).'\'');
+				}
+
+				$allRows = $this->selectRows (array (), array (), $allConds, null, 0, 0);
+				if (count ($allRows) > 0) {
+					return new Error ('XMLSQL_INSERT_ERROR', 'Duplicate entry for unique key');
+				}
+			}
+			if (! empty ($this->_autocountKey)) {
+				$a = $row->getValue ($this->_autocountKey);
+				if (empty ($a)) {
+					$row->setValue ($this->_autocountKey, $this->_newID); 
+					$this->_newID++;
+				}
+			}
+
 			$this->_rows[$row->getID ()] = $row;
 			foreach ($this->getAllFieldNames () as $fieldName) {
 				$this->_data[$fieldName][$row->getID ()] = $row->getValue ($fieldName);
 			}
+			return $row->getValue ($this->_autocountKey);
 		} else {
 		}
 	}
@@ -267,13 +314,21 @@ class table {
 		$this->_uniqueKey = $fields;
 	}
 	
-	function setPrimaryKey ($fields) {
-		$this->_primaryKey = $fields;
+	function setPrimaryAutocountKey ($fields) {
+		$this->_autocountKey = $fields;
 	}
 	
-	function getNewID () {
+	function getNewInternalID () {
 		return $this->getNumRows ()+1;
 	}
+	
+	function setNewID ($ID) {
+		$this->_newID = $ID;
+	}
+	
+	function addUniqueKeys ($keys) {
+		$this->_uniqueKey = $keys;
+	} 
 }
 
 class XMLSQLBackend {
@@ -281,6 +336,7 @@ class XMLSQLBackend {
 	var $_HostDir;
 	var $_User;
 	var $_Password;
+	var $_latestQurey;
 	
 	function XMLSQLBackend () {
 		$this->_XMLBackend = new XMLBackend ();
@@ -298,6 +354,14 @@ class XMLSQLBackend {
 	
 	function load ($databaseName) {
 		$this->_XMLBackend->load ($this->_HostDir.'/'.$databaseName, $this->_User, $this->_Password);
+	}
+	
+	function latestInsertID () {
+		if (get_class ($this->_latestQuery) == 'SQLInsertQuery') {
+			return $this->_latestQuery->getID ();
+		} else {
+			return new Error ('No ID');
+		}
 	}
 
 	function parseCommand ($sqlCommand) {
@@ -323,6 +387,7 @@ class XMLSQLBackend {
 			default:
 				return "ERROR_XMLSQLBACKEND_PARSE_ERROR";
 		}
+		$this->_latestQuery = $query;
 		return $query;
 	}
 	
@@ -368,12 +433,12 @@ class XMLSQLBackend {
 			$fieldDatas = $this->splitData (' ', $fieldData);
 			if ($fieldDatas[0] == 'PRIMARY') {
 				$data = implode (' ', array_slice ($fieldDatas, 1));
-				$fields = $this->parseBetweenTwoChars ('(', ')', $this->getDataAfterKeyword ('KEY', $data));
-				$table->setPrimaryKey ($fields);
+				$fields = $this->parseBetweenTwoChars ('(', ')', $this->getAllDataAfterKeyword ($data, 'KEY'));
+				$table->setPrimaryAutocountKey ($fields);
 			} elseif ($fieldDatas[0] == 'UNIQUE') {
 				$data = implode (' ', array_slice ($fieldDatas, 1));
-				$fields = $this->parseBetweenTwoChars ('(', ')', $this->getDataAfterKeyword ('KEY', $data));
-				$table->setUniqueKey ($fields);
+				$fields = $this->parseBetweenTwoChars ('(', ')', $this->getAllDataAfterKeyword ($data, 'KEY'));	
+				$table->addUniqueKeys (explode (',',$fields));
 			} else {
 				$fieldName = $fieldDatas[0];
 				$fieldType = $fieldDatas[1];
@@ -414,9 +479,13 @@ class XMLSQLBackend {
 			}
 			$values[$field->getName ()] = $value;
 		}
-		$row = new row ($tableFields, $values, $table->getNewID ());
-		$table->addRow ($row);
-		return new SQLActionQuery (1);
+		$row = new row ($tableFields, $values, $table->getNewInternalID ());
+		$a = $table->addRow ($row);
+		if (! isError ($a)) {
+			return new SQLInsertQuery ($a);
+		} else {
+			return $a;
+		}
 	}
 	
 	function parseShow () {
@@ -499,11 +568,13 @@ class XMLSQLBackend {
 	}
 	
 	function getAllDataAfterKeyword ($sqlSequence, $keyword) {
-		if (stripos ($sqlSequence, ' '.$keyword)) {
-			$afterKeyword = substr ($sqlSequence, stripos ($sqlSequence, ' '.$keyword)+strlen($keyword)+1);
-			$afterKeyword = trim ($afterKeyword);
-			$data = substr ($afterKeyword, 0);
-			return $data;
+		if (stripos ($sqlSequence, ' '.$keyword) !== false) {
+			$pos = stripos ($sqlSequence, ' '.$keyword)+strlen($keyword)+1;
+			
+				$afterKeyword = substr ($sqlSequence, $pos);
+				$afterKeyword = trim ($afterKeyword);
+				$data = substr ($afterKeyword, 0);
+				return $data;
 		} else {
 			return '';
 		}
@@ -589,4 +660,10 @@ class XMLSQLBackend {
 		return substr ($data, $firstOccurance+1, $lastOccurance - $firstOccurance-1);
 	}
 }
+
+function isAlphaNumeric ($char) {
+	$all = array_merge (range ('A','Z'), range ('a','z'), range ('0','9'));
+	return in_array ($char, $all);
+}
+
 ?>
