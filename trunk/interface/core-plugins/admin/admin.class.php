@@ -100,14 +100,17 @@ class adminCorePlugin extends plugin {
 		}
 	}
 	
-	function onViewPageManager ($pageID, $pageLang) {
+	function onViewPageManager ($pageID, $pageLang = 'en') {
 		$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->_pluginAPI->userCanViewPage ()) {
 			$pageManager = $this->_pluginAPI->getPageManager ();
 			$page = $pageManager->newPage ();			
 			$page->initFromGenericName ('Admin Pagemanager');
-			
+					
+			if ($pageID === NULL) {
+				$pageID = 1; /*The ID of site */
+			}	
 			$parentPage = $pageManager->newPage ();
 			$parentPage->initFromDatabaseID ($pageID);
 			$childPages = $parentPage->getAllChilds (); 

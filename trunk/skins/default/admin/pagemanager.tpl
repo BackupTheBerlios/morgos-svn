@@ -1,17 +1,27 @@
 {include file="admin/header.tpl"}
 	<div id="main">
-		<h1>{$MorgOS_CurrentAdminPage->getGenericName()}</h1>
-		<p>{$MorgOS_CurrentAdminPage->getGenericContent()}</p>
+		<h1>{$MorgOS_CurrentAdminPage->getName()}</h1>
+		<p>{$MorgOS_CurrentAdminPage->getContent()}</p>
 		
 		<table>
 			<tr>
-				<th>Naam</th>
-				<th>Plaats in menu</th>
+				<th>{t s='Page title'}</th>
+				<th>{t s='Place in menu'}</th>
 			</tr>
-		{foreach from=$MorgOS_PagesList item='childPage'}
+		{foreach from=$MorgOS_PagesList item='childPage' name='pageslist'}
 			<tr>
-				<td>{$childPage->getGenericName()}</td>
-				<td>{$childPage->getPlaceInMenu()}</td>
+				<td>{$childPage->getName()}</td>
+				<td>
+					{$childPage->getPlaceInMenu()}
+					{if $smarty.foreach.pageslist.first}
+						<a href="index.php?action=adminMovePageDown&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/down.png" alt="{t s='Down'}"/></a>
+					{elseif $smarty.foreach.pageslist.last}
+						<a href="index.php?action=adminMovePageUp&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}" style="margin-left: 24px;" /></a>
+					{else}
+						<a href="index.php?action=adminMovePageDown&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/down.png" alt="{t s='Down'}" /></a>
+						<a href="index.php?action=adminMovePageUp&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}"/></a>
+					{/if}
+				</td>
 			</tr>
 		{/foreach}
 		</table>

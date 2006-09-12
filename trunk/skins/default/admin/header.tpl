@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>{$MorgOS_CurrentAdminPage->getGenericName()}</title>
+		<title>{$MorgOS_CurrentAdminPage->getName()}</title>
 		
 		<!-- CSS FILES -->
 		<link rel="stylesheet" type="text/css" href="{$SkinPath}/styles/default.css" />
@@ -11,7 +11,7 @@
 	<body>
 		<div>
 			<div id="header">
-				MorgOS Admin
+				<h1>MorgOS Admin</h1>
 			</div>
 			{include file="admin/nav.tpl"}
 			{include file="admin/sidebar.tpl"}

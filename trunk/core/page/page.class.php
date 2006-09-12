@@ -75,7 +75,7 @@ class page extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getGenericContent () {return $this->getOption ('genericContent');}
+	function getContent () {return $this->getOption ('genericContent');}
 	
 	/**
 	 * Returns the generic name (title) of the page
@@ -83,7 +83,7 @@ class page extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getGenericName () {return $this->getOption ('genericName');}
+	function getName () {return $this->getOption ('genericName');}
 	
 	/**
 	 * Returns the ID of the parentPage. 0 if it is a root element.
@@ -129,7 +129,7 @@ class page extends databaseObject {
 	 * @return (bool)
 	*/
 	function isAdminPage () {
-		if ($this->getGenericName () == 'admin') {
+		if ($this->getName () == 'admin') {
 			return true;
 		} else {
 			$parentPage = $this->getParentPage ();

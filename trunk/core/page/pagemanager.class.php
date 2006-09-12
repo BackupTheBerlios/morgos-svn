@@ -64,7 +64,7 @@ class pageManager {
 	 * @public 
 	*/
 	function addPageToDatabase (&$page) {
-		$pageName = $page->getGenericName ();
+		$pageName = $page->getName ();
 		$pageExists = $this->pageExists ($pageName);
 		if ($pageExists) {
 			return new Error ('PAGEMANAGER_PAGE_EXISTS', $pageName);
@@ -109,7 +109,7 @@ class pageManager {
 	 * @public
 	*/
 	function removePageFromDatabase ($page) {
-		$pageName = $page->getGenericName ();
+		$pageName = $page->getName ();
 		$pageExists = $this->pageExists ($pageName);
 		if (! $pageExists) {
 			return new Error ('PAGEMANAGER_PAGE_DOESNT_EXISTS', $pageName);

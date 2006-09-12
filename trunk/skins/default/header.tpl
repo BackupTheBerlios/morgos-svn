@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>{$MorgOS_CurrentPage->getGenericName()}</title>
+		<title>{$MorgOS_CurrentPage->getName()}</title>
 		
 		<!-- CSS FILES -->
 		<link rel="stylesheet" type="text/css" href="{$SkinPath}/styles/default.css" />
