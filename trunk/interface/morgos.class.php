@@ -103,6 +103,7 @@ class morgos {
 	*/
 	function init () {
 		if ($this->isInstalled ()) {
+			ob_start ();
 			$this->_eventManager = new eventManager ();
 			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
@@ -183,14 +184,15 @@ class morgos {
 	*/
 	function shutdown () {
 		//$this->_pluginAPI->shutdown ();
+		$this->_pluginAPI = null;
 		$this->_smarty = null;
 		$this->_pluginManager = null;
 		$this->_configManager = null;
-		$this->_actionManager = null;
-		$this->_pluginAPI = null;
+		unset ($this->_actionManager);
 		$this->_dbModule->disconnect ();
 		$this->_dbModule = null;
 		$this->_pageManager = null;
+		die ();
 	}
 	
 	/**

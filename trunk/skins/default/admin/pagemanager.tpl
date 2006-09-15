@@ -14,12 +14,20 @@
 				<td>
 					{$childPage->getPlaceInMenu()}
 					{if $smarty.foreach.pageslist.first}
-						<a href="index.php?action=adminMovePageDown&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/down.png" alt="{t s='Down'}"/></a>
+						<a href="{"index.php?action=adminMovePageDown&pageID="|xhtml}{$childPage->getID()|xhtml}">
+							<img src="{$SkinPath}/images/icons/down.png" alt="{t s='Down'}"/>
+						</a>
 					{elseif $smarty.foreach.pageslist.last}
-						<a href="index.php?action=adminMovePageUp&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}" style="margin-left: 24px;" /></a>
+						<a href="{"index.php?action=adminMovePageUp&pageID="|xhtml}{$childPage->getID()|xhtml}">
+							<img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}" style="margin-left: 20px;" />
+						</a>
 					{else}
-						<a href="index.php?action=adminMovePageDown&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/down.png" alt="{t s='Down'}" /></a>
-						<a href="index.php?action=adminMovePageUp&pageID={$childPage->getID()}"><img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}"/></a>
+						<a href="{"index.php?action=adminMovePageDown&pageID="|xhtml}{$childPage->getID()|xhtml}">
+							<img src="{$SkinPath}/images/icons/down.png" alt="{t s='Down'}" />
+						</a>
+						<a href="{"index.php?action=adminMovePageUp&pageID="|xhtml}{$childPage->getID()|xhtml}">
+							<img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}"/>
+						</a>
 					{/if}
 				</td>
 			</tr>

@@ -103,6 +103,60 @@ class pageManager {
 	}
 	
 	/**
+	 * Moves a page up in the menu (if possible)
+	 *
+	 * @param $pageID (int)
+	 * @public
+	*/	
+	function movePageUp ($pageID) {
+		$page = $this->newPage ();
+		$r = $page->initFromDatabaseID ($pageID);
+		if (! isError ($r)) {
+			$pagesTableName = $this->db->getPrefix ().'pages';
+			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=({$page->getPlaceInMenu ()})-1 AND parentPageID='{$page->getParentPageID ()}'";
+			$a = $this->db->query ($sql);
+			if (isError ($a)) {
+				return $a;
+			}
+			
+			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)-1 WHERE pageID=\''.$page->getID ().'\'';
+			$a = $this->db->query ($sql);
+			if (isError ($a)) {
+				return $a;
+			}
+		}  else {
+			return $r;
+		}
+	} 
+	
+	/**
+	 * Moves a page down in the menu (if possible)
+	 *
+	 * @param $pageID (int)
+	 * @public
+	*/	
+	function movePageDown ($pageID) {
+		$page = $this->newPage ();
+		$r = $page->initFromDatabaseID ($pageID);
+		if (! isError ($r)) {
+			$pagesTableName = $this->db->getPrefix ().'pages';
+			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)-1 WHERE placeInMenu=({$page->getPlaceInMenu ()})+1 AND parentPageID='{$page->getParentPageID ()}'";
+			$a = $this->db->query ($sql);
+			if (isError ($a)) {
+				return $a;
+			}
+			
+			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)+1 WHERE pageID=\''.$page->getID ().'\'';
+			$a = $this->db->query ($sql);
+			if (isError ($a)) {
+				return $a;
+			}
+		}  else {
+			return $r;
+		}
+	} 
+	
+	/**
 	 * Deletes a page from the database.
 	 *
 	 * @param $page (object page)

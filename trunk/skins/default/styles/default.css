@@ -1,4 +1,24 @@
+/*== HEADER ==*/
+#header {
+	font-size: 2em;
+}
+
+/*== FOOTER ==*/
+#footer {
+	width: 100%;
+	text-align: center;
+}
+
+#footer .copyright {
+	font-size: 0.8em;
+}
+
 h1 {
 	text-align: center;
 	color: red;
+	margin-top: 5px;
+}
+
+a img {
+	border: none;
 }

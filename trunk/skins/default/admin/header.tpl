@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
 		<title>{$MorgOS_CurrentAdminPage->getName()}</title>
@@ -9,9 +11,8 @@
 		<![endif]-->
 	</head>
 	<body>
-		<div>
-			<div id="header">
-				<h1>MorgOS Admin</h1>
-			</div>
-			{include file="admin/nav.tpl"}
-			{include file="admin/sidebar.tpl"}
+		<div id="header">
+			<h1>MorgOS Admin</h1>
+		</div>
+		{include file="admin/nav.tpl"}
+		{include file="admin/sidebar.tpl"}

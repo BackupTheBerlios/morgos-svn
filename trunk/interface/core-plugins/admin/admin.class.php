@@ -40,6 +40,15 @@ class adminCorePlugin extends plugin {
 		
 		$this->_pluginAPI->getEventManager ()->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
 		$this->_pluginAPI->getEventManager ()->subscribeToEvent ('viewAnyAdminPage', new callback ('setAdminVars', array (&$this, 'setAdminVars'), array ('pageID')));
+		
+		// page edit action
+		$this->_pluginAPI->getActionManager ()->addAction (
+			new action ('adminMovePageDown', 'GET',  
+				array (&$this, 'onMovePageDown'), array ('pageID'), array ()));
+				
+		$this->_pluginAPI->getActionManager ()->addAction (
+			new action ('adminMovePageUp', 'GET',  
+				array (&$this, 'onMovePageUp'), array ('pageID'), array ()));
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {
@@ -113,7 +122,7 @@ class adminCorePlugin extends plugin {
 			}	
 			$parentPage = $pageManager->newPage ();
 			$parentPage->initFromDatabaseID ($pageID);
-			$childPages = $parentPage->getAllChilds (); 
+			$childPages = $pageManager->getMenu ($parentPage);
 			$sm->assign ('MorgOS_PagesList', $childPages);
 			$sm->assign_by_ref ('MorgOS_ParentPage', $parentPage);
 			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
@@ -123,15 +132,40 @@ class adminCorePlugin extends plugin {
 		}
 	}
 	
+	function onMovePageDown ($pageID) {
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$r = $pageManager->movePageDown ($pageID);
+		if (! isError ($r)) {
+			$this->_pluginAPI->getActionManager ()->executePreviousAction ();
+		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
+			$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
+		} else {
+			$this->_pluginAPI->error ('Onverwachte fout', true);
+		}
+	}
+	
+	function onMovePageUp ($pageID) {
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$r = $pageManager->movePageUp ($pageID);
+		if (! isError ($r)) {
+			$this->_pluginAPI->getActionManager ()->executePreviousAction ();
+		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
+			$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
+		} else {
+			$this->_pluginAPI->error ('Onverwachte fout', true);
+		}
+	}
+	
 	function setAdminVars ($pageID) {
 		$sm = $this->_pluginAPI->getSmarty ();	
 	
 		$pageManager = $this->_pluginAPI->getPageManager ();
 		$rootPage = $pageManager->newPage ();
 		$rootPage->initFromGenericName ('admin');
-		$adminNav = $rootPage->getAllChilds ();
+		$adminNav = $pageManager->getMenu ($rootPage);
 		
 		$sm->assign_by_ref ('MorgOS_AdminNav', $adminNav);
 	}
+	
 }
 ?>

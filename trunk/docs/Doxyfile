@@ -127,7 +127,9 @@ FILE_PATTERNS          = *.c \
 RECURSIVE              = YES
 EXCLUDE                = ../interface/tests \
 			 ../core/tests \
-			 ../core/databases/xml
+			 ../core/databases/xml \
+			 ../interface/smarty \
+			 ../interface/core-plugins 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 

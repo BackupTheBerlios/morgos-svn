@@ -71,14 +71,29 @@ class action {
 	/**
 	 * Executes the action and returns it result.
 	 *
+	 * @param $params (mixed array) array with the parameters to use, if empty use default source. (GET/POST)
 	 * @public
 	 * @return (mixed)
 	*/
-	function execute () {
-		if ($this->_method == 'GET') {
-			$a = $_GET;
+	function execute ($params) {
+		$vals = $this->getParameters ($params);
+		if (! isError ($vals)) {
+			return call_user_func_array ($this->_executor, $vals);
 		} else {
-			$a = $_POST;
+			return $vals;
+		}
+	}
+	
+	function getName () {return $this->_name;}
+	function getParameters ($default) {
+		if ($default == array ()) {
+			if ($this->_method == 'GET') {
+				$a = $_GET;
+			} else {
+				$a = $_POST;
+			}
+		} else {
+			$a = $default;
 		}
 		
 		$vals = array ();
@@ -97,11 +112,8 @@ class action {
 				$vals[$option] = null;
 			}
 		}
-		
-		return call_user_func_array ($this->_executor, $vals);
+		return $vals;
 	}
-	
-	function getName () {return $this->_name;}
 }
 
 class actionManager {
@@ -119,13 +131,24 @@ class actionManager {
 	}
 	
 	/**
+	 * Destructor
+	 * @warning, not used in PHP4
+	*/
+	function __destruct () {
+		$this->saveLastAction ();
+	}
+	
+	/**
 	 * Executes an action.
 	 * @param $actionName (string)
+	 * @param $var (mixed array)
 	*/	
-	function executeAction ($actionName) {
+	function executeAction ($actionName, $var = array ()) {
 		if ($this->existsAction ($actionName)) {
 			$action = $this->getAction ($actionName);
-			return $action->execute ();
+			$this->_lastActionName = $actionName;
+			$this->_lastActionParameters = $action->getParameters ($var);
+			return $action->execute ($var);
 		} else {
 			return new Error ('ACTIONMANAGER_ACTION_NOT_FOUND', $actionName);
 		}
@@ -179,6 +202,22 @@ class actionManager {
 	*/
 	function existsAction ($actionName) {
 		return array_key_exists ($actionName, $this->_actionsList);
+	}
+	
+	/**
+	 * Executes the action that makes it come to here
+	 * @public
+	 * @return (bool)
+	*/
+	function executePreviousAction () {
+		return $this->executeAction ($_COOKIE['lastActionName'], $_COOKIE);
+	}
+	
+	function saveLastAction () {
+		setcookie ('lastActionName', $this->_lastActionName);
+		foreach ($this->_lastActionParameters as $key=>$value) {
+			setcookie ('lastActionParameters_'.$key, $value);
+		}
 	}
 }
 
