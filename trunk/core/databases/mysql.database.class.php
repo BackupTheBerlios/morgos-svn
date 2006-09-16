@@ -72,6 +72,14 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		function numRows ($query) {
 			return mysql_num_rows ($query);
 		}
+		
+		function affectedRows ($query) {
+			if (is_bool ($query)) {
+				return mysql_affected_rows ();
+			} else {
+				return mysql_affected_rows ($query);
+			}
+		}
 	        
 		function fetchArray ($query) {
 			$var = mysql_fetch_array ($query);

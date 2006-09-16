@@ -25,19 +25,10 @@
 include_once ('core/varia.functions.php');
 class variaTest extends TestCase {
 
-	function testIsError () {
-		$this->assertTrue (isError ("ERROR_SOMETHING"));
-		$this->assertTrue (isError ("ERROR_SOMETHING var1"));
-		$this->assertTrue (isError ("ERROR_SOMETHING var1 var2"));
-		
+	function testIsError () {		
 		$this->assertTrue (isError (new Error ('TEST')));
-		
-		$this->assertFalse (isError ("ERROR_"));
 		$this->assertFalse (isError (null));
 		$this->assertFalse (isError (false));
-		$this->assertFalse (isError (""));
-		$this->assertFalse (isError ("error"));
-		$this->assertFalse (isError ("error_"));
 	}
 	
 	function testErrorIsError () {

@@ -72,6 +72,7 @@ class MorgOSSuit extends TestSuite {
 		global $avModules;
 		$availableModulesINI = explode (',', $testerOptions['dbAvailableModules']);
 		foreach ($availableModulesINI as $value) {
+			$value = trim ($value);
 			$avModules[$value] = null;
 		}
 	

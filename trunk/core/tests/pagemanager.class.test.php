@@ -192,7 +192,6 @@ class pageManagerTest extends TestCase {
 	function testGetAllTranslations () {
 		$page = $this->pageManager->newPage ();
 		$page->initFromGenericName ('TranslatedPage');
-		print_r ($page->getAllTranslations ());
 		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslations ());
 	}
 	
@@ -269,8 +268,10 @@ class pageManagerTest extends TestCase {
 		$packpage->initFromGenericName ('Packages');
 		
 		$this->pageManager->movePageUp ($packpage->getID ());
+		$newspage->setOption ('placeInMenu', 3);
+		$packpage->setOption ('placeInMenu', 2);
 		$this->assertEquals (array ($homepage, $packpage, $newspage), $this->pageManager->getMenu ($root));
-		
+			
 		$this->pageManager->movePageUp ($homepage->getID ());
 		$this->assertEquals (array ($homepage, $packpage, $newspage), $this->pageManager->getMenu ($root));
 	}
@@ -285,10 +286,12 @@ class pageManagerTest extends TestCase {
 		$packpage = $this->pageManager->newPage ();
 		$packpage->initFromGenericName ('Packages');
 		
-		$this->pageManager->movePageDown ($packpage->getID ());
-		$this->assertEquals (array ($homepage, $newspage, $packpage), $this->pageManager->getMenu ($root));
+		$this->pageManager->movePageDown ($newspage->getID ());
+		$this->assertEquals (array ($homepage, $packpage, $newspage), $this->pageManager->getMenu ($root));
 		
 		$this->pageManager->movePageDown ($homepage->getID ());
+		$homepage->setOption ('placeInMenu', 2);
+		$packpage->setOption ('placeInMenu', 1);
 		$this->assertEquals (array ($packpage, $homepage, $newspage), $this->pageManager->getMenu ($root));
 	}	
 	

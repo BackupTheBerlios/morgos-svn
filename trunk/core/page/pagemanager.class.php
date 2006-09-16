@@ -119,7 +119,7 @@ class pageManager {
 				return $a;
 			}
 			
-			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)-1 WHERE pageID=\''.$page->getID ().'\'';
+			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)-1 WHERE pageID=\''.$page->getID ().'\' AND placeInMenu>1';
 			$a = $this->db->query ($sql);
 			if (isError ($a)) {
 				return $a;
@@ -146,10 +146,13 @@ class pageManager {
 				return $a;
 			}
 			
-			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)+1 WHERE pageID=\''.$page->getID ().'\'';
-			$a = $this->db->query ($sql);
-			if (isError ($a)) {
-				return $a;
+			// check their was a menu item down the one to be moved
+			if ($this->db->affectedRows ($a) !== 0) {
+				$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)+1 WHERE pageID=\''.$page->getID ().'\'';
+				$a = $this->db->query ($sql);
+				if (isError ($a)) {
+					return $a;
+				}
 			}
 		}  else {
 			return $r;
