@@ -192,6 +192,7 @@ class pageManagerTest extends TestCase {
 	function testGetAllTranslations () {
 		$page = $this->pageManager->newPage ();
 		$page->initFromGenericName ('TranslatedPage');
+		print_r ($page->getAllTranslations ());
 		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslations ());
 	}
 	
@@ -225,5 +226,71 @@ class pageManagerTest extends TestCase {
 		$r = $page->removeTranslation ($translationNL_BE);
 		$this->assertEquals (new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', 'NL-BE'), $r, 'Wrong error returned');
 	}
+	
+	function testGetParentPage () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('Home');
+		
+		$ppage = $this->pageManager->newPage ();
+		$ppage->initFromGenericName ('Site');
+		
+		$this->assertEquals ($ppage, $page->getParentPage ());
+		$this->assertEquals (null, $ppage->getParentPage ());
+	}
+	
+	function testIsPageAdmin () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('Home');
+		$this->assertFalse ($page->isAdminPage ());
+		
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('Admin');
+		$this->assertTrue ($page->isAdminPage ());
+		
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('Adminpage');
+		$this->assertTrue ($page->isAdminPage ());
+	}
+	
+	function testGetAction () {
+		$page = $this->pageManager->newPage ();
+		$page->initFromGenericName ('News');
+		$this->assertEquals ('newsViewLatestItems', $page->getAction ());
+	}
+	
+	function testMovePageUp () {
+		$root = $this->pageManager->newPage ();
+		$root->initFromGenericName ('site');	
+		$homepage = $this->pageManager->newPage ();
+		$homepage->initFromGenericName ('Home');
+		$newspage = $this->pageManager->newPage ();
+		$newspage->initFromGenericName ('News');
+		$packpage = $this->pageManager->newPage ();
+		$packpage->initFromGenericName ('Packages');
+		
+		$this->pageManager->movePageUp ($packpage->getID ());
+		$this->assertEquals (array ($homepage, $packpage, $newspage), $this->pageManager->getMenu ($root));
+		
+		$this->pageManager->movePageUp ($homepage->getID ());
+		$this->assertEquals (array ($homepage, $packpage, $newspage), $this->pageManager->getMenu ($root));
+	}
+	
+	function testMovePageDown () {
+		$root = $this->pageManager->newPage ();
+		$root->initFromGenericName ('site');	
+		$homepage = $this->pageManager->newPage ();
+		$homepage->initFromGenericName ('Home');
+		$newspage = $this->pageManager->newPage ();
+		$newspage->initFromGenericName ('News');
+		$packpage = $this->pageManager->newPage ();
+		$packpage->initFromGenericName ('Packages');
+		
+		$this->pageManager->movePageDown ($packpage->getID ());
+		$this->assertEquals (array ($homepage, $newspage, $packpage), $this->pageManager->getMenu ($root));
+		
+		$this->pageManager->movePageDown ($homepage->getID ());
+		$this->assertEquals (array ($packpage, $homepage, $newspage), $this->pageManager->getMenu ($root));
+	}	
+	
 }
 ?>

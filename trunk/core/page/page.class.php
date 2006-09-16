@@ -133,7 +133,11 @@ class page extends databaseObject {
 			return true;
 		} else {
 			$parentPage = $this->getParentPage ();
-			return $parentPage->isAdminPage ();
+			if ($parentPage !== null) {
+				return $parentPage->isAdminPage ();
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -145,10 +149,14 @@ class page extends databaseObject {
 	 * @return (object)
 	*/
 	function getParentPage () {
-		$parent = $this->getCreator ();
-		$parentPage = $parent->newPage ();
-		$parentPage->initFromDatabaseID ($this->getParentPageID ());
-		return $parentPage;
+		if ($this->getParentPageID () !== 0) {
+			$parent = $this->getCreator ();
+			$parentPage = $parent->newPage ();
+			$a = $parentPage->initFromDatabaseID ($this->getParentPageID ());
+			return $parentPage;
+		} else {
+			return null;
+		}
 	}
 	
 	/**

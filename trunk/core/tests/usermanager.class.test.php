@@ -311,6 +311,34 @@ class userManagerTest extends TestCase {
 		$this->assertFalse ($user->hasPermission ('read_admin'), 'User error');
 	}	
 	
+	function testUserIsValidPassword () {
+		$administrator = $this->userManager->newUser ();
+		$administrator->initFromDatabaseLogin ('administrator');
+		$this->assertTrue ($administrator->isValidPassword ('aPassword'), 'correct pass');
+		$this->assertTrue ($administrator->isValidPassword (md5 ('aPassword')), 'md5 problem');
+		$this->assertFalse ($administrator->isValidPassword ('wrongPassword'), 'Wrong pass');
+		
+	}
+	
+	function testUserLogin () {
+		$a = $this->userManager->login ('notAUser', 'aPassword');
+		$this->assertTrue ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT'), 'wrong error');
+		$this->assertFalse ($this->userManager->isLoggedIn (), 'wrong login');		
+		
+		$a = $this->userManager->login ('administrator', 'wrongPassword');
+		$this->assertTrue ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT'), 'wrong error 2');
+		$this->assertFalse ($this->userManager->isLoggedIn (), 'wrong login 2');
+		
+		$a = $this->userManager->login ('administrator', 'aPassword');
+		$this->assertFalse (isError ($a), 'unexpected error');
+		$this->assertTrue ($this->userManager->isLoggedIn (), 'not logged in');
+	}
+	
+	function testUserLogout () {
+		$a = $this->userManager->logout ();
+		$this->assertFalse ($this->userManager->isLoggedIn (), 'not logged out');
+	}	
+	
 	/*translated groups functions*/
 	
 	function testGetTranslation () {

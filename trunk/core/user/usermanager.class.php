@@ -342,10 +342,14 @@ class userManager {
 				$_SESSION['userID'] = $u->getID ();
 				$_SESSION['userPassword'] = md5 ($password);
 			} else {
-				return new Error ("USERMANAGER_LOGIN_FAILED");
+				return new Error ("USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT");
 			}
 		} else {
-			return $a;
+			if ($a->is ('USER_LOGIN_DONT_EXISTS')) {
+				return new Error ("USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT");
+			} else {
+				return $a;
+			}
 		}
 	}
 	

@@ -59,8 +59,8 @@ CREATE TABLE {prefix}translatedPages (
   UNIQUE KEY (pageID, languageCode)
 );
 
-INSERT INTO {prefix}users (login, email, password) VALUES ('administrator', 'admin@host.org', '098f6bcd4621d373cade4e832627b4f6');
-INSERT INTO {prefix}users (login, email, password) VALUES ('normalUser', 'normalUser@host.org', '098f6bcd4621d373cade4e832627b4f6');
+INSERT INTO {prefix}users (login, email, password) VALUES ('administrator', 'admin@host.org', 'c54a16ca8fa833f9d23dbba08f617243');
+INSERT INTO {prefix}users (login, email, password) VALUES ('normalUser', 'normalUser@host.org', 'c54a16ca8fa833f9d23dbba08f617243');
 INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('administrator', 'This is the administrator group.');
 INSERT INTO {prefix}groups (genericName, genericDescription) VALUES ('normalUsers', 'This is the normal users group');
 
@@ -71,10 +71,12 @@ INSERT INTO {prefix}translatedGroups (groupID, name, description, languageCode) 
 
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('site', '', 0, 0);
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('Home', '', 1, 1);
-INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('News', '', 2, 1);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID, action) VALUES ('News', '', 2, 1, 'newsViewLatestItems');
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('Packages', '', 3, 1);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('admin', '', 0, 0);
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('AdminPage', '', 1, 5);
 
 INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('TranslatedPage', '', 0, 2);
-INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL-NL', 'This is the dutch (Netherlands) translation. (NL-NL)', '5', 'NL-NL');
-INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL', 'This is the dutch (generic) translation. (NL)', '5', 'NL');
-INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('FR-FR', 'This is the french (french) translation. (FR-FR)', '5', 'FR-FR');
+INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL-NL', 'This is the dutch (Netherlands) translation. (NL-NL)', 7, 'NL-NL');
+INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL', 'This is the dutch (generic) translation. (NL)', 7, 'NL');
+INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('FR-FR', 'This is the french (french) translation. (FR-FR)', 7, 'FR-FR');
