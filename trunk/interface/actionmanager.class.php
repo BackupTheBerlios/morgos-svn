@@ -122,12 +122,16 @@ class actionManager {
 	 * @private
 	*/
 	var $_actionsList;
+	var $_lastActionName;
+	var $_lastActionParameters;
 
 	/**
 	 * Constructor
 	*/
 	function actionManager () {
 		$this->_actionsList = array ();
+		$this->_lastActionName = '';
+		$this->_lastActionParameters = array ();
 	}
 	
 	/**
@@ -146,9 +150,13 @@ class actionManager {
 	function executeAction ($actionName, $var = array ()) {
 		if ($this->existsAction ($actionName)) {
 			$action = $this->getAction ($actionName);
-			$this->_lastActionName = $actionName;
-			$this->_lastActionParameters = $action->getParameters ($var);
-			return $action->execute ($var);
+			if (! isError ($action->getParameters ($var))) {
+				$this->_lastActionName = $actionName;
+				$this->_lastActionParameters = $action->getParameters ($var);
+				return $action->execute ($var);
+			} else {
+				return $action->getParameters ($var);
+			}
 		} else {
 			return new Error ('ACTIONMANAGER_ACTION_NOT_FOUND', $actionName);
 		}
@@ -210,10 +218,35 @@ class actionManager {
 	 * @return (bool)
 	*/
 	function executePreviousAction () {
-		return $this->executeAction ($_COOKIE['lastActionName'], $_COOKIE);
+		$params = array ();
+		foreach ($_COOKIE as $n=>$v) {
+			$k = substr ($n, 0, strlen ('lastActionParameters_'));
+			if ($k == 'lastActionParameters_') {
+				$z = substr ($n, strlen ('lastActionParameters_')); 
+				$params[$z] = $v;
+			}
+		}	
+		if ($params == array ()) {
+			$params['stubKey'] = 'stubValue';
+		}
+				
+		$paramString = '';	
+		foreach ($params as $k=>$v) {
+			$paramString .= '&'.$k.'='.$v;
+		}
+		
+		header ('Location: index.php?action='.$_COOKIE['lastActionName'].$paramString);
+		//return $this->executeAction ($_COOKIE['lastActionName'], $params);
 	}
 	
 	function saveLastAction () {
+		// clean last action
+		foreach ($_COOKIE as $n=>$v) {
+			if (substr ($n, 0, strlen ('lastActionParameters_')) == 'lastActionParameters_') {
+				setcookie ($n, '');
+			}
+		}	
+	
 		setcookie ('lastActionName', $this->_lastActionName);
 		foreach ($this->_lastActionParameters as $key=>$value) {
 			setcookie ('lastActionParameters_'.$key, $value);
