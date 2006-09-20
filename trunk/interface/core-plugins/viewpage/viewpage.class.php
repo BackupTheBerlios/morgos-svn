@@ -44,15 +44,46 @@ class viewPageCorePlugin extends plugin {
 			}
 		}*/
 			
-		$page = $this->_pluginAPI->getPageManager ()->newPage ();
+		$pMan = $this->_pluginAPI->getPageManager ();
+		$root = $pMan->newPage ();
+		$root->initFromGenericName ('site');
+		$page = $pMan->newPage ();
 		if ($pageID !== null) {			
 			$page->initFromDatabaseID ($pageID);
 		} else {
-			$page->initFromGenericName ('Home');
+			$menu = $pMan->getMenu ($root);
+			$page = $menu[0];
 		}
 		
-		$this->_pluginAPI->getSmarty ()->assign_by_ref ('MorgOS_CurrentPage', $page);		
+		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_CurrentPage_Title', $page->getName ());
+		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_CurrentPage_Content', $page->getContent ());		
+		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
+		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
+		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
+		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
 		$this->_pluginAPI->getSmarty ()->display ('index.tpl');
+	}
+
+	function getMenuArray ($rootPage, $rec = true) {
+		$array = array ();
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$menu = $pageManager->getMenu ($rootPage);
+		foreach ($menu as $menuItem) {
+			$itemArray = array ();
+			if ($rec == true) {
+				$itemArray['Childs'] = $this->getMenuArray ($menuItem, false);
+			} else {
+				$itemArray['Childs'] = array ();
+			}
+			$itemArray['Title'] = $menuItem->getName ();
+			$itemArray['Link'] = $menuItem->getLink (); 
+			$array[] = $itemArray;
+		}
+		return $array;
+	}	
+	
+	function getHeaderImageLink () {
+		return 'skins/default/images/logo.png';
 	}
 }
 ?>

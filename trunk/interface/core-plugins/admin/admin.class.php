@@ -49,6 +49,14 @@ class adminCorePlugin extends plugin {
 		$this->_pluginAPI->getActionManager ()->addAction (
 			new action ('adminMovePageUp', 'GET',  
 				array (&$this, 'onMovePageUp'), array ('pageID'), array ()));
+				
+		$this->_pluginAPI->getActionManager ()->addAction (
+			new action ('adminSavePage', 'POST',  
+				array (&$this, 'onSavePage'), array ('pageID', 'pageTitle', 'pageContent'), array ()));
+				
+		$this->_pluginAPI->getActionManager ()->addAction (
+			new action ('adminNewPage', 'GET',  
+				array (&$this, 'onNewPage'), array ('parentPageID', 'pageTitle'), array ()));
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {
@@ -95,6 +103,7 @@ class adminCorePlugin extends plugin {
 		if (isError ($a)) {
 			return $a;
 		} else {
+			$this->_pluginAPI->addMessage ('You are now logged in.', NOTICE);
 			$this->_pluginAPI->doAction ('admin');
 		}
 	}
@@ -105,6 +114,7 @@ class adminCorePlugin extends plugin {
 		if (isError ($a)) {
 			return $a;
 		} else {
+			$this->_pluginAPI->addMessage ('You are logged out.', NOTICE);
 			$this->_pluginAPI->doAction ('admin');
 		}
 	}
@@ -150,10 +160,30 @@ class adminCorePlugin extends plugin {
 		if (! isError ($r)) {
 			$this->_pluginAPI->getActionManager ()->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
-			$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
+			$this->_pluginAPI->error ($this->_pluginAPI->getI18NManager ()->translate ('Page doesn\'t exists'), true);
 		} else {
 			$this->_pluginAPI->error ('Onverwachte fout', true);
 		}
+	}
+	
+	function onSavePage ($pageID, $pageTitle, $pageContent) {
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$editedPage = $pageManager->newPage ();
+		$editedPage->initFromDatabaseID ($pageID);
+		$editedPage->updateFromArray (array ('genericContent'=>$pageContent, 'genericName'=>$pageTitle));
+		$editedPage->updateToDatabase ();
+		$actionManager = $this->_pluginAPI->getActionManager ();
+		$a = $actionManager->executePreviousAction ();
+	}
+	
+	function onNewPage ($parentPageID, $title) {
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$newPage = $pageManager->newPage ();
+		$ap = array ('genericName'=>$title, 'parentPageID'=>$parentPageID, 'genericContent'=>$this->_pluginAPI->getI18NManager ()->translate ('A newly created page.'));
+		$newPage->initFromArray ($ap);
+		$pageManager->addPageToDatabase ($newPage);
+		$actionManager = $this->_pluginAPI->getActionManager ();
+		$a = $actionManager->executePreviousAction ();
 	}
 	
 	function setAdminVars ($pageID) {

@@ -205,15 +205,6 @@ class morgos {
 	}
 	
 	/**
-	 * Executes the command in $_GET
-	 *
-	 * @public
-	*/
-	function execute () {
-		$this->_actionManager->execute ();
-	}
-	
-	/**
 	 * Shows an error
 	 *
 	 * @param $error (error) the error string
@@ -237,6 +228,13 @@ class morgos {
 	 * @public
 	*/
 	function run () {
+		$allMessages = $this->_pluginAPI->getAllMessages ();
+		$sm = $this->_pluginAPI->getSmarty ();
+		$sm->assign_by_ref ('MorgOS_Errors', $allMessages[ERROR]);
+		$sm->assign_by_ref ('MorgOS_Warnings', $allMessages[WARNING]);
+		$sm->assign_by_ref ('MorgOS_Notices', $allMessages[NOTICE]);
+		$sm->assign_by_ref ('MorgOS_PluginAPI', $this->_pluginAPI);
+	
 		if (isset ($_GET['action'])) {
 			$r = $this->_actionManager->executeAction ($_GET['action']);
 		} elseif (isset ($_POST['action'])) {

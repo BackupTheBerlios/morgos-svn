@@ -1,1 +1,3 @@
-<div id="footer">Copyright Nathan Samson</div>
+<div id="footer">
+	<p class="copyright">{$MorgOS_Copyright}</p>
+</div>

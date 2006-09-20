@@ -21,6 +21,9 @@
  * @since 0.2
  * @author Nathan Samson
 */
+define ('ERROR', 1);
+define ('WARNING', 2);
+define ('NOTICE', 3);
 
 class pluginAPI {
 	var $_dbModule;
@@ -75,6 +78,50 @@ class pluginAPI {
 		}
 		header ('Location: '.$loc);
 	}
+	
+	/**
+	 * Adds a message to the queue.
+	 *
+	 * @param $tMessage (string) the message, this is the exact message that will be shown.
+	 *  it should be translated already.
+	 * @param $type (ERROR|WARNING|NOTICE)
+	 * @public
+	*/
+	function addMessage ($tMessage, $type) {
+		$used = 0;
+		foreach ($_COOKIE as $key=>$v) {
+			if (substr ($key, 0, strlen ('message_')) == 'message_') {
+				if (substr ($key, strlen ('message_'), 1) == $type) {
+					$used++;
+				}
+			}
+		}
+		$newKey = 'message_'.$type.'_'.$used;
+		setcookie ($newKey, $tMessage);
+	}
+	
+	/**
+	 * Returns all messages, AND removes them from the queue
+	 *
+	 * @return (string array array)
+	*/
+	function getAllMessages () {
+		$messages = array (ERROR=>array(), WARNING=>array(), NOTICE=>array());
+		foreach ($_COOKIE as $key=>$value) {
+			if (substr ($key, 0, strlen ('message_')) == 'message_') {
+				$type = (int) substr ($key, strlen ('message_'), 1);
+				$messages[$type][] = $value;
+				setcookie ($key, '');
+			}
+		}
+		return $messages;
+	}
+	
+	function addRuntimeMessage ($tMessage, $type) {
+		$sm = $this->getSmarty ();
+		$sm->append_by_ref ('MorgOS_Notices', $tMessage);
+		//$sm->debugging = true;
+	}	
 	
 	function userCanViewPage () {
 		return true;

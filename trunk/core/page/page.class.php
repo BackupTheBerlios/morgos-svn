@@ -141,6 +141,9 @@ class page extends databaseObject {
 		}
 	}
 
+	function isRootPage () {
+		return $this->getParentPageID () == 0;
+	}
 	
 	/**
 	 * Returns the parentPage.
@@ -149,7 +152,7 @@ class page extends databaseObject {
 	 * @return (object)
 	*/
 	function getParentPage () {
-		if ($this->getParentPageID () !== 0) {
+		if ($this->isRootPage () == false) {
 			$parent = $this->getCreator ();
 			$parentPage = $parent->newPage ();
 			$a = $parentPage->initFromDatabaseID ($this->getParentPageID ());

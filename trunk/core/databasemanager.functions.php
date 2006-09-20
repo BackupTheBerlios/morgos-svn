@@ -208,6 +208,8 @@ class dbField {
 			return 'string';
 		}
 	}
+	
+	function getName () {return $this->name;}
 }
 
 /**
@@ -448,6 +450,18 @@ class databaseObject {
 	}
 	
 	function updateToDatabase () {
+		$updates = '';
+		foreach ($this->getAllOptions () as $opt) {
+		 	if (! empty ($updates)) {
+		 		$updates .= ', ';
+		 	}
+			$updates .= $opt->getName ();
+			$updates .= '=';
+			$updates .= '\''.$opt->getValue ().'\' '; 
+		}
+		$sql = "UPDATE {$this->getFullTableName ()} SET $updates WHERE {$this->getIDName ()}='{$this->getID ()}'";	
+		$a = $this->db->query ($sql);
+		return $a;
 	}
 	
 	/**
