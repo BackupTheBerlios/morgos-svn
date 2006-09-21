@@ -213,11 +213,11 @@ class actionManager {
 	}
 	
 	/**
-	 * Executes the action that makes it come to here
+	 * Returns the header string for the previous action.
 	 * @public
 	 * @return (bool)
 	*/
-	function executePreviousAction () {
+	function getPreviousActionHeaderString () {
 		$params = array ();
 		foreach ($_COOKIE as $n=>$v) {
 			$k = substr ($n, 0, strlen ('lastActionParameters_'));
@@ -235,8 +235,7 @@ class actionManager {
 			$paramString .= '&'.$k.'='.$v;
 		}
 		
-		header ('Location: index.php?action='.$_COOKIE['lastActionName'].$paramString);
-		//return $this->executeAction ($_COOKIE['lastActionName'], $params);
+		return 'Location: index.php?action='.$_COOKIE['lastActionName'].$paramString;
 	}
 	
 	function saveLastAction () {

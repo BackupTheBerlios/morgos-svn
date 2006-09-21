@@ -146,7 +146,7 @@ class adminCorePlugin extends plugin {
 		$pageManager = $this->_pluginAPI->getPageManager ();
 		$r = $pageManager->movePageDown ($pageID);
 		if (! isError ($r)) {
-			$this->_pluginAPI->getActionManager ()->executePreviousAction ();
+			$this->_pluginAPI->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
 			$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
 		} else {
@@ -158,7 +158,7 @@ class adminCorePlugin extends plugin {
 		$pageManager = $this->_pluginAPI->getPageManager ();
 		$r = $pageManager->movePageUp ($pageID);
 		if (! isError ($r)) {
-			$this->_pluginAPI->getActionManager ()->executePreviousAction ();
+			$this->_pluginAPI->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
 			$this->_pluginAPI->error ($this->_pluginAPI->getI18NManager ()->translate ('Page doesn\'t exists'), true);
 		} else {
@@ -172,8 +172,7 @@ class adminCorePlugin extends plugin {
 		$editedPage->initFromDatabaseID ($pageID);
 		$editedPage->updateFromArray (array ('genericContent'=>$pageContent, 'genericName'=>$pageTitle));
 		$editedPage->updateToDatabase ();
-		$actionManager = $this->_pluginAPI->getActionManager ();
-		$a = $actionManager->executePreviousAction ();
+		$a = $this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onNewPage ($parentPageID, $title) {
@@ -182,8 +181,7 @@ class adminCorePlugin extends plugin {
 		$ap = array ('genericName'=>$title, 'parentPageID'=>$parentPageID, 'genericContent'=>$this->_pluginAPI->getI18NManager ()->translate ('A newly created page.'));
 		$newPage->initFromArray ($ap);
 		$pageManager->addPageToDatabase ($newPage);
-		$actionManager = $this->_pluginAPI->getActionManager ();
-		$a = $actionManager->executePreviousAction ();
+		$a = $this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function setAdminVars ($pageID) {

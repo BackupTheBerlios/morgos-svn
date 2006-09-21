@@ -114,7 +114,7 @@ class morgos {
 			$this->_actionManager = new actionManager ();
 			$this->_smarty = new Smarty ();
 			//$this->_smarty->debugging = true;
-			$this->_pluginAPI = new pluginAPI ();
+			$this->_pluginAPI = new pluginAPI ($this);
 			$this->_pluginAPI->setEventManager ($this->_eventManager);
 			$this->_pluginAPI->setUserManager ($this->_userManager);
 			$this->_pluginAPI->setDBModule ($this->_dbModule);
@@ -183,44 +183,34 @@ class morgos {
 	 * @public
 	*/
 	function shutdown () {
-		//$this->_pluginAPI->shutdown ();
+		$this->_pluginManager->shutdown ();
 		$this->_pluginAPI = null;
 		$this->_smarty = null;
 		$this->_pluginManager = null;
 		$this->_configManager = null;
-		unset ($this->_actionManager);
-		$this->_dbModule->disconnect ();
-		$this->_dbModule = null;
+		$this->_actionManager = null;
+		if ($this->_dbModule != null) {
+			$this->_dbModule->disconnect ();
+			$this->_dbModule = null;
+		}
 		$this->_pageManager = null;
-		die ();
 	}
 	
 	/**
-	 * Reinits the sytem
-	 * @public
-	*/
-	function reinit () {
-		$this->shutdown ();
-		$this->init ();
-	}
-	
-	/**
-	 * Shows an error
+	 * Shows a fatal error and stop running
 	 *
 	 * @param $error (error) the error string
-	 * @param $isFatal (bool) if true the execution ends
 	 * @public	 
 	*/
-	function error ($error, $isFatal) {
-		if ($isFatal) {
-			$this->_smarty->assign ('MorgOS_PreviousLink', 'http://google.be');
-			$this->_smarty->assign ('MorgOS_Error', $error);
-			$this->_smarty->display ('error.tpl');
-			$this->shutdown ();
-			exit ();
+	function error ($error) {
+		if (array_key_exists ('HTTP_REFERER', $_SERVER)) {
+			$this->_smarty->assign ('MorgOS_PreviousLink', $_SERVER['HTTP_REFERER']);
 		} else {
-			$this->_smarty->assign ('MorgOS_RuntimeErrors', $error);
+			$this->_smarty->assign ('MorgOS_PreviousLink', 'http://google.com');
 		}
+		$this->_smarty->assign ('MorgOS_Error', $error);
+		$this->_smarty->display ('error.tpl');
+		$this->shutdown ();
 	}	
 	
 	/**
@@ -233,7 +223,6 @@ class morgos {
 		$sm->assign_by_ref ('MorgOS_Errors', $allMessages[ERROR]);
 		$sm->assign_by_ref ('MorgOS_Warnings', $allMessages[WARNING]);
 		$sm->assign_by_ref ('MorgOS_Notices', $allMessages[NOTICE]);
-		$sm->assign_by_ref ('MorgOS_PluginAPI', $this->_pluginAPI);
 	
 		if (isset ($_GET['action'])) {
 			$r = $this->_actionManager->executeAction ($_GET['action']);

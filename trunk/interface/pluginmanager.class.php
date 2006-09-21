@@ -78,6 +78,12 @@ class plugin {
 	}
 	
 	/**
+	 * unloads the plugin
+	 * @public
+	*/
+	function unLoad () {}	
+	
+	/**
 	 * Checks that the plugin is loaded
 	 *
 	 * @public
@@ -249,7 +255,18 @@ class pluginManager {
 				return $result;
 			}
 		}
-	}	
+	}
+	
+	/**
+	 * Unload the plugins
+	 *
+	 * @public
+	*/
+	function shutdown () {
+		foreach ($this->_loadedPlugins as $plugin) {
+			$plugin->unLoad ();
+		}
+	}
 	
 	/**
 	 * Checks that a pluginID is found

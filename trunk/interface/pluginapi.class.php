@@ -36,6 +36,12 @@ class pluginAPI {
 	var $_eventManager;
 	var $_actionManager;
 	var $_smarty;
+	
+	var $_morgos;
+	
+	function pluginAPI ($morgos) {
+		$this->_morgos = $morgos;
+	}
 
 	function setDBModule (&$dbModule) {$this->_dbModule = $dbModule;}
 	function getDBModule () {return $this->_dbModule;}
@@ -66,7 +72,6 @@ class pluginAPI {
 	
 	/**
 	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
-	 * @bug this doen't shutdown morgos
 	 * 
 	 * @param $action (string)
 	 * @param $params (string array) The params that shopuld be given.
@@ -76,7 +81,13 @@ class pluginAPI {
 		foreach ($params as $name=>$value) {
 			$loc .= '&'.$name.'='.$value;
 		}
+		$this->_morgos->shutdown ();
 		header ('Location: '.$loc);
+	}
+	
+	function executePreviousAction () {
+		$this->_morgos->shutdown ();
+		header ($this->_actionManager->getPreviousActionHeaderString ());
 	}
 	
 	/**
