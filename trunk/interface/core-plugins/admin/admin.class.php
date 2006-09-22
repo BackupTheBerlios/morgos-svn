@@ -69,30 +69,25 @@ class adminCorePlugin extends plugin {
 		
 		$userManager = $this->_pluginAPI->getUserManager ();
 		$user = $userManager->getCurrentUser ();
-		if ($user) {
-			if ($user->hasPermission ('read_admin')) {
-				$pageManager = $this->_pluginAPI->getPageManager ();
-				$page = $pageManager->newPage ();
-				if ($pageID) {
-					$page->initFromDatabaseID ($pageID);
-				} else {
-					$page->initFromGenericName ('Admin Home');
-					$pageID = $page->getID ();
-				}
-
-				$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
-				$sm = $this->_pluginAPI->getSmarty ();
-				$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
-				if ($page->getAction ()) {
-					$this->_pluginAPI->getActionManager ()->executeAction ($page->getAction ());
-				} else {
-					$sm->display ('admin/genericpage.tpl');
-				}
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$page = $pageManager->newPage ();
+		if ($pageID) {
+			$page->initFromDatabaseID ($pageID);
+		} else {
+			$page->initFromGenericName ('Admin Home');
+			$pageID = $page->getID ();
+		}
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->canUserViewAdminPage ($page->getID ())) {
+			$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
+			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
+			if ($page->getAction ()) {
+				$this->_pluginAPI->getActionManager ()->executeAction ($page->getAction ());
 			} else {
-				return "ERROR_PLUGIN_NOT_PERMISSION";
+				$sm->display ('admin/genericpage.tpl');
 			}
 		} else {
-			$sm = $this->_pluginAPI->getSmarty ();
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
 			$sm->display ('admin/login.tpl');
 		}
 	}
@@ -122,11 +117,10 @@ class adminCorePlugin extends plugin {
 	function onViewPageManager ($pageID, $pageLang = 'en') {
 		$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 		$sm = $this->_pluginAPI->getSmarty ();
-		if ($this->_pluginAPI->userCanViewPage ()) {
-			$pageManager = $this->_pluginAPI->getPageManager ();
-			$page = $pageManager->newPage ();			
-			$page->initFromGenericName ('Admin Pagemanager');
-					
+		$pageManager = $this->_pluginAPI->getPageManager ();
+		$page = $pageManager->newPage ();			
+		$page->initFromGenericName ('Admin Pagemanager');
+		if ($this->canUserViewAdminPage ($page->getID ())) {				
 			if ($pageID === NULL) {
 				$pageID = 1; /*The ID of site */
 			}	
@@ -138,50 +132,84 @@ class adminCorePlugin extends plugin {
 			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
 			$sm->display ('admin/pagemanager.tpl'); 
 		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
 			$sm->display ('admin/login.tpl');
 		}
 	}
 	
 	function onMovePageDown ($pageID) {
 		$pageManager = $this->_pluginAPI->getPageManager ();
-		$r = $pageManager->movePageDown ($pageID);
-		if (! isError ($r)) {
-			$this->_pluginAPI->executePreviousAction ();
-		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
-			$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
+		$page = $pageManager->newPage ();			
+		$page->initFromGenericName ('Admin Pagemanager');
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->canUserViewAdminPage ($page->getID ())) {	
+			$r = $pageManager->movePageDown ($pageID);
+			if (! isError ($r)) {
+				$this->_pluginAPI->executePreviousAction ();
+			} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
+				$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
+			} else {
+				$this->_pluginAPI->error ('Onverwachte fout');
+			}
 		} else {
-			$this->_pluginAPI->error ('Onverwachte fout', true);
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
 		}
 	}
 	
 	function onMovePageUp ($pageID) {
 		$pageManager = $this->_pluginAPI->getPageManager ();
-		$r = $pageManager->movePageUp ($pageID);
-		if (! isError ($r)) {
-			$this->_pluginAPI->executePreviousAction ();
-		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
-			$this->_pluginAPI->error ($this->_pluginAPI->getI18NManager ()->translate ('Page doesn\'t exists'), true);
+		$page = $pageManager->newPage ();			
+		$page->initFromGenericName ('Admin Pagemanager');
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->canUserViewAdminPage ($page->getID ())) {	
+			$r = $pageManager->movePageUp ($pageID);
+			if (! isError ($r)) {
+				$this->_pluginAPI->executePreviousAction ();
+			} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
+				$this->_pluginAPI->error ($this->_pluginAPI->getI18NManager ()->translate ('Page doesn\'t exists'), true);
+			} else {
+				$this->_pluginAPI->error ('Onverwachte fout', true);
+			}
 		} else {
-			$this->_pluginAPI->error ('Onverwachte fout', true);
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
 		}
 	}
 	
 	function onSavePage ($pageID, $pageTitle, $pageContent) {
 		$pageManager = $this->_pluginAPI->getPageManager ();
-		$editedPage = $pageManager->newPage ();
-		$editedPage->initFromDatabaseID ($pageID);
-		$editedPage->updateFromArray (array ('genericContent'=>$pageContent, 'genericName'=>$pageTitle));
-		$editedPage->updateToDatabase ();
-		$a = $this->_pluginAPI->executePreviousAction ();
+		$page = $pageManager->newPage ();			
+		$page->initFromGenericName ('Admin Pagemanager');
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->canUserViewAdminPage ($page->getID ())) {	
+			$editedPage = $pageManager->newPage ();
+			$editedPage->initFromDatabaseID ($pageID);
+			$editedPage->updateFromArray (array ('genericContent'=>$pageContent, 'genericName'=>$pageTitle));
+			$editedPage->updateToDatabase ();
+			$a = $this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}
 	}
 	
 	function onNewPage ($parentPageID, $title) {
 		$pageManager = $this->_pluginAPI->getPageManager ();
-		$newPage = $pageManager->newPage ();
-		$ap = array ('genericName'=>$title, 'parentPageID'=>$parentPageID, 'genericContent'=>$this->_pluginAPI->getI18NManager ()->translate ('A newly created page.'));
-		$newPage->initFromArray ($ap);
-		$pageManager->addPageToDatabase ($newPage);
-		$a = $this->_pluginAPI->executePreviousAction ();
+		$page = $pageManager->newPage ();			
+		$page->initFromGenericName ('Admin Pagemanager');
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->canUserViewAdminPage ($page->getID ())) {	
+			$pageManager = $this->_pluginAPI->getPageManager ();
+			$newPage = $pageManager->newPage ();
+			$ap = array ('genericName'=>$title, 'parentPageID'=>$parentPageID, 'genericContent'=>$this->_pluginAPI->getI18NManager ()->translate ('A newly created page.'));
+			$newPage->initFromArray ($ap);
+			$pageManager->addPageToDatabase ($newPage);
+			$a = $this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}
 	}
 	
 	function setAdminVars ($pageID) {
@@ -193,6 +221,20 @@ class adminCorePlugin extends plugin {
 		$adminNav = $pageManager->getMenu ($rootPage);
 		
 		$sm->assign_by_ref ('MorgOS_AdminNav', $adminNav);
+	}
+	
+	function canUserViewAdminPage ($pageID) {
+		$userM = $this->_pluginAPI->getUserManager ();
+		$user = $userM->getCurrentUser ();
+		if ($user) {
+			if ($user->hasPermission ('edit_admin', false)) {
+				return true;
+			} else {
+				return $user->hasPermission ('edit_admin_'.$pageID, true);
+			}
+		} else {
+			return false;
+		}
 	}
 	
 }

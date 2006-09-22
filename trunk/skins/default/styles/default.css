@@ -108,3 +108,15 @@ legend {
 a img {
 	border: none;
 }
+
+#infoBox {
+	position: absolute;
+
+	border: solid 1px black;
+	padding: 15px;
+	/*center hor*/
+	width: 40%;
+	left: 30%;
+	
+	top: 30%;
+}

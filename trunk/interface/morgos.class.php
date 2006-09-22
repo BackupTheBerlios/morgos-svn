@@ -193,7 +193,9 @@ class morgos {
 	 * @public
 	*/
 	function shutdown () {
-		$this->_pluginManager->shutdown ();
+		if ($this->_pluginManager) {
+			$this->_pluginManager->shutdown ();
+		}
 		$this->_pluginAPI = null;
 		$this->_smarty = null;
 		$this->_pluginManager = null;
