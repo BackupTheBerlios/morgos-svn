@@ -175,6 +175,17 @@ class configTest extends TestCase {
 		$this->assertEquals (new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', '/aReal'), $this->configurator->getBoolItem ('/aReal'), "Wrong error");
 	}
 	
+	function testGetArrayItem () {
+		$this->configurator->loadConfigFile ('core/tests/options.php');
+		$string =  new configItem ('/anArray/aString', STRING);
+		$string->setValue ('anArrayString');
+		
+		$real =  new configItem ('/anArray/aReal', REAL);
+		$real->setValue (2.1);
+		$a = $this->configurator->getArrayItem ('/anArray');
+		$this->assertEquals (array ('aString'=>$string, 'aReal'=>$real), $a);
+	}
+	
 	function testLoadFromFile () {
 		$this->configurator->loadConfigFile ('core/tests/options.php');
 		$this->assertEquals (1.0, $this->configurator->getRealItem ('/aReal'));

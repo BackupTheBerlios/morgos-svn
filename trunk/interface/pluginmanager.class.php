@@ -202,16 +202,20 @@ class pluginManager {
 	 * @public
 	*/
 	function findAllPlugins ($dir) {
-		foreach (scandir ($dir) as $file) {
-			$fullFileName = $dir.'/'.$file;
-			if (is_dir ($fullFileName)) {
-				if (file_exists ($fullFileName.'/plugin.php')) {
-					$pluginClass = '';
-					include ($fullFileName.'/plugin.php');
-					$plug = new $pluginClass ($fullFileName);
-					$this->_foundPlugins[$plug->getID ()] = $plug;
+		if (is_dir ($dir)) {
+			foreach (scandir ($dir) as $file) {
+				$fullFileName = $dir.'/'.$file;
+				if (is_dir ($fullFileName)) {
+					if (file_exists ($fullFileName.'/plugin.php')) {
+						$pluginClass = '';
+						include ($fullFileName.'/plugin.php');
+						$plug = new $pluginClass ($fullFileName);
+						$this->_foundPlugins[$plug->getID ()] = $plug;
+					}
 				}
 			}
+		} else {
+			return new Error ('PLUGINMANAGER_DIR_NOT_FOUND', $dir);
 		}
 	}
 	
@@ -255,6 +259,7 @@ class pluginManager {
 				return $result;
 			}
 		}
+		$this->_pluginsToLoad = array ();
 	}
 	
 	/**

@@ -75,6 +75,23 @@ class pluginManagerTest extends TestCase {
 		$this->assertEquals (array ($this->_dataTesterPlugin->getID ()=>$this->_dataTesterPlugin), $this->_pluginManager->getAllLoadedPlugins (), 'Wrong result returned');
 	}
 	
+	function testDoNotLoadTwice () {
+		global $loadDataTester;
+		$loadDataTester = 0;
+		
+		$this->_pluginManager->setPluginToLoad ($this->_dataTesterPlugin->getID ());		
+		
+		$this->_pluginManager->loadPlugins ();
+		$this->assertEquals (1, $loadDataTester);
+		$this->_pluginManager->loadPlugins ();
+		$this->assertEquals (1, $loadDataTester);
+	}
+	
+	function testFoundPluginsNotExistingDir () {
+		$a = $this->_pluginManager->findAllPlugins ('heyIDontExists');
+		$this->assertEquals (new Error ('PLUGINMANAGER_DIR_NOT_FOUND', 'heyIDontExists'), $a);
+	}
+	
 	function testDataTesterPlugin () {
 		$r = $this->_pluginManager->setPluginToLoad ($this->_dataTesterPlugin->getID ());
 		$this->assertFalse (isError ($r), 'Unexpected error');

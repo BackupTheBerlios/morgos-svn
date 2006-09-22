@@ -15,6 +15,8 @@ class dataTesterPlugin extends plugin {
 	
 	function load ($pluginAPI) {
 		parent::load ($pluginAPI);
+		global $loadDataTester;
+		$loadDataTester++;
 	}
 	
 	function testData1 () {

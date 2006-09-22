@@ -280,6 +280,22 @@ class configurator {
 	}
 	
 	/**
+	 * Returns an array with all config elements in it.
+	 * @public
+	 * @return (configItem array)
+	*/
+	function getArrayItem ($name) {
+		$array = array ();
+		foreach ($this->allConfigItems as $k=>$item) {
+			if (ereg ('^'.$name.'\/', $item->getName ())) {
+				$array[substr ($item->getName (), strlen ($name.'/'))] = $item;
+			}
+			
+		}
+		return $array;
+	}
+	
+	/**
 	 * Adds an option.
 	 *
 	 * @param $option (object configItem)

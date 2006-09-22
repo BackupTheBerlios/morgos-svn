@@ -145,7 +145,7 @@ class morgos {
 			
 			$this->_pluginManager->findAllPlugins ('interface/core-plugins');
 			
-			// load for the moment only the viewpage plugin;
+			// hardcore loading of core plugins
 			$a = $this->_pluginManager->setPluginToLoad (MORGOS_VIEWPAGE_PLUGINID);
 			$a = $this->_pluginManager->setPluginToLoad (MORGOS_ADMIN_PLUGINID);
 			if (isError ($a)) {
@@ -155,6 +155,16 @@ class morgos {
 			if (isError ($a)) {
 				var_dump ($a);
 			}
+			
+			$this->_pluginManager->findAllPlugins ('plugins');
+			$allExternalPlugins = $this->_configManager->getArrayItem ('/extplugs');
+			foreach ($allExternalPlugins as $pID => $item) {
+				if ($item->getCurrentValue () == true) {
+					$this->_pluginManager->setPluginToLoad ($pID);
+				}
+			}
+			$this->_pluginManager->loadPlugins ();
+			
 			$this->_smarty->assign ('SkinPath', 'skins/default');
 		} else {
 			$this->lowInit ();

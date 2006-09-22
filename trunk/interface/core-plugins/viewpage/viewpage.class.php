@@ -34,16 +34,11 @@ class viewPageCorePlugin extends plugin {
 	function load ($pluginAPI) {
 		parent::load ($pluginAPI);
 		$this->_pluginAPI->getActionManager ()->addAction (new action ('viewPage', 'GET',  array (&$this, 'onViewPage'), array (), array ('pageID', 'pageLang')));
+		
+		$this->_pluginAPI->getEventManager ()->addEvent (new Event ('viewPage'));
 	}
 	
 	function onViewPage ($pageID, $pageLang) {
-		//$a = $this->_pluginAPI->getEventManager ()->triggerEvent ('viewPage');
-		/*foreach ($a as $r) {
-			if ($r == false or isError ($r)) {
-				return;
-			}
-		}*/
-			
 		$pMan = $this->_pluginAPI->getPageManager ();
 		$root = $pMan->newPage ();
 		$root->initFromGenericName ('site');
@@ -61,6 +56,14 @@ class viewPageCorePlugin extends plugin {
 		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
 		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
 		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
+		
+		$a = $this->_pluginAPI->getEventManager ()->triggerEvent ('viewPage');
+		foreach ($a as $r) {
+			if ($r == false or isError ($r)) {
+				return;
+			}
+		}		
+		
 		$this->_pluginAPI->getSmarty ()->display ('index.tpl');
 	}
 
