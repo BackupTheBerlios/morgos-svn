@@ -44,5 +44,21 @@ class variaTest extends TestCase {
 		$this->assertFalse ($a == $c, 'Object == fails (different)');
 		$this->assertFalse ($a->is ($d), 'Object comp fails (diff error)');
 	}
+	
+	function testVersionCompare () {
+		$this->assertTrue (versionCompare ('1.1.0', '1.1', '>='));
+		$this->assertTrue (versionCompare ('1.1.5', '1.1', '>='));
+		$this->assertTrue (versionCompare ('1.2', '1.1', '>='));
+		$this->assertTrue (versionCompare ('1.0.0', '1.1', '<='));
+		$this->assertTrue (versionCompare ('1.0', '1.1.0', '<='));
+		$this->assertTrue (versionCompare ('1.0', '1.0.0', '=='));
+		$this->assertTrue (versionCompare ('1.0.*', '1.0.0', '=='));
+		$this->assertTrue (versionCompare ('1.1', '1', '=='));
+		
+		$this->assertFalse (versionCompare ('1.1', '1', '>'));
+		
+		$a = versionCompare ('1.1', '1', 'l');
+		$this->assertTrue ($a->is ('VERSION_COMPARE_OPERATOR_DOESNT_EXISTS'));
+	}
 }
 ?>

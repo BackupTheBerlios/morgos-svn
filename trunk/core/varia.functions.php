@@ -85,44 +85,19 @@ function versionCompare ($version1, $version2, $operator) {
 	
 	switch ($operator) {
 		case '>=':
-			if ($result >= 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($result >= 0);
 		case '<=':
-			if ($result <= 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($result <= 0);
 		case '>':
-			if ($result > 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($result > 0);
 		case '<':
-			if ($result < 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($result < 0);
 		case '==':
-			if ($result == 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($result == 0);
 		case '!=':
-			if ($result != 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($result != 0);
 		default:
-			trigger_error ('ERROR: Operator doesn\'t exists.');
-			return false;
+			return new Error ('VERSION_COMPARE_OPERATOR_DOESNT_EXISTS');
 	}
 }
 
