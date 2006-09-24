@@ -22,6 +22,8 @@
  * @author Nathan Samson
 */
 
+define ('PHP_NL', "\n");
+
 class Error {
 	var $_error;
 	var $_params;

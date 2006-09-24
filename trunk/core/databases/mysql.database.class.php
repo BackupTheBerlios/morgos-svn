@@ -68,6 +68,15 @@ if (! class_exists ('mysqlDatabaseActions')) {
 				return new Error ('DATABASE_QUERY_FAILED', mysql_error ());
 			}
 		}
+		
+		function queryFile ($fileName) {
+			$queries = file_get_contents ($fileName);
+			$queries = str_replace ('{prefix}', $this->getPrefix (), $queries);
+			$queries = explode (';', $queries);
+			foreach ($queries as $sql) {
+				$this->query ($sql);
+			}
+		}
 	        
 		function numRows ($query) {
 			return mysql_num_rows ($query);

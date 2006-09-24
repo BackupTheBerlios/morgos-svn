@@ -167,8 +167,9 @@ class morgos {
 			
 			$this->_smarty->assign ('SkinPath', 'skins/default');
 		} else {
-			$this->lowInit ();
-			$this->error (new Error ('MORGOS_NOT_INSTALLED'), true);
+			$this->tinyInit ();
+			$this->loadInstaller ();
+			//$this->error (new Error ('MORGOS_NOT_INSTALLED'), true);
 		}
 	}
 	
@@ -176,15 +177,24 @@ class morgos {
 	 * An intialization function that does't read config files and doesn't connect with database.
 	*/
 	function tinyInit () {
+		ob_start ();
 		$this->_actionManager = new actionManager ();
+		$this->_i18nManager = new localizer ();		
 		
 		$this->_smarty = new Smarty ();
 		$this->_smarty->template_dir = 'skins/default/';
 		$this->_smarty->compile_dir = 'skins_c/default/';
 		$this->_smarty->cache_dir = 'cache/default/';
+		$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';
 		$this->_smarty->config_dir = 'configs/';
+		$this->_smarty->assign ('SkinPath', 'skins/default');
+		$this->_smarty->assign_by_ref ('t', $this->_i18nManager);		
 		
-		$this->_pluginAPI = new pluginAPI ();
+		$this->_pluginAPI = new pluginAPI ($this);
+		$this->_pluginAPI->setActionManager ($this->_actionManager);
+		$this->_pluginAPI->setSmarty ($this->_smarty);
+		$this->_pluginAPI->setI18NManager ($this->_i18nManager);
+		
 		$this->_pluginManager = new pluginManager ($this->_pluginAPI);
 	}
 	
@@ -227,9 +237,11 @@ class morgos {
 	
 	/**
 	 * Runs the system and show a page (or redirect to another page)
+	 * @param $defaultAction (string)
 	 * @public
 	*/
-	function run () {
+	function run ($defaultAction = 'viewPage') {
+		//var_dump ($this->_pluginAPI);
 		$allMessages = $this->_pluginAPI->getAllMessages ();
 		$sm = $this->_pluginAPI->getSmarty ();
 		$sm->assign_by_ref ('MorgOS_Errors', $allMessages[ERROR]);
@@ -241,15 +253,33 @@ class morgos {
 		} elseif (isset ($_POST['action'])) {
 			$r = $this->_actionManager->executeAction ($_POST['action']);
 		} else {
-			$r = $this->_actionManager->executeAction ('viewPage');
+			$r = $this->_actionManager->executeAction ($defaultAction);
 		}
 		if (isError ($r)) {
 			if ($r->is ('ACTIONMANAGER_ACTION_NOT_FOUND')) {
 				$this->error ($this->_i18nManager->translate ('You can\'t do this.'), true);
 			} else {
+				var_dump ($r);
 				$this->error ($this->_i18nManager->translate ('Unexpected error.'), true);
 			}
 		}
+	}
+	
+	/**
+	 * Loads and runs the installer
+	 * @public
+	*/
+	function loadInstaller () {
+		$this->_pluginManager->findAllPlugins ('interface/installer');
+		$allInstallerPlugins = $this->_pluginManager->getAllFoundPlugins ();
+		foreach ($allInstallerPlugins as $plug) {
+			$this->_pluginManager->setPluginToLoad ($plug->getID ());
+		}
+		$this->_pluginManager->loadPlugins ();
+		
+		$this->run ('installerShowLicense');
+		$this->shutdown ();
+		exit ();
 	}
 	
 	/**

@@ -155,6 +155,12 @@ class databaseActions {
 		
 	}
 	
+	function queryFile ($fileName) {
+		$sql = file_get_contents ($fileName);
+		$sql = str_replace ('{prefix}', $this->getPrefix (), $sql);
+		$this->query ($sql);
+	}
+	
 	/**
 	 * Sets the type of the database
 	 *
