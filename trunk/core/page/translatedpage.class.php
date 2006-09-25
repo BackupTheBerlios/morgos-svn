@@ -54,7 +54,8 @@ class translatedPage extends databaseObject {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		$languageCode = $this->db->escapeString ($languageCode);
-		$sql = "SELECT * FROM {$this->getFullTableName ()} WHERE $pageID='$pageID' AND languageCode='$languageCode'";
+		$fTN = $this->getFullTableName ();
+		$sql = "SELECT * FROM $fTN WHERE $pageID='$pageID' AND languageCode='$languageCode'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {

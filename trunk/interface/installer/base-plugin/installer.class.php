@@ -31,57 +31,59 @@ class installerBasePlugin extends plugin {
 		$this->_maxMorgOSVersion = '0.2';
 	}
 	
-	function load ($pluginAPI) {
-		parent::load ($pluginAPI);
-				
+	function load (&$pluginAPI) {
+		parent::load ($pluginAPI);	
 		/*$this->_pluginAPI->getActionManager ()->addAction (
 			new action ('installerAskLanguage', 'GET',  
 				array (&$this, 'askLanguage'), array (), array ()));*/
-				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		
+		
+		$aM = &$this->_pluginAPI->getActionManager ();		
+		$aM->addAction (
 			new action ('installerShowLicense', 'GET',  
 				array (&$this, 'showLicense'), array ('language'), array ()));
 				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$aM->addAction (
 			new action ('installerAgreeLicense', 'POST',  
 				array (&$this, 'agreeLicense'), array (), array ('agreed')));
 				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$aM->addAction (
 			new action ('installerShowRequirements', 'POST',  
 				array (&$this, 'showRequirements'), array ('agreed'), array ()));
 			
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$aM->addAction (
 			new action ('askConfig', 'POST',  
 				array (&$this, 'askConfig'), array ('canRun'), array ()));
 				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$aM->addAction (
 			new action ('installerInstall', 'POST',  
 				array (&$this, 'installConfigAndDatabase'), array (
 						'siteName', 
 						'databaseModule', 'databaseHost', 'databaseUser', 'databasePassword',
 						'databaseName', 'databasePrefix', 
-						'adminLogin', 'adminPassword1', 'adminPassword2', 'adminMail'), array ()));		
+						'adminLogin', 'adminPassword1', 'adminPassword2', 'adminMail'), array ()));	
 	}
 	
 	function askLanguage () {
 	}
 	
 	function showLicense ($language) {
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
 		$sm->display ('installer/license.tpl');
 	}	
 	
 	function agreeLicense ($agreed) {
+		$aM = &$this->_pluginAPI->getActionManager ();		
 		if ($agreed == 'Y') {
-			$a = $this->_pluginAPI->getActionManager ()->executeAction ('installerShowRequirements', array ('agreed'=>'Y'));
+			$a = $aM->executeAction ('installerShowRequirements', array ('agreed'=>'Y'));
 		} else {
-			$a = $this->_pluginAPI->getActionManager ()->executeAction ('installerShowLicense', array ('language'=>'en'));
+			$a = $aM->executeAction ('installerShowLicense', array ('language'=>'en'));
 		}
 	}
 	
 	function showRequirements ($agreed) {
 		if ($agreed == 'Y') {
-			$sm = $this->_pluginAPI->getSmarty ();
+			$sm = &$this->_pluginAPI->getSmarty ();
 			$sm->assign ('canRun', true);
 			if (version_compare (PHP_VERSION, '4.3', '>=')) {
 				$sm->assign ('phpError', false);
@@ -138,12 +140,13 @@ class installerBasePlugin extends plugin {
 			
 			$sm->display ('installer/testreqs.tpl');
 		} else {
-			$this->_pluginAPI->getActionManager ()->executeAction ('installerShowLicense', array ('language'=>'en'));
+			$aM = &$this->_pluginAPI->getActionManager ();
+			$aM->executeAction ('installerShowLicense', array ('language'=>'en'));
 		}
 	}
 	
 	function askConfig ($canRun) {
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
 		$sm->assign ('dbModules', databaseGetAllModules (true));
 		$sm->display ('installer/configure.tpl');
 	}
@@ -197,7 +200,7 @@ class installerBasePlugin extends plugin {
 			$pageM->addPageToDatabase ($admin);
 			
 			$home->initFromArray (array ('genericName'=>'Home', 'genericContent'=>'This is the homepage.', 'parentPageID'=>$site->getID ()));
-			$ahome->initFromArray (array ('genericName'=>'Admin home', 'genericContent'=>'This is the admin.', 'parentPageID'=>$admin->getID (), 'action'=>'admin'));
+			$ahome->initFromArray (array ('genericName'=>'Admin home', 'genericContent'=>'This is the admin.', 'parentPageID'=>$admin->getID ()));
 			$pman->initFromArray (array ('genericName'=>'Page manager', 'genericContent'=>'Here you can edit pages.', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
 
 			$pageM->addPageToDatabase ($home);

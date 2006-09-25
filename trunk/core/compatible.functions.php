@@ -50,7 +50,7 @@ if (!function_exists ('scandir')) {
 				$files[] = $file;
 			}
             
-			sort ($files);
+			sort ($files, SORT_STRING);
     
 			if ($sortingOrder == 1) {
 				$files = array_reverse ($files);

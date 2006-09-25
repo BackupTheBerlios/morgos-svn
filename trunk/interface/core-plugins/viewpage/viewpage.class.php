@@ -31,15 +31,18 @@ class viewPageCorePlugin extends plugin {
 		$this->_maxMorgOSVersion = '0.2';
 	}
 	
-	function load ($pluginAPI) {
+	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);
-		$this->_pluginAPI->getActionManager ()->addAction (new action ('viewPage', 'GET',  array (&$this, 'onViewPage'), array (), array ('pageID', 'pageLang')));
+		$am = &$this->_pluginAPI->getActionManager ();
+		$am->addAction (
+			new action ('viewPage', 'GET',  array ($this, 'onViewPage'), array (), array ('pageID', 'pageLang')));
 		
-		$this->_pluginAPI->getEventManager ()->addEvent (new Event ('viewPage'));
+		$em = &$this->_pluginAPI->getEventManager ();
+		$em->addEvent (new Event ('viewPage'));
 	}
 	
 	function onViewPage ($pageID, $pageLang) {
-		$pMan = $this->_pluginAPI->getPageManager ();
+		$pMan = &$this->_pluginAPI->getPageManager ();
 		$root = $pMan->newPage ();
 		$root->initFromGenericName ('site');
 		$page = $pMan->newPage ();
@@ -50,21 +53,23 @@ class viewPageCorePlugin extends plugin {
 			$page = $menu[0];
 		}
 		
-		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_CurrentPage_Title', $page->getName ());
-		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_CurrentPage_Content', $page->getContent ());		
-		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
-		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
-		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
-		$this->_pluginAPI->getSmarty ()->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$sm->assign ('MorgOS_CurrentPage_Title', $page->getName ());
+		$sm->assign ('MorgOS_CurrentPage_Content', $page->getContent ());		
+		$sm->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
+		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
+		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
+		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
 		
-		$a = $this->_pluginAPI->getEventManager ()->triggerEvent ('viewPage');
+		$em = &$this->_pluginAPI->getEventManager ();
+		$a = $em->triggerEvent ('viewPage');
 		foreach ($a as $r) {
 			if ($r == false or isError ($r)) {
 				return;
 			}
 		}		
 		
-		$this->_pluginAPI->getSmarty ()->display ('index.tpl');
+		$sm->display ('index.tpl');
 	}
 
 	function getMenuArray ($rootPage, $rec = true) {

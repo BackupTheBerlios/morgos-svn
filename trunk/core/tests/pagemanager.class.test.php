@@ -186,7 +186,9 @@ class pageManagerTest extends TestCase {
 		
 		$translatedPageFR_BE = $page->getTranslation ('FR-BE');
 		$this->assertFalse (isError ($translatedPageFR_BE), 'Unexpected - hehem - FR_BE error');
-		$this->assertEquals ('This is the french (french) translation. (FR-FR)', $translatedPageFR_BE->getContent (), 'Select other dialect failed (NYI)');
+		if (! isError ($translatedPageFR_BE)) {
+			$this->assertEquals ('This is the french (french) translation. (FR-FR)', $translatedPageFR_BE->getContent (), 'Select other dialect failed (NYI)');
+		}
 	}
 	
 	function testGetAllTranslations () {

@@ -39,36 +39,36 @@ class pluginAPI {
 	
 	var $_morgos;
 	
-	function pluginAPI ($morgos) {
-		$this->_morgos = $morgos;
+	function pluginAPI (&$morgos) {
+		$this->_morgos = &$morgos;
 	}
 
-	function setDBModule (&$dbModule) {$this->_dbModule = $dbModule;}
-	function getDBModule () {return $this->_dbModule;}
+	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
+	function &getDBModule () {return $this->_dbModule;}
 
-	function setConfigManager (&$configManager) {$this->_configManager = $configManager;}
-	function getConfigManager () {return $this->_configManager;}
+	function setConfigManager (&$configManager) {$this->_configManager = &$configManager;}
+	function &getConfigManager () {return $this->_configManager;}
 	
-	function setI18NManager (&$i18nManager) {$this->_i18nManager = $i18nManager;}
-	function getI18NManager () {return $this->_i18nManager;}	
+	function setI18NManager (&$i18nManager) {$this->_i18nManager = &$i18nManager;}
+	function &getI18NManager () {return $this->_i18nManager;}	
 	
-	function setUserManager (&$userManager) {$this->_userManager = $userManager;}
-	function getUserManager () {return $this->_userManager;}
+	function setUserManager (&$userManager) {$this->_userManager = &$userManager;}
+	function &getUserManager () {return $this->_userManager;}
 	
-	function setPageManager (&$pageManager) {$this->_pageManager = $pageManager;}
-	function getPageManager () {return $this->_pageManager;}
+	function setPageManager (&$pageManager) {$this->_pageManager = &$pageManager;}
+	function &getPageManager () {return $this->_pageManager;}
 	
-	function setPluginManager (&$pluginManager) {$this->_pluginManager = $pluginManager;}
-	function getPluginManager () {return $this->_pluginManager;}
+	function setPluginManager (&$pluginManager) {$this->_pluginManager = &$pluginManager;}
+	function &getPluginManager () {return $this->_pluginManager;}
 	
-	function setEventManager (&$eventManager) {$this->_eventManager = $eventManager;}
-	function getEventManager () {return $this->_eventManager;}
+	function setEventManager (&$eventManager) {$this->_eventManager = &$eventManager;}
+	function &getEventManager () {return $this->_eventManager;}
 	
-	function setActionManager (&$actionManager) {$this->_actionManager = $actionManager;}
-	function getActionManager () {return $this->_actionManager;}
+	function setActionManager (&$actionManager) {$this->_actionManager = &$actionManager;}
+	function &getActionManager () {return $this->_actionManager;}
 	
-	function setSmarty (&$smarty) {$this->_smarty = $smarty;}
-	function getSmarty () {return $this->_smarty;}
+	function setSmarty (&$smarty) {$this->_smarty = &$smarty;}
+	function &getSmarty () {return $this->_smarty;}
 	
 	/**
 	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
@@ -129,7 +129,7 @@ class pluginAPI {
 	}
 	
 	function addRuntimeMessage ($tMessage, $type) {
-		$sm = $this->getSmarty ();
+		$sm = &$this->getSmarty ();
 		$sm->append_by_ref ('MorgOS_Notices', $tMessage);
 		//$sm->debugging = true;
 	}	

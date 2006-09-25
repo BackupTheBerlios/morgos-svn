@@ -172,12 +172,14 @@ class page extends databaseObject {
 	function getTranslation ($languageCode) {
 		$languageCode = $this->db->escapeString ($languageCode);
 		$fullTranslationTableName = $this->db->getPrefix ().'translatedPages';
-		$sql = "SELECT translatedPageID FROM $fullTranslationTableName WHERE pageID='{$this->getID ()}' AND languageCode='$languageCode'";
+		$ID = $this->getID ();
+		$sql = "SELECT translatedPageID FROM $fullTranslationTableName WHERE pageID='$ID' AND languageCode='$languageCode'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {
 				$row = $this->db->fetchArray ($q);
-				$tPage = $this->getCreator ()->newTranslatedPage ();
+				$c = $this->getCreator ();
+				$tPage = $c->newTranslatedPage ();
 				$tPage->initFromDatabaseID ($row['translatedPageID']);
 				return $tPage;
 			} else {
@@ -196,7 +198,8 @@ class page extends databaseObject {
 	
 	function getAllTranslations () {
 		$fullTranslationTableName = $this->db->getPrefix ().'translatedPages';
-		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE pageID='{$this->getID ()}' ORDER BY languageCode ASC";
+		$ID = $this->getID ();
+		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE pageID='$ID' ORDER BY languageCode ASC";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$lCodes = array ();
@@ -236,11 +239,14 @@ class page extends databaseObject {
 	}
 	
 	function getAllChilds () {
-		$sql = "SELECT pageID FROM {$this->getFullTableName ()} WHERE parentPageID='{$this->getID ()}'";
+		$fTN = $this->getFullTableName ();
+		$ID = $this->getID ();
+		$sql = "SELECT pageID FROM $fTN WHERE parentPageID='$ID'";
 		$q = $this->db->query ($sql);
 		$childPages = array ();
 		while ($row = $this->db->fetchArray ($q)) {
-			$childPage = $this->getCreator ()->newPage ();
+			$c = $this->getCreator ();
+			$childPage = $c->newPage ();
 			$childPage->initFromDatabaseID ($row['pageID']);
 			$childPages[] = $childPage;
 		}

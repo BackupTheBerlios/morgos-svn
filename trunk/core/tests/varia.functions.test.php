@@ -56,7 +56,7 @@ class variaTest extends TestCase {
 		$this->assertTrue (versionCompare ('1.1', '1', '=='));
 		$this->assertTrue (versionCompare ('1.3.*', '1.0.0', '>'));
 		
-		$this->assertFalse (versionCompare ('0.9.*', '1.0.0', '<'));		
+		$this->assertTrue (versionCompare ('0.9.*', '1.0.0', '<'));		
 		$this->assertFalse (versionCompare ('1.1', '1', '>'));
 		$this->assertFalse (versionCompare ('1.1', '1', '<'));
 		

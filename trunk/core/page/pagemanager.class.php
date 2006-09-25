@@ -113,7 +113,9 @@ class pageManager {
 		$r = $page->initFromDatabaseID ($pageID);
 		if (! isError ($r)) {
 			$pagesTableName = $this->db->getPrefix ().'pages';
-			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=({$page->getPlaceInMenu ()})-1 AND parentPageID='{$page->getParentPageID ()}'";
+			$placeInMenu = $page->getPlaceInMenu ();
+			$ppID = $page->getParentPageID ();
+			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=($placeInMenu)-1 AND parentPageID='$ppID'";
 			$a = $this->db->query ($sql);
 			if (isError ($a)) {
 				return $a;
@@ -140,7 +142,9 @@ class pageManager {
 		$r = $page->initFromDatabaseID ($pageID);
 		if (! isError ($r)) {
 			$pagesTableName = $this->db->getPrefix ().'pages';
-			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)-1 WHERE placeInMenu=({$page->getPlaceInMenu ()})+1 AND parentPageID='{$page->getParentPageID ()}'";
+			$placeInMenu = $page->getPlaceInMenu ();
+			$ppID = $page->getParentPageID ();
+			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)-1 WHERE placeInMenu=($placeInMenu)+1 AND parentPageID='$ppID'";
 			$a = $this->db->query ($sql);
 			if (isError ($a)) {
 				return $a;

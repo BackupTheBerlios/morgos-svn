@@ -165,12 +165,15 @@ class user extends databaseObject {
 	 * @return (object group array)
 	*/	
 	function getAllGroups () {
-		$sql = "SELECT groupID FROM {$this->db->getPrefix ()}group_users WHERE userID='{$this->getID ()}'";
+		$prefix = $this->db->getPrefix ();
+		$ID = $this->getID ();
+		$sql = "SELECT groupID FROM {$prefix}group_users WHERE userID='$ID'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();
 			while ($row = $this->db->fetchArray ($q)) {
-				$g = $this->getCreator ()->newGroup ();
+				$c = $this->getCreator ();
+				$g = $c->newGroup ();
 				$g->initFromDatabaseID ($row['groupID']);
 				$allGroups[] = $g;
 			}

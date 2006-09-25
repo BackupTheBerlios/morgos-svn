@@ -465,7 +465,10 @@ class databaseObject {
 			$updates .= '=';
 			$updates .= '\''.$opt->getValue ().'\' '; 
 		}
-		$sql = "UPDATE {$this->getFullTableName ()} SET $updates WHERE {$this->getIDName ()}='{$this->getID ()}'";	
+		$fullTableName = $this->getFullTableName (); 
+		$IDName = $this->getIDName ();
+		$ID = $this->getID ();
+		$sql = "UPDATE $fulLTableName SET $updates WHERE $IDName='$ID'";	
 		$a = $this->db->query ($sql);
 		return $a;
 	}

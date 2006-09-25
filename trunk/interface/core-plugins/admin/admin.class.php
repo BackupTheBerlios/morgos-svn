@@ -31,30 +31,40 @@ class adminCorePlugin extends plugin {
 		$this->_maxMorgOSVersion = '0.2';
 	}
 	
-	function load ($pluginAPI) {
+	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);
-		$this->_pluginAPI->getActionManager ()->addAction (new action ('admin', 'GET',  array (&$this, 'onViewAdmin'), array (), array ('pageID', 'pageLang')));
-		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), array ('adminLogin', 'adminPassword'), array ()));
-		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), array ()));
-		$this->_pluginAPI->getActionManager ()->addAction (new action ('adminPageManager', 'GET',  array (&$this, 'onViewPageManager'), array (), array ('pageID', 'pageLang')));
+		$am = &$this->_pluginAPI->getActionManager ();
+		$am->addAction (
+			new action ('admin', 'GET',  array (&$this, 'onViewAdmin'), 
+				array (), array ('pageID', 'pageLang')));
+		$am->addAction (
+			new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), 
+			array ('adminLogin', 'adminPassword'), array ()));
+		$am->addAction (
+			new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), array ()));
+		$am->addAction (
+			new action ('adminPageManager', 'GET',  array (&$this, 'onViewPageManager'), 
+			array (), array ('pageID', 'pageLang')));
 		
-		$this->_pluginAPI->getEventManager ()->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
-		$this->_pluginAPI->getEventManager ()->subscribeToEvent ('viewAnyAdminPage', new callback ('setAdminVars', array (&$this, 'setAdminVars'), array ('pageID')));
+		$em = &$this->_pluginAPI->getEventManager ();
+		$em->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
+		$em->subscribeToEvent ('viewAnyAdminPage', 
+			new callback ('setAdminVars', array (&$this, 'setAdminVars'), array ('pageID')));
 		
 		// page edit action
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$am->addAction (
 			new action ('adminMovePageDown', 'GET',  
 				array (&$this, 'onMovePageDown'), array ('pageID'), array ()));
 				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$am->addAction (
 			new action ('adminMovePageUp', 'GET',  
 				array (&$this, 'onMovePageUp'), array ('pageID'), array ()));
 				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$am->addAction (
 			new action ('adminSavePage', 'POST',  
 				array (&$this, 'onSavePage'), array ('pageID', 'pageTitle', 'pageContent'), array ()));
 				
-		$this->_pluginAPI->getActionManager ()->addAction (
+		$am->addAction (
 			new action ('adminNewPage', 'GET',  
 				array (&$this, 'onNewPage'), array ('parentPageID', 'pageTitle'), array ()));
 	}
@@ -67,22 +77,24 @@ class adminCorePlugin extends plugin {
 			}
 		}*/
 		
-		$userManager = $this->_pluginAPI->getUserManager ();
+		$userManager = &$this->_pluginAPI->getUserManager ();
 		$user = $userManager->getCurrentUser ();
-		$pageManager = $this->_pluginAPI->getPageManager ();
+		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();
+		$am = &$this->_pluginAPI->getActionManager ();
 		if ($pageID) {
 			$page->initFromDatabaseID ($pageID);
 		} else {
 			$page->initFromGenericName ('Admin Home');
 			$pageID = $page->getID ();
 		}
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$em = &$this->_pluginAPI->getEventManager ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {
-			$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
+			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
 			if ($page->getAction ()) {
-				$this->_pluginAPI->getActionManager ()->executeAction ($page->getAction ());
+				$am->executeAction ($page->getAction ());
 			} else {
 				$sm->display ('admin/genericpage.tpl');
 			}
@@ -93,10 +105,16 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onLogin ($adminLogin, $adminPassword) {
-		$userManager = $this->_pluginAPI->getUserManager ();
+		$userManager = &$this->_pluginAPI->getUserManager ();
 		$a = $userManager->login ($adminLogin, $adminPassword);
 		if (isError ($a)) {
-			return $a;
+			if ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT')) {
+				$sm = &$this->_pluginAPI->getSmarty ();
+				$this->_pluginAPI->addRuntimeMessage ('Given a wrong password/username.', ERROR);
+				$sm->display ('admin/login.tpl');
+			} else {
+				return $a;
+			}
 		} else {
 			$this->_pluginAPI->addMessage ('You are now logged in.', NOTICE);
 			$this->_pluginAPI->doAction ('admin');
@@ -104,7 +122,7 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onLogout () {
-		$userManager = $this->_pluginAPI->getUserManager ();
+		$userManager = &$this->_pluginAPI->getUserManager ();
 		$a = $userManager->logout ();
 		if (isError ($a)) {
 			return $a;
@@ -115,9 +133,10 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onViewPageManager ($pageID, $pageLang = 'en') {
-		$this->_pluginAPI->getEventManager ()->triggerEvent ('viewAnyAdminPage', array (&$pageID));
-		$sm = $this->_pluginAPI->getSmarty ();
-		$pageManager = $this->_pluginAPI->getPageManager ();
+		$em = &$this->_pluginAPI->getEventManager ();
+		$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();			
 		$page->initFromGenericName ('Admin Pagemanager');
 		if ($this->canUserViewAdminPage ($page->getID ())) {				
@@ -138,16 +157,17 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onMovePageDown ($pageID) {
-		$pageManager = $this->_pluginAPI->getPageManager ();
+		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();			
 		$page->initFromGenericName ('Admin Pagemanager');
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$r = $pageManager->movePageDown ($pageID);
 			if (! isError ($r)) {
 				$this->_pluginAPI->executePreviousAction ();
 			} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
-				$this->_pluginAPI->error ($this->_pluginAPI->getLocalizator ()->translate ('Page doesn\'t exists'), true);
+				$i18nM = &$this->_pluginAPI->getI18NManager ();
+				$this->_pluginAPI->error ($i18nM->translate ('Page doesn\'t exists'), true);
 			} else {
 				$this->_pluginAPI->error ('Onverwachte fout');
 			}
@@ -158,16 +178,17 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onMovePageUp ($pageID) {
-		$pageManager = $this->_pluginAPI->getPageManager ();
+		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();			
 		$page->initFromGenericName ('Admin Pagemanager');
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$r = $pageManager->movePageUp ($pageID);
 			if (! isError ($r)) {
 				$this->_pluginAPI->executePreviousAction ();
 			} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
-				$this->_pluginAPI->error ($this->_pluginAPI->getI18NManager ()->translate ('Page doesn\'t exists'), true);
+				$i18nM = &$this->_pluginAPI->getI18NManager ();
+				$this->_pluginAPI->error ($$i18nM->translate ('Page doesn\'t exists'), true);
 			} else {
 				$this->_pluginAPI->error ('Onverwachte fout', true);
 			}
@@ -178,8 +199,8 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onSavePage ($pageID, $pageTitle, $pageContent) {
-		$pageManager = $this->_pluginAPI->getPageManager ();
-		$page = $pageManager->newPage ();			
+		$pageManager = &$this->_pluginAPI->getPageManager ();
+		$page = &$pageManager->newPage ();			
 		$page->initFromGenericName ('Admin Pagemanager');
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
@@ -195,14 +216,17 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function onNewPage ($parentPageID, $title) {
-		$pageManager = $this->_pluginAPI->getPageManager ();
-		$page = $pageManager->newPage ();			
+		$pageManager = &$this->_pluginAPI->getPageManager ();
+		$page = &$pageManager->newPage ();			
 		$page->initFromGenericName ('Admin Pagemanager');
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$pageManager = $this->_pluginAPI->getPageManager ();
 			$newPage = $pageManager->newPage ();
-			$ap = array ('genericName'=>$title, 'parentPageID'=>$parentPageID, 'genericContent'=>$this->_pluginAPI->getI18NManager ()->translate ('A newly created page.'));
+			$i18nM = &$this->_pluginAPI->getI18NManager ();
+			$ap = array (
+				'genericName'=>$title, 'parentPageID'=>$parentPageID, 
+				'genericContent'=>$i18nM->translate ('A newly created page.'));
 			$newPage->initFromArray ($ap);
 			$pageManager->addPageToDatabase ($newPage);
 			$a = $this->_pluginAPI->executePreviousAction ();
@@ -213,9 +237,9 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function setAdminVars ($pageID) {
-		$sm = $this->_pluginAPI->getSmarty ();	
+		$sm = &$this->_pluginAPI->getSmarty ();	
 	
-		$pageManager = $this->_pluginAPI->getPageManager ();
+		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$rootPage = $pageManager->newPage ();
 		$rootPage->initFromGenericName ('admin');
 		$adminNav = $pageManager->getMenu ($rootPage);
@@ -224,8 +248,8 @@ class adminCorePlugin extends plugin {
 	}
 	
 	function canUserViewAdminPage ($pageID) {
-		$userM = $this->_pluginAPI->getUserManager ();
-		$user = $userM->getCurrentUser ();
+		$userM = &$this->_pluginAPI->getUserManager ();
+		$user = &$userM->getCurrentUser ();
 		if ($user) {
 			if ($user->hasPermission ('edit_admin', false)) {
 				return true;

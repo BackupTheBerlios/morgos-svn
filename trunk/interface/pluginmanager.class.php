@@ -22,6 +22,8 @@
  * @author Nathan Samson
 */
 
+include_once ('core/compatible.functions.php');
+
 class plugin {
 	/**
 	 * The name of the plugin
@@ -73,8 +75,8 @@ class plugin {
 	 * @param $pluginAPI (object)
 	 * @public
 	*/
-	function load ($pluginAPI) {
-		$this->_pluginAPI = $pluginAPI;
+	function load (&$pluginAPI) {
+		$this->_pluginAPI = &$pluginAPI;
 	}
 	
 	/**
@@ -188,11 +190,11 @@ class pluginManager {
 	 * Constructor
 	 * @param $pluginAPI (object)
 	*/
-	function pluginManager ($pluginAPI) {
+	function pluginManager (&$pluginAPI) {
 		$this->_foundPlugins = array ();
 		$this->_loadedPlugins = array ();
 		$this->_pluginsToLoad = array ();
-		$this->_pluginAPI = $pluginAPI;
+		$this->_pluginAPI = &$pluginAPI;
 	}
 	
 	/**
@@ -209,8 +211,8 @@ class pluginManager {
 					if (file_exists ($fullFileName.'/plugin.php')) {
 						$pluginClass = '';
 						include ($fullFileName.'/plugin.php');
-						$plug = new $pluginClass ($fullFileName);
-						$this->_foundPlugins[$plug->getID ()] = $plug;
+						$plug = &new $pluginClass ($fullFileName);
+						$this->_foundPlugins[$plug->getID ()] = &$plug;
 					}
 				}
 			}

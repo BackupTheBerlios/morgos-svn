@@ -66,6 +66,7 @@ class userManagerTest extends TestCase {
 		$this->assertTrue ($loginExists, 'Login not found');	
 		$emailExists = $this->userManager->emailIsRegistered ('THEEMAIL');
 		$this->assertTrue ($emailExists, 'Email not found');
+		$this->assertFalse ($user->getID () == -1, 'Userid not changed');
 		
 		$user = $this->userManager->newUser ();
 		$this->assertFalse (isError ($user));

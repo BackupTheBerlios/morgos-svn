@@ -78,7 +78,9 @@ class group extends databaseObject {
 	*/
 	function hasPermission ($permissionName) {
 		$permissionName = $this->db->escapeString ($permissionName);
-		$sql = "SELECT enabled FROM {$this->db->getPrefix ()}groupPermissions WHERE groupID='{$this->getID ()}' AND permissionName='$permissionName'";
+		$prefix = $this->db->getPrefix ();
+		$ID = $this->getID ();
+		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE groupID='$ID' AND permissionName='$permissionName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {
@@ -105,7 +107,9 @@ class group extends databaseObject {
 	*/
 	function assignPermission ($permissionName, $enabled) {
 		$permissionName = $this->db->escapeString ($permissionName);
-		$sql = "SELECT enabled FROM {$this->db->getPrefix ()}groupPermissions WHERE groupID='{$this->getID ()}' AND permissionName='$permissionName'";
+		$prefix = $this->db->getPrefix ();
+		$ID = $this->getID ();
+		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE groupID='$ID' AND permissionName='$permissionName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {
@@ -114,7 +118,8 @@ class group extends databaseObject {
 				} else {
 					$enabled = 'N';
 				}
-				$sql = "UPDATE {$this->db->getPrefix ()}groupPermissions SET enabled='$enabled' WHERE groupID='{$this->getID ()}' AND permissionName='$permissionName'";
+				$ID = $this->getID ();
+				$sql = "UPDATE {$prefix}groupPermissions SET enabled='$enabled' WHERE groupID='$ID' AND permissionName='$permissionName'";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -126,7 +131,7 @@ class group extends databaseObject {
 					$enabled = 'N';
 				}
 				$groupID = $this->getID ();
-				$sql = "INSERT INTO {$this->db->getPrefix ()}groupPermissions (groupID, permissionName, enabled) VALUES ('$groupID', '$permissionName', '$enabled')";
+				$sql = "INSERT INTO {$prefix}groupPermissions (groupID, permissionName, enabled) VALUES ('$groupID', '$permissionName', '$enabled')";
 				$q = $this->db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -349,7 +354,8 @@ class group extends databaseObject {
 	*/
 	function getAllTranslations () {
 		$fullTranslationTableName = $this->db->getPrefix ().'translatedGroups';
-		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE groupID='{$this->getID ()}' ORDER BY languageCode ASC";
+		$ID = $this->getID ();
+		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE groupID='$ID' ORDER BY languageCode ASC";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$lCodes = array ();

@@ -60,7 +60,7 @@ startMorgOS ();
 
 
 function startMorgOS () {
-	$morgos = new morgos ();
+	$morgos = &new morgos ();
 	$morgos->run ();
 	$morgos->shutdown ();
 }

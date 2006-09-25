@@ -47,7 +47,7 @@ class Error {
 }
 
 function isError ($test) {
-	if (get_class ($test) == 'Error') {
+	if (strtolower (get_class ($test)) == 'error') {
 		return true;
 	} else {
 		return false;

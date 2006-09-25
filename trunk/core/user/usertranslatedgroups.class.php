@@ -62,7 +62,8 @@ class translatedGroup extends databaseObject {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_FAILED',__FILE__,__LINE__);
 		}
 		$languageCode = $this->db->escapeString ($lCode);
-		$sql = "SELECT * FROM {$this->getFullTableName ()} WHERE $groupID='$groupID' AND languageCode='$languageCode'";
+		$fullTableName = $this->getFullTableName ();
+		$sql = "SELECT * FROM $fullTableName WHERE $groupID='$groupID' AND languageCode='$languageCode'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {

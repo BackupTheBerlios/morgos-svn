@@ -109,6 +109,12 @@ class morgos {
 			$this->_configManager->loadConfigFile ('config.php');
 			$this->_i18nManager = new localizer ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
+			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
+								  $this->_configManager->getStringItem ('/databases/user'), 
+								  $this->_configManager->getStringItem ('/databases/password'));
+						
+			$this->_dbModule->selectDatabase ($this->_configManager->getStringItem ('/databases/database'));
+			$this->_dbModule->setPrefix ($this->_configManager->getStringItem ('/databases/table_prefix'));
 			$this->_userManager = new userManager ($this->_dbModule);
 			$this->_pageManager = new pageManager ($this->_dbModule);
 			$this->_actionManager = new actionManager ();
@@ -123,7 +129,7 @@ class morgos {
 			$this->_pluginAPI->setPageManager ($this->_pageManager);
 			$this->_pluginAPI->setSmarty ($this->_smarty);
 			$this->_pluginAPI->setI18NManager ($this->_i18nManager);
-			$this->_pluginManager = new pluginManager ($this->_pluginAPI);
+			$this->_pluginManager = &new pluginManager ($this->_pluginAPI);
 			$this->_pluginAPI->setPluginManager ($this->_pluginManager);
 						
 			// Hardcoded for the moment
@@ -134,14 +140,11 @@ class morgos {
 			$this->_smarty->config_dir = 'configs/';
 			$this->_smarty->assign_by_ref ('t', $this->_i18nManager);
 			
-			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
-								  $this->_configManager->getStringItem ('/databases/user'), 
-								  $this->_configManager->getStringItem ('/databases/password'));
+			
 			if (isError ($a)) {
 				var_dump ($a);
 			}						
-			$this->_dbModule->selectDatabase ($this->_configManager->getStringItem ('/databases/database'));
-			$this->_dbModule->setPrefix ($this->_configManager->getStringItem ('/databases/table_prefix'));
+
 			
 			$this->_pluginManager->findAllPlugins ('interface/core-plugins');
 			

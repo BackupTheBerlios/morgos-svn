@@ -89,7 +89,7 @@ class MorgOSSuit extends TestSuite {
 			include_once ('core/tests/varia.functions.test.php');
 			include_once ('core/tests/compatible.functions.test.php');
 			include_once ('core/tests/pagemanager.class.test.php');
-			include_once ('core/tests/xmlsql.class.test.php');
+			//include_once ('core/tests/xmlsql.class.test.php');
 		} elseif ($php == "5") {
 			$this->addTestFile ('core/tests/databasemanager.functions.test.php');
 			$this->addTestFile ('core/tests/config.class.test.php');
@@ -124,7 +124,7 @@ if ($php == "4") {
 	$variasuite = new TestSuite ('variaTest');
 	$compatiblesuite = new TestSuite ('compatibleTests');
 	$pagemanagersuite = new TestSuite ('pageManagerTest');
-	$pagemanagersuite = new TestSuite ('XMLSQLTest');
+	//$pagemanagersuite = new TestSuite ('XMLSQLTest');
 	$GUI = new PHPUnit_GUI_HTML (array ($databasesuite, $variasuite, $compatiblesuite, $configsuite, $usersuite, $pagemanagersuite));
 	$GUI->show ();
 } elseif ($php == "5") {

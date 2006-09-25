@@ -34,14 +34,19 @@ class MorgOSInterfaceSuite extends TestSuite {
 
 if ($php == "4") {
 	include_once ('interface/tests/eventmanager.class.test.php');
+	include_once ('interface/tests/actionmanager.class.test.php');
+	include_once ('interface/tests/pluginmanager.class.test.php');
 	require_once ('PHPUnit/GUI/HTML.php');
 	$eventsuite = new TestSuite ('eventManagerTest');
-	$GUI = new PHPUnit_GUI_HTML (array ($eventsuite));
+	$pluginsuite = new TestSuite ('pluginManagerTest');
+	$actionsuite = new TestSuite ('actionManagerTest');
+	$GUI = new PHPUnit_GUI_HTML (array ($eventsuite, $pluginsuite, $actionsuite));
 	$GUI->show ();
 } elseif ($php == "5") {
 	$suite = new MorgOSInterfaceSuite ();
 	//$eventTest = new PHPUnit2_Framework_TestSuite('eventManagerTest');
 	$suite->addTestFile ('interface/tests/eventmanager.class.test.php');
+	$suite->addTestFile ('interface/tests/actionmanager.class.test.php');
 	$suite->addTestFile ('interface/tests/pluginmanager.class.test.php');
 	$result = new TestResult;
 	$result->addListener(new SimpleTestListener);
