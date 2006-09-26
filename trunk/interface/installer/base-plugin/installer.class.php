@@ -32,7 +32,8 @@ class installerBasePlugin extends plugin {
 	}
 	
 	function load (&$pluginAPI) {
-		parent::load ($pluginAPI);	
+		parent::load (&$pluginAPI);	
+
 		/*$this->_pluginAPI->getActionManager ()->addAction (
 			new action ('installerAskLanguage', 'GET',  
 				array (&$this, 'askLanguage'), array (), array ()));*/
@@ -41,7 +42,7 @@ class installerBasePlugin extends plugin {
 		$aM = &$this->_pluginAPI->getActionManager ();		
 		$aM->addAction (
 			new action ('installerShowLicense', 'GET',  
-				array (&$this, 'showLicense'), array ('language'), array ()));
+				array (&$this, 'showLicense'), array (), array ('language')));
 				
 		$aM->addAction (
 			new action ('installerAgreeLicense', 'POST',  
@@ -62,6 +63,7 @@ class installerBasePlugin extends plugin {
 						'databaseModule', 'databaseHost', 'databaseUser', 'databasePassword',
 						'databaseName', 'databasePrefix', 
 						'adminLogin', 'adminPassword1', 'adminPassword2', 'adminMail'), array ()));	
+		//echo $this->_pluginAPI->_actionManager;
 	}
 	
 	function askLanguage () {

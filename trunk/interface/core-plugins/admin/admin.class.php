@@ -229,6 +229,7 @@ class adminCorePlugin extends plugin {
 				'genericContent'=>$i18nM->translate ('A newly created page.'));
 			$newPage->initFromArray ($ap);
 			$pageManager->addPageToDatabase ($newPage);
+
 			$a = $this->_pluginAPI->executePreviousAction ();
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);

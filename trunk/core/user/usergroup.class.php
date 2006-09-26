@@ -155,6 +155,7 @@ class group extends databaseObject {
 				$prefix = $this->db->getPrefix();
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
+
 				if (! is_numeric ($groupID)) {
 					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}

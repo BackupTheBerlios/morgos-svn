@@ -263,8 +263,8 @@ class databaseObject {
 	 * @param $IDName (int)
 	 * @param $creator (object)
 	*/
-	function databaseObject ($db, $extraOptions, $basicOptions, $tableName, $IDName, &$creator) {
-		$this->db = $db;
+	function databaseObject (&$db, $extraOptions, $basicOptions, $tableName, $IDName, &$creator) {
+		$this->db = &$db;
 		$this->setExtraOptions ($extraOptions);
 		$this->setBasicOptions ($basicOptions);
 		$this->setTableName ($tableName);
@@ -468,7 +468,7 @@ class databaseObject {
 		$fullTableName = $this->getFullTableName (); 
 		$IDName = $this->getIDName ();
 		$ID = $this->getID ();
-		$sql = "UPDATE $fulLTableName SET $updates WHERE $IDName='$ID'";	
+		$sql = "UPDATE $fullTableName SET $updates WHERE $IDName='$ID'";
 		$a = $this->db->query ($sql);
 		return $a;
 	}

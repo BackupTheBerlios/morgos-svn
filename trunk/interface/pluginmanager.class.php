@@ -253,6 +253,7 @@ class pluginManager {
 	 * @public
 	*/
 	function loadPlugins () {
+		//echo ($this->_pluginAPI->_actionManager);
 		foreach ($this->_pluginsToLoad as $IDKey => $plugin) {
 			$result = $plugin->load ($this->_pluginAPI);
 			if (! isError ($result)) {

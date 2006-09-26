@@ -212,7 +212,7 @@ class page extends databaseObject {
 		}
 	}
 	
-	function addTranslation ($translation) {
+	function addTranslation (&$translation) {
 		if (! $this->translationExists ($translation->getLanguageCode ())) {
 			$a['pageID'] = $this->getID ();
 			$translation->updateFromArray ($a);

@@ -86,8 +86,9 @@ class pluginAPI {
 	}
 	
 	function executePreviousAction () {
+		$hString = $this->_actionManager->getPreviousActionHeaderString (); 
 		$this->_morgos->shutdown ();
-		header ($this->_actionManager->getPreviousActionHeaderString ());
+		header ($hString);
 	}
 	
 	/**

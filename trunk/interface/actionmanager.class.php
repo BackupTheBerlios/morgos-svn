@@ -136,9 +136,8 @@ class actionManager {
 	
 	/**
 	 * Destructor
-	 * @warning, not used in PHP4
 	*/
-	function __destruct () {
+	function shutdown () {
 		$this->saveLastAction ();
 	}
 	

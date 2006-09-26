@@ -104,10 +104,10 @@ class morgos {
 	function init () {
 		if ($this->isInstalled ()) {
 			ob_start ();
-			$this->_eventManager = new eventManager ();
-			$this->_configManager = new configurator ();
+			$this->_eventManager = &new eventManager ();
+			$this->_configManager = &new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
-			$this->_i18nManager = new localizer ();
+			$this->_i18nManager = &new localizer ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
 			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
 								  $this->_configManager->getStringItem ('/databases/user'), 
@@ -129,7 +129,7 @@ class morgos {
 			$this->_pluginAPI->setPageManager ($this->_pageManager);
 			$this->_pluginAPI->setSmarty ($this->_smarty);
 			$this->_pluginAPI->setI18NManager ($this->_i18nManager);
-			$this->_pluginManager = &new pluginManager ($this->_pluginAPI);
+			$this->_pluginManager = new pluginManager ($this->_pluginAPI);
 			$this->_pluginAPI->setPluginManager ($this->_pluginManager);
 						
 			// Hardcoded for the moment
@@ -214,6 +214,9 @@ class morgos {
 		$this->_smarty = null;
 		$this->_pluginManager = null;
 		$this->_configManager = null;
+		if ($this->_actionManager) {
+			$this->_actionManager->shutdown ();
+		}
 		$this->_actionManager = null;
 		if ($this->_dbModule != null) {
 			$this->_dbModule->disconnect ();

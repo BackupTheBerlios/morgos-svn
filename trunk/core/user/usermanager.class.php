@@ -135,7 +135,7 @@ class userManager {
 	 * @return (error). If an error occurs return it.
 	 * @public
 	*/
-	function addUserToDatabase ($user) {
+	function addUserToDatabase (&$user) {
 		$lIR = $this->loginIsRegistered ($user->getLogin ()); 
 		if ($lIR == false) {
 			$eIR = $this->emailIsRegistered ($user->getEmail ()); 
@@ -402,7 +402,7 @@ class userManager {
 	 *
 	 * @param $group (object group)
 	*/
-	function addGroupToDatabase ($group) {
+	function addGroupToDatabase (&$group) {
 		$gIR = $this->isGroupNameRegistered ($group->getGenericName ());
 		if (! isError ($gIR)) {
 			if ($gIR == false)  {

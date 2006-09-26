@@ -32,29 +32,25 @@ function userCorePlugin ($dir) {
 		$this->_maxMorgOSVersion = '0.2';
 	}
 	
-	function load ($pluginAPI) {
-		parent::load ($pluginAPI);
-		$this->_pluginAPI->getActionManager ()->addAction (new action ('login', 'POST',  array (&$this, 'onLogin'), array ('login','password'), array ()));
+	function load (&$pluginAPI) {
+		parent::load (&$pluginAPI);
+		$am = &$this->_pluginAPI->getActionManager ();
+		$am->addAction (new action ('login', 'POST',  array (&$this, 'onLogin'), array ('login','password'), array ()));
 	}
 	
-	function onViewPage ($pageID, $pageLang) {
-		//$a = $this->_pluginAPI->getEventManager ()->triggerEvent ('viewPage');
-		/*foreach ($a as $r) {
-			if ($r == false or isError ($r)) {
-				return;
-			}
-		}*/
-			
-		$page = $this->_pluginAPI->getPageManager ()->newPage ();
-		if ($pageID !== null) {			
-			$page->initFromDatabaseID ($pageID);
-		} else {
-			$page->initFromGenericName ('Home');
-		}
-		
-		$this->_pluginAPI->getSmarty ()->assign_by_ref ('MorgOS_CurrentPage', $page);		
-		$this->_pluginAPI->getSmarty ()->display ('index.tpl');
+	function onLogin () {
 	}
+	
+	function onLogout () {
+	}
+	
+	function onRegistrar () {
+	}
+	
+	function onForgotPassword () {
+	}
+	
+	
 
 
 }
