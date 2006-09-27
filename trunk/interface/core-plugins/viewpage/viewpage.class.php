@@ -38,13 +38,13 @@ class viewPageCorePlugin extends plugin {
 			new action ('viewPage', 'GET',  array ($this, 'onViewPage'), array (), array ('pageID', 'pageLang')));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
-		$em->addEvent (new Event ('viewPage'));
+		$em->addEvent (new Event ('viewPage', array ('pageID')));
+		
+		$em->subscribeToEvent ('viewPage', new callback ('setPageVars', array ($this, 'setPageVars'), array ('pageID')));
 	}
 	
 	function onViewPage ($pageID, $pageLang) {
 		$pMan = &$this->_pluginAPI->getPageManager ();
-		$root = $pMan->newPage ();
-		$root->initFromGenericName ('site');
 		$page = $pMan->newPage ();
 		if ($pageID !== null) {			
 			$page->initFromDatabaseID ($pageID);
@@ -52,17 +52,9 @@ class viewPageCorePlugin extends plugin {
 			$menu = $pMan->getMenu ($root);
 			$page = $menu[0];
 		}
-		
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->assign ('MorgOS_CurrentPage_Title', $page->getName ());
-		$sm->assign ('MorgOS_CurrentPage_Content', $page->getContent ());		
-		$sm->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
-		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
-		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
-		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
-		
 		$em = &$this->_pluginAPI->getEventManager ();
-		$a = $em->triggerEvent ('viewPage');
+		$a = $em->triggerEvent ('viewPage', $page->getID ());
 		foreach ($a as $r) {
 			if ($r == false or isError ($r)) {
 				return;
@@ -92,6 +84,22 @@ class viewPageCorePlugin extends plugin {
 	
 	function getHeaderImageLink () {
 		return 'skins/default/images/logo.png';
+	}
+	
+	function setPageVars ($pageID) {
+		$pM = &$this->_pluginAPI->getPageManager ();
+		$root = $pM->newPage ();
+		$root->initFromGenericName ('site');
+		$page = $pM->newPage ();
+		$page->initFromDatabaseID ($pageID);		
+		
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$sm->assign ('MorgOS_CurrentPage_Title', $page->getName ());
+		$sm->assign ('MorgOS_CurrentPage_Content', $page->getContent ());		
+		$sm->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
+		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
+		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
+		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
 	}
 }
 ?>

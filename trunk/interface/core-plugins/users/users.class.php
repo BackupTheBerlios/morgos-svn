@@ -35,22 +35,93 @@ function userCorePlugin ($dir) {
 	function load (&$pluginAPI) {
 		parent::load (&$pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
-		$am->addAction (new action ('login', 'POST',  array (&$this, 'onLogin'), array ('login','password'), array ()));
+		$am->addAction (new action ('userLogin', 'POST',  array (&$this, 'onLogin'), array ('login','password'), array ()));
+		$am->addAction (new action ('userLogout', 'POST',  array (&$this, 'onLogout'), array (), array ()));
+		$am->addAction (
+			new action ('userRegisterForm', 'POST',  array (&$this, 'onRegisterForm'), array (), array ()));
+		$am->addAction (
+			new action ('userRegister', 'POST',  array (&$this, 'onRegister'), 
+			array ('login', 'email', 'password1', 'password2'), array ()));
+		
+		$em = &$this->_pluginAPI->getEventManager ();
+		$em->subscribeToEvent ('viewPage', new callback ('userVars', array ($this, 'setUserVars')));
 	}
 	
-	function onLogin () {
+	function onLogin ($login, $password) {
+		$userManager = &$this->_pluginAPI->getUserManager ();
+		$am = &$this->_pluginAPI->getActionManager ();
+		$a = $userManager->login ($login, $password);
+		if (isError ($a)) {
+			if ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT')) {
+				$sm = &$this->_pluginAPI->getSmarty ();
+				$this->_pluginAPI->addRuntimeMessage ('Given a wrong password/username.', ERROR);
+				$this->_pluginAPI->executePreviousAction ();
+			} else {
+				return $a;
+			}
+		} else {
+			$this->_pluginAPI->addMessage ('You are now logged in.', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
 	}
 	
 	function onLogout () {
+		$userManager = &$this->_pluginAPI->getUserManager ();
+		$a = $userManager->logout ();
+		if (isError ($a)) {
+			return $a;
+		} else {
+			$this->_pluginAPI->addMessage ('You are logged out.', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
 	}
 	
-	function onRegistrar () {
+	function onRegisterForm () {
+		$em = &$this->_pluginAPI->getEventManager ();
+		$em->triggerEvent ('viewPage', array (3));
+		$this->setUserVars ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$sm->display ('user/registerform.tpl');
+	}	
+	
+	function onRegister ($login, $email, $password1, $password2) {
+		if ($password1 == $password2) {
+			$uM = &$this->_pluginAPI->getUserManager ();
+			$u = $uM->newUser ();
+			$u->initFromArray (array ('login'=>$login, 'email'=>$email, 'password'=>md5 ($password1)));
+			$r = $uM->addUserToDatabase ($u);
+			if (! isError ($r)) {
+				$this->_pluginAPI->addMessage ('Your account was succesfully created', NOTICE);
+			} elseif ($r->is ('USERMANAGER_LOGIN_EXISTS')) {
+				$this->_pluginAPI->addMessage ('This login is already used, try another one.', ERROR);			
+			} elseif ($r->is ('USERMANAGER_EMAIL_EXISTS')) {
+				$this->_pluginAPI->addMessage ('This email is already used, try another one.', ERROR);
+			} else {
+				$this->_pluginAPI->addMessage ('There was a problem with adding you to the database', ERROR);
+			}
+			$this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Passwords didn\'t match', ERROR);
+			$this->onRegisterForm ();
+		}
 	}
 	
 	function onForgotPassword () {
 	}
 	
-	
+	function setUserVars () {
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$um = &$this->_pluginAPI->getUserManager ();
+		$curUser = $um->getCurrentUser ();
+		if ($curUser) {
+			$curUserArray = array ('Name'=>$curUser->getLogin ());
+			$sm->assign ('MorgOS_CurUser', $curUserArray);
+		} else {
+			$sm->assign ('MorgOS_CurUser', null);
+		}
+		$sm->assign ('MorgOS_RegisterFormLink', 'index.php?action=userRegisterForm');
+		return true;
+	}
 
 
 }

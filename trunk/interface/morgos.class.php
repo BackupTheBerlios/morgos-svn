@@ -23,7 +23,7 @@
 */
 define ('MORGOS_VERSION', '0.2.0');
 define ('MORGOS_VIEWPAGE_PLUGINID', '{529e4a98-02a7-46bb-be2a-671a7dfc852f}');
-define ('MORGOS_USERPAGE_PLUGINID', '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}');
+define ('MORGOS_USER_PLUGINID', '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}');
 define ('MORGOS_ADMIN_PLUGINID', '{b8731582-9309-4629-a3d9-647f26a5a345}');
 include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
@@ -150,7 +150,7 @@ class morgos {
 			
 			// hardcore loading of core plugins
 			$a = $this->_pluginManager->setPluginToLoad (MORGOS_VIEWPAGE_PLUGINID);
-			$a = $this->_pluginManager->setPluginToLoad (MORGOS_USERPAGE_PLUGINID);
+			$a = $this->_pluginManager->setPluginToLoad (MORGOS_USER_PLUGINID);
 			$a = $this->_pluginManager->setPluginToLoad (MORGOS_ADMIN_PLUGINID);
 			if (isError ($a)) {
 				var_dump ($a);

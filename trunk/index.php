@@ -22,7 +22,6 @@
  * @since 0.2
  * @author Nathan Samson
 */
-
 include ('interface/morgos.class.php');
 
 //emulate register_globals off
