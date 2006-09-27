@@ -194,6 +194,7 @@ class installerBasePlugin extends plugin {
 			$home = $pageM->newPage ();
 			$ahome = $pageM->newPage ();
 			$pman = $pageM->newPage ();
+			$regform = $pageM->newPage ();
 			
 			$site->initFromArray (array ('genericName'=>'site', 'genericContent'=>'', 'parentPageID'=>0));
 			$admin->initFromArray (array ('genericName'=>'admin', 'genericContent'=>'', 'parentPageID'=>0));
@@ -204,10 +205,12 @@ class installerBasePlugin extends plugin {
 			$home->initFromArray (array ('genericName'=>'Home', 'genericContent'=>'This is the homepage.', 'parentPageID'=>$site->getID ()));
 			$ahome->initFromArray (array ('genericName'=>'Admin home', 'genericContent'=>'This is the admin.', 'parentPageID'=>$admin->getID ()));
 			$pman->initFromArray (array ('genericName'=>'Page manager', 'genericContent'=>'Here you can edit pages.', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
+			$regform->initFromArray (array ('genericName'=>'MorgOS_RegisterForm', 'genericContent'=>'', 'parentPageID'=>$site->getID (), 'action'=>'userRegisterForm'));
 
 			$pageM->addPageToDatabase ($home);
 			$pageM->addPageToDatabase ($ahome);
 			$pageM->addPageToDatabase ($pman);
+			$pageM->addPageToDatabase ($regform);
 					
 			
 			$configContents = '<?php'.PHP_NL.PHP_NL;

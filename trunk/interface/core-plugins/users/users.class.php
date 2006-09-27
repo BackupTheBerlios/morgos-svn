@@ -77,8 +77,12 @@ function userCorePlugin ($dir) {
 	}
 	
 	function onRegisterForm () {
+		$pM = &$this->_pluginAPI->getPageManager ();
+		$regForm = $pM->newPage ();
+		$regForm->initFromGenericName ('MorgOS_registerForm');
+	
 		$em = &$this->_pluginAPI->getEventManager ();
-		$em->triggerEvent ('viewPage', array (3));
+		$em->triggerEvent ('viewPage', array ($regForm->getID ()));
 		$this->setUserVars ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$sm->display ('user/registerform.tpl');

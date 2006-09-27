@@ -80,3 +80,5 @@ INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageI
 INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL-NL', 'This is the dutch (Netherlands) translation. (NL-NL)', 7, 'NL-NL');
 INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('NL', 'This is the dutch (generic) translation. (NL)', 7, 'NL');
 INSERT INTO {prefix}translatedPages (translatedName, translatedContent, pageID, languageCode) VALUES ('FR-FR', 'This is the french (french) translation. (FR-FR)', 7, 'FR-FR');
+
+INSERT INTO {prefix}pages (genericName, genericContent, placeInMenu, parentPageID) VALUES ('ATest', '', 0, 1);

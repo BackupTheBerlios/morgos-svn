@@ -49,24 +49,25 @@ class viewPageCorePlugin extends plugin {
 		if ($pageID !== null) {			
 			$page->initFromDatabaseID ($pageID);
 		} else {
+			$root = $pMan->newPage ();
+			$root->initFromGenericName ('site');
 			$menu = $pMan->getMenu ($root);
 			$page = $menu[0];
 		}
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
-		$a = $em->triggerEvent ('viewPage', $page->getID ());
+		$a = $em->triggerEvent ('viewPage', array ($page->getID ()));
 		foreach ($a as $r) {
 			if ($r == false or isError ($r)) {
 				return;
 			}
 		}		
-		
 		$sm->display ('index.tpl');
 	}
 
 	function getMenuArray ($rootPage, $rec = true) {
 		$array = array ();
-		$pageManager = $this->_pluginAPI->getPageManager ();
+		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$menu = $pageManager->getMenu ($rootPage);
 		foreach ($menu as $menuItem) {
 			$itemArray = array ();
@@ -100,6 +101,7 @@ class viewPageCorePlugin extends plugin {
 		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
 		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
 		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
+		return true;
 	}
 }
 ?>

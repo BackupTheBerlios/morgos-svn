@@ -115,7 +115,7 @@ class pageManager {
 			$pagesTableName = $this->db->getPrefix ().'pages';
 			$placeInMenu = $page->getPlaceInMenu ();
 			$ppID = $page->getParentPageID ();
-			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=($placeInMenu)-1 AND parentPageID='$ppID'";
+			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=($placeInMenu)-1 AND placeInMenu>0 AND parentPageID='$ppID'";
 			$a = $this->db->query ($sql);
 			if (isError ($a)) {
 				return $a;
@@ -241,7 +241,7 @@ class pageManager {
 		if (! is_numeric ($parentPageID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
-		$sql = "SELECT pageID FROM $tableName WHERE parentPageID='$parentPageID' ORDER BY placeInMenu ASC";
+		$sql = "SELECT pageID FROM $tableName WHERE parentPageID='$parentPageID' AND placeInMenu>0 ORDER BY placeInMenu ASC";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allPages = array ();
