@@ -67,6 +67,10 @@ class adminCorePlugin extends plugin {
 		$am->addAction (
 			new action ('adminNewPage', 'GET',  
 				array (&$this, 'onNewPage'), array ('parentPageID', 'pageTitle'), array ()));
+				
+		$am->addAction (
+			new action ('adminDeletePage', 'GET',  
+				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {
@@ -222,7 +226,6 @@ class adminCorePlugin extends plugin {
 		$page->initFromGenericName ('Admin Pagemanager');
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
-			$pageManager = $this->_pluginAPI->getPageManager ();
 			$newPage = $pageManager->newPage ();
 			$i18nM = &$this->_pluginAPI->getI18NManager ();
 			$ap = array (
@@ -236,6 +239,23 @@ class adminCorePlugin extends plugin {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
 			$sm->display ('admin/login.tpl');
 		}
+	}
+	
+	function onDeletePage ($pageID) {
+		$pageManager = &$this->_pluginAPI->getPageManager ();
+		$page = &$pageManager->newPage ();			
+		$page->initFromGenericName ('Admin Pagemanager');
+		$sm = $this->_pluginAPI->getSmarty ();
+		if ($this->canUserViewAdminPage ($page->getID ())) {	
+			$page = $pageManager->newPage ();
+			$page->initFromDatabaseID ($pageID);
+			$pageManager->removePageFromDatabase ($page);
+			
+			$a = $this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}	
 	}
 	
 	function setAdminVars ($pageID) {

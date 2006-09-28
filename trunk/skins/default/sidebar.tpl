@@ -19,8 +19,8 @@
 		<h3>{t s="User"}</h3>
 		<div>
 			{if $MorgOS_CurUser}
-				{t s="Welcome %u" u="MorgOS_User.Name"}
-				<a href="?action=userLogout">{t s="Logout"}</a>
+				<p>{t s="Welcome %u" u=$MorgOS_CurUser.Name}</p>
+				<p><a href="?action=userLogout">{t s="Logout"}</a></p>
 			{else}
 				<form action="index.php" method="post">
 					<p><label for="userLogin"></label><input type="text" name="login" id="userLogin" /></p>

@@ -36,7 +36,10 @@ class localizer {
 	function loadStrings () {
 	}
 
-	function translate ($s) {
+	function translate ($s, $params = array ()) {
+		foreach ($params as $k=>$v) {
+			$s = str_replace ('%'.$k, $v, $s);
+		}
 		return $s;
 	}
 	

@@ -8,6 +8,7 @@
 				<th>{t s='Page title'}</th>
 				<th>{t s='Place in menu'}</th>
 				<th>{t s='View'}</th>
+				<th>{t s='Delete'}</th>
 			</tr>
 		{foreach from=$MorgOS_PagesList item='childPage' name='pageslist'}
 			<tr>
@@ -35,6 +36,11 @@
 				</td>
 				<td>
 					<a href="{$childPage->getLink()|xhtml}">View</a>
+				</td>
+				<td>
+					<a href="index.php?action=adminDeletePage&amp;pageID={$childPage->getID()}" onclick="return confirm ('{t s="Are you sure you wan to delete %p" p=$childPage->getName()}')">
+						<img src="{$SkinPath}/images/icons/delete.png" alt="{t s='Delete'}"/>
+					</a>
 				</td>
 			</tr>
 		{/foreach}

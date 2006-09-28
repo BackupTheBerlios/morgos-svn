@@ -6,6 +6,13 @@ function smarty_function_t ($params, &$smarty) {
 		$smarty->trigger_error ("Theme: morgos_t: required parameter s is not given.");
 	}	
 	
-	return $localizer->translate ($params['s']);
+	$stringParams = array ();
+	foreach ($params as $k=>$v) {
+		if ($k != 's') {
+			$stringParams[$k] = $v;
+		}
+	}
+	
+	return $localizer->translate ($params['s'], $stringParams);
 }
 ?>
