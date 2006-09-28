@@ -63,5 +63,16 @@ class variaTest extends TestCase {
 		$a = versionCompare ('1.1', '1', 'l');
 		$this->assertTrue ($a->is ('VERSION_COMPARE_OPERATOR_DOESNT_EXISTS'));
 	}
+	
+	function testSecureHTMLInput () {
+		$in = '<a href="test.html">TAG CONTENTS</a>';
+		$ex = $in;
+		$this->assertEquals ($ex, secureHTMLInput ($in), 'Touches me');
+		
+		$in = '<h1>H1 CONT</h1><p align="right"><a href="test.html" onclick="malicious">TEST</a></p><em>test</em><invalid>INVALID TAG CONTENTS</invalid>';
+		$ex = '<h1>H1 CONT</h1><p align="right"><a href="test.html">TEST</a></p><em>test</em>INVALID TAG CONTENTS';
+		$this->assertEquals ($ex, secureHTMLInput ($in), 'Wrong output');
+		
+	}
 }
 ?>

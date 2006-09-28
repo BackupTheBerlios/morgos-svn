@@ -103,6 +103,57 @@ function versionCompare ($version1, $version2, $operator) {
 	}
 }
 
+/**
+ * Strip all unwanted tags/attribues in HTML input
+ * @param $in (string)
+ * @return (string)
+*/
+function secureHTMLInput ($in) {
+	$in = strip_tags ($in, '<h1><h2><h3><h4><h5><h6><pre><p><a><em><strong><u><ul><ol><li><br><hr><img><sup><sub><blockquote>');
+	$in = stripslashes ($in);
+	$stripAttrib = "'\\s(onblur)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onchange)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onclick)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onerror)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onfocus)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onkeydown)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onkeypress)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onkeyup)=\"(.*?)\"'i";
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onload)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onmousedown)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onmousemove)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onmouseout)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onmouseover)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onmouseup)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	$stripAttrib = "'\\s(onsubmit)=\"(.*?)\"'i"; 
+	$in = preg_replace ($stripAttrib, '', $in);
+	addslashes ($in);
+	return $in;
+}
 
+/**
+ * Strip all not given attributes for a specific tag in a string.
+ *
+ * @param $msg (string) A string
+ * @param $tag (string) the tag where it counts
+ * @param $attr (string array) attributes that may exist in that tag.
+ * @return (string)
+*/
+function stripAttributes ($msg, $tag, $attr) {
+}
 
 ?>

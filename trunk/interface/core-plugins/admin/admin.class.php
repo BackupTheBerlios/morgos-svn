@@ -206,6 +206,7 @@ class adminCorePlugin extends plugin {
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$editedPage = $pageManager->newPage ();
 			$editedPage->initFromDatabaseID ($pageID);
+			$pageContent = secureHTMLInput ($pageContent);
 			$editedPage->updateFromArray (array ('genericContent'=>$pageContent, 'genericName'=>$pageTitle));
 			$editedPage->updateToDatabase ();
 			$a = $this->_pluginAPI->executePreviousAction ();
