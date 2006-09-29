@@ -22,9 +22,11 @@
  * @author Nathan Samson
 */
 class viewPageCorePlugin extends plugin {
+	var $_adminPlugin;
 	
 	function viewPageCorePlugin ($dir) {
 		parent::plugin ($dir);
+		include_once ($dir.'/viewpageadmin.class.php');
 		$this->_name = 'Viewpage core plugin';
 		$this->_ID = '{529e4a98-02a7-46bb-be2a-671a7dfc852f}';
 		$this->_minMorgOSVersion = '0.2';
@@ -33,6 +35,10 @@ class viewPageCorePlugin extends plugin {
 	
 	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);
+
+		$this->_adminPlugin = new viewPageCoreAdminPlugin ($this->_loadedDir);
+		$this->_adminPlugin->load ($pluginAPI);
+		
 		$am = &$this->_pluginAPI->getActionManager ();
 		$am->addAction (
 			new action ('viewPage', 'GET',  array ($this, 'onViewPage'), array (), array ('pageID', 'pageLang')));

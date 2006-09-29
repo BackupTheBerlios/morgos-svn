@@ -132,11 +132,33 @@ class pluginAPI {
 	function addRuntimeMessage ($tMessage, $type) {
 		$sm = &$this->getSmarty ();
 		$sm->append_by_ref ('MorgOS_Notices', $tMessage);
-		//$sm->debugging = true;
 	}	
 	
-	function userCanViewPage () {
-		return true;
+	function canUserViewPage ($pageID) {
+		$page = $this->_pageManager->newPage ();
+		$page->initFromDatabaseID ($pageID);	
+		if ($pageID == -1) {
+			debug_print_backtrace ();
+		}
+		$userM = &$this->getUserManager ();
+		$user = &$userM->getCurrentUser ();
+		if ($user) {
+			if ($page->isAdminPage ()) {
+				if ($user->hasPermission ('edit_admin', false)) {
+					return true;
+				} else {
+					return $user->hasPermission ('edit_admin_'.$pageID, true);
+				}
+			} else {
+				return $user->hasPermission ('view_page_'.$pageID, true);
+			}
+		} else {
+			if ($page->isAdminPage ()) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 	
 	function menuToArray ($menu) {
