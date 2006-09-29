@@ -89,14 +89,19 @@ class adminCorePlugin extends plugin {
 		if ($pageID) {
 			$page->initFromDatabaseID ($pageID);
 		} else {
-			$page->initFromGenericName ('Admin Home');
+			$page->initFromName ('Admin Home');
 			$pageID = $page->getID ();
 		}
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {
 			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));
-			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
+			if ($pageLang == null) {
+				$pageLang = 'en_UK';
+			}
+			$tpage = $page->getTranslation ($pageLang);
+			$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
+			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 			if ($page->getAction ()) {
 				$am->executeAction ($page->getAction ());
 			} else {
@@ -136,13 +141,13 @@ class adminCorePlugin extends plugin {
 		}
 	}
 	
-	function onViewPageManager ($pageID, $pageLang = 'en') {
+	function onViewPageManager ($pageID, $pageLang) {
 		$em = &$this->_pluginAPI->getEventManager ();
 		$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();			
-		$page->initFromGenericName ('Admin Pagemanager');
+		$page->initFromName ('Page manager');
 		if ($this->canUserViewAdminPage ($page->getID ())) {				
 			if ($pageID === NULL) {
 				$pageID = 1; /*The ID of site */
@@ -150,9 +155,21 @@ class adminCorePlugin extends plugin {
 			$parentPage = $pageManager->newPage ();
 			$parentPage->initFromDatabaseID ($pageID);
 			$childPages = $pageManager->getMenu ($parentPage);
-			$sm->assign ('MorgOS_PagesList', $childPages);
-			$sm->assign_by_ref ('MorgOS_ParentPage', $parentPage);
-			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $page);
+			$sm->assign ('MorgOS_PagesList', $this->_pluginAPI->menuToArray ($childPages));
+			$tparent = $parentPage->getTranslation ('en_UK');
+			if (! isError ($tparent)) {
+				$tparentarray = array ('Title'=>$tparent->getTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ());
+				$sm->assign ('MorgOS_ParentPage', $tparentarray);
+			} else {
+				$sm->assign ('MorgOS_ParentPage', array ('Title'=>'', 'Content'=>'', 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ()));
+			}
+			
+			if ($pageLang == null) {
+				$pageLang = 'en_UK';
+			}
+			$tpage = $page->getTranslation ($pageLang);
+			$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
+			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 			$sm->display ('admin/pagemanager.tpl'); 
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
@@ -163,7 +180,7 @@ class adminCorePlugin extends plugin {
 	function onMovePageDown ($pageID) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();			
-		$page->initFromGenericName ('Admin Pagemanager');
+		$page->initFromName ('Admin Pagemanager');
 		$sm = &$this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$r = $pageManager->movePageDown ($pageID);
@@ -184,7 +201,7 @@ class adminCorePlugin extends plugin {
 	function onMovePageUp ($pageID) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();			
-		$page->initFromGenericName ('Admin Pagemanager');
+		$page->initFromName ('Admin Pagemanager');
 		$sm = &$this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$r = $pageManager->movePageUp ($pageID);
@@ -205,7 +222,7 @@ class adminCorePlugin extends plugin {
 	function onSavePage ($pageID, $pageTitle, $pageContent) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = &$pageManager->newPage ();			
-		$page->initFromGenericName ('Admin Pagemanager');
+		$page->initFromName ('Admin Pagemanager');
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$editedPage = $pageManager->newPage ();
@@ -223,17 +240,17 @@ class adminCorePlugin extends plugin {
 	function onNewPage ($parentPageID, $title) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = &$pageManager->newPage ();			
-		$page->initFromGenericName ('Admin Pagemanager');
+		$page->initFromName ('Admin Pagemanager');
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$newPage = $pageManager->newPage ();
 			$i18nM = &$this->_pluginAPI->getI18NManager ();
-			$ap = array (
-				'genericName'=>$title, 'parentPageID'=>$parentPageID, 
-				'genericContent'=>$i18nM->translate ('A newly created page.'));
+			$ap = array ('name'=>$title, 'parentPageID'=>$parentPageID);
 			$newPage->initFromArray ($ap);
 			$pageManager->addPageToDatabase ($newPage);
-
+			$tNewPage = $pageManager->newTranslatedPage ();
+			$a = $tNewPage->initFromArray (array ('translatedTitle'=>$title, 'languageCode'=>'en_UK', 'translatedContent'=>'Newly created page.'));
+			$newPage->addTranslation ($tNewPage);
 			$a = $this->_pluginAPI->executePreviousAction ();
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
@@ -244,7 +261,7 @@ class adminCorePlugin extends plugin {
 	function onDeletePage ($pageID) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = &$pageManager->newPage ();			
-		$page->initFromGenericName ('Admin Pagemanager');
+		$page->initFromName ('Admin Pagemanager');
 		$sm = $this->_pluginAPI->getSmarty ();
 		if ($this->canUserViewAdminPage ($page->getID ())) {	
 			$page = $pageManager->newPage ();
@@ -263,8 +280,8 @@ class adminCorePlugin extends plugin {
 	
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$rootPage = $pageManager->newPage ();
-		$rootPage->initFromGenericName ('admin');
-		$adminNav = $pageManager->getMenu ($rootPage);
+		$rootPage->initFromName ('admin');
+		$adminNav = $this->_pluginAPI->menuToArray ($pageManager->getMenu ($rootPage));
 		
 		$sm->assign_by_ref ('MorgOS_AdminNav', $adminNav);
 	}

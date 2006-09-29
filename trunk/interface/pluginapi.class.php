@@ -138,6 +138,22 @@ class pluginAPI {
 	function userCanViewPage () {
 		return true;
 	}
+	
+	function menuToArray ($menu) {
+		$pageLang = 'en_UK';
+		$array = array ();
+		foreach ($menu as $menuItem) {
+			$itemArray = array ();
+			$itemArray['Childs'] = $this->menuToArray ($this->_pageManager->getMenu ($menuItem));
+			$t = $menuItem->getTranslation ($pageLang);
+			$itemArray['Title'] = $t->getTitle ();
+			$itemArray['Link'] = $menuItem->getLink (); 
+			$itemArray['ID'] = $menuItem->getID (); 
+			$itemArray['PlaceInMenu'] = $menuItem->getPlaceInMenu (); 
+			$array[] = $itemArray;
+		}
+		return $array;
+	}
 }
 
 ?>

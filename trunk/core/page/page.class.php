@@ -32,8 +32,7 @@ class page extends databaseObject {
 	 * @param $parent (object) The creator
 	*/	
 	function page ($db, $allOptions, &$parent) {
-		$genericName = new dbField ('genericName', 'varchar (255)');
-		$genericContent = new dbField ('genericContent', 'text');
+		$name = new dbField ('name', 'varchar (255)');
 		$parentPageID = new dbField ('parentPageID', 'int(11)');
 		$placeInMenu = new dbField ('placeInMenu', 'int(4)');
 		$placeInMenu->canBeNull = true;
@@ -42,7 +41,7 @@ class page extends databaseObject {
 		$pluginID = new dbField ('pluginID', 'varchar(36)');
 		$pluginID->canBeNull = true;
 				
-		parent::databaseObject ($db, $allOptions, array ('genericName'=>$genericName, 'genericContent'=>$genericContent, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu, 'action'=>$action, 'pluginID'=>$pluginID), 'pages', 'pageID', $parent);
+		parent::databaseObject ($db, $allOptions, array ('name'=>$name, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu, 'action'=>$action, 'pluginID'=>$pluginID), 'pages', 'pageID', $parent);
 	}
 
 	/**
@@ -51,10 +50,10 @@ class page extends databaseObject {
 	 * @param $genericName (string) The generic name
 	 * @public
 	*/
-	function initFromGenericName ($genericName) {
+	function initFromName ($name) {
 		$fullTableName = $this->getFullTableName ();
-		$genericName = $this->db->escapeString ($genericName);
-		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
+		$name = $this->db->escapeString ($name);
+		$sql = "SELECT * FROM $fullTableName WHERE name='$name'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->db->numRows ($q) == 1) {
@@ -62,7 +61,7 @@ class page extends databaseObject {
 				$this->initFromArray ($row);
 				$this->setOption ('ID', $row[$this->getIDName ()]);
 			} else {
-				return new Error ('PAGE_GENERICNAME_DOESNT_EXISTS', $genericName);
+				return new Error ('PAGE_NAME_DOESNT_EXISTS', $name);
 			}
 		} else {
 			return $q;
@@ -70,20 +69,12 @@ class page extends databaseObject {
 	}
 	
 	/**
-	 * Returns the content
+	 * Returns the generic name of the page
 	 *
 	 * @public
 	 * @return (string)
 	*/
-	function getContent () {return $this->getOption ('genericContent');}
-	
-	/**
-	 * Returns the generic name (title) of the page
-	 *
-	 * @public
-	 * @return (string)
-	*/
-	function getName () {return $this->getOption ('genericName');}
+	function getName () {return $this->getOption ('name');}
 	
 	/**
 	 * Returns the ID of the parentPage. 0 if it is a root element.
@@ -216,7 +207,7 @@ class page extends databaseObject {
 		if (! $this->translationExists ($translation->getLanguageCode ())) {
 			$a['pageID'] = $this->getID ();
 			$translation->updateFromArray ($a);
-			return $translation->addToDatabase ();
+			$translation->addToDatabase ();
 		} else {
 			return new Error ('PAGE_TRANSLATION_EXISTS', $translation->getLanguageCode ());
 		}

@@ -32,14 +32,14 @@ class translatedPage extends databaseObject {
 	 * @param $parent (object) the creator of this object (a pagemanager object)
 	*/
 	function translatedPage ($db, $extraOptions, &$parent) {
-		$translatedName = new dbField ('translatedName', 'varchar(255)');
+		$translatedTitle = new dbField ('translatedTitle', 'varchar(255)');
 		$translatedContent = new dbField ('translatedContent', 'varchar(255)');
 		$translatedContent->canBeNull = true;		
 		$pageID = new dbField ('pageID', 'int(11)');
 		$pageID->canBeNull = true;
 		$languageCode = new dbField ('languageCode', 'varchar(5)');		
 		
-		parent::databaseObject ($db, $extraOptions, array ('translatedName'=>$translatedName, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent);
+		parent::databaseObject ($db, $extraOptions, array ('translatedTitle'=>$translatedTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent);
 	}
 	
 	/**
@@ -71,11 +71,11 @@ class translatedPage extends databaseObject {
 	}	
 	
 	/**
-	 * Returns the name of the page
+	 * Returns the title of the page
 	 * @public
 	 * @return (string)
 	*/
-	function getName () {return $this->getOption ('translatedName');}
+	function getTitle () {return $this->getOption ('translatedTitle');}
 	/**
 	 * Returns the content
 	 * @public

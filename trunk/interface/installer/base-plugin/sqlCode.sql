@@ -39,19 +39,18 @@ CREATE TABLE {prefix}groupPermissions (
 
 CREATE TABLE {prefix}pages (
   pageID int(11) auto_increment NOT NULL,
-  genericName varchar(255) NOT NULL,
-  genericContent text,
+  name varchar(255) NOT NULL,
   parentPageID int(11) NOT NULL,
   placeInMenu int(3) NOT NULL,
   action varchar(255),
   pluginID varchar(36),
   PRIMARY KEY (pageID),
-  UNIQUE KEY (genericName)
+  UNIQUE KEY (name)
 );
 
 CREATE TABLE {prefix}translatedPages (
   translatedPageID int(11) auto_increment NOT NULL,
-  translatedName varchar(255) NOT NULL,
+  translatedTitle varchar(255) NOT NULL,
   translatedContent text,
   pageID int(11) NOT NULL,
   languageCode varchar(5),

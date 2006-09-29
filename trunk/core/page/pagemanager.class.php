@@ -214,7 +214,7 @@ class pageManager {
 	function pageExists ($pageName) {
 		$fullPagesTableName = $this->db->getPrefix ().'pages';
 		$pageName = $this->db->escapeString ($pageName);
-		$sql = "SELECT COUNT(pageID) FROM $fullPagesTableName WHERE genericName='$pageName'";
+		$sql = "SELECT COUNT(pageID) FROM $fullPagesTableName WHERE name='$pageName'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->db->fetchArray ($q);
@@ -319,7 +319,8 @@ class pageManager {
 	*/
 	function getAllOptionsForPage () {
 		if ($this->allOptionsForPage === null) {
-			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', array ('pageID', 'genericName', 'genericContent', 'parentPageID', 'placeInMenu', 'action', 'pluginID'));
+			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', 
+				array ('pageID', 'name', 'parentPageID', 'placeInMenu', 'action', 'pluginID'));
 			if (! isError ($allOptions)) {
 				$this->allOptionsForPage = $allOptions;
 			}
@@ -394,7 +395,7 @@ class pageManager {
 		if ($this->allOptionsForTranslatedPage === null) {
 			$fields = $this->db->getAllFields ($this->db->getPrefix ().'translatedPages');
 			if (! isError ($fields)) {
-				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedPages', array ('translatedPageID', 'translatedName', 'translatedContent', 'pageID', 'languageCode'));
+				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedPages', array ('translatedPageID', 'translatedTitle', 'translatedContent', 'pageID', 'languageCode'));
 				if (! isError ($allOptions)) {
 					$this->allOptionsForTranslatedPage = $allOptions;
 				}

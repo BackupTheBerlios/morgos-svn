@@ -38,9 +38,9 @@ class viewPageCorePlugin extends plugin {
 			new action ('viewPage', 'GET',  array ($this, 'onViewPage'), array (), array ('pageID', 'pageLang')));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
-		$em->addEvent (new Event ('viewPage', array ('pageID')));
+		$em->addEvent (new Event ('viewPage', array ('pageID', 'pageLang')));
 		
-		$em->subscribeToEvent ('viewPage', new callback ('setPageVars', array ($this, 'setPageVars'), array ('pageID')));
+		$em->subscribeToEvent ('viewPage', new callback ('setPageVars', array ($this, 'setPageVars'), array ('pageID', 'pageLang')));
 	}
 	
 	function onViewPage ($pageID, $pageLang) {
@@ -50,13 +50,17 @@ class viewPageCorePlugin extends plugin {
 			$page->initFromDatabaseID ($pageID);
 		} else {
 			$root = $pMan->newPage ();
-			$root->initFromGenericName ('site');
+			$root->initFromName ('site');
 			$menu = $pMan->getMenu ($root);
 			$page = $menu[0];
-		}
+		}		
+		
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
-		$a = $em->triggerEvent ('viewPage', array ($page->getID ()));
+		if ($pageLang == null) {
+			$pageLang = 'en_UK';
+		}
+		$a = $em->triggerEvent ('viewPage', array ($page->getID (), $pageLang));
 		foreach ($a as $r) {
 			if ($r == false or isError ($r)) {
 				return;
@@ -65,42 +69,35 @@ class viewPageCorePlugin extends plugin {
 		$sm->display ('index.tpl');
 	}
 
-	function getMenuArray ($rootPage, $rec = true) {
+	function getMenuArray ($rootPage, $pageLang) {
 		$array = array ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
-		$menu = $pageManager->getMenu ($rootPage);
-		foreach ($menu as $menuItem) {
-			$itemArray = array ();
-			if ($rec == true) {
-				$itemArray['Childs'] = $this->getMenuArray ($menuItem, false);
-			} else {
-				$itemArray['Childs'] = array ();
-			}
-			$itemArray['Title'] = $menuItem->getName ();
-			$itemArray['Link'] = $menuItem->getLink (); 
-			$array[] = $itemArray;
-		}
-		return $array;
+		return $this->_pluginAPI->menuToArray ($pageManager->getMenu ($rootPage));
 	}	
 	
 	function getHeaderImageLink () {
 		return 'skins/default/images/logo.png';
 	}
 	
-	function setPageVars ($pageID) {
+	function setPageVars ($pageID, $pageLang) {
 		$pM = &$this->_pluginAPI->getPageManager ();
 		$root = $pM->newPage ();
-		$root->initFromGenericName ('site');
+		$root->initFromName ('site');
 		$page = $pM->newPage ();
-		$page->initFromDatabaseID ($pageID);		
+		$page->initFromDatabaseID ($pageID);
+		//echo $pageLang;
+		$tPage = $page->getTranslation ($pageLang);	
+		if (isError ($tPage)) {
+			return $tPage;
+		}
 		
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->assign ('MorgOS_CurrentPage_Title', $page->getName ());
-		$sm->assign ('MorgOS_CurrentPage_Content', $page->getContent ());		
+		$sm->assign ('MorgOS_CurrentPage_Title', $tPage->getTitle ());
+		$sm->assign ('MorgOS_CurrentPage_Content', $tPage->getContent ());		
 		$sm->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
 		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
-		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage ()));
-		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, false));
+		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage (), $pageLang));
+		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, $pageLang));
 		return true;
 	}
 }

@@ -2,7 +2,7 @@
 	<ol>
 	{foreach from=$MorgOS_AdminNav item='adminNav'}
 		<li>
-			<a href="{$adminNav->getLink()|xhtml}">{$adminNav->getName()}</a>
+			<a href="{$adminNav.Link|xhtml}">{$adminNav.Title}</a>
 		</li>
 	{/foreach}
 	</ol>

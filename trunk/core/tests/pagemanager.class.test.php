@@ -34,24 +34,24 @@ class pageManagerTest extends TestCase {
 		$this->assertFalse ($this->pageManager->pageExists ('NotExistingPage'), 'Expected false');
 	}
 	
-	function testPageInitFromGenericName () {
+	function testPageInitFromName () {
 		$page = $this->pageManager->newPage ();
-		$r = $page->initFromGenericName ('notExistingPage');
-		$this->assertEquals ($r, new Error ('PAGE_GENERICNAME_DOESNT_EXISTS', 'notExistingPage'));
+		$r = $page->initFromName ('notExistingPage');
+		$this->assertEquals ($r, new Error ('PAGE_NAME_DOESNT_EXISTS', 'notExistingPage'));
 	}	
 	
 	function testGetMenu () {
 		$root = $this->pageManager->newPage ();
-		$root->initFromGenericName ('site');
+		$root->initFromName ('site');
 		
 		$home = $this->pageManager->newPage ();
-		$home->initFromGenericName ('Home');
+		$home->initFromName ('Home');
 		
 		$news = $this->pageManager->newPage ();
-		$news->initFromGenericName ('News');
+		$news->initFromName ('News');
 		
 		$packages = $this->pageManager->newPage ();
-		$packages->initFromGenericName ('Packages');
+		$packages->initFromName ('Packages');
 		
 		$siteMenu = $this->pageManager->getMenu ($root);
 		$this->assertEquals (array ($home, $news, $packages), $siteMenu);
@@ -80,12 +80,11 @@ class pageManagerTest extends TestCase {
 	
 	function testAddPageToDatabase () {
 		$root = $this->pageManager->newPage ();
-		$root->initFromGenericName ('site');	
+		$root->initFromName ('site');	
 	
 		$development = $this->pageManager->newPage ();
 		$array = array ();
-		$array['genericName'] = 'Development';
-		$array['genericContent'] = 'This is the development page.';
+		$array['name'] = 'Development';
 		$array['parentPageID'] = $root->getID ();
 		$array['placeInMenu'] = 3; //before packages, after news
 		$development->initFromArray ($array);
@@ -93,19 +92,18 @@ class pageManagerTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error');		
 		
 		$home = $this->pageManager->newPage ();
-		$home->initFromGenericName ('Home');
+		$home->initFromName ('Home');
 		$news = $this->pageManager->newPage ();
-		$news->initFromGenericName ('News');
+		$news->initFromName ('News');
 		$packages = $this->pageManager->newPage ();
-		$packages->initFromGenericName ('Packages');	
+		$packages->initFromName ('Packages');	
 		
 		$siteMenu = $this->pageManager->getMenu ($root);	
 		
 		$this->assertEquals (array ($home, $news, $development, $packages), $siteMenu, 'Wronge menu order');
 		$appendPage = $this->pageManager->newPage ();
 		$array = array ();
-		$array['genericName'] = 'lastPage';
-		$array['genericContent'] = 'This is the last page in the menu.';
+		$array['name'] = 'lastPage';
 		$array['parentPageID'] = $root->getID ();
 		$a = $appendPage->initFromArray ($array);
 		$r = $this->pageManager->addPageToDatabase ($appendPage);
@@ -120,10 +118,10 @@ class pageManagerTest extends TestCase {
 	
 	function testRemovePageFromDatabase () {
 		$root = $this->pageManager->newPage ();
-		$root->initFromGenericName ('site');	
+		$root->initFromName ('site');	
 
 		$development = $this->pageManager->newPage ();
-		$development->initFromGenericName ('Development');
+		$development->initFromName ('Development');
 		
 		$r = $this->pageManager->removePageFromDatabase ($development);
 		$this->assertFalse (isError ($r), 'Unexpected error 1');
@@ -131,17 +129,17 @@ class pageManagerTest extends TestCase {
 		
 		$siteMenu = $this->pageManager->getMenu ($root);
 		$home = $this->pageManager->newPage ();
-		$home->initFromGenericName ('Home');		
+		$home->initFromName ('Home');		
 		$news = $this->pageManager->newPage ();
-		$news->initFromGenericName ('News');
+		$news->initFromName ('News');
 		$packages = $this->pageManager->newPage ();
-		$packages->initFromGenericName ('Packages');
+		$packages->initFromName ('Packages');
 		$lastPage = $this->pageManager->newPage ();	
-		$lastPage->initFromGenericName ('lastPage');		
+		$lastPage->initFromName ('lastPage');		
 		
 		$this->assertEquals (array ($home, $news, $packages, $lastPage), $siteMenu, 'Wronge menu order');
 		$packages = $this->pageManager->newPage ();
-		$packages->initFromGenericName ('Packages');
+		$packages->initFromName ('Packages');
 		$this->assertEquals (3, $packages->getPlaceInMenu ());	
 					
 		$r = $this->pageManager->removePageFromDatabase ($lastPage);
@@ -175,7 +173,7 @@ class pageManagerTest extends TestCase {
 	
 	function testGetTranslation () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('TranslatedPage');
+		$page->initFromName ('TranslatedPage');
 		$translatedPageNL_NL = $page->getTranslation ('NL-NL');
 		$this->assertFalse (isError ($translatedPageNL_NL), 'Unexpected NL_NL error');
 		$this->assertEquals ('This is the dutch (Netherlands) translation. (NL-NL)', $translatedPageNL_NL->getContent (), 'Normal translation failed');
@@ -183,25 +181,19 @@ class pageManagerTest extends TestCase {
 		$translatedPageNL_BE = $page->getTranslation ('NL-BE');
 		$this->assertFalse (isError ($translatedPageNL_BE), 'Unexpected NL_BE error');
 		$this->assertEquals ('This is the dutch (generic) translation. (NL)', $translatedPageNL_BE->getContent (), 'Main language translation failed');
-		
-		$translatedPageFR_BE = $page->getTranslation ('FR-BE');
-		$this->assertFalse (isError ($translatedPageFR_BE), 'Unexpected - hehem - FR_BE error');
-		if (! isError ($translatedPageFR_BE)) {
-			$this->assertEquals ('This is the french (french) translation. (FR-FR)', $translatedPageFR_BE->getContent (), 'Select other dialect failed (NYI)');
-		}
 	}
 	
 	function testGetAllTranslations () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('TranslatedPage');
+		$page->initFromName ('TranslatedPage');
 		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslations ());
 	}
 	
 	function testAddTranslation () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('TranslatedPage');
+		$page->initFromName ('TranslatedPage');
 		$translationNL_BE = $this->pageManager->newTranslatedPage ();
-		$a['translatedName'] = 'NL_BE';
+		$a['translatedTitle'] = 'NL_BE';
 		$a['translatedContent'] = 'NL_BE translation';
 		$a['languageCode'] = 'NL-BE'; 
 		$r = $translationNL_BE->initFromArray ($a);
@@ -216,7 +208,7 @@ class pageManagerTest extends TestCase {
 	
 	function testRemoveTranslation () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('TranslatedPage');
+		$page->initFromName ('TranslatedPage');
 		$translationNL_BE = $this->pageManager->newTranslatedPage ();
 		$translationNL_BE->initFromDatabasePageIDandLanguageCode ($page->getID (), 'NL-BE');
 		
@@ -230,10 +222,10 @@ class pageManagerTest extends TestCase {
 	
 	function testGetParentPage () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('Home');
+		$page->initFromName ('Home');
 		
 		$ppage = $this->pageManager->newPage ();
-		$ppage->initFromGenericName ('Site');
+		$ppage->initFromName ('Site');
 		
 		$this->assertEquals ($ppage, $page->getParentPage ());
 		$this->assertEquals (null, $ppage->getParentPage ());
@@ -241,33 +233,33 @@ class pageManagerTest extends TestCase {
 	
 	function testIsPageAdmin () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('Home');
+		$page->initFromName ('Home');
 		$this->assertFalse ($page->isAdminPage ());
 		
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('Admin');
+		$page->initFromName ('Admin');
 		$this->assertTrue ($page->isAdminPage ());
 		
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('Adminpage');
+		$page->initFromName ('Adminpage');
 		$this->assertTrue ($page->isAdminPage ());
 	}
 	
 	function testGetAction () {
 		$page = $this->pageManager->newPage ();
-		$page->initFromGenericName ('News');
+		$page->initFromName ('News');
 		$this->assertEquals ('newsViewLatestItems', $page->getAction ());
 	}
 	
 	function testMovePageUp () {
 		$root = $this->pageManager->newPage ();
-		$root->initFromGenericName ('site');	
+		$root->initFromName ('site');	
 		$homepage = $this->pageManager->newPage ();
-		$homepage->initFromGenericName ('Home');
+		$homepage->initFromName ('Home');
 		$newspage = $this->pageManager->newPage ();
-		$newspage->initFromGenericName ('News');
+		$newspage->initFromName ('News');
 		$packpage = $this->pageManager->newPage ();
-		$packpage->initFromGenericName ('Packages');
+		$packpage->initFromName ('Packages');
 		
 		$this->pageManager->movePageUp ($packpage->getID ());
 		$newspage->setOption ('placeInMenu', 3);
@@ -280,13 +272,13 @@ class pageManagerTest extends TestCase {
 	
 	function testMovePageDown () {
 		$root = $this->pageManager->newPage ();
-		$root->initFromGenericName ('site');	
+		$root->initFromName ('site');	
 		$homepage = $this->pageManager->newPage ();
-		$homepage->initFromGenericName ('Home');
+		$homepage->initFromName ('Home');
 		$newspage = $this->pageManager->newPage ();
-		$newspage->initFromGenericName ('News');
+		$newspage->initFromName ('News');
 		$packpage = $this->pageManager->newPage ();
-		$packpage->initFromGenericName ('Packages');
+		$packpage->initFromName ('Packages');
 		
 		$this->pageManager->movePageDown ($newspage->getID ());
 		$this->assertEquals (array ($homepage, $packpage, $newspage), $this->pageManager->getMenu ($root));

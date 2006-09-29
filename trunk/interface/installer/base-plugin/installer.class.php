@@ -196,21 +196,36 @@ class installerBasePlugin extends plugin {
 			$pman = $pageM->newPage ();
 			$regform = $pageM->newPage ();
 			
-			$site->initFromArray (array ('genericName'=>'site', 'genericContent'=>'', 'parentPageID'=>0));
-			$admin->initFromArray (array ('genericName'=>'admin', 'genericContent'=>'', 'parentPageID'=>0));
+			$site->initFromArray (array ('name'=>'site', 'parentPageID'=>0));
+			$admin->initFromArray (array ('name'=>'admin', 'parentPageID'=>0));
 			
 			$pageM->addPageToDatabase ($site);
 			$pageM->addPageToDatabase ($admin);
 			
-			$home->initFromArray (array ('genericName'=>'Home', 'genericContent'=>'This is the homepage.', 'parentPageID'=>$site->getID ()));
-			$ahome->initFromArray (array ('genericName'=>'Admin home', 'genericContent'=>'This is the admin.', 'parentPageID'=>$admin->getID ()));
-			$pman->initFromArray (array ('genericName'=>'Page manager', 'genericContent'=>'Here you can edit pages.', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
-			$regform->initFromArray (array ('genericName'=>'MorgOS_RegisterForm', 'genericContent'=>'', 'parentPageID'=>$site->getID (), 'action'=>'userRegisterForm'));
+			$home->initFromArray (array ('name'=>'Home', 'parentPageID'=>$site->getID ()));
+			$ahome->initFromArray (array ('name'=>'Admin home', 'parentPageID'=>$admin->getID ()));
+			$pman->initFromArray (array ('name'=>'Page manager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
+			$regform->initFromArray (array ('name'=>'MorgOS_RegisterForm',  'parentPageID'=>$site->getID (), 'action'=>'userRegisterForm', 'placeInMenu'=>0));
 
 			$pageM->addPageToDatabase ($home);
 			$pageM->addPageToDatabase ($ahome);
 			$pageM->addPageToDatabase ($pman);
 			$pageM->addPageToDatabase ($regform);
+			
+			$tHome = $pageM->newTranslatedPage ();
+			$tAHome = $pageM->newTranslatedPage ();
+			$tPMan = $pageM->newTranslatedPage ();
+			$tRegForm = $pageM->newTranslatedPage ();
+
+			$tHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Home', 'translatedContent'=>'This is the homepage.'));
+			$tAHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Admin', 'translatedContent'=>'This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.'));
+			$tPMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Page Manager', 'translatedContent'=>'Edit pages here.'));
+			$tRegForm->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Registration', 'translatedContent'=>'Give up all your user details in order to registrate to this site.'));
+			
+			$home->addTranslation ($tHome);
+			$ahome->addTranslation ($tAHome);
+			$pman->addTranslation ($tPMan);
+			$regform->addTranslation ($tRegForm);
 					
 			
 			$configContents = '<?php'.PHP_NL.PHP_NL;

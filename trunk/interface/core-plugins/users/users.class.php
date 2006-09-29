@@ -38,7 +38,7 @@ function userCorePlugin ($dir) {
 		$am->addAction (new action ('userLogin', 'POST',  array (&$this, 'onLogin'), array ('login','password'), array ()));
 		$am->addAction (new action ('userLogout', 'POST',  array (&$this, 'onLogout'), array (), array ()));
 		$am->addAction (
-			new action ('userRegisterForm', 'POST',  array (&$this, 'onRegisterForm'), array (), array ()));
+			new action ('userRegisterForm', 'POST',  array (&$this, 'onRegisterForm'), array (), array ('pageLang')));
 		$am->addAction (
 			new action ('userRegister', 'POST',  array (&$this, 'onRegister'), 
 			array ('login', 'email', 'password1', 'password2'), array ()));
@@ -76,13 +76,16 @@ function userCorePlugin ($dir) {
 		}
 	}
 	
-	function onRegisterForm () {
+	function onRegisterForm ($pageLang) {
 		$pM = &$this->_pluginAPI->getPageManager ();
 		$regForm = $pM->newPage ();
-		$regForm->initFromGenericName ('MorgOS_registerForm');
+		$regForm->initFromName ('MorgOS_registerForm');
 	
 		$em = &$this->_pluginAPI->getEventManager ();
-		$em->triggerEvent ('viewPage', array ($regForm->getID ()));
+		if ($pageLang == null) {
+			$pageLang = 'en_UK';
+		}
+		$em->triggerEvent ('viewPage', array ($regForm->getID (), $pageLang));
 		$this->setUserVars ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$sm->display ('user/registerform.tpl');
