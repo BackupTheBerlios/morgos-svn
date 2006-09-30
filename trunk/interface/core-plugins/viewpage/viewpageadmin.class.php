@@ -146,9 +146,10 @@ class viewPageCoreAdminPlugin extends plugin {
 		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {	
 			$editedPage = $pageManager->newPage ();
 			$editedPage->initFromDatabaseID ($pageID);
+			$tPage = $editedPage->getTranslation ('en_UK');
 			$pageContent = secureHTMLInput ($pageContent);
-			$editedPage->updateFromArray (array ('genericContent'=>$pageContent, 'genericName'=>$pageTitle));
-			$editedPage->updateToDatabase ();
+			$tPage->updateFromArray (array ('translatedContent'=>$pageContent, 'translatedTitle'=>$pageTitle));
+			$tPage->updateToDatabase ();
 			$a = $this->_pluginAPI->executePreviousAction ();
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
