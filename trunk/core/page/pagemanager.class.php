@@ -58,7 +58,7 @@ class pageManager {
 	/**
 	 * Add a page to the database. If needed it reoders the menu items.
 	 *  When a page is inserted, all pages with the same, or a higher place in the menu are placed upwards.
-	 *  If it has no placeInMenu value (if it is zero) it is placed after all other menu items
+	 *  If it has no placeInMenu value (if it is null) it is placed after all other menu items. If 0 its not visible in the menu.
 	 * 
 	 * @param $page (object page)
 	 * @public 
@@ -75,7 +75,9 @@ class pageManager {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}	
 	
-		if (($page->getPlaceInMenu () == 0) or ($page->getPlaceInMenu () == null)) {
+		if ($page->getPlaceInMenu () === 0) {
+			// do nothing, everything should be OK
+		} elseif ($page->getPlaceInMenu () === null) {
 			$pagesTableName = $this->db->getPrefix ().'pages';
 			$sql = "SELECT MAX(placeInMenu) FROM $pagesTableName WHERE parentPageID='$parentPageID'";
 			$q = $this->db->query ($sql);

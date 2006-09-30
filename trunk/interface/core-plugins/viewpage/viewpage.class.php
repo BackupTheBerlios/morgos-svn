@@ -66,6 +66,7 @@ class viewPageCorePlugin extends plugin {
 		if ($pageLang == null) {
 			$pageLang = 'en_UK';
 		}
+
 		$a = $em->triggerEvent ('viewPage', array ($page->getID (), $pageLang));
 		foreach ($a as $r) {
 			if ($r == false or isError ($r)) {

@@ -194,7 +194,9 @@ class dbField {
 	}	
 	
 	function setValue ($newValue) {
-		if ($this->getNonDBType () == 'string') {
+		if ($newValue === null) {
+			$this->value = null;
+		} elseif ($this->getNonDBType () == 'string') {
 			$this->value = strval ($newValue);
 		} elseif ($this->getNonDBType () == 'int') {
 			$this->value = (int) ($newValue);

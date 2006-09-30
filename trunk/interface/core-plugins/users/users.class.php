@@ -34,12 +34,12 @@ class userCorePlugin extends plugin {
 	function load (&$pluginAPI) {
 		parent::load (&$pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
-		$am->addAction (new action ('userLogin', 'POST',  array (&$this, 'onLogin'), array ('login','password'), array ()));
-		$am->addAction (new action ('userLogout', 'POST',  array (&$this, 'onLogout'), array (), array ()));
+		$am->addAction (new action ('userLogin', 'POST',  array ($this, 'onLogin'), array ('login','password'), array ()));
+		$am->addAction (new action ('userLogout', 'POST',  array ($this, 'onLogout'), array (), array ()));
 		$am->addAction (
-			new action ('userRegisterForm', 'POST',  array (&$this, 'onRegisterForm'), array (), array ('pageLang')));
+			new action ('userRegisterForm', 'POST',  array ($this, 'onRegisterForm'), array (), array ('pageLang')));
 		$am->addAction (
-			new action ('userRegister', 'POST',  array (&$this, 'onRegister'), 
+			new action ('userRegister', 'POST',  array ($this, 'onRegister'), 
 			array ('login', 'email', 'password1', 'password2'), array ()));
 		
 		$em = &$this->_pluginAPI->getEventManager ();

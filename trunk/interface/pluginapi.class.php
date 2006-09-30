@@ -168,6 +168,9 @@ class pluginAPI {
 			$itemArray = array ();
 			$itemArray['Childs'] = $this->menuToArray ($this->_pageManager->getMenu ($menuItem));
 			$t = $menuItem->getTranslation ($pageLang);
+			if (isError ($t)) {
+				var_dump ($menuItem);
+			}
 			$itemArray['Title'] = $t->getTitle ();
 			$itemArray['Link'] = $menuItem->getLink (); 
 			$itemArray['ID'] = $menuItem->getID (); 

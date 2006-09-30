@@ -219,16 +219,19 @@ class installerBasePlugin extends plugin {
 			$tAHome = $pageM->newTranslatedPage ();
 			$tPMan = $pageM->newTranslatedPage ();
 			$tRegForm = $pageM->newTranslatedPage ();
+			$tPlugMan = $pageM->newTranslatedPage ();
 
 			$tHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Home', 'translatedContent'=>'This is the homepage.'));
 			$tAHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Admin', 'translatedContent'=>'This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.'));
 			$tPMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Page Manager', 'translatedContent'=>'Edit pages here.'));
 			$tRegForm->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Registration', 'translatedContent'=>'Give up all your user details in order to registrate to this site.'));
+			$tPlugMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Plugin Manager', 'translatedContent'=>'Enable/disable plugins.'));
 			
 			$home->addTranslation ($tHome);
 			$ahome->addTranslation ($tAHome);
 			$pman->addTranslation ($tPMan);
 			$regform->addTranslation ($tRegForm);
+			$pluman->addTranslation ($tPlugMan);
 					
 			
 			$configContents = '<?php'.PHP_NL.PHP_NL;
