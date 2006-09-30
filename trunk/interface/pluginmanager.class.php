@@ -92,7 +92,7 @@ class plugin {
 	 * @return (bool)
 	*/
 	function isLoaded () {
-		return $pluginAPI != null;
+		return $this->_pluginAPI != null;
 	}
 	
 	/**
@@ -162,6 +162,13 @@ class plugin {
 	function isMaxVersionExceeded () {
 		return versionCompare (MORGOS_VERSION, $this->_maxMorgOSVersion, '>');
 	}
+	
+	/**
+	 * Returns that the plugin is a core plugin or not.
+	 * @public
+	 * @return (bool)
+	*/
+	function isCorePlugin () {return false;}
 }
 
 class pluginManager {

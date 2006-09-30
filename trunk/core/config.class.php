@@ -183,6 +183,19 @@ class configItem {
 	function getName () {
 		return $this->name;
 	}
+	
+	function getStringValue () {
+		switch ($this->type) {
+			case STRING: return '\''.$this->getCurrentValue ().'\'';
+				break;
+			case BOOL: if ($this->getCurrentValue ()) {return 'true';} else {return false;}
+				break;
+			case NUMERIC:
+			case REAL:
+				return (string) $this->getCurrentValue ();
+				break;
+		}
+	}
 }
 
 class configurator {
@@ -309,6 +322,21 @@ class configurator {
 			return new Error ('CONFIGURATOR_OPTION_EXISTS', $option->getName ());
 		}
 	}
+	
+	/**
+	 * Removes an option
+	 *
+	 * @param $option (object configItem)
+	*/
+	function removeOption ($option) {
+		if ($this->existsItem ($option->getName ())) {
+			$fullName = '/'.$option->getType () . $option->getName ();
+			unset ($this->allConfigItems[$fullName]);
+			print_r ($this->allConfigItems);
+		} else {
+			return new Error ('CONFIGURATOR_OPTION_DOESNT_EXISTS', $option->getName ());
+		}
+	}
 
 	/**
 	 * Returns if an item exists
@@ -318,11 +346,11 @@ class configurator {
 	function existsItem ($name) {
 		if ($this->existsItemStrict ($name, STRING)) {
 			return true;
-		} elseif ($this->existsItemStrict ($name, STRING)) {
+		} elseif ($this->existsItemStrict ($name, BOOL)) {
 			return true;
-		} elseif ($this->existsItemStrict ($name, STRING)) {
+		} elseif ($this->existsItemStrict ($name, NUMERIC)) {
 			return true;
-		} elseif ($this->existsItemStrict ($name, STRING)) {
+		} elseif ($this->existsItemStrict ($name, REAL)) {
 			return true;
 		} else {
 			return false;

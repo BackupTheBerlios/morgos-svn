@@ -106,5 +106,7 @@ class viewPageCorePlugin extends plugin {
 		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, $pageLang));
 		return true;
 	}
+	
+	function isCorePlugin () {return true;}
 }
 ?>

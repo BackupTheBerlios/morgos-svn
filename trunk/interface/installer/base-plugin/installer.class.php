@@ -194,6 +194,7 @@ class installerBasePlugin extends plugin {
 			$home = $pageM->newPage ();
 			$ahome = $pageM->newPage ();
 			$pman = $pageM->newPage ();
+			$pluman = $pageM->newPage ();
 			$regform = $pageM->newPage ();
 			
 			$site->initFromArray (array ('name'=>'site', 'parentPageID'=>0));
@@ -202,14 +203,16 @@ class installerBasePlugin extends plugin {
 			$pageM->addPageToDatabase ($site);
 			$pageM->addPageToDatabase ($admin);
 			
-			$home->initFromArray (array ('name'=>'Home', 'parentPageID'=>$site->getID ()));
-			$ahome->initFromArray (array ('name'=>'Admin home', 'parentPageID'=>$admin->getID ()));
-			$pman->initFromArray (array ('name'=>'Page manager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
+			$home->initFromArray (array ('name'=>'MorgOS_Home', 'parentPageID'=>$site->getID ()));
+			$ahome->initFromArray (array ('name'=>'MorgOS_Admin_Home', 'parentPageID'=>$admin->getID ()));
+			$pman->initFromArray (array ('name'=>'MorgOS_Admin_PageManager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
+			$pluman->initFromArray (array ('name'=>'MorgOS_Admin_PluginManager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPluginManager'));
 			$regform->initFromArray (array ('name'=>'MorgOS_RegisterForm',  'parentPageID'=>$site->getID (), 'action'=>'userRegisterForm', 'placeInMenu'=>0));
 
 			$pageM->addPageToDatabase ($home);
 			$pageM->addPageToDatabase ($ahome);
 			$pageM->addPageToDatabase ($pman);
+			$pageM->addPageToDatabase ($pluman);
 			$pageM->addPageToDatabase ($regform);
 			
 			$tHome = $pageM->newTranslatedPage ();

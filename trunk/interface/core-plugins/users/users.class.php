@@ -23,8 +23,7 @@
 */
 class userCorePlugin extends plugin {
 	
-function userCorePlugin ($dir) {
-
+	function userCorePlugin ($dir) {
 		parent::plugin ($dir);
 		$this->_name = 'Users core plugin';
 		$this->_ID = '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}';
@@ -130,6 +129,6 @@ function userCorePlugin ($dir) {
 		return true;
 	}
 
-
+	function isCorePlugin () {return true;}
 }
 ?>

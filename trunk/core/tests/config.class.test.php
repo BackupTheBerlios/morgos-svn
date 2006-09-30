@@ -151,6 +151,18 @@ class configTest extends TestCase {
 		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r, "Wrong error 2");
 	}
 	
+	function testRemoveOption () {
+		$newOption = new configItem ('/newItem', STRING);
+		$r = $this->configurator->addOption ($newOption);
+		$this->assertFalse (isError ($r), 'Unexpected error 1');		
+		
+		$r = $this->configurator->removeOption ($newOption);
+		$this->assertFalse (isError ($r), 'Unexpected error 2');		
+		
+		$r = $this->configurator->removeOption ($newOption);
+		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_DOESNT_EXISTS', '/newItem'), $r, "Wrong error 2");
+	}
+	
 	function testGetItem () {
 		$string =  new configItem ('/aString', STRING);
 		$string->setValue ('string');

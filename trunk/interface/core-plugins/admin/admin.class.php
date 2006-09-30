@@ -22,6 +22,7 @@
  * @author Nathan Samson
 */
 class adminCorePlugin extends plugin {
+	var $_pluginAdmin;
 	
 	function adminCorePlugin ($dir) {
 		parent::plugin ($dir);
@@ -33,6 +34,9 @@ class adminCorePlugin extends plugin {
 	
 	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);
+		include_once ($this->_loadedDir.'/adminpluginplugin.class.php');
+		$this->_pluginAdmin = new adminCorePluginAdminPlugin ($this->_loadedDir);
+		$this->_pluginAdmin->load ($pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
 		$am->addAction (
@@ -65,12 +69,12 @@ class adminCorePlugin extends plugin {
 		if ($pageID) {
 			$page->initFromDatabaseID ($pageID);
 		} else {
-			$page->initFromName ('Admin Home');
+			$page->initFromName ('MorgOS_Admin_Home');
 			$pageID = $page->getID ();
 		}
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
-		if ($this->canUserViewAdminPage ($page->getID ())) {
+		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
 			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));
 			if ($pageLang == null) {
 				$pageLang = 'en_UK';
@@ -119,27 +123,25 @@ class adminCorePlugin extends plugin {
 	
 	function setAdminVars ($pageID) {
 		$sm = &$this->_pluginAPI->getSmarty ();	
-	
 		$pageManager = &$this->_pluginAPI->getPageManager ();
+		
 		$rootPage = $pageManager->newPage ();
 		$rootPage->initFromName ('admin');
 		$adminNav = $this->_pluginAPI->menuToArray ($pageManager->getMenu ($rootPage));
 		
-		$sm->assign_by_ref ('MorgOS_AdminNav', $adminNav);
+		$sm->assign ('MorgOS_AdminNav', $adminNav);
+		
+		$page = $pageManager->newPage ();
+		$page->initFromDatabaseID ($pageID);
+		$tpage = $page->getTranslation ('en_UK');
+		if (isError ($tpage)) {
+			//debug_print_backtrace ();
+			die ('Translation doesnt exists'.$pageID);
+		}		
+		$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
+		$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 	}
 	
-	function canUserViewAdminPage ($pageID) {
-		$userM = &$this->_pluginAPI->getUserManager ();
-		$user = &$userM->getCurrentUser ();
-		if ($user) {
-			if ($user->hasPermission ('edit_admin', false)) {
-				return true;
-			} else {
-				return $user->hasPermission ('edit_admin_'.$pageID, true);
-			}
-		} else {
-			return false;
-		}
-	}
+	function isCorePlugin () {return true;}
 }
 ?>
