@@ -18,12 +18,26 @@
 /** \file varia.functions.php
  * Home of various functions.
  *
+ * @ingroup core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * The core is the heart of MorgOS
+ *
+ * @defgroup core Core
+*/
+
 define ('PHP_NL', "\n");
 
+/**
+ * A class that represents an error
+ *
+ * @ingroup core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class Error {
 	var $_error;
 	var $_params;
@@ -46,6 +60,14 @@ class Error {
 	function getError () {return $this->_error;}
 }
 
+/**
+ * Cheks that a var is an error
+ *
+ * @ingroup core
+ * @since 0.2
+ * @param $test (mixed) the var to test
+ * @return (bool)
+*/
 function isError ($test) {
 	if (strtolower (get_class ($test)) == 'error') {
 		return true;
@@ -56,12 +78,13 @@ function isError ($test) {
 
 /**
  * compares 2 version numbers. A version looks like "1.2.*" or "1.2" (which is the same)
- * \warning 1.2.0 > 1 does return false, this is intended
+ * @warning 1.2.0 > 1 does return false, this is intended
  *
- * \param $version1 (string)
- * \param $version2 (string)
- * \param $operator (string) >= <= > < == !=
- * \return (bool)
+ * @ingroup core
+ * @param $version1 (string)
+ * @param $version2 (string)
+ * @param $operator (string) >= <= > < == !=
+ * @return (bool)
 */
 function versionCompare ($version1, $version2, $operator) {
 	$version1 = explode ('.', $version1);
@@ -105,6 +128,9 @@ function versionCompare ($version1, $version2, $operator) {
 
 /**
  * Strip all unwanted tags/attribues in HTML input
+ *
+ * @ingroup core
+ * @since 0.2
  * @param $in (string)
  * @return (string)
 */
@@ -148,6 +174,8 @@ function secureHTMLInput ($in) {
 /**
  * Strip all not given attributes for a specific tag in a string.
  *
+ * @ingroup core
+ * @since 0.2
  * @param $msg (string) A string
  * @param $tag (string) the tag where it counts
  * @param $attr (string array) attributes that may exist in that tag.

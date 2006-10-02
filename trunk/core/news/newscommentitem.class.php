@@ -18,10 +18,18 @@
 /** \file newscommentitem.class.php
  * File that take care of a comment on a newsitem
  *
+ * @ingroup news core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a comment (on a news item)
+ *
+ * @ingroup news core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class commentItem {
 	function commentItem () {
 	}

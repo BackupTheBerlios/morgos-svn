@@ -18,10 +18,18 @@
 /** \file i18n.class.php
  * Manager of the localization system.
  *
+ * @ingroup core i18n
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that translate strings
+ *
+ * @ingroup core i18n
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class localizer {
 
 	function localizer () {

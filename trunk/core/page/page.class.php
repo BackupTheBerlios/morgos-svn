@@ -18,10 +18,18 @@
 /** \file page.class.php
  * Manager of the pages.
  *
+ * @ingroup page core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a page
+ *
+ * @ingroup page core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class page extends databaseObject {
 
 	/**
@@ -47,7 +55,7 @@ class page extends databaseObject {
 	/**
 	 * Initializes the page from a generic name
 	 *
-	 * @param $genericName (string) The generic name
+	 * @param $name (string) The generic name
 	 * @public
 	*/
 	function initFromName ($name) {

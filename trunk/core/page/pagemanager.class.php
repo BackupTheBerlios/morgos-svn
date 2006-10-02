@@ -18,13 +18,27 @@
 /** \file pagemanager.class.php
  * Manager of the pages.
  *
+ * @ingroup page core
  * @since 0.2
  * @author Nathan Samson
+*/
+
+/**
+ * Page group description
+ *
+ * @defgroup page Page
 */
 
 include_once ('core/page/page.class.php');
 include_once ('core/page/translatedpage.class.php');
 
+/**
+ * A class that manages all pages.
+ *
+ * @ingroup page
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class pageManager {
 	/**
 	 * The database module.

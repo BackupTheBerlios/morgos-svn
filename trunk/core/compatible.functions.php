@@ -18,6 +18,7 @@
 /** \file compatible.functions.php
  * File that implements some functions that are in newer versions of PHP, but not in older.
  *
+ * @ingroup core
  * @since 0.2
  * @author Nathan Samson
 */

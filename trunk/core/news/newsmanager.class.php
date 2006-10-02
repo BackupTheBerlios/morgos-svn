@@ -18,14 +18,28 @@
 /** \file newsmanager.class.php
  * File that take care of the newsmanager
  *
+ * @ingroup news core
  * @since 0.2
  * @author Nathan Samson
+*/
+
+/**
+ * News description.
+ *
+ * @defgroup news News
 */
 
 include_once ('core/news/newscommentitem.class.php');
 include_once ('core/news/newstopic.class.php');
 include_once ('core/news/newsitem.class.php');
 
+/**
+ * A class that manages the news
+ *
+ * @ingroup news core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class newsmanager {
 
 	function newsmanager () {

@@ -18,8 +18,14 @@
 /** \file config.class.php
  * Manager of the config loader/saver.
  *
+ * @ingroup core config
  * @since 0.2
  * @author Nathan Samson
+*/
+
+/**
+ * Manage config items
+ * @defgroup config Config
 */
 
 define ('STRING', 'String');
@@ -30,6 +36,7 @@ define ('REAL', 'Real');
 /**
  * Checks the type of a variable.
  *
+ * @ingroup config
  * @param $value (mixed) the var to check
  * @param $type (const type) the type
  * @return (true | error)
@@ -53,6 +60,7 @@ function checkType ($value, $type) {
 /**
  * Guess the type of a variable.
  *
+ * @ingroup config
  * @param $value (mixed) the var
  * @return (const type)
 */
@@ -68,6 +76,13 @@ function guessType ($value) {
 	}
 }
 
+/**
+ * Represents a configItem
+ * 
+ * @ingroup config
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class configItem {
 	/**
 	 * The name of the item.
@@ -198,6 +213,13 @@ class configItem {
 	}
 }
 
+/**
+ * A class that holds manu config items
+ *
+ * @ingroup config core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class configurator {
 	/**
 	 * All config items that this manager stores.

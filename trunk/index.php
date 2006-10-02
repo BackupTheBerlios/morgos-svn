@@ -22,6 +22,11 @@
  * @since 0.2
  * @author Nathan Samson
 */
+/**
+ * \mainpage MorgOS Documentation
+ * \section intro Introduction
+ *  MorgOS is a very modular system.
+*/
 include ('interface/morgos.class.php');
 
 //emulate register_globals off

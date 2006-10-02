@@ -18,6 +18,7 @@
 /** \file morgos.class.php
  * File that take care of morgos
  *
+ * @ingroup interface
  * @since 0.2
  * @author Nathan Samson
 */
@@ -37,6 +38,18 @@ include_once ('interface/pluginmanager.class.php');
 include_once ('interface/eventmanager.class.php');
 include_once ('interface/pluginapi.class.php');
 
+/**
+ * This is the front-end for MorgOS.
+ * @defgroup interface Interface
+*/
+
+/**
+ * A main class that uses all others to show a page.
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class morgos {
 	/**
 	 * The smarty system.

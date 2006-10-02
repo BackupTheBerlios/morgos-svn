@@ -18,12 +18,20 @@
 /** \file pluginmanager.class.php
  * File that take care of the plugins
  *
+ * @ingroup interface
  * @since 0.2
  * @author Nathan Samson
 */
 
 include_once ('core/compatible.functions.php');
 
+/**
+ * A class that represents a plugin
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class plugin {
 	/**
 	 * The name of the plugin
@@ -186,6 +194,13 @@ class plugin {
 	function unInstall (&$foo) {}
 }
 
+/**
+ * A class that manages the plugins
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class pluginManager {
 	/**
 	 * An array with all found plugins

@@ -18,10 +18,18 @@
 /** \file translatedpage.class.php
  * A translatedpage class.
  *
+ * @ingroup page core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a translatedpage
+ *
+ * @ingroup page core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class translatedPage extends databaseObject {
 
 	/**

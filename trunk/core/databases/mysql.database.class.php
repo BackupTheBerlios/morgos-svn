@@ -18,6 +18,7 @@
 /** @file mysql.database.class.php
  * MySQL database module.
  *
+ * @ingroup database core
  * @since 0.2
  * @author Sam Heijens
  * @author Nathan Samson

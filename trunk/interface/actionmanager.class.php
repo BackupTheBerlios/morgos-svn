@@ -15,15 +15,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file eventmanager.class.php
- * File that take care of the eventmanager
+/** \file actionmanager.class.php
+ * File that take care of the actions
  *
+ * @ingroup interface
  * @todo test this file
  * @since 0.2
  * @author Nathan Samson
 */
 
-
+/**
+ * A class that represents an action
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class action {
 	/**
 	 * The name of the event.
@@ -116,6 +123,13 @@ class action {
 	}
 }
 
+/**
+ * A class that manages the actions
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class actionManager {
 	/**
 	 * The list of all action The key is the name of the action.

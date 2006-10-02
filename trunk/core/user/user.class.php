@@ -18,10 +18,18 @@
 /** \file user.class.php
  * File that take care of one user
  *
+ * @ingroup user core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a user
+ *
+ * @ingroup user core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class user extends databaseObject {
 	/**
 	 * Constructor

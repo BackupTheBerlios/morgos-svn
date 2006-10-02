@@ -23,10 +23,23 @@
 */
 session_start ();
 
+/**
+ * Manage the users
+ *
+ * @defgroup user User
+*/
+
 include_once ('core/user/user.class.php');
 include_once ('core/user/usergroup.class.php');
 include_once ('core/user/usertranslatedgroups.class.php');
 
+/**
+ * A class that represents a user
+ *
+ * @ingroup user core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class userManager {
 	/**
 	 * The database module

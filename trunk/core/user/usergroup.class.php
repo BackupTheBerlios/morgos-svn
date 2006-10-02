@@ -18,10 +18,18 @@
 /** \file usergroup.class.php
  * File that take care of one group
  *
+ * @ingroup user core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a group
+ *
+ * @ingroup user core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class group extends databaseObject {
 	
 	/**

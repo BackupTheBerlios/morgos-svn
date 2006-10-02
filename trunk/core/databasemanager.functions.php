@@ -18,15 +18,23 @@
 /** \file databasemanager.functions.php
  * File that take care of the database modules
  *
+ * @ingroup core database
  * @since 0.2
  * @author Nathan Samson
  * @author Sam Heijens
+*/
+
+/**
+ * Manage database
+ * @defgroup database Database
 */
 
 include_once ('core/compatible.functions.php');
 /**
  * Loads a database module. Returns the newly created class.
  *
+ * @ingroup database
+ * @since 0.2
  * @return module (class) the newly created class.
 */
 function databaseLoadModule ($module) {
@@ -43,6 +51,8 @@ function databaseLoadModule ($module) {
  * Returns all available modules. If $checkReqs is true it checks of that all
  * requirements (PHP extensions) are installed.
  *
+ * @ingroup database
+ * @since 0.2
  * @param $checkReqs (bool) Check that all PHP extensions are installed.
  * @return array (string) all modules.
 */
@@ -66,6 +76,8 @@ function databaseGetAllModules ($checkReqs = false) {
 /**
  * Checks if a database module exists.
  *
+ * @ingroup database
+ * @since 0.2
  * @param $module (string) the module name to check
  * @param $checkReqs (bool) Check that the all extensions for that module exists.
  * @return exists (bool)
@@ -86,6 +98,10 @@ function databaseUnInstallModule () {
 
 /**
  * Base class for all databasemodules.
+ *
+ * @ingroup core database
+ * @since 0.2
+ * @author Nathan Samson
 */
 class databaseActions {
 
@@ -180,6 +196,13 @@ class databaseActions {
 	function getType () {return $this->type;}
 }
 
+/**
+ * A class that represents a field in some database
+ *
+ * @ingroup core database
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class dbField {
 	var $name;
 	var $type;
@@ -222,6 +245,10 @@ class dbField {
 
 /**
  * A databaseobject. All objects that are stored in the database must be derived from this one.
+ * 
+ * @ingroup core database
+ * @since 0.2
+ * @author Nathan Samson
 */
 class databaseObject {
 	/**
@@ -457,6 +484,10 @@ class databaseObject {
 		}
 	}
 	
+	/**
+	 * Update the data to the database.
+	 * @public
+	*/
 	function updateToDatabase () {
 		$updates = '';
 		foreach ($this->getAllOptions () as $opt) {

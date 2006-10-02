@@ -125,12 +125,16 @@ FILE_PATTERNS          = *.c \
                          *.MM \
                          *.PY
 RECURSIVE              = YES
-EXCLUDE                = ../interface/tests \
-			 ../core/tests \
-			 ../core/databases/xml \
-			 ../interface/smarty \
-			 ../interface/core-plugins \
-			 ../skins/
+EXCLUDE                = ../core/tests \
+					../core/databases \
+					../interface/tests \
+					../interface/smarty \
+					../interface/smarty-plugins \
+					../interface/core-plugins \
+					../interface/installer \
+					../skins \
+					../skins_c \
+					../plugins
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 

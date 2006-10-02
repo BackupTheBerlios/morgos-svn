@@ -16,15 +16,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 /**
- * This is the pluginAPI class.
+ * \file pluginapi.class.php
+ * This is the pluginAPI file.
  *
+ * @ingroup interface
  * @since 0.2
  * @author Nathan Samson
 */
+
 define ('ERROR', 1);
 define ('WARNING', 2);
 define ('NOTICE', 3);
 
+/**
+ * A class that have all functions/classes that plugins could use.
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class pluginAPI {
 	var $_dbModule;
 	var $_configManager;

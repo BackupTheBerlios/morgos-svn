@@ -18,10 +18,18 @@
 /** \file newstopic.class.php
  * File that take care of a topic (of a newsitem)
  *
+ * @ingroup news
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a topic
+ *
+ * @ingroup news
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class topic {
 
 	function topic () {

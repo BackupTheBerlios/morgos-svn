@@ -18,10 +18,18 @@
 /** \file newsitem.class.php
  * File that take care of a newsitem
  *
+ * @ingroup news core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a newsItem
+ *
+ * @ingroup news core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class newsItem {
 	
 	function newsItem () {

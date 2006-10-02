@@ -18,10 +18,18 @@
 /** \file usertranslatedgroups.class.php
  * File that take care of one translated group
  *
+ * @ingroup user core
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that represents a translatedgroup
+ *
+ * @ingroup user core
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class translatedGroup extends databaseObject {
 
 	/**

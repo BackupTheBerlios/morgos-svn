@@ -18,10 +18,18 @@
 /** \file eventmanager.class.php
  * File that take care of the eventmanager
  *
+ * @ingroup interface
  * @since 0.2
  * @author Nathan Samson
 */
 
+/**
+ * A class that holds a callback
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class callback {
 	/**
 	 * The name of the callback
@@ -78,6 +86,13 @@ class callback {
 	function getName () {return $this->_name;}
 }
 
+/**
+ * A class that represents an event
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class event {
 	/**
 	 * The list of all callbacks
@@ -169,6 +184,13 @@ class event {
 	function getName () {return $this->_name;}
 }
 
+/**
+ * A class that manages an event
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
 class eventManager {
 	/**
 	 * The list of all events. The key is the name of the event.
