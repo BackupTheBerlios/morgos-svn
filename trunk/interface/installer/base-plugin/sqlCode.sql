@@ -43,7 +43,7 @@ CREATE TABLE {prefix}pages (
   parentPageID int(11) NOT NULL,
   placeInMenu int(3) NOT NULL,
   action varchar(255),
-  pluginID varchar(36),
+  pluginID varchar(38),
   PRIMARY KEY (pageID),
   UNIQUE KEY (name)
 );

@@ -55,6 +55,11 @@ class plugin {
 	 * @protected
 	*/
 	var $_pluginAPI;
+	/**
+	 * The plugin version
+	 * @protected
+	*/
+	var $_version;
 	
 	
 	/**
@@ -113,6 +118,12 @@ class plugin {
 	 * @return (string)
 	*/
 	function getLoadedDir () {return $this->_loadedDir;}
+	/**
+	 * Returns the version
+	 * @public
+	 * @return (string)
+	*/
+	function getVersion () {return $this->_version;}
 	
 	/**
 	 * Returns that it is compatible or not
@@ -169,6 +180,10 @@ class plugin {
 	 * @return (bool)
 	*/
 	function isCorePlugin () {return false;}
+	
+	function isInstalled (&$foo) {return true;}
+	function install (&$foo) {}
+	function unInstall (&$foo) {}
 }
 
 class pluginManager {
@@ -260,13 +275,16 @@ class pluginManager {
 	 * @public
 	*/
 	function loadPlugins () {
-		//echo ($this->_pluginAPI->_actionManager);
 		foreach ($this->_pluginsToLoad as $IDKey => $plugin) {
-			$result = $plugin->load ($this->_pluginAPI);
-			if (! isError ($result)) {
-				$this->_loadedPlugins[$IDKey] = $plugin;
-			} else {
-				return $result;
+			if ($plugin->isInstalled ($this->_pluginAPI)) {		
+				$result = $plugin->load ($this->_pluginAPI);
+				if (! isError ($result)) {
+					$sm = &$this->_pluginAPI->getSmarty ();
+					$sm->template_dir[] = $plugin->getLoadedDir ().'/skins/default';
+					$this->_loadedPlugins[$IDKey] = $plugin;
+				} else {
+					return $result;
+				}
 			}
 		}
 		$this->_pluginsToLoad = array ();
@@ -315,6 +333,20 @@ class pluginManager {
 	}
 	
 	/**
+	 * Return all loaded plugins ID
+	 *
+	 * @public
+	 * @return (string plugin array)
+	*/
+	function getAllLoadedPluginsID () {
+		$results = array ();
+		foreach ($this->getAllLoadedPlugins () as $plugin) {
+			$results[] = $plugin->getID ();
+		}
+		return $results;
+	}
+	
+	/**
 	 * Return a loaded plugin
 	 *
 	 * @param $ID (string)
@@ -328,6 +360,22 @@ class pluginManager {
 			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $ID);
 		}
 	}
+	
+	/**
+	 * Return a plugin
+	 *
+	 * @param $ID (string)
+	 * @public
+	 * @return (object plugin)
+	*/
+	function getPlugin ($ID) {
+		if ($this->existsPluginID ($ID)) {
+			return $this->_foundPlugins[$ID];
+		} else {
+			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $ID);
+		}
+	}
+		
 	
 	/**
 	 * Checks that a pluginID is loaded

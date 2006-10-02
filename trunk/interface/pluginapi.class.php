@@ -165,17 +165,20 @@ class pluginAPI {
 		$pageLang = 'en_UK';
 		$array = array ();
 		foreach ($menu as $menuItem) {
-			$itemArray = array ();
-			$itemArray['Childs'] = $this->menuToArray ($this->_pageManager->getMenu ($menuItem));
-			$t = $menuItem->getTranslation ($pageLang);
-			if (isError ($t)) {
-				var_dump ($menuItem);
+			if (($menuItem->getPluginID () == null) or
+			    (in_array ($menuItem->getPluginID (), $this->_pluginManager->getAllLoadedPluginsID ()))) {
+				$itemArray = array ();
+				$itemArray['Childs'] = $this->menuToArray ($this->_pageManager->getMenu ($menuItem));
+				$t = $menuItem->getTranslation ($pageLang);
+				if (isError ($t)) {
+					var_dump ($menuItem);
+				}
+				$itemArray['Title'] = $t->getTitle ();
+				$itemArray['Link'] = $menuItem->getLink (); 
+				$itemArray['ID'] = $menuItem->getID (); 
+				$itemArray['PlaceInMenu'] = $menuItem->getPlaceInMenu (); 
+				$array[] = $itemArray;
 			}
-			$itemArray['Title'] = $t->getTitle ();
-			$itemArray['Link'] = $menuItem->getLink (); 
-			$itemArray['ID'] = $menuItem->getID (); 
-			$itemArray['PlaceInMenu'] = $menuItem->getPlaceInMenu (); 
-			$array[] = $itemArray;
 		}
 		return $array;
 	}

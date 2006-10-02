@@ -29,6 +29,7 @@ class helloWorldPlugin extends plugin {
 		$this->_ID = '{5c81a4b6-8141-45d6-8003-652e46447575}';
 		$this->_minMorgOSVersion = '0.2';
 		$this->_maxMorgOSVersion = '0.2';
+		$this->_version = '1.0';
 	}
 	
 	function load ($pluginAPI) {

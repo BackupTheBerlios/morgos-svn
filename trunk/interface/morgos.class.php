@@ -133,7 +133,7 @@ class morgos {
 			$this->_pluginAPI->setPluginManager ($this->_pluginManager);
 						
 			// Hardcoded for the moment
-			$this->_smarty->template_dir = 'skins/default/';
+			$this->_smarty->template_dir = array ('skins/default/');
 			$this->_smarty->compile_dir = 'skins_c/default/';
 			$this->_smarty->cache_dir = 'cache/default/';
 			$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';

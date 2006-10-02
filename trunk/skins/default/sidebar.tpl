@@ -32,4 +32,6 @@
 			{/if}
 		</div>
 	</div>
+	
+	{$Sidebar}
 </div>

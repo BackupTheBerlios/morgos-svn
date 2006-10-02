@@ -113,6 +113,12 @@ class page extends databaseObject {
 			return $baseLink .= '?action=viewPage&pageID='.$this->getID ();
 		}
 	}
+	/**
+	 * Returns the pluginID for the page
+	 * @public
+	 * @return (string)
+	*/
+	function getPluginID () {return $this->getOption ('pluginID');}
 	
 	/**
 	 * Returns of the page is in the admin site
