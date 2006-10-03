@@ -148,7 +148,7 @@ class pluginAPI {
 		$page = $this->_pageManager->newPage ();
 		$page->initFromDatabaseID ($pageID);	
 		if ($pageID == -1) {
-			debug_print_backtrace ();
+			morgosBacktrace ();
 		}
 		$userM = &$this->getUserManager ();
 		$user = &$userM->getCurrentUser ();

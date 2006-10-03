@@ -203,7 +203,7 @@ class configItem {
 		switch ($this->type) {
 			case STRING: return '\''.$this->getCurrentValue ().'\'';
 				break;
-			case BOOL: if ($this->getCurrentValue ()) {return 'true';} else {return false;}
+			case BOOL: if ($this->getCurrentValue ()) {return 'true';} else {return 'false';}
 				break;
 			case NUMERIC:
 			case REAL:

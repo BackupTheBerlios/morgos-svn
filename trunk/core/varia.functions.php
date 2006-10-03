@@ -184,4 +184,33 @@ function secureHTMLInput ($in) {
 function stripAttributes ($msg, $tag, $attr) {
 }
 
+function morgosBacktrace () {
+	
+	echo '<table>';
+	foreach (debug_backtrace () as $trace) {
+		if (strtolower ($trace['function']) == 'morgosbacktrace') {
+			continue;
+		}
+		echo '<tr>';
+			echo '<td>'.$trace['function'].'</td>';
+			echo '<td>'.$trace['file'].'</td>';
+			echo '<td>'.$trace['line'].'</td>';
+			foreach ($trace['args'] as $arg) {
+				if (is_object ($arg)) {
+					echo '<td>'.$arg->getType ().'</td>';
+				} elseif (is_array ($arg)) {
+					echo '<td>'.$arg.'</td>';
+				} else {
+					echo '<td>';
+					var_dump ($arg);
+					echo '</td>';
+				}
+			}
+		echo '</tr>';
+	}
+	
+	echo '</table>';
+	exit;
+}
+
 ?>

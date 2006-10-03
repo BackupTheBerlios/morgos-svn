@@ -47,8 +47,9 @@ class calendar {
 		$endTime = date (SQL_DATETIME, $this->getNextDay ($timestamp)-1);
 		$fTN = $this->_db->getPrefix ().'calendar';
 		$sql = "SELECT eventID FROM $fTN WHERE ";
-		$sql .= "(start <= '$startTime' AND end >= '$startTime') OR "; // start before
-		$sql .= "(start <= '$endTime'   AND end >= '$endTime')"; // start after
+		$sql .= "(start <= '$startTime' AND end >= '$startTime') OR "; // start before, but not ended yet
+		$sql .= "(start <= '$endTime'   AND end >= '$endTime') OR "; // start after, but not ended yet
+		$sql .= "(start >= '$startTime' AND end <= '$endTime')"; // start after, and end before
 		$q = $this->_db->query ($sql);
 		if (isError ($q)) {
 			return $q;

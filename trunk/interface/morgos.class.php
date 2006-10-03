@@ -231,8 +231,8 @@ class morgos {
 		$this->_actionManager = new actionManager ();
 		$this->_i18nManager = new localizer ();		
 		
-		$this->_smarty = new Smarty ();
-		$this->_smarty->template_dir = 'skins/default/';
+		$this->_smarty = new ExtendedSmarty ();
+		$this->_smarty->template_dir = array ('skins/default/');
 		$this->_smarty->compile_dir = 'skins_c/default/';
 		$this->_smarty->cache_dir = 'cache/default/';
 		$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';

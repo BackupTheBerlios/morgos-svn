@@ -107,8 +107,9 @@ class adminCorePluginAdminPlugin extends plugin {
 			}
 			$cm = &$this->_pluginAPI->getConfigManager ();
 			$a = new configItem ('/extplugs/'.$pluginID, BOOL);
-			$cm->addOption ($a);
 			$a->setValue (true);
+			$cm->addOption ($a);
+			
 			$this->_pluginAPI->writeConfigFile ($cm);
 			$this->_pluginAPI->addRuntimeMessage ('Plugin is enabled', NOTICE);
 			$this->_pluginAPI->executePreviousAction ();

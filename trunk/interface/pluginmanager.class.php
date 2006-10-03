@@ -297,6 +297,8 @@ class pluginManager {
 					$sm = &$this->_pluginAPI->getSmarty ();
 					$sm->template_dir[] = $plugin->getLoadedDir ().'/skins/default';
 					$this->_loadedPlugins[$IDKey] = $plugin;
+					$this->_foundPlugins[$IDKey] = $plugin; 
+					// done for PHP 4, otherwise the updated plugin isn't saved to loadedPlguins
 				} else {
 					return $result;
 				}

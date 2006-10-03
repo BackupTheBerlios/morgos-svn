@@ -32,7 +32,7 @@ class installerBasePlugin extends plugin {
 	}
 	
 	function load (&$pluginAPI) {
-		parent::load (&$pluginAPI);	
+		parent::load ($pluginAPI);	
 
 		/*$this->_pluginAPI->getActionManager ()->addAction (
 			new action ('installerAskLanguage', 'GET',  
