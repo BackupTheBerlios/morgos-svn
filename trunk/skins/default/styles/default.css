@@ -107,6 +107,12 @@ legend {
 	font-weight: bold;
 }
 
+#sidebar label {
+	float: none;
+	text-align: left;
+	display: block;
+}
+
 /*== OTHER ==*/
 
 a img {

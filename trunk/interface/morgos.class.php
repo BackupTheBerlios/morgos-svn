@@ -44,6 +44,39 @@ include_once ('interface/pluginapi.class.php');
 */
 
 /**
+ * A class that extends the functionality for smarty.
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
+class ExtendedSmarty extends Smarty {
+	
+	/**
+	 * Adds something to a value, put it after current value.
+	 *
+	 * @param $varName (string)
+	 * @param $extraValue (mixed)
+	 * @public
+	*/
+	function appendTo ($varName, $extraValue) {
+		$this->assign ($varName, $this->get_template_vars ($varName).$extraValue);
+	}
+	
+	/**
+	 * Prepends something to a value, put it before current value.
+	 *
+	 * @param $varName (string)
+	 * @param $extraValue (mixed)
+	 * @public
+	*/
+	function prependTo ($varName, $extraValue) {
+		$this->assign ($varName, $extraValue.$this->get_template_vars ($varName));
+	}
+
+}
+
+/**
  * A main class that uses all others to show a page.
  *
  * @ingroup interface
@@ -131,7 +164,7 @@ class morgos {
 			$this->_userManager = new userManager ($this->_dbModule);
 			$this->_pageManager = new pageManager ($this->_dbModule);
 			$this->_actionManager = new actionManager ();
-			$this->_smarty = new Smarty ();
+			$this->_smarty = new ExtendedSmarty ();
 			//$this->_smarty->debugging = true;
 			$this->_pluginAPI = new pluginAPI ($this);
 			$this->_pluginAPI->setEventManager ($this->_eventManager);

@@ -105,6 +105,8 @@ class viewPageCorePlugin extends plugin {
 		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
 		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage (), $pageLang));
 		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, $pageLang));
+		$sm->assign ('MorgOS_ExtraSidebar', '');
+		$sm->assign ('MorgOS_ExtraHead', '');
 		return true;
 	}
 	
