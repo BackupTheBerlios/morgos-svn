@@ -4,4 +4,3 @@
 	{$MorgOS_CurrentPage_Content}
 </div>
 {include file="footer.tpl"}
-{debug}

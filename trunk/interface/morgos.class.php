@@ -26,6 +26,9 @@ define ('MORGOS_VERSION', '0.2.0');
 define ('MORGOS_VIEWPAGE_PLUGINID', '{529e4a98-02a7-46bb-be2a-671a7dfc852f}');
 define ('MORGOS_USER_PLUGINID', '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}');
 define ('MORGOS_ADMIN_PLUGINID', '{b8731582-9309-4629-a3d9-647f26a5a345}');
+
+define ('MORGOS_DEFAULTSKIN_ID', '{33327ddc-9342-4f1a-9454-06e5a4adeef8}');
+
 include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
 include_once ('core/varia.functions.php');
@@ -37,6 +40,7 @@ include_once ('interface/actionmanager.class.php');
 include_once ('interface/pluginmanager.class.php');
 include_once ('interface/eventmanager.class.php');
 include_once ('interface/pluginapi.class.php');
+include_once ('interface/skinmanager.class.php');
 
 /**
  * This is the front-end for MorgOS.
@@ -134,6 +138,10 @@ class morgos {
 	 * @private
 	*/
 	var $_i18nManager;
+	/**
+	 * The skin manager
+	 * @private
+	*/
 	
 
 	/**
@@ -179,18 +187,12 @@ class morgos {
 			$this->_pluginAPI->setPluginManager ($this->_pluginManager);
 						
 			// Hardcoded for the moment
-			$this->_smarty->template_dir = array ('skins/default/');
-			$this->_smarty->compile_dir = 'skins_c/default/';
-			$this->_smarty->cache_dir = 'cache/default/';
+			$this->_skinManager = new skinManager ($this->_pluginAPI);
+			$this->_skinManager->findAllSkins ('skins/');
+			//$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
+			$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
 			$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';
-			$this->_smarty->config_dir = 'configs/';
 			$this->_smarty->assign_by_ref ('t', $this->_i18nManager);
-			
-			
-			if (isError ($a)) {
-				var_dump ($a);
-			}						
-
 			
 			$this->_pluginManager->findAllPlugins ('interface/core-plugins');
 			
@@ -214,8 +216,6 @@ class morgos {
 				}
 			}
 			$this->_pluginManager->loadPlugins ();
-			
-			$this->_smarty->assign ('SkinPath', 'skins/default');
 		} else {
 			$this->tinyInit ();
 			$this->loadInstaller ();
