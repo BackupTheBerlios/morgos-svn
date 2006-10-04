@@ -1,0 +1,79 @@
+#nav {
+	padding: 0;
+	margin: 0;
+
+	padding-bottom: 3px;
+	font-size: 17px;
+	border-top: solid #9dcf14 5px; /*groene kleur van het logo*/
+	/*border-right: solid #E2E2E2 5px;
+	/*-moz-border-radius-topright: 15px;*/
+	color: #000000;
+	height: 1em;
+	margin-top: 130px;
+}
+
+#nav li { /* all list items */
+	float: left;
+	position: relative;
+	list-style: none;
+	/*width: 10em;*/
+
+	padding-left: 25px;
+	padding-right: 25px;
+	text-align: center;
+
+	/*Mozilla only, css3??*/
+	opacity: .9;
+}
+
+#nav li ul { /* second-level lists */
+	display: none;
+	position: absolute;
+	top: 0em;
+
+	padding: 0; /* nodig voor ao FFx 1.0 */
+	border: solid #6d78b0 1px; /*blauw van het logo*/
+	background-color: #d0639c;/*blauw van het logo*/
+	width: 12em;
+}
+
+#nav li ul.ie {
+	top: 1em;
+}
+
+li>ul { /* to override top and left in browsers other than IE, which will position to the top right of the containing li, rather than bottom left */
+	top: auto;
+	left: auto;
+}
+
+#nav li:hover ul { /* lists nested under hovered list items */
+	display: block;
+}
+
+#nav li.over ul {
+	display: block;
+	left: -1em;
+}
+
+/*added myself*/
+#nav li li {
+	display: block;
+	float: none;
+	list-style: none;
+}
+
+#nav li ul li {
+	border: 0;
+	border-top: solid #A4a4A4 1px;
+	text-align: left;
+	padding: 2px;
+}
+
+/* Werkt niet in IE 6*/
+#nav li ul li:first-child {
+	border-top: 0;
+}
+
+#nav a {
+	text-decoration: none;
+}

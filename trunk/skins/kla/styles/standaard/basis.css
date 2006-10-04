@@ -1,0 +1,215 @@
+body {
+	/*background-color: #FFFFFF;*/
+	/*background-image: url('../../images/background.png');
+	background-attachment: fixed;*/
+	width: 80%;
+	margin: 10px;
+	margin-left: 10%;
+	margin-right: 10%;
+	font-family: verdana;
+	/*position: absolute;*/
+}
+
+body div {
+	position: absolute;
+	z-index: 1;
+}
+
+body div.header {
+	position: relative;
+	display: block;
+	border: 1px solid #E2E2E2;
+	/*-moz-border-radius: 15px;*/
+	padding: 2px;
+	/*height: auto;*/
+	background: #f8f8f8;
+	background-image: url('../../images/logo.png'); /*punt van de CSS bezien en niet van het bestand dat CSS aanroept*/
+	background-repeat: no-repeat;
+	background-position: top center;
+	_height: 155px; /*voor IE een plezier te doen, werkt niet op IE 4 voor MAC*/
+	min-height: 155px; /*min-heigt om eventuele foutmeldingen er ook in te laten passen*/
+	z-index: 2;
+}
+
+body div.header img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center; /*centreert in IE */
+	font-size: 2em; /*als er geen tekening wordt getoond wordt de alternatieve tekst getoond (met dubbele grootte)*/
+}
+
+body div.header p {
+	text-align: center;
+}
+
+body div.header p.h1 {
+	font-size: 30px;
+	padding: 0px;
+}
+
+body div.content {
+	position: relative;
+	background-color: #f8f8f8;
+	width: auto;
+	padding: 2px;
+	padding-bottom: 12px;
+    	color:#000000;
+    	font-size: 1em;
+    	border: 1px solid #E2E2E2;
+	/*-moz-border-radius: 15px;*/
+	margin-top: 10px;
+}
+
+body div.footer {
+	position: relative;
+	width: auto;
+	background-color: #f8f8f8;
+	border: 1px solid #E2E2E2;
+	text-align: center;
+	margin-top: 10px;
+	font-size: 0.8em;
+	padding-top: 3px;
+	padding-bottom: 1px;
+	vertical-align: center;
+}
+
+.warning {
+	display: block;
+	font-size: 2em;
+	color: red;
+	margin: 5px;
+	background-color: yellow;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	text-align: center;
+	background-image: url('./images/warning.png');
+	background-position: center left;
+	background-repeat: no-repeat;
+	padding-left: 80px;
+	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
+}
+
+.error {
+	display: block;
+	font-size: 2em;
+	color: red;
+	margin: 5px;
+	background-color: yellow;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	text-align: center;
+	background-image: url('./images/error.png');
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 80px;
+	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
+	vertical-align: middle;
+}
+
+.question {
+	display: block;
+	font-size: 2em;
+	margin: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	text-align: center;
+	background-image: url('./images/question.png');
+	background-position: center left;
+	background-repeat: no-repeat;
+	padding-left: 80px;
+	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
+}
+
+.info {
+	display: block;
+	font-size: 2em;
+	margin: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	text-align: center;
+	background-image: url('./images/info.png');
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 80px;
+	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
+}
+
+body div.content h1 {
+	text-align: center;
+}
+
+body div.content p.important {
+	text-align: left;
+	font-weight: bold;
+}
+
+body div.content p span.important {
+	font-weight: bold;
+}
+
+body div.content li span.important {
+	font-style: italic;
+}
+
+/*body div.content table {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}*/
+
+body div.content table tr td{
+	text-align: left;
+}
+
+body div.content table tr td.important {
+	text-align: center;
+	font-weight: bold;
+}
+
+body div.content table tr td.kop {
+	font-weight: bold;
+}
+
+body div.content table tr td.title {
+	font-weight: bold;
+	text-align: center;
+	border: solid black 1px;
+}
+
+body div.content div {
+	text-align: center;
+}
+
+body div.content div span.kop {
+	font-weight: bold;
+}
+
+body div.content div.notebook .opt {
+	display: none;
+}
+
+body div.content div.notebook .opt:target {
+	display: block;
+}
+
+body div.content img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	border: 0;
+}
+
+body div.content img.icon {
+	float: left;
+	display: block;
+	margin-right: 5px;
+}
+
+a {
+	color: #000000;
+}
