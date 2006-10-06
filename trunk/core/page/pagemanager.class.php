@@ -92,15 +92,14 @@ class pageManager {
 		if ($page->getPlaceInMenu () === 0) {
 			// do nothing, everything should be OK
 		} elseif ($page->getPlaceInMenu () === null) {
-			$pagesTableName = $this->db->getPrefix ().'pages';
-			$sql = "SELECT MAX(placeInMenu) FROM $pagesTableName WHERE parentPageID='$parentPageID'";
-			$q = $this->db->query ($sql);
-			if (! isError ($q)) {
-				$row = $this->db->fetchArray ($q);
-				$a['placeInMenu'] = $row['MAX(placeInMenu)']+1;
+			$parentPage = $page->getParentPage ();
+			$pInMen = $parentPage->getMaxPlaceInMenu ();
+			if (! isError ($pInMen)) {
+				$a = array ();
+				$a['placeInMenu'] = $pInMen; 
 				$page->updateFromArray ($a);
 			} else {
-				return $q;
+				return $pInMen;
 			}
 		} else {
 			$place = $page->getPlaceInMenu ();

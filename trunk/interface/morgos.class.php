@@ -321,7 +321,8 @@ class morgos {
 					$this->_pluginAPI->addMessage ($this->_i18nManager->translateError ($error), ERROR);
 				}
 				$this->_pluginAPI->executePreviousAction ();
-			} else {	
+			} else {
+				var_dump ($r);
 				$this->error ($this->_i18nManager->translate ('Unexpected error.'), true);
 			}
 		}

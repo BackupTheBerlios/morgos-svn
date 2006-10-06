@@ -182,7 +182,15 @@ class pluginAPI {
 				$itemArray['Title'] = $t->getNavTitle ();
 				$itemArray['Link'] = $menuItem->getLink (); 
 				$itemArray['ID'] = $menuItem->getID (); 
-				$itemArray['PlaceInMenu'] = $menuItem->getPlaceInMenu (); 
+				$itemArray['PlaceInMenu'] = $menuItem->getPlaceInMenu ();
+				$newParents = array ();
+				foreach ($menu as $parent) {
+					if ($parent->getID () !== $menuItem->getID ()) {
+						$tp = $parent->getTranslation ($pageLang);
+						$newParents[$parent->getID ()] = $tp->getNavTitle ();
+					}
+				}
+				$itemArray['PossibleNewParents'] = $newParents;
 				$array[] = $itemArray;
 			}
 		}

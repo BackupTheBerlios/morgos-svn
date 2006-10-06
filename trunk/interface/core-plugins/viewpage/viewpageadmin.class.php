@@ -58,6 +58,84 @@ class viewPageCoreAdminPlugin extends plugin {
 		$am->addAction (
 			new action ('adminDeletePage', 'GET',  
 				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
+				
+		$am->addAction (
+			new action ('adminAddPageToMenu', 'GET',  
+				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
+				
+		$am->addAction (
+			new action ('adminRemovePageFromMenu', 'GET',  
+				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
+				
+		$am->addAction (
+			new action ('adminMovePageNivDown', 'GET',  
+				array (&$this, 'onMovePageNivDown'), array ('pageID', 'newParentPageID'), array ()));
+		
+		$am->addAction (
+			new action ('adminMovePageNivUp', 'GET',  
+				array (&$this, 'onMovePageNivUp'), array ('pageID'), array ()));
+	}
+	
+	function onMovePageNivUp ($pageID) {
+		$em = &$this->_pluginAPI->getEventManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$page = $pageM->newPage ();			
+		$page->initFromName ('MorgOS_Admin_PageManager');
+		$em->triggerEvent ('viewAnyAdminPage', array ($page->getID ()));
+		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {				
+					$em = &$this->_pluginAPI->getEventManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$page = $pageM->newPage ();			
+		$page->initFromName ('MorgOS_Admin_PageManager');
+		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
+			$oldPage = $pageM->newPage ();
+			$oldPage->initFromDatabaseID ($pageID);
+			$oldParentPage = $oldPage->getParentPage ();
+			$newParentPage = $oldParentPage->getParentPage ();
+			$oldPage->updateFromArray (array ('parentPageID'=>$newParentPage->getID (), 'placeInMenu'=>$newParentPage->getMaxPlaceInMenu ()));
+			$oldPage->updateToDatabase ();				
+			//$this->_pluginAPI->executeAction (); // fill in
+			$this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}
+	}
+	
+	function onMovePageNivDown ($pageID, $newParentPageID) {
+		$em = &$this->_pluginAPI->getEventManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$page = $pageM->newPage ();			
+		$page->initFromName ('MorgOS_Admin_PageManager');
+		$em->triggerEvent ('viewAnyAdminPage', array ($page->getID ()));
+		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {				
+					$em = &$this->_pluginAPI->getEventManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$page = $pageM->newPage ();			
+		$page->initFromName ('MorgOS_Admin_PageManager');
+		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
+			$oldPage = $pageM->newPage ();
+			$oldPage->initFromDatabaseID ($pageID);
+			$newParentPage = $pageM->newPage ();
+			$newParentPage->initFromDatabaseID ($newParentPageID);
+			$oldPage->updateFromArray (array ('parentPageID'=>$newParentPage->getID (), 'placeInMenu'=>$newParentPage->getMaxPlaceInMenu ()));
+			$oldPage->updateToDatabase ();				
+			//$this->_pluginAPI->executeAction (); // fill in
+			$this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}
+		} else {
+			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$sm->display ('admin/login.tpl');
+		}
 	}
 	
 	function onViewPageManager ($pageID, $pageLang) {
@@ -77,7 +155,7 @@ class viewPageCoreAdminPlugin extends plugin {
 			$sm->assign ('MorgOS_PagesList', $this->_pluginAPI->menuToArray ($childPages));
 			$tparent = $parentPage->getTranslation ('en_UK');
 			if (! isError ($tparent)) {
-				$tparentarray = array ('Title'=>$tparent->getTitle (), 'NavTitle'=>$tparent->getNavTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ());
+				$tparentarray = array ('Title'=>$tparent->getTitle (), 'NavTitle'=>$tparent->getNavTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage (), 'PossibleNewParents'=>array ());
 				$sm->assign ('MorgOS_ParentPage', $tparentarray);
 			} else {
 				$sm->assign ('MorgOS_ParentPage', array ('Title'=>'', 'NavTitle'=>'', 'Content'=>'', 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ()));

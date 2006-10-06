@@ -9,6 +9,7 @@
 				<th>{t s='Place in menu'}</th>
 				<th>{t s='View'}</th>
 				<th>{t s='Delete'}</th>
+				<th>{t s='Place as child'}</th>
 			</tr>
 		{foreach from=$MorgOS_PagesList item='childPage' name='pageslist'}
 			<tr>
@@ -41,6 +42,17 @@
 					<a href="index.php?action=adminDeletePage&amp;pageID={$childPage.ID}" onclick="return confirm ('{t s="Are you sure you wan to delete %p" p=$childPage.Title}')">
 						<img src="{$SkinPath}/images/icons/delete.png" alt="{t s='Delete'}"/>
 					</a>
+				</td>
+				<td>
+					<form action="index.php" method="get">
+						{html_options name="newParentPageID" options=$childPage.PossibleNewParents}
+						<input type="hidden" name="pageID" value="{$childPage.ID}" />
+						<input type="hidden" name="action" value="adminMovePageNivDown" />
+						<input type="submit" value="{t s="Change parent"}" />
+					</form>
+				</td>
+				<td>
+					<a href="index.php?action=adminMovePageNivUp&amp;pageID={$childPage.ID}"><img src="{$SkinPath}/images/icons/nivup.png" alt="{t s="Change up"}" /></a>
 				</td>
 			</tr>
 		{/foreach}

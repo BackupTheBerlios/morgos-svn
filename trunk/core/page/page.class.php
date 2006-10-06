@@ -257,5 +257,16 @@ class page extends databaseObject {
 		}
 		return $childPages;
 	}
+	
+	function getMaxPlaceInMenu () {
+		$sql = "SELECT MAX(placeInMenu) FROM ".$this->getFullTableName ()." WHERE parentPageID='". $this->getID ()."'";
+		$q = $this->db->query ($sql);
+		if (! isError ($q)) {
+			$row = $this->db->fetchArray ($q);
+			return $row['MAX(placeInMenu)']+1;
+		} else {
+			return $a;
+		}
+	}
 }
 ?>
