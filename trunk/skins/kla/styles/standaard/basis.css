@@ -181,6 +181,15 @@ body div.content table tr td.title {
 	border: solid black 1px;
 }
 
+body div.content table {
+	border-collapse: collapse;
+	margin-bottom: 15px;
+}
+
+body div.content table td, body div.content table th {
+	border: solid 1px #E2E2E2;
+}
+
 body div.content div {
 	text-align: center;
 }

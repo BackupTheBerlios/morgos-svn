@@ -48,9 +48,12 @@ class pluginAPI {
 	var $_smarty;
 	
 	var $_morgos;
+	var $_messages;
 	
 	function pluginAPI (&$morgos) {
 		$this->_morgos = &$morgos;
+		
+		$this->_messages = array (ERROR=>array(), WARNING=>array (), NOTICE=>array ());
 	}
 
 	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
@@ -110,15 +113,8 @@ class pluginAPI {
 	 * @public
 	*/
 	function addMessage ($tMessage, $type) {
-		$used = 0;
-		foreach ($_COOKIE as $key=>$v) {
-			if (substr ($key, 0, strlen ('message_')) == 'message_') {
-				if (substr ($key, strlen ('message_'), 1) == $type) {
-					$used++;
-				}
-			}
-		}
-		$newKey = 'message_'.$type.'_'.$used;
+		$newKey = 'message_'.$type.'_'.count ($this->_messages[$type]);
+		$this->_messages[$type][] = $tMessage;
 		setcookie ($newKey, $tMessage);
 	}
 	
@@ -132,7 +128,7 @@ class pluginAPI {
 		foreach ($_COOKIE as $key=>$value) {
 			if (substr ($key, 0, strlen ('message_')) == 'message_') {
 				$type = (int) substr ($key, strlen ('message_'), 1);
-				$messages[$type][] = $value;
+				$messages[$type][] = stripslashes ($value);
 				setcookie ($key, '');
 			}
 		}

@@ -156,12 +156,14 @@ class morgos {
 	 * @public
 	*/
 	function init () {
+		$this->checkSmartyDirs ();
 		if ($this->isInstalled ()) {
 			ob_start ();
-			$this->_eventManager = &new eventManager ();
-			$this->_configManager = &new configurator ();
+			$this->_eventManager = new eventManager ();
+			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
-			$this->_i18nManager = &new localizer ();
+			$this->_i18nManager = new localizer ();
+			$this->_i18nManager->loadErrorStrings ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
 			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
 								  $this->_configManager->getStringItem ('/databases/user'), 
@@ -187,10 +189,11 @@ class morgos {
 			$this->_pluginAPI->setPluginManager ($this->_pluginManager);
 						
 			// Hardcoded for the moment
+
 			$this->_skinManager = new skinManager ($this->_pluginAPI);
 			$this->_skinManager->findAllSkins ('skins/');
-			//$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
-			$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
+			$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
+			//$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
 			$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';
 			$this->_smarty->assign_by_ref ('t', $this->_i18nManager);
 			
@@ -229,7 +232,8 @@ class morgos {
 	function tinyInit () {
 		ob_start ();
 		$this->_actionManager = new actionManager ();
-		$this->_i18nManager = new localizer ();		
+		$this->_i18nManager = new localizer ();	
+		$this->_i18nManager->loadErrorStrings ();	
 		
 		$this->_smarty = new ExtendedSmarty ();
 		$this->_smarty->template_dir = array ('skins/default/');
@@ -311,8 +315,13 @@ class morgos {
 		if (isError ($r)) {
 			if ($r->is ('ACTIONMANAGER_ACTION_NOT_FOUND')) {
 				$this->error ($this->_i18nManager->translate ('You can\'t do this.'), true);
-			} else {
-				var_dump ($r);
+			} elseif ($r->is ('ACTIONMANAGER_INVALID_INPUT')) {
+				$errors = $r->getParam (1);
+				foreach ($errors as $error) {
+					$this->_pluginAPI->addMessage ($this->_i18nManager->translateError ($error), ERROR);
+				}
+				$this->_pluginAPI->executePreviousAction ();
+			} else {	
 				$this->error ($this->_i18nManager->translate ('Unexpected error.'), true);
 			}
 		}
@@ -342,6 +351,22 @@ class morgos {
 	*/
 	function isInstalled () {
 		return file_exists ('config.php');
+	}
+	
+	/**
+	 * Checks that smarty dirs are writable. If not show an error
+	 *
+	 * @private
+	*/
+	function checkSmartyDirs () {
+		if (file_exists ('skins_c/default')) {
+			if (is_dir ('skins_c/default')) {
+				if (is_writable ('skins_c/default')) {
+					return;
+				}
+			}
+		}
+		echo 'ERROR: A required dir is not found or writable!! fix it (skins_c/default)';
 	}
 }
 

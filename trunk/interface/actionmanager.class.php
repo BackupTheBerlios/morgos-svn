@@ -25,6 +25,139 @@
 */
 
 /**
+ * A class that is the base class for all inputs
+ * @since 0.2
+ * @ingroup interface
+ * @author Nathan Samson
+*/
+class baseInput {
+	var $_name;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param $name (string)
+	*/
+	function baseInput ($name) {
+		$this->_name = $name;
+	}
+	
+	function checkInput ($from) {
+		if ($this->isGiven ($from)) {
+			return true;
+		}
+	}
+	
+	function isGiven ($from)  {
+		$fromArray = $this->getFromArray ($from);
+		return array_key_exists ($this->_name, $fromArray);
+	}
+	
+	function getValue ($from) {
+		if ($this->isGiven ($from)) {
+			$fromArray = $this->getFromArray ($from);
+			return $fromArray[$this->_name];
+		} else {
+			return null;
+		}
+	}
+	
+	function getFromArray ($from) {
+		switch ($from) {
+			case 'POST':
+				return $_POST;
+				break;
+			case 'GET':
+				return $_GET;
+				break;
+		}
+	}
+	
+	function getName () { return $this->_name; }
+	function getError ($from) {return new Error ('');}
+}
+
+/**
+ * A string input class
+ * @ingroup interface
+ * @since 0.2
+*/
+class StringInput extends baseInput {
+}
+
+class EmailInput extends StringInput {
+}
+
+/**
+ * An ID input class, an ID is an int and always positive.
+ * @ingroup interface
+ * @since 0.2
+*/
+class IDInput extends baseInput {
+	function checkInput ($from) {
+		if ($this->isGiven ($from)) {
+			if (is_int ($this->getValue ($from))) {
+				return $this->getValue ($from) >= 0;
+			} else {
+				return false;
+			}
+		}
+	}
+}
+
+/**
+ * A password input class. This is used when the user inputs a new password (that should be repeated)
+ * @ingroup interface
+ * @since 0.2
+*/
+class PasswordNewInput extends baseInput {
+
+	function checkInput ($from) {
+		if ($this->isGiven ($from)) {
+			$vals = $this->getValues ($from);
+			return $vals[0] == $vals[1];
+		}
+	}
+	
+	function isGiven ($from)  {
+		$fromArray = $this->getFromArray ($from);
+		return (array_key_exists ($this->_name.'1', $fromArray) and 
+			array_key_exists ($this->_name.'2', $fromArray)) ;
+	}
+	
+	function getValue ($from) {
+		if ($this->isGiven ($from)) {
+			$fromArray = $this->getFromArray ($from);
+			return $fromArray[$this->_name.'1'];
+		} else {
+			return null;
+		}
+	}
+	
+	function getValue2 ($from) {
+		if ($this->isGiven ($from)) {
+			$fromArray = $this->getFromArray ($from);
+			return $fromArray[$this->_name.'2'];
+		} else {
+			return null;
+		}
+	}
+
+	function getValues ($from) {
+		$array = $this->getFromArray ($from);
+		$values = array ($this->getValue ($from), $this->getValue2 ($from));
+		return $values;
+	}
+	
+	function getError ($from) {
+		$vals = $this->getValues ($from);
+		if ($vals[0] !== $vals[1]) {
+			return new Error  ('ACTIONMANAGER_PASSWORDS_NOT_EQUAL');
+		}
+	}
+}
+
+/**
  * A class that represents an action
  *
  * @ingroup interface
@@ -104,12 +237,28 @@ class action {
 		}
 		
 		$vals = array ();
+		$errors = array ();
 		foreach ($this->_requiredOptions as $option) {
-			if (array_key_exists ($option, $a)) {
-				$vals[$option] = $a[$option];
+			if (is_string ($option)) {
+				if (array_key_exists ($option, $a)) {
+					$vals[$option] = $a[$option];
+				} else {
+					return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
+				}
 			} else {
-				return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
+				if ($option->checkInput ($this->_method)) {
+					if ($option->getValue ($this->_method) != null) {
+						$vals[$option->getName ()] = $option->getValue ($this->_method);
+					} else {
+						$errors[] = new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option->getName ());
+					}
+				} else {
+					$errors[] = $option->getError ($this->_method);
+				}
 			}
+		}
+		if ($errors != array ()) {
+			return new Error ('ACTIONMANAGER_INVALID_INPUT', $errors);
 		}
 		
 		foreach ($this->_notRequiredOptions as $option) {
@@ -170,6 +319,8 @@ class actionManager {
 			} else {
 				return $action->getParameters ($var);
 			}
+			var_dump ($action->getParameters ($var));
+			die ();
 		} else {
 			return new Error ('ACTIONMANAGER_ACTION_NOT_FOUND', $actionName);
 		}

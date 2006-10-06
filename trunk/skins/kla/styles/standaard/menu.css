@@ -29,11 +29,10 @@
 	opacity: .9;
 }
 
-#nav li ol	padding: 0;
-	margin: 0; { /* second-level lists */
+#nav li ol { /* second-level lists */
 	display: none;
 	position: absolute;
-	top: 0em;
+	top: 1em;
 
 	padding: 0; /* nodig voor ao FFx 1.0 */
 	border: solid #A4a4A4 1px;

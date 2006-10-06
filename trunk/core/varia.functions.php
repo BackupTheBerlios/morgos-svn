@@ -45,7 +45,7 @@ class Error {
 	function Error ($error) {
 		$this->_error = $error;
 		for ($i = 1; $i < func_num_args (); $i++) {
-			$this->_params[] = func_get_arg ($i);
+			$this->_params[$i-1] = func_get_arg ($i);
 		}
 	}
 	
@@ -58,6 +58,12 @@ class Error {
 	}
 	
 	function getError () {return $this->_error;}
+	
+	function getParam ($n) {
+		return $this->_params[$n-1];
+	}
+	
+	function getParams () {return $this->_params;}
 }
 
 /**
@@ -135,7 +141,7 @@ function versionCompare ($version1, $version2, $operator) {
  * @return (string)
 */
 function secureHTMLInput ($in) {
-	$in = strip_tags ($in, '<h1><h2><h3><h4><h5><h6><pre><p><a><em><strong><u><ul><ol><li><br><hr><img><sup><sub><blockquote>');
+	$in = strip_tags ($in, '<h1><h2><h3><h4><h5><h6><pre><p><a><em><strong><u><ul><ol><li><br><hr><img><sup><sub><blockquote><table><tr><td><th><tbody><thead><tfoot>');
 	$in = stripslashes ($in);
 	$stripAttrib = "'\\s(onblur)=\"(.*?)\"'i";
 	$in = preg_replace ($stripAttrib, '', $in);

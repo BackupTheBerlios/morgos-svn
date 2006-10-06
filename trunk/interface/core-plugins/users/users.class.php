@@ -20,6 +20,7 @@
  *
  * @since 0.2
  * @author Sam Heijens
+ * @author Nathan Samson
 */
 class userCorePlugin extends plugin {
 	
@@ -34,13 +35,18 @@ class userCorePlugin extends plugin {
 	function load (&$pluginAPI) {
 		parent::load (&$pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
-		$am->addAction (new action ('userLogin', 'POST',  array ($this, 'onLogin'), array ('login','password'), array ()));
-		$am->addAction (new action ('userLogout', 'POST',  array ($this, 'onLogout'), array (), array ()));
+		$am->addAction (new action ('userLogin', 'POST',  array ($this, 'onLogin'), 
+			array ('login','password'), array ()));
+		$am->addAction (new action ('userLogout', 'POST',  array ($this, 'onLogout'), 
+			array (), array ()));
 		$am->addAction (
-			new action ('userRegisterForm', 'POST',  array ($this, 'onRegisterForm'), array (), array ('pageLang')));
+			new action ('userRegisterForm', 'POST',  array ($this, 'onRegisterForm'), 
+				array (), array ('pageLang')));
 		$am->addAction (
 			new action ('userRegister', 'POST',  array ($this, 'onRegister'), 
-			array ('login', 'email', 'password1', 'password2'), array ()));
+				array (new StringInput ('login'), new EmailInput ('email'), 
+					new PasswordNewInput ('password')), 
+				array ()));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
 		$em->subscribeToEvent ('viewPage', new callback ('userVars', array ($this, 'setUserVars')));
@@ -90,26 +96,21 @@ class userCorePlugin extends plugin {
 		$sm->display ('user/registerform.tpl');
 	}	
 	
-	function onRegister ($login, $email, $password1, $password2) {
-		if ($password1 == $password2) {
-			$uM = &$this->_pluginAPI->getUserManager ();
-			$u = $uM->newUser ();
-			$u->initFromArray (array ('login'=>$login, 'email'=>$email, 'password'=>md5 ($password1)));
-			$r = $uM->addUserToDatabase ($u);
-			if (! isError ($r)) {
-				$this->_pluginAPI->addMessage ('Your account was succesfully created', NOTICE);
-			} elseif ($r->is ('USERMANAGER_LOGIN_EXISTS')) {
-				$this->_pluginAPI->addMessage ('This login is already used, try another one.', ERROR);			
-			} elseif ($r->is ('USERMANAGER_EMAIL_EXISTS')) {
-				$this->_pluginAPI->addMessage ('This email is already used, try another one.', ERROR);
-			} else {
-				$this->_pluginAPI->addMessage ('There was a problem with adding you to the database', ERROR);
-			}
-			$this->_pluginAPI->executePreviousAction ();
+	function onRegister ($login, $email, $password) {
+		$uM = &$this->_pluginAPI->getUserManager ();
+		$u = $uM->newUser ();
+		$u->initFromArray (array ('login'=>$login, 'email'=>$email, 'password'=>md5 ($password)));
+		$r = $uM->addUserToDatabase ($u);
+		if (! isError ($r)) {
+			$this->_pluginAPI->addMessage ('Your account was succesfully created', NOTICE);
+		} elseif ($r->is ('USERMANAGER_LOGIN_EXISTS')) {
+			$this->_pluginAPI->addMessage ('This login is already used, try another one.', ERROR);			
+		} elseif ($r->is ('USERMANAGER_EMAIL_EXISTS')) {
+			$this->_pluginAPI->addMessage ('This email is already used, try another one.', ERROR);
 		} else {
-			$this->_pluginAPI->addRuntimeMessage ('Passwords didn\'t match', ERROR);
-			$this->onRegisterForm ();
+			$this->_pluginAPI->addMessage ('There was a problem with adding you to the database', ERROR);
 		}
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onForgotPassword () {

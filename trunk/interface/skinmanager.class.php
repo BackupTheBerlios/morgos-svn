@@ -43,6 +43,18 @@ class skin {
 		$this->_maxMorgOSVersion = $SkinMaxMorgOSVersion;
 	}
 	
+	function canRun () {
+		if (! file_exists ($this->getCompileDir ())) {
+			return new Error ('');
+		}
+		if (! is_dir ($this->getCompileDir ())) {
+			return new Error ('');
+		}
+		if (! is_writable ($this->getCompileDir ())) {
+			return new Error ('');
+		}
+	}
+	
 	function getDir () {
 		return $this->_baseDir. $this->_baseSkinDir;
 	}
@@ -78,20 +90,30 @@ class skinManager {
 			if (is_dir ($dir.$dirName)) {
 				if (file_exists ($dir.$dirName.'/skin.php')) {
 					$skin = new skin ($dir.$dirName.'/skin.php', $dir, $dirName);
-					$this->_allFoundSkins[$skin->getID ()] = $skin;
+					if (! isError ($skin->canRun ())) {
+						$this->_allFoundSkins[$skin->getID ()] = $skin;
+					}
 				}
 			}
 		}
 	}
 	
 	function loadSkin ($skinID) {
-		$skin = $this->_allFoundSkins[$skinID];
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->template_dir = array ($skin->getDir ());
-		$sm->compile_dir = $skin->getCompileDir ();
-		$sm->cache_dir = $skin->getCacheDir ();
-		//$sm->config_dir = $skin->getConfigDir ();
-		$sm->assign ('SkinPath', $skin->getDir ());
+		if ($this->existsSkin ($skinID)) {
+			$skin = $this->_allFoundSkins[$skinID];
+			$sm = &$this->_pluginAPI->getSmarty ();
+			$sm->template_dir = array ($skin->getDir ());
+			$sm->compile_dir = $skin->getCompileDir ();
+			$sm->cache_dir = $skin->getCacheDir ();
+			//$sm->config_dir = $skin->getConfigDir ();
+			$sm->assign ('SkinPath', $skin->getDir ());
+		} else {
+			return new Error ('SKINMANAGER_SKIN_NOT_FOUND');
+		}
+	}
+	
+	function existsSkin ($skinID) {
+		return array_key_exists ($skinID, $this->_allFoundSkins);
 	}
 
 }

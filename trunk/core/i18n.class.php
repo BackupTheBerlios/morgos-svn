@@ -31,8 +31,10 @@
  * @author Nathan Samson
 */
 class localizer {
+	var $_errorStrings;
 
 	function localizer () {
+		$this->_errorStrings = array ();
 	}
 	
 	function loadLanguage () {
@@ -43,6 +45,12 @@ class localizer {
 	
 	function loadStrings () {
 	}
+	
+	function loadErrorStrings () {
+		$errorStrings = array ();
+		include ('i18n/errors.en.php');
+		$this->_errorStrings = array_merge ($this->_errorStrings, $errorStrings);
+	}
 
 	function translate ($s, $params = array ()) {
 		foreach ($params as $k=>$v) {
@@ -51,7 +59,16 @@ class localizer {
 		return $s;
 	}
 	
-	function translateError () {
+	function translateError ($error) {
+		if (array_key_exists ($error->getError (), $this->_errorStrings)) {
+			$s = $this->_errorStrings[$error->getError ()];
+			foreach ($error->getParams () as $key=>$string) {
+				$s = str_replace ('%'.($key+1), $string, $s);
+			}
+			return $s;
+		} else {
+			return $error->getError ();
+		}
 	}
 	
 
