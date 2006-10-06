@@ -411,7 +411,7 @@ class pageManager {
 		if ($this->allOptionsForTranslatedPage === null) {
 			$fields = $this->db->getAllFields ($this->db->getPrefix ().'translatedPages');
 			if (! isError ($fields)) {
-				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedPages', array ('translatedPageID', 'translatedTitle', 'translatedContent', 'pageID', 'languageCode'));
+				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedPages', array ('translatedPageID', 'translatedTitle', 'translatedNavTitle', 'translatedContent', 'pageID', 'languageCode'));
 				if (! isError ($allOptions)) {
 					$this->allOptionsForTranslatedPage = $allOptions;
 				}

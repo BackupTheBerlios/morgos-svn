@@ -58,6 +58,7 @@
 		<h3>{t s="Edit page details"}</h3>
 		<form method="post" action="index.php">
 			<p><label for="pageTitle">{t s="Pagetitle: "}</label><input type="text" name="pageTitle" id="pageTitle" value="{$MorgOS_ParentPage.Title}" /></p>
+			<p><label for="pageNavTitle">{t s="Title for links: "}</label><input type="text" name="pageNavTitle" id="pageNavTitle" value="{$MorgOS_ParentPage.NavTitle}" /></p>
 			<p><label for="pageContent">{t s="Pagecontent: "}</label>{include file="admin/pageeditor.tpl" name="pageContent" id="pageContent" curCont=$MorgOS_ParentPage.Content}</p>
 			<input type="hidden" name="pageID" value="{$MorgOS_ParentPage.ID}" />
 			<input type="hidden" name="action" value="adminSavePage" />

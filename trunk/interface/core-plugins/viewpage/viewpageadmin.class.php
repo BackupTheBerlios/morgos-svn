@@ -49,7 +49,7 @@ class viewPageCoreAdminPlugin extends plugin {
 				
 		$am->addAction (
 			new action ('adminSavePage', 'POST',  
-				array (&$this, 'onSavePage'), array ('pageID', 'pageTitle', 'pageContent'), array ()));
+				array (&$this, 'onSavePage'), array ('pageID', 'pageTitle', 'pageNavTitle', 'pageContent'), array ()));
 				
 		$am->addAction (
 			new action ('adminNewPage', 'GET',  
@@ -77,10 +77,10 @@ class viewPageCoreAdminPlugin extends plugin {
 			$sm->assign ('MorgOS_PagesList', $this->_pluginAPI->menuToArray ($childPages));
 			$tparent = $parentPage->getTranslation ('en_UK');
 			if (! isError ($tparent)) {
-				$tparentarray = array ('Title'=>$tparent->getTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ());
+				$tparentarray = array ('Title'=>$tparent->getTitle (), 'NavTitle'=>$tparent->getNavTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ());
 				$sm->assign ('MorgOS_ParentPage', $tparentarray);
 			} else {
-				$sm->assign ('MorgOS_ParentPage', array ('Title'=>'', 'Content'=>'', 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ()));
+				$sm->assign ('MorgOS_ParentPage', array ('Title'=>'', 'NavTitle'=>'', 'Content'=>'', 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ()));
 			}
 			
 			if ($pageLang == null) {
@@ -138,7 +138,7 @@ class viewPageCoreAdminPlugin extends plugin {
 		}
 	}
 	
-	function onSavePage ($pageID, $pageTitle, $pageContent) {
+	function onSavePage ($pageID, $pageTitle, $pageNavTitle, $pageContent) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = &$pageManager->newPage ();			
 		$page->initFromName ('MorgOS_Admin_PageManager');
@@ -148,7 +148,7 @@ class viewPageCoreAdminPlugin extends plugin {
 			$editedPage->initFromDatabaseID ($pageID);
 			$tPage = $editedPage->getTranslation ('en_UK');
 			$pageContent = secureHTMLInput ($pageContent);
-			$tPage->updateFromArray (array ('translatedContent'=>$pageContent, 'translatedTitle'=>$pageTitle));
+			$tPage->updateFromArray (array ('translatedContent'=>$pageContent, 'translatedTitle'=>$pageTitle, 'translatedNavTitle'=>$pageNavTitle));
 			$tPage->updateToDatabase ();
 			$a = $this->_pluginAPI->executePreviousAction ();
 		} else {

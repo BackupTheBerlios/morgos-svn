@@ -41,13 +41,15 @@ class translatedPage extends databaseObject {
 	*/
 	function translatedPage ($db, $extraOptions, &$parent) {
 		$translatedTitle = new dbField ('translatedTitle', 'varchar(255)');
+		$translatedNavTitle = new dbField ('translatedNavTitle', 'varchar(255)');
+		$translatedNavTitle->canBeNull = true;
 		$translatedContent = new dbField ('translatedContent', 'varchar(255)');
 		$translatedContent->canBeNull = true;		
 		$pageID = new dbField ('pageID', 'int(11)');
 		$pageID->canBeNull = true;
 		$languageCode = new dbField ('languageCode', 'varchar(5)');		
 		
-		parent::databaseObject ($db, $extraOptions, array ('translatedTitle'=>$translatedTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent);
+		parent::databaseObject ($db, $extraOptions, array ('translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent);
 	}
 	
 	/**
@@ -84,6 +86,20 @@ class translatedPage extends databaseObject {
 	 * @return (string)
 	*/
 	function getTitle () {return $this->getOption ('translatedTitle');}
+	
+	/**
+	 * Returns the navigation title of the page
+	 * @public
+	 * @return (string)
+	*/
+	function getNavTitle () {
+		if ($this->getOption ('translatedNavTitle')) {
+			return $this->getOption ('translatedNavTitle');
+		} else {
+			return $this->getOption ('translatedTitle');
+		}
+	}
+	
 	/**
 	 * Returns the content
 	 * @public

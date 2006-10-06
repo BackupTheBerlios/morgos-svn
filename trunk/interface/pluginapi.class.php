@@ -179,7 +179,7 @@ class pluginAPI {
 				if (isError ($t)) {
 					var_dump ($menuItem);
 				}
-				$itemArray['Title'] = $t->getTitle ();
+				$itemArray['Title'] = $t->getNavTitle ();
 				$itemArray['Link'] = $menuItem->getLink (); 
 				$itemArray['ID'] = $menuItem->getID (); 
 				$itemArray['PlaceInMenu'] = $menuItem->getPlaceInMenu (); 
