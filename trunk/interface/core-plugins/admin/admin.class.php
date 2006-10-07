@@ -41,10 +41,10 @@ class adminCorePlugin extends plugin {
 		$em = &$this->_pluginAPI->getEventManager ();
 		$am->addAction (
 			new action ('admin', 'GET',  array (&$this, 'onViewAdmin'), 
-				array (), array ('pageID', 'pageLang')));
+				array (), array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));
 		$am->addAction (
 			new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), 
-			array ('adminLogin', 'adminPassword'), array ()));
+			array (new StringInput ('adminLogin'), new StringInput ('adminPassword')), array ()));
 		$am->addAction (
 			new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), array ()));
 			

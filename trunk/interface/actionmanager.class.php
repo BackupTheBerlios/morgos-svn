@@ -44,7 +44,9 @@ class baseInput {
 	
 	function checkInput ($from) {
 		if ($this->isGiven ($from)) {
-			return true;
+			return null;
+		} else {
+			return new Error ('EMPTY_INPUT');
 		}
 	}
 	
@@ -74,7 +76,6 @@ class baseInput {
 	}
 	
 	function getName () { return $this->_name; }
-	function getError ($from) {return new Error ('');}
 }
 
 /**
@@ -106,6 +107,14 @@ class IDInput extends baseInput {
 }
 
 /**
+ * An locale input class.
+ * @ingroup interface
+ * @since 0.2
+*/
+class LocaleInput extends baseInput {
+}
+
+/**
  * A password input class. This is used when the user inputs a new password (that should be repeated)
  * @ingroup interface
  * @since 0.2
@@ -115,7 +124,13 @@ class PasswordNewInput extends baseInput {
 	function checkInput ($from) {
 		if ($this->isGiven ($from)) {
 			$vals = $this->getValues ($from);
-			return $vals[0] == $vals[1];
+			if ($vals[0] == $vals[1]) {
+				return null;
+			} else {
+				return new Error ('PASSWORDS_NOT_EQUAL');
+			}
+		} else {
+			return new Error ('EMPTY_INPUT');
 		}
 	}
 	
@@ -147,13 +162,6 @@ class PasswordNewInput extends baseInput {
 		$array = $this->getFromArray ($from);
 		$values = array ($this->getValue ($from), $this->getValue2 ($from));
 		return $values;
-	}
-	
-	function getError ($from) {
-		$vals = $this->getValues ($from);
-		if ($vals[0] !== $vals[1]) {
-			return new Error  ('ACTIONMANAGER_PASSWORDS_NOT_EQUAL');
-		}
 	}
 }
 
@@ -246,27 +254,37 @@ class action {
 					return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
 				}
 			} else {
-				if ($option->checkInput ($this->_method)) {
-					if ($option->getValue ($this->_method) != null) {
-						$vals[$option->getName ()] = $option->getValue ($this->_method);
-					} else {
-						$errors[] = new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option->getName ());
-					}
+				$cI = $option->checkInput ($this->_method);
+				if (! isError ($cI)) {
+					$vals[$option->getName ()] = $option->getValue ($this->_method);
 				} else {
-					$errors[] = $option->getError ($this->_method);
+					$errors[] = $cI;
 				}
 			}
 		}
-		if ($errors != array ()) {
-			return new Error ('ACTIONMANAGER_INVALID_INPUT', $errors);
-		}
+
 		
 		foreach ($this->_notRequiredOptions as $option) {
-			if (array_key_exists ($option, $a)) {
-				$vals[$option] = $a[$option];
+			if (is_string ($option)) {
+				if (array_key_exists ($option, $a)) {
+					$vals[$option] = $a[$option];
+				} else {
+					return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
+				}
 			} else {
-				$vals[$option] = null;
+				$cI = $option->checkInput ($this->_method);
+				if (! isError ($cI)) {
+					$vals[$option->getName ()] = $option->getValue ($this->_method);
+				} elseif ($cI->is ('EMPTY_INPUT')) {
+					$vals[$option->getName ()] = null;
+				} else {
+					$errors[] = $cI;
+				}
 			}
+		}
+
+		if ($errors != array ()) {
+			return new Error ('ACTIONMANAGER_INVALID_INPUT', $errors);
 		}
 		return $vals;
 	}

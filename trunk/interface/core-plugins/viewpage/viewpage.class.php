@@ -41,7 +41,8 @@ class viewPageCorePlugin extends plugin {
 		
 		$am = &$this->_pluginAPI->getActionManager ();
 		$am->addAction (
-			new action ('viewPage', 'GET',  array ($this, 'onViewPage'), array (), array ('pageID', 'pageLang')));
+			new action ('viewPage', 'GET',  array ($this, 'onViewPage'), array (), 
+				array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
 		$em->addEvent (new Event ('viewPage', array ('pageID', 'pageLang')));

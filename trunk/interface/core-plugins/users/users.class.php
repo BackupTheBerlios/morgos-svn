@@ -36,12 +36,12 @@ class userCorePlugin extends plugin {
 		parent::load (&$pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
 		$am->addAction (new action ('userLogin', 'POST',  array ($this, 'onLogin'), 
-			array ('login','password'), array ()));
+			array (new StringInput ('login'), new StringInput ('password')), array ()));
 		$am->addAction (new action ('userLogout', 'POST',  array ($this, 'onLogout'), 
 			array (), array ()));
 		$am->addAction (
 			new action ('userRegisterForm', 'POST',  array ($this, 'onRegisterForm'), 
-				array (), array ('pageLang')));
+				array (), array (new LocaleInput ('pageLang'))));
 		$am->addAction (
 			new action ('userRegister', 'POST',  array ($this, 'onRegister'), 
 				array (new StringInput ('login'), new EmailInput ('email'), 

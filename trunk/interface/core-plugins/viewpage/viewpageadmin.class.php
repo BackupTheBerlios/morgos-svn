@@ -36,40 +36,40 @@ class viewPageCoreAdminPlugin extends plugin {
 		
 		$am->addAction (
 			new action ('adminPageManager', 'GET',  array (&$this, 'onViewPageManager'), 
-			array (), array ('pageID', 'pageLang')));		
+			array (), array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));		
 		
 		// page edit action
 		$am->addAction (
 			new action ('adminMovePageDown', 'GET',  
-				array (&$this, 'onMovePageDown'), array ('pageID'), array ()));
+				array (&$this, 'onMovePageDown'), new IDInput ('pageID'), array ()));
 				
 		$am->addAction (
 			new action ('adminMovePageUp', 'GET',  
-				array (&$this, 'onMovePageUp'), array ('pageID'), array ()));
+				array (&$this, 'onMovePageUp'), new IDInput ('pageID'), array ()));
 				
 		$am->addAction (
 			new action ('adminSavePage', 'POST',  
-				array (&$this, 'onSavePage'), array ('pageID', 'pageTitle', 'pageNavTitle', 'pageContent'), array ()));
+				array (&$this, 'onSavePage'), array (new IDInput ('pageID'), new StringInput ('pageTitle'), new StringInput ('pageNavTitle'), new StringInput ('pageContent')), array ()));
 				
 		$am->addAction (
 			new action ('adminNewPage', 'GET',  
-				array (&$this, 'onNewPage'), array ('parentPageID', 'pageTitle'), array ()));
+				array (&$this, 'onNewPage'), array (new IDInput ('parentPageID'), 'pageTitle'), array ()));
 				
 		$am->addAction (
 			new action ('adminDeletePage', 'GET',  
-				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
+				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), array ()));
 				
 		$am->addAction (
 			new action ('adminAddPageToMenu', 'GET',  
-				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
+				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), array ()));
 				
 		$am->addAction (
 			new action ('adminRemovePageFromMenu', 'GET',  
-				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
+				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), array ()));
 				
 		$am->addAction (
 			new action ('adminMovePageLevelDown', 'GET',  
-				array (&$this, 'onMovePageLevelDown'), array ('pageID', 'newParentPageID'), array ()));
+				array (&$this, 'onMovePageLevelDown'), array (new IDInput ('pageID'), new IDInput ('newParentPageID')), array ()));
 		
 		$am->addAction (
 			new action ('adminMovePageLevelUp', 'GET',  

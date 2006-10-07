@@ -36,16 +36,20 @@ class adminCorePluginAdminPlugin extends plugin {
 			'adminPluginManager', 'GET', array ($this, 'onViewPluginManager'), array (), array ()));
 			
 		$am->addAction (new action (
-			'adminEnablePlugin', 'GET', array ($this, 'onEnablePlugin'), array ('pluginID'), array ()));
+			'adminEnablePlugin', 'GET', array ($this, 'onEnablePlugin'), 
+				array (new StringInput ('pluginID')), array ()));
 			
 		$am->addAction (new action (
-			'adminInstallPlugin', 'GET', array ($this, 'onInstallPlugin'), array ('pluginID'), array ()));
+			'adminInstallPlugin', 'GET', array ($this, 'onInstallPlugin'), 
+				array (new StringInput ('pluginID')), array ()));
 			
 		$am->addAction (new action (
-			'adminDisablePlugin', 'GET', array ($this, 'onDisablePlugin'), array ('pluginID'), array ()));
+			'adminDisablePlugin', 'GET', array ($this, 'onDisablePlugin'), 
+				array (new StringInput ('pluginID')), array ()));
 			
 		$am->addAction (new action (
-			'adminUnInstallPlugin', 'GET', array ($this, 'onUnInstallPlugin'), array ('pluginID'), array ()));
+			'adminUnInstallPlugin', 'GET', array ($this, 'onUnInstallPlugin'), 
+				array (new StringInput ('pluginID')), array ()));
 	}
 	
 	function onViewPluginManager () {
