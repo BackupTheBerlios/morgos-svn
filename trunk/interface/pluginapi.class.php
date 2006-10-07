@@ -46,6 +46,7 @@ class pluginAPI {
 	var $_eventManager;
 	var $_actionManager;
 	var $_smarty;
+	var $_skinManager;
 	
 	var $_morgos;
 	var $_messages;
@@ -82,6 +83,9 @@ class pluginAPI {
 	
 	function setSmarty (&$smarty) {$this->_smarty = &$smarty;}
 	function &getSmarty () {return $this->_smarty;}
+	
+	function setSkinManager (&$skinManager) {$this->_skinManager = &$skinManager;}
+	function &getSkinManager () {return $this->_skinManager;}
 	
 	/**
 	 * Make the plugin do an action (and stops the current action). Only available for actions over GET

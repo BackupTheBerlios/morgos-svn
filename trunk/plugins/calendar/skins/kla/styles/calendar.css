@@ -1,0 +1,14 @@
+td.day ul.events {
+	display: none;
+}
+
+td.day:hover ul.events {
+	display: block;
+	position: absolute;
+	border: solid 1px red;
+	background: white;
+	opacity: 0.8;
+	margin-top: -15px;
+	margin-left: +25px;
+	
+}

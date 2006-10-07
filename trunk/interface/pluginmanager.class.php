@@ -189,6 +189,20 @@ class plugin {
 	*/
 	function isCorePlugin () {return false;}
 	
+	function getPluginID () {
+		$skinM = &$this->_pluginAPI->getSkinManager ();
+		$plugSkinM = new skinManager ($this->_pluginAPI);
+		$plugSkinM->findAllSkins ($this->getLoadedDir ().'/skins/');
+		$IDLoadedSkin = $skinM->_loadedSkin[0]->getID ();
+		if ($plugSkinM->existsSkin ($IDLoadedSkin)) {
+			//$skin = $allSkins[$IDLoadedSkin];
+			//return $this->getLoadedDir ().'/skins/'.$skin->_baseSkinDir;
+			return $IDLoadedSkin;
+		} else {
+			return MORGOS_DEFAULTSKIN_ID;
+		}
+	}
+	
 	function isInstalled (&$foo) {return true;}
 	function install (&$foo) {}
 	function unInstall (&$foo) {}
@@ -295,10 +309,16 @@ class pluginManager {
 				$result = $plugin->load ($this->_pluginAPI);
 				if (! isError ($result)) {
 					$sm = &$this->_pluginAPI->getSmarty ();
-					$sm->template_dir[] = $plugin->getLoadedDir ().'/skins/default';
+//					$sm->template_dir[] = 
 					$this->_loadedPlugins[$IDKey] = $plugin;
-					$this->_foundPlugins[$IDKey] = $plugin; 
+					$this->_foundPlugins[$IDKey] = $plugin;
 					// done for PHP 4, otherwise the updated plugin isn't saved to loadedPlguins
+					
+					if (file_exists ($plugin->getLoadedDir ().'/skins/')) {
+						$skinM = &$this->_pluginAPI->getSkinManager ();
+						$skinM->findAllSkins ($plugin->getLoadedDir ().'/skins/');
+						$skinM->loadSkin ($plugin->getPluginID ());
+					}
 				} else {
 					return $result;
 				}

@@ -35,7 +35,7 @@ class skin {
 	function skin ($skinFile, $baseDir, $baseSkinDir) {
 		$this->_baseDir = $baseDir;
 		$this->_baseSkinDir = $baseSkinDir;
-		include_once ($skinFile);
+		include ($skinFile);
 		$this->_ID =  $SkinID;
 		$this->_name = $SkinName;
 		$this->_version = $SkinVersion;
@@ -81,7 +81,7 @@ class skinManager {
 	
 	function skinManager (&$pluginAPI) {
 		$this->_pluginAPI = &$pluginAPI;
-		$this->_loadedSkin = null;
+		$this->_loadedSkin = array ();
 		$this->_allFoundSkins = array ();
 	}
 	
@@ -102,11 +102,14 @@ class skinManager {
 		if ($this->existsSkin ($skinID)) {
 			$skin = $this->_allFoundSkins[$skinID];
 			$sm = &$this->_pluginAPI->getSmarty ();
-			$sm->template_dir = array ($skin->getDir ());
-			$sm->compile_dir = $skin->getCompileDir ();
-			$sm->cache_dir = $skin->getCacheDir ();
+			$sm->template_dir[] = $skin->getDir ();
 			//$sm->config_dir = $skin->getConfigDir ();
-			$sm->assign ('SkinPath', $skin->getDir ());
+			if ($this->_loadedSkin == array ()) {
+				$sm->compile_dir = $skin->getCompileDir ();
+				$sm->cache_dir = $skin->getCacheDir ();
+				$sm->assign ('SkinPath', $skin->getDir ());
+			}
+			$this->_loadedSkin[] = $skin;
 		} else {
 			return new Error ('SKINMANAGER_SKIN_NOT_FOUND');
 		}
