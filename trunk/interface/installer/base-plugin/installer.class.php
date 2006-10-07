@@ -42,27 +42,30 @@ class installerBasePlugin extends plugin {
 		$aM = &$this->_pluginAPI->getActionManager ();		
 		$aM->addAction (
 			new action ('installerShowLicense', 'GET',  
-				array (&$this, 'showLicense'), array (), array ('language')));
+				array (&$this, 'showLicense'), array (), array (new LocaleInput ('language'))));
 				
 		$aM->addAction (
-			new action ('installerAgreeLicense', 'POST',  
-				array (&$this, 'agreeLicense'), array (), array ('agreed')));
+			new action ('installerAgreeLicense', 'GET',  
+				array (&$this, 'agreeLicense'), array (new BoolInput ('agreed')), array ()));
 				
 		$aM->addAction (
-			new action ('installerShowRequirements', 'POST',  
-				array (&$this, 'showRequirements'), array ('agreed'), array ()));
+			new action ('installerShowRequirements', 'GET',  
+				array (&$this, 'showRequirements'), array (new BoolInput ('agreed')), array ()));
 			
 		$aM->addAction (
-			new action ('askConfig', 'POST',  
-				array (&$this, 'askConfig'), array ('canRun'), array ()));
+			new action ('askConfig', 'GET',  
+				array (&$this, 'askConfig'), array (new BoolInput ('canRun')), array ()));
 				
 		$aM->addAction (
 			new action ('installerInstall', 'POST',  
 				array (&$this, 'installConfigAndDatabase'), array (
-						'siteName', 
-						'databaseModule', 'databaseHost', 'databaseUser', 'databasePassword',
-						'databaseName', 'databasePrefix', 
-						'adminLogin', 'adminPassword1', 'adminPassword2', 'adminMail'), array ()));	
+						new StringInput ('siteName'), 
+						new StringInput ('databaseModule'), 
+						new StringInput ('databaseHost'), new StringInput ('databaseUser'), 
+						new StringInput ('databasePassword'), new StringInput ('databaseName'), 
+						new StringInput ('databasePrefix'), 
+						new StringInput ('adminLogin'), new PasswordNewInput ('adminPassword'), 
+						new EmailInput ('adminMail')), array ()));	
 		//echo $this->_pluginAPI->_actionManager;
 	}
 	
@@ -158,7 +161,7 @@ class installerBasePlugin extends plugin {
 	
 	function installConfigAndDatabase ($siteName, 
 			$databaseModule, $databaseHost, $databaseUser, $databasePassword, $databaseName, $databasePrefix, 
-			$adminLogin, $adminPassword1, $adminPassword2, $adminMail) {
+			$adminLogin, $adminPassword, $adminMail) {
 		$dbModule = databaseLoadModule ($databaseModule);
 		if (! isError ($dbModule)) {
 			$dbModule->connect ($databaseHost, $databaseUser, $databasePassword);
@@ -166,9 +169,12 @@ class installerBasePlugin extends plugin {
 			$dbModule->setPrefix ($databasePrefix);
 			$dbModule->queryFile ('interface/installer/base-plugin/sqlCode.sql');
 			
+			//var_dump ($dbModule);
+			//die ('End');
+			
 			$userM = new userManager ($dbModule);
 			$admin = $userM->newUser ();
-			$a = $admin->initFromArray (array ('login'=>$adminLogin, 'password'=>md5($adminPassword1), 'email'=>$adminMail));
+			$a = $admin->initFromArray (array ('login'=>$adminLogin, 'password'=>md5($adminPassword), 'email'=>$adminMail));
 			$userM->addUserToDatabase ($admin);
 			
 			$group = $userM->newGroup ();
@@ -197,8 +203,8 @@ class installerBasePlugin extends plugin {
 			$pluman = $pageM->newPage ();
 			$regform = $pageM->newPage ();
 			
-			$site->initFromArray (array ('name'=>'site', 'parentPageID'=>0));
-			$admin->initFromArray (array ('name'=>'admin', 'parentPageID'=>0));
+			$site->initFromArray (array ('name'=>'site', 'parentPageID'=>0, 'placeInMenu'=>0));
+			$admin->initFromArray (array ('name'=>'admin', 'parentPageID'=>0, 'placeInMenu'=>0));
 			
 			$pageM->addPageToDatabase ($site);
 			$pageM->addPageToDatabase ($admin);

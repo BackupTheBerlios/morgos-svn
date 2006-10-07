@@ -22,7 +22,7 @@
 	{/if}</p>
 
 
-	<form action="index.php" method="post">
+	<form action="index.php" method="get">
 		<input type="hidden" name="action" value="askConfig" />
 		{if $canRun}
 			<input type="hidden" name="canRun" value="Y" />
@@ -32,7 +32,7 @@
 		{/if}
 	</form>
 	
-	<form action="index.php" method="post">
+	<form action="index.php" method="get">
 		<input type="hidden" name="action" value="installerShowRequirements" />
 		<input type="hidden" name="agreed" value="Y" />
 		<input type="submit" value="{t s="Recheck"}" />

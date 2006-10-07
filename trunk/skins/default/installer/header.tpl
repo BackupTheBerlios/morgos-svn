@@ -11,3 +11,4 @@
 	<body>
 		<div>
 			<h1>{t s="MorgOS Installer step "}{$step}</h1>
+			{include file="messages.tpl"}

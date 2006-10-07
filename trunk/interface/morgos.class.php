@@ -312,6 +312,7 @@ class morgos {
 		} else {
 			$r = $this->_actionManager->executeAction ($defaultAction);
 		}
+
 		if (isError ($r)) {
 			if ($r->is ('ACTIONMANAGER_ACTION_NOT_FOUND')) {
 				$this->error ($this->_i18nManager->translate ('You can\'t do this.'), true);

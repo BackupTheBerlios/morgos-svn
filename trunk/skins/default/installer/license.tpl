@@ -312,7 +312,7 @@
 		<h2>Some parts of the source-code are licensed under the GNU LIBRARY GENERAL PUBLIC LICENSE. <a href="http://www.gnu.org/copyleft/library.html">More information.</a></h2>
 	</div>
 
-	<form action="index.php" method="post">
+	<form action="index.php" method="get">
 		<p><label for="agreed">{t s="I agree: "}</label><input type="checkbox" name="agreed" value="Y" id="agreed" onchange="changeState ();"></p>
 		<input type="hidden" name="action" value="installerAgreeLicense" />
 		<input type="submit" value="{t s="Next >>"}" id="submitAgree" />

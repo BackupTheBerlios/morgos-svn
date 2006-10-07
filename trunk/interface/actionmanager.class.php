@@ -46,13 +46,21 @@ class baseInput {
 		if ($this->isGiven ($from)) {
 			return null;
 		} else {
-			return new Error ('EMPTY_INPUT');
+			return new Error ('EMPTY_INPUT', $this->_name);
 		}
 	}
 	
 	function isGiven ($from)  {
 		$fromArray = $this->getFromArray ($from);
-		return array_key_exists ($this->_name, $fromArray);
+		if (array_key_exists ($this->_name, $fromArray)) {
+			if ($fromArray[$this->_name] == null) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
 	}
 	
 	function getValue ($from) {
@@ -86,7 +94,42 @@ class baseInput {
 class StringInput extends baseInput {
 }
 
+/**
+ * An email input class
+ * @ingroup interface
+ * @since 0.2
+*/
 class EmailInput extends StringInput {
+}
+
+/**
+ * An enum input class
+ * @ingroup interface
+ * @since 0.2
+*/
+class EnumInput extends baseInput {
+	var $_poss;
+
+	function EnumInput ($name, $possibilities) {
+		parent::baseInput ($name);
+		$this->_poss = $possibilities;
+	}
+	
+	function checkInput ($from) {
+		if (! in_array ($this->getValue ($from), $this->_poss)) {
+			return new Error ('INVALID_CHOICE', $this->getValue ($from), $this->_name);
+		} else {
+			return null;
+		}
+	}
+}
+
+class BoolInput extends EnumInput {
+	
+	function BoolInput ($name) {
+		parent::EnumInput ($name, array ('Y', 'N'));
+	}
+
 }
 
 /**
@@ -130,14 +173,19 @@ class PasswordNewInput extends baseInput {
 				return new Error ('PASSWORDS_NOT_EQUAL');
 			}
 		} else {
-			return new Error ('EMPTY_INPUT');
+			return new Error ('EMPTY_INPUT', $this->_name);
 		}
 	}
 	
 	function isGiven ($from)  {
 		$fromArray = $this->getFromArray ($from);
-		return (array_key_exists ($this->_name.'1', $fromArray) and 
-			array_key_exists ($this->_name.'2', $fromArray)) ;
+		$a = (array_key_exists ($this->_name.'1', $fromArray) and 
+			array_key_exists ($this->_name.'2', $fromArray));
+		if ($a) {
+			return ($fromArray[$this->_name.'1'] != null) and ($fromArray[$this->_name.'2'] != null);
+		} else {
+			return false;
+		}
 	}
 	
 	function getValue ($from) {
@@ -251,7 +299,7 @@ class action {
 				if (array_key_exists ($option, $a)) {
 					$vals[$option] = $a[$option];
 				} else {
-					return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
+					$errors[] = new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
 				}
 			} else {
 				$cI = $option->checkInput ($this->_method);
@@ -269,7 +317,7 @@ class action {
 				if (array_key_exists ($option, $a)) {
 					$vals[$option] = $a[$option];
 				} else {
-					return new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
+					$vals[$option] = null;
 				}
 			} else {
 				$cI = $option->checkInput ($this->_method);
@@ -285,6 +333,50 @@ class action {
 
 		if ($errors != array ()) {
 			return new Error ('ACTIONMANAGER_INVALID_INPUT', $errors);
+		}
+		return $vals;
+	}
+	
+	function getCorrectParameters ($default) {
+		if ($default == array ()) {
+			if ($this->_method == 'GET') {
+				$a = $_GET;
+			} else {
+				$a = $_POST;
+			}
+		} else {
+			$a = $default;
+		}
+		
+		$vals = array ();
+		foreach ($this->_requiredOptions as $option) {
+			if (is_string ($option)) {
+				if (array_key_exists ($option, $a)) {
+					$vals[$option] = $a[$option];
+				}
+			} else {
+				$cI = $option->checkInput ($this->_method);
+				if (! isError ($cI)) {
+					$vals[$option->getName ()] = $option->getValue ($this->_method);
+				}
+			}
+		}
+		
+		foreach ($this->_notRequiredOptions as $option) {
+			if (is_string ($option)) {
+				if (array_key_exists ($option, $a)) {
+					$vals[$option] = $a[$option];
+				} else {
+					$vals[$option] = null;
+				}
+			} else {
+				$cI = $option->checkInput ($this->_method);
+				if (! isError ($cI)) {
+					$vals[$option->getName ()] = $option->getValue ($this->_method);
+				} elseif ($cI->is ('EMPTY_INPUT')) {
+					$vals[$option->getName ()] = null;
+				}
+			}
 		}
 		return $vals;
 	}
@@ -335,10 +427,9 @@ class actionManager {
 				$this->_lastActionParameters = $action->getParameters ($var);
 				return $action->execute ($var);
 			} else {
+				$this->_lastActionParameters = $action->getCorrectParameters ($var);
 				return $action->getParameters ($var);
 			}
-			var_dump ($action->getParameters ($var));
-			die ();
 		} else {
 			return new Error ('ACTIONMANAGER_ACTION_NOT_FOUND', $actionName);
 		}
