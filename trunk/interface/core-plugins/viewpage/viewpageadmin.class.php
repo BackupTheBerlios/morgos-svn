@@ -68,15 +68,15 @@ class viewPageCoreAdminPlugin extends plugin {
 				array (&$this, 'onDeletePage'), array ('pageID'), array ()));
 				
 		$am->addAction (
-			new action ('adminMovePageNivDown', 'GET',  
-				array (&$this, 'onMovePageNivDown'), array ('pageID', 'newParentPageID'), array ()));
+			new action ('adminMovePageLevelDown', 'GET',  
+				array (&$this, 'onMovePageLevelDown'), array ('pageID', 'newParentPageID'), array ()));
 		
 		$am->addAction (
-			new action ('adminMovePageNivUp', 'GET',  
-				array (&$this, 'onMovePageNivUp'), array ('pageID'), array ()));
+			new action ('adminMovePageLevelUp', 'GET',  
+				array (&$this, 'onMovePageLevelUp'), array ('pageID'), array ()));
 	}
 	
-	function onMovePageNivUp ($pageID) {
+	function onMovePageLevelUp ($pageID) {
 		$em = &$this->_pluginAPI->getEventManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
@@ -107,7 +107,7 @@ class viewPageCoreAdminPlugin extends plugin {
 		}
 	}
 	
-	function onMovePageNivDown ($pageID, $newParentPageID) {
+	function onMovePageLevelDown ($pageID, $newParentPageID) {
 		$em = &$this->_pluginAPI->getEventManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
@@ -166,7 +166,19 @@ class viewPageCoreAdminPlugin extends plugin {
 			}
 			$tpage = $page->getTranslation ($pageLang);
 			$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
-			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
+			$sm->assign ('MorgOS_CurrentAdminPage', $tpagearray);
+			$curPage = $parentPage;
+			$level = array ();
+			while ($curPage !== null) {
+				if ($curPage->isRootPage () == false) {
+					$t = $curPage->getTranslation ($pageLang);
+					$level[] = $t->getNavTitle ();
+				}
+				$curPage = $curPage->getParentPage (); 
+			}
+			$level[] = 'Menu';
+			$level = array_reverse ($level);
+			$sm->assign ('MorgOS_PageLevel', $level);
 			$sm->display ('admin/pagemanager.tpl'); 
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);

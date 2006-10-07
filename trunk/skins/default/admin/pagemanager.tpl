@@ -3,6 +3,14 @@
 		<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
 		<p>{$MorgOS_CurrentAdminPage.Content}</p>
 		
+		<p>{foreach from=$MorgOS_PageLevel item='LevelName' name='level'}
+			{$LevelName}
+			{if ! $smarty.foreach.level.last}
+				>>
+			{/if}
+		{/foreach}
+		</p>
+		
 		<table>
 			<tr>
 				<th>{t s='Page title'}</th>
@@ -47,12 +55,12 @@
 					<form action="index.php" method="get">
 						{html_options name="newParentPageID" options=$childPage.PossibleNewParents}
 						<input type="hidden" name="pageID" value="{$childPage.ID}" />
-						<input type="hidden" name="action" value="adminMovePageNivDown" />
+						<input type="hidden" name="action" value="adminMovePageLevelDown" />
 						<input type="submit" value="{t s="Change parent"}" />
 					</form>
 				</td>
 				<td>
-					<a href="index.php?action=adminMovePageNivUp&amp;pageID={$childPage.ID}"><img src="{$SkinPath}/images/icons/nivup.png" alt="{t s="Change up"}" /></a>
+					<a href="index.php?action=adminMovePageLevelUp&amp;pageID={$childPage.ID}"><img src="{$SkinPath}/images/icons/nivup.png" alt="{t s="Change up"}" /></a>
 				</td>
 			</tr>
 		{/foreach}
