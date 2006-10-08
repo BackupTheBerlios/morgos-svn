@@ -23,6 +23,7 @@
  * @author Nathan Samson
 */
 class userCorePlugin extends plugin {
+	var $_adminPlugin;	
 	
 	function userCorePlugin ($dir) {
 		parent::plugin ($dir);
@@ -30,10 +31,14 @@ class userCorePlugin extends plugin {
 		$this->_ID = '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}';
 		$this->_minMorgOSVersion = '0.2';
 		$this->_maxMorgOSVersion = '0.2';
+		$this->_adminPlugin = null;
 	}
 	
 	function load (&$pluginAPI) {
 		parent::load (&$pluginAPI);
+		include ($this->getLoadedDir ().'/users.admin.plugin.php');
+		$this->_adminPlugin = new adminCoreUserAdminPlugin ($this->getLoadedDir ());
+		$this->_adminPlugin->load ($this->_pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
 		$am->addAction (new action ('userLogin', 'POST',  array ($this, 'onLogin'), 
 			array (new StringInput ('login'), new StringInput ('password')), array ()));
@@ -93,7 +98,7 @@ class userCorePlugin extends plugin {
 		$em->triggerEvent ('viewPage', array ($regForm->getID (), $pageLang));
 		$this->setUserVars ();
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->display ('user/registerform.tpl');
+		$sm->display ('user/register.tpl');
 	}	
 	
 	function onRegister ($login, $email, $password) {

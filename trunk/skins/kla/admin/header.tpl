@@ -18,3 +18,5 @@
 			{include file="admin/nav.tpl"}
 		</div>
 		{include file="admin/sidebar.tpl"}
+		<div class="content">
+		{include file="admin/messages.tpl"}

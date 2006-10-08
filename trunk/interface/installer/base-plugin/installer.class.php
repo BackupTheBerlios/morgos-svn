@@ -203,6 +203,7 @@ class installerBasePlugin extends plugin {
 			$pluman = $pageM->newPage ();
 			$regform = $pageM->newPage ();
 			$adminLogout = $pageM->newPage ();
+			$adminUser = $pageM->newPage ();
 			
 			$site->initFromArray (array ('name'=>'site', 'parentPageID'=>0, 'placeInMenu'=>0));
 			$admin->initFromArray (array ('name'=>'admin', 'parentPageID'=>0, 'placeInMenu'=>0));
@@ -216,10 +217,12 @@ class installerBasePlugin extends plugin {
 			$pluman->initFromArray (array ('name'=>'MorgOS_Admin_PluginManager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPluginManager'));
 			$regform->initFromArray (array ('name'=>'MorgOS_RegisterForm',  'parentPageID'=>$site->getID (), 'action'=>'userRegisterForm', 'placeInMenu'=>0));
 			$adminLogout->initFromArray (array ('name'=>'MorgOS_Admin_Logout',  'parentPageID'=>$admin->getID (), 'action'=>'adminLogout'));
+			$adminUser->initFromArray (array ('name'=>'MorgOS_Admin_UserManager',  'parentPageID'=>$admin->getID (), 'action'=>'adminUserManager'));
 
 			$pageM->addPageToDatabase ($home);
 			$pageM->addPageToDatabase ($ahome);
 			$pageM->addPageToDatabase ($pman);
+			$pageM->addPageToDatabase ($adminUser);
 			$pageM->addPageToDatabase ($pluman);
 			$pageM->addPageToDatabase ($regform);
 			$pageM->addPageToDatabase ($adminLogout);
@@ -230,6 +233,7 @@ class installerBasePlugin extends plugin {
 			$tRegForm = $pageM->newTranslatedPage ();
 			$tPlugMan = $pageM->newTranslatedPage ();
 			$tALogout = $pageM->newTranslatedPage ();
+			$tAdminUser = $pageM->newTranslatedPage ();
 
 			$tHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Home', 'translatedContent'=>'This is the homepage.'));
 			$tAHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Admin', 'translatedContent'=>'This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.'));
@@ -237,6 +241,7 @@ class installerBasePlugin extends plugin {
 			$tRegForm->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Registration', 'translatedContent'=>'Give up all your user details in order to registrate to this site.'));
 			$tPlugMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Plugin Manager', 'translatedContent'=>'Enable/disable plugins.'));
 			$tALogout->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Logout', 'translatedContent'=>'Logout'));
+			$tAdminUser->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'User manager', 'translatedContent'=>'Manage users here, remove/add them from administrators list.'));
 			
 			$home->addTranslation ($tHome);
 			$ahome->addTranslation ($tAHome);
@@ -244,6 +249,7 @@ class installerBasePlugin extends plugin {
 			$regform->addTranslation ($tRegForm);
 			$pluman->addTranslation ($tPlugMan);
 			$adminLogout->addTranslation ($tALogout);
+			$adminUser->addTranslation ($tAdminUser);
 					
 			
 			$configContents = '<?php'.PHP_NL.PHP_NL;

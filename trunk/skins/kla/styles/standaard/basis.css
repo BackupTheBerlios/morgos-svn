@@ -10,13 +10,13 @@ body {
 	/*position: absolute;*/
 }
 
-body div {
+/*body div {
 	position: absolute;
 	z-index: 1;
-}
+}*/
 
 body div.header {
-	position: relative;
+	/*position: relative;*/
 	display: block;
 	border: 1px solid #E2E2E2;
 	/*-moz-border-radius: 15px;*/
@@ -49,9 +49,9 @@ body div.header p.h1 {
 }
 
 body div.content {
-	position: relative;
+	/*position: relative;*/
 	background-color: #f8f8f8;
-	width: auto;
+/*	width: auto;*/
 	padding: 2px;
 	padding-bottom: 12px;
     	color:#000000;
@@ -59,6 +59,9 @@ body div.content {
     	border: 1px solid #E2E2E2;
 	/*-moz-border-radius: 15px;*/
 	margin-top: 10px;
+	/*width: 100%;*/
+	margin-left: 0;
+	margin-right: 0;
 }
 
 body div.footer {
@@ -75,16 +78,15 @@ body div.footer {
 }
 
 .warning {
-	display: block;
 	font-size: 2em;
 	color: red;
 	margin: 5px;
-	background-color: yellow;
+	background-color: green;
 	margin-left: auto;
 	margin-right: auto;
 	width: auto;
-	text-align: center;
-	background-image: url('./images/warning.png');
+	text-align: left;
+	background-image: url('../../images/warning.png');
 	background-position: center left;
 	background-repeat: no-repeat;
 	padding-left: 80px;
@@ -92,47 +94,46 @@ body div.footer {
 }
 
 .error {
-	display: block;
+	position: relative;
 	font-size: 2em;
 	color: red;
 	margin: 5px;
 	background-color: yellow;
 	margin-left: auto;
 	margin-right: auto;
-	width: auto;
-	text-align: center;
-	background-image: url('./images/error.png');
-	background-position: left center;
-	background-repeat: no-repeat;
-	padding-left: 80px;
-	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
-	vertical-align: middle;
-}
-
-.question {
-	display: block;
-	font-size: 2em;
-	margin: 5px;
-	margin-left: auto;
-	margin-right: auto;
-	width: auto;
-	text-align: center;
-	background-image: url('./images/question.png');
+/*	width: 30%;*/
+	text-align: left;
+	background-image: url('../../images/error.png');
 	background-position: center left;
 	background-repeat: no-repeat;
 	padding-left: 80px;
 	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
 }
 
-.info {
-	display: block;
+.question {
 	font-size: 2em;
 	margin: 5px;
 	margin-left: auto;
 	margin-right: auto;
 	width: auto;
-	text-align: center;
-	background-image: url('./images/info.png');
+	text-align: left;
+	background-image: url('../../images/question.png');
+	background-position: center left;
+	background-repeat: no-repeat;
+	padding-left: 80px;
+	min-height: 80px; /*pakt niet in IE, zodat de tekening er voor een gedeelte afvalt*/
+}
+
+.notice {
+	font-size: 2em;
+	margin: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: yellow;
+	color: green;
+	width: auto;
+	text-align: left;
+	background-image: url('../../images/info.png');
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 80px;
@@ -190,9 +191,9 @@ body div.content table td, body div.content table th {
 	border: solid 1px #E2E2E2;
 }
 
-body div.content div {
+/*body div.content div {
 	text-align: center;
-}
+}*/
 
 body div.content div span.kop {
 	font-weight: bold;

@@ -1,9 +1,5 @@
 {include file="admin/header.tpl"}
-	<div class="content">
-		<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
-		
-		{include file="admin/messages.tpl"}
+	<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
 
-		<p>{$MorgOS_CurrentAdminPage.Content}</p>
-	</div>
+	<p>{$MorgOS_CurrentAdminPage.Content}</p>
 {include file="admin/footer.tpl"}
