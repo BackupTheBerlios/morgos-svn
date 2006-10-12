@@ -3,13 +3,12 @@
 		<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
 		<p>{$MorgOS_CurrentAdminPage.Content}</p>
 		
-		<p>{foreach from=$MorgOS_PageLevel item='LevelName' name='level'}
-			{$LevelName}
+		<p>{foreach from=$MorgOS_PageLevel item='Level' name='level'}
+			<a href="{$Level.Link|xhtml}">{$Level.Name}</a>
 			{if ! $smarty.foreach.level.last}
 				>>
 			{/if}
-		{/foreach}
-		</p>
+		{/foreach}</p>
 		
 		<table>
 			<tr>
@@ -60,7 +59,9 @@
 					</form>
 				</td>
 				<td>
-					<a href="index.php?action=adminMovePageLevelUp&amp;pageID={$childPage.ID}"><img src="{$SkinPath}/images/icons/nivup.png" alt="{t s="Change up"}" /></a>
+					{if $childPage.canMoveUp}
+						<a href="index.php?action=adminMovePageLevelUp&amp;pageID={$childPage.ID}"><img src="{$SkinPath}/images/icons/nivup.png" alt="{t s="Change up"}" /></a>
+					{/if}
 				</td>
 			</tr>
 		{/foreach}

@@ -195,6 +195,8 @@ class pluginAPI {
 					}
 				}
 				$itemArray['PossibleNewParents'] = $newParents;
+				$parent = $menuItem->getParentPage ();
+				$itemArray['canMoveUp'] = !$parent->isRootPage ();
 				$array[] = $itemArray;
 			}
 		}

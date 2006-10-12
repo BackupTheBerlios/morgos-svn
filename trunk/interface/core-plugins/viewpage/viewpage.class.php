@@ -52,9 +52,28 @@ class viewPageCorePlugin extends plugin {
 	
 	function onViewPage ($pageID, $pageLang) {
 		$pMan = &$this->_pluginAPI->getPageManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$em = &$this->_pluginAPI->getEventManager ();
 		$page = $pMan->newPage ();
+		if ($pageLang == null) {
+			$pageLang = 'en_UK';
+		}		
+		
 		if ($pageID !== null) {			
-			$page->initFromDatabaseID ($pageID);
+			$a = $page->initFromDatabaseID ($pageID);
+			if (isError ($a)) {
+				if ($a->is ('DATABASEOBJECT_ID_NOT_FOUND')) {
+					$root = $pMan->newPage ();
+					$root->initFromName ('site');
+					$menu = $pMan->getMenu ($root);
+					$page = $menu[0];
+					$a = $em->triggerEvent ('viewPage', array ($page->getID (), $pageLang));
+					$sm->display ('404.tpl');
+					return;
+				} else {
+					return $a;
+				}
+			}
 		} else {
 			$root = $pMan->newPage ();
 			$root->initFromName ('site');
@@ -62,8 +81,6 @@ class viewPageCorePlugin extends plugin {
 			$page = $menu[0];
 		}		
 		
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$em = &$this->_pluginAPI->getEventManager ();
 		if ($pageLang == null) {
 			$pageLang = 'en_UK';
 		}

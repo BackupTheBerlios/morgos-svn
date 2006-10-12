@@ -150,7 +150,10 @@ class viewPageCoreAdminPlugin extends plugin {
 				$pageID = 1; /*The ID of site */
 			}	
 			$parentPage = $pageManager->newPage ();
-			$parentPage->initFromDatabaseID ($pageID);
+			$a = $parentPage->initFromDatabaseID ($pageID);
+			if (isError ($a)) {
+				return $a;
+			}
 			$childPages = $pageManager->getMenu ($parentPage);
 			$sm->assign ('MorgOS_PagesList', $this->_pluginAPI->menuToArray ($childPages));
 			$tparent = $parentPage->getTranslation ('en_UK');
@@ -172,11 +175,12 @@ class viewPageCoreAdminPlugin extends plugin {
 			while ($curPage !== null) {
 				if ($curPage->isRootPage () == false) {
 					$t = $curPage->getTranslation ($pageLang);
-					$level[] = $t->getNavTitle ();
+					$level[] = array ('Link'=>'index.php?action=adminPageManager&pageID='.$curPage->getID (), 'Name'=>$t->getNavTitle ());
+				} else {
+					$level[] = array ('Link'=>'index.php?action=adminPageManager&pageID='.$curPage->getID (), 'Name'=>'Menu');
 				}
 				$curPage = $curPage->getParentPage (); 
 			}
-			$level[] = 'Menu';
 			$level = array_reverse ($level);
 			$sm->assign ('MorgOS_PageLevel', $level);
 			$sm->display ('admin/pagemanager.tpl'); 
@@ -252,6 +256,8 @@ class viewPageCoreAdminPlugin extends plugin {
 		$page = &$pageManager->newPage ();			
 		$page->initFromName ('MorgOS_Admin_PageManager');
 		$sm = $this->_pluginAPI->getSmarty ();
+		$t = $this->_pluginAPI->getI18nManager ();		
+		
 		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {	
 			$newPage = $pageManager->newPage ();
 			$i18nM = &$this->_pluginAPI->getI18NManager ();
@@ -261,7 +267,9 @@ class viewPageCoreAdminPlugin extends plugin {
 			$tNewPage = $pageManager->newTranslatedPage ();
 			$a = $tNewPage->initFromArray (array ('translatedTitle'=>$title, 'languageCode'=>'en_UK', 'translatedContent'=>'Newly created page.'));
 			$newPage->addTranslation ($tNewPage);
-			$a = $this->_pluginAPI->executePreviousAction ();
+			//$a = $this->_pluginAPI->executePreviousAction ();
+			$this->_pluginAPI->addRuntimeMessage ($t->translate ('New page created.'), NOTICE);
+			$this->onViewPageManager ($newPage->getID (), null);
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
 			$sm->display ('admin/login.tpl');

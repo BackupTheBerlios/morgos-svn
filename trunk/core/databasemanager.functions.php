@@ -320,9 +320,13 @@ class databaseObject {
 		$sql = "SELECT * FROM $prefix$tableName WHERE $IDName='$ID'";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
-			$row = $this->db->fetchArray ($q);
-			$this->initFromArray ($row);
-			$this->setOption ('ID', $row[$this->getIDName ()]);
+			if ($this->db->numRows ($q) > 0) {
+				$row = $this->db->fetchArray ($q);
+				$this->initFromArray ($row);
+				$this->setOption ('ID', $row[$this->getIDName ()]);
+			} else {
+				return new Error ('DATABASEOBJECT_ID_NOT_FOUND');
+			}
 		} else {
 			return $q;
 		}
