@@ -87,14 +87,15 @@ class installerBasePlugin extends plugin {
 	}
 	
 	function showRequirements ($agreed) {
+		$t = &$this->_pluginAPI->getI18NManager ();	
 		if ($agreed == 'Y') {
 			$sm = &$this->_pluginAPI->getSmarty ();
 			$sm->assign ('canRun', true);
 			if (version_compare (PHP_VERSION, '4.3', '>=')) {
 				$sm->assign ('phpError', false);
-				$sm->assign ('phpMessage', 'You are running PHP version '.PHP_VERSION.' which is new enough to run MorgOS.');
+				$sm->assign ('phpMessage', $t->translate ('You are running PHP version %1 which is new enough to run MorgOS.', array (PHP_VERSION)));
 			} else {
-				$sm->assign ('phpMessage', 'You are running PHP version '.PHP_VERSION.' which is too old to run MorgOS, please upgrade to at least 4.3 .');
+				$sm->assign ('phpMessage', $t->translate ('You are running PHP version %1 which is too old to run MorgOS, please upgrade to at least %2 .', array (PHP_VERSION, '4.3')));
 				$sm->assign ('phpError', true);
 				$sm->assign ('canRun', false);
 			}
@@ -102,7 +103,7 @@ class installerBasePlugin extends plugin {
 			$aMods = databaseGetAllModules (true);
 			if (count ($aMods) > 1) {
 				$sm->assign ('dbMError', false);
-				$sm->assign ('dbMMessage', 'You have at least installed 1 database module.');
+				$sm->assign ('dbMMessage', $t->translate ('You have at least installed 1 database module.'));
 			} else {
 				$sm->assign ('canRun', false);
 				$sm->assign ('dbMError', true);
@@ -113,32 +114,32 @@ class installerBasePlugin extends plugin {
 					}
 					$s .= $a;
 				}
-				$sm->assign ('dbMMessage', 'You need to install one supported database module. Supported databases by MorgOS are: '.$s . '.');	
+				$sm->assign ('dbMMessage', $t->translate ('You need to install one supported database module. Supported databases by MorgOS are: %1.', array ($s)));	
 			}
 			
 			if (file_exists ('skins_c')) {
 				if (is_writable ('skins_c')) {
 					$sm->assign ('dirsError', false);
-					$sm->assign ('dirsMessage', 'All required dirs are ok.');
+					$sm->assign ('dirsMessage', $t->translate ('All required dirs are ok.'));
 				} else {
 					$sm->assign ('canRun', false);
 					$sm->assign ('dirsError', true);
-					$sm->assign ('dirsMessage', 'You need to make the dir "skins_c" wirtable for PHP.');
+					$sm->assign ('dirsMessage', $t->translate ('You need to make the dir "skins_c" wirtable for PHP.'));
 				}
 			} else {
 				$a = @mkdir ('skins_c');
 				if ($a == false) {
 					$sm->assign ('canRun', false);
 					$sm->assign ('dirsError', true);
-					$sm->assign ('dirsMessage', 'You need to have a dir skins_c that is writable by PHP.');
+					$sm->assign ('dirsMessage', $t->translate ('You need to have a dir skins_c that is writable by PHP.'));
 				} else {
 					if (is_writable ('skins_c')) {
 						$sm->assign ('dirsError', false);
-						$sm->assign ('dirsMessage', 'All required dirs are ok.');
+						$sm->assign ('dirsMessage', $t->translate ('All required dirs are ok.'));
 					} else {
 						$sm->assign ('canRun', false);
 						$sm->assign ('dirsError', true);
-						$sm->assign ('dirsMessage', 'You need to make the dir "skins_c" wirtable for PHP.');
+						$sm->assign ('dirsMessage', $t->translate ('You need to make the dir "skins_c" wirtable for PHP.'));
 					}
 				}
 			}		

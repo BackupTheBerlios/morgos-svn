@@ -17,7 +17,7 @@
 				{morgos_form_action a="adminLogin"}
 				<p><label for="login">{t s='Login: '}</label><input type="text" name="adminLogin" id="login" /></p>
 				<p><label for="password">{t s='Password: '}</label><input type="password" name="adminPassword" id="password" /></p>
-				<input type="submit" value="{t s='Inloggen'}" />
+				<input type="submit" value="{t s='Login'}" />
 			</form>
 		</div>
 	</body>

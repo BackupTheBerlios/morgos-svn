@@ -1,4 +1,4 @@
-{include file="installer/header.tpl" step="2/5"}
+{include file="installer/header.tpl" step="2"}
 <div>
 	<p>{t s="Checking your PHP version..."}
 	{if !$phpError}

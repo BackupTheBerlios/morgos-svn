@@ -1,4 +1,4 @@
-{include file="installer/header.tpl" step="1/5"}
+{include file="installer/header.tpl" step="1"}
 <div>
 	<div>
 		<h2>GNU GENERAL PUBLIC LICENSE</h2>

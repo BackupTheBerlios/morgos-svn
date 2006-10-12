@@ -31,45 +31,61 @@
  * @author Nathan Samson
 */
 class localizer {
-	var $_errorStrings;
+	var $_strings;
+	var $_knownErrors;
 
 	function localizer () {
-		$this->_errorStrings = array ();
-	}
-	
-	function loadLanguage () {
+		$this->_strings = array ();
+		$this->_knownErrors = array ();
 	}
 	
 	function getLanguage () {
 	}
 	
-	function loadStrings () {
-	}
-	
-	function loadErrorStrings () {
-		$errorStrings = array ();
-		include ('i18n/errors.en.php');
-		$this->_errorStrings = array_merge ($this->_errorStrings, $errorStrings);
+	function loadLanguage ($language, $rootDir) {
+		$file = $rootDir.'/'.$language.'.trans.php';
+		if (file_exists ($file)) {
+			$strings = array ();
+			$errorStrings = array ();
+			include ($file);
+			$this->_strings = $strings;
+		} else {
+			die ();
+		}
 	}
 
-	function translate ($s, $params = array ()) {
-		foreach ($params as $k=>$v) {
-			$s = str_replace ('%'.$k, $v, $s);
+	function replaceParams ($s, $p) {
+		foreach ($p as $key=>$string) {
+			$s = str_replace ('%'.($key+1), $string, $s);
 		}
 		return $s;
 	}
-	
-	function translateError ($error) {
-		if (array_key_exists ($error->getError (), $this->_errorStrings)) {
-			$s = $this->_errorStrings[$error->getError ()];
-			foreach ($error->getParams () as $key=>$string) {
-				$s = str_replace ('%'.($key+1), $string, $s);
+
+	function translate ($s, $params = array ()) {
+		if (array_key_exists ($s, $this->_strings)) {
+			$o = $s;
+			$s = $this->_strings[$s];
+			if ($s == null) {
+				return $this->replaceParams ($o, $params);
 			}
-			return $s;
+
+			return $this->replaceParams ($s, $params);
 		} else {
-			return $error->getError ();
+			return $this->replaceParams ($s, $params);
 		}
 	}
 	
-
+	function translateError ($error) {
+		if (array_key_exists ($error->getError (), $this->_knownErrors)) {
+			$s = $this->_knownErrors[$error->getError ()];
+			
+			return $this->replaceParams ($s, $error->getParams ());
+		} else {
+			return $this->replaceParams ('Unexpected error.', array ());
+		}
+	}
+	
+	function addError ($errorString, $tString) {
+		$this->_knownErrors[$errorString] = $tString;
+	}
 }

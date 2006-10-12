@@ -58,6 +58,7 @@ class adminCorePluginAdminPlugin extends plugin {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
 		$dbM = &$this->_pluginAPI->getDBModule ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PluginManager');
@@ -72,11 +73,11 @@ class adminCorePluginAdminPlugin extends plugin {
 						$cMessage = '';
 					} else {
 						if (! $plugin->isPHPCompatible ()) {
-							$cMessage = 'Your version of PHP ('.PHP_VERSION.') is not compatible with this plugin.';
+							$cMessage = $t->translate ('Your version of PHP (%1) is not compatible with this plugin.', array (PHP_VERSION));
 						} elseif (! $plugin->isMinVersionReached ()) {
-							$cMessage = 'Your version of MorgOS is too old.';
+							$cMessage = $t->translate ('Your version of MorgOS is too old.');
 						} elseif ($plugin->isMaxVersionExceeded ()) {
-							$cMessage = 'Your version of MorgOS is too new.';
+							$cMessage = $t->translate ('Your version of MorgOS is too new.');
 						}
 					}
 					$availablePlugins[] = array (
@@ -100,6 +101,7 @@ class adminCorePluginAdminPlugin extends plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PluginManager');
@@ -115,7 +117,7 @@ class adminCorePluginAdminPlugin extends plugin {
 			$cm->addOption ($a);
 			
 			$this->_pluginAPI->writeConfigFile ($cm);
-			$this->_pluginAPI->addRuntimeMessage ('Plugin is enabled', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Plugin is enabled'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -124,6 +126,7 @@ class adminCorePluginAdminPlugin extends plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PluginManager');
@@ -132,9 +135,9 @@ class adminCorePluginAdminPlugin extends plugin {
 			$plugin = $plugM->getPlugin ($pluginID);
 			if (! $plugin->isInstalled ($this->_pluginAPI)) {
 				$plugin->install ($this->_pluginAPI);
-				$this->_pluginAPI->addRuntimeMessage ('Plugin is installed', NOTICE);
+				$this->_pluginAPI->addMessage ($t->translate ('Plugin is installed'), NOTICE);
 			} else {
-				$this->_pluginAPI->addRuntimeMessage ('Plugin was already installed', WARNING);
+				$this->_pluginAPI->addMessage ($t->translate ('Plugin was already installed'), WARNING);
 			}
 			
 			$this->_pluginAPI->executePreviousAction ();
@@ -145,6 +148,7 @@ class adminCorePluginAdminPlugin extends plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PluginManager');
@@ -154,7 +158,7 @@ class adminCorePluginAdminPlugin extends plugin {
 			$a = $cm->getItem ('/extplugs/'.$pluginID, BOOL);
 			$cm->removeOption ($a);
 			$this->_pluginAPI->writeConfigFile ($cm);
-			$this->_pluginAPI->addRuntimeMessage ('Plugin is disabled', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Plugin is disabled'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -163,6 +167,7 @@ class adminCorePluginAdminPlugin extends plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();	
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PluginManager');
@@ -171,9 +176,9 @@ class adminCorePluginAdminPlugin extends plugin {
 			$plugin = $plugM->getPlugin ($pluginID);
 			if ($plugin->isInstalled ($this->_pluginAPI)) {
 				$plugin->Uninstall ($this->_pluginAPI);
-				$this->_pluginAPI->addRuntimeMessage ('Plugin is uninstalled', NOTICE);
+				$this->_pluginAPI->addMessage ($t->translate ('Plugin is uninstalled'), NOTICE);
 			} else {
-				$this->_pluginAPI->addRuntimeMessage ('Plugin was not installed', WARNING);
+				$this->_pluginAPI->addMessage ($t->translate ('Plugin was not installed'), WARNING);
 			}
 			
 			$this->_pluginAPI->executePreviousAction ();

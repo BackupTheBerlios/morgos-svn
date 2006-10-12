@@ -168,7 +168,8 @@ class morgos {
 			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
 			$this->_i18nManager = new localizer ();
-			$this->_i18nManager->loadErrorStrings ();
+			//$this->_i18nManager->loadLanguage ('nl_NL', 'i18n');
+			$this->setDefaultErrors ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
 			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
 								  $this->_configManager->getStringItem ('/databases/user'), 
@@ -239,7 +240,8 @@ class morgos {
 		ob_start ();
 		$this->_actionManager = new actionManager ();
 		$this->_i18nManager = new localizer ();	
-		$this->_i18nManager->loadErrorStrings ();	
+		$this->_i18nManager->loadLanguage ('nl_NL', 'i18n');
+		$this->setDefaultErrors ();
 		
 		$this->_smarty = new ExtendedSmarty ();
 		$this->_smarty->template_dir = array ('skins/default/');
@@ -375,6 +377,12 @@ class morgos {
 			}
 		}
 		echo 'ERROR: A required dir is not found or writable!! fix it (skins_c/default)';
+	}
+	
+	function setDefaultErrors () {
+		$this->_i18nManager->addError ('EMPTY_INPUT', $this->_i18nManager->translate ('Empty input, please give %1.'));
+		$this->_i18nManager->addError ('INVALID_CHOICE', $this->_i18nManager->translate ('This was an invalid choice.'));
+		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', $this->_i18nManager->translate ("Passwords didn't match."));
 	}
 }
 

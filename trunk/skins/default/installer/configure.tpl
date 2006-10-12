@@ -1,4 +1,4 @@
-{include file="installer/header.tpl" step="3/5"}
+{include file="installer/header.tpl" step="3"}
 <div>
 	<form action="index.php" method="post">
 		<fieldset>

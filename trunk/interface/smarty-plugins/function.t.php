@@ -9,7 +9,7 @@ function smarty_function_t ($params, &$smarty) {
 	$stringParams = array ();
 	foreach ($params as $k=>$v) {
 		if ($k != 's') {
-			$stringParams[$k] = $v;
+			$stringParams[] = $v;
 		}
 	}
 	

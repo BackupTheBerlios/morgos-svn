@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>{t s="MorgOS Installer step "}{$step}</title>
+		<title>{t s="MorgOS Installer step %1/%2" a=$step b='4'}</title>
 		
 		<!-- CSS FILES -->
 		<link rel="stylesheet" type="text/css" href="{$SkinPath}/styles/default.css" />
@@ -10,5 +10,5 @@
 	</head>
 	<body>
 		<div>
-			<h1>{t s="MorgOS Installer step "}{$step}</h1>
+			<h1>{t s="MorgOS Installer step %1/%2" a=$step b='4'}</h1>
 			{include file="messages.tpl"}

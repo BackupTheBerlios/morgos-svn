@@ -66,6 +66,7 @@ class adminCorePlugin extends plugin {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = $pageManager->newPage ();
 		$am = &$this->_pluginAPI->getActionManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		if ($pageID) {
 			$page->initFromDatabaseID ($pageID);
 		} else {
@@ -88,7 +89,7 @@ class adminCorePlugin extends plugin {
 				$sm->display ('admin/genericpage.tpl');
 			}
 		} else {
-			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);
+			$this->_pluginAPI->addRuntimeMessage ($t->translate ('Login as a valid admin user to view this page.'), NOTICE);
 			$sm->display ('admin/login.tpl');
 		}
 	}
@@ -96,16 +97,17 @@ class adminCorePlugin extends plugin {
 	function onLogin ($adminLogin, $adminPassword) {
 		$userManager = &$this->_pluginAPI->getUserManager ();
 		$a = $userManager->login ($adminLogin, $adminPassword);
+		$t = &$this->_pluginAPI->getI18NManager ();
 		if (isError ($a)) {
 			if ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT')) {
 				$sm = &$this->_pluginAPI->getSmarty ();
-				$this->_pluginAPI->addRuntimeMessage ('Given a wrong password/username.', ERROR);
+				$this->_pluginAPI->addRuntimeMessage ($t->translate ('Given a wrong password/username.'), ERROR);
 				$sm->display ('admin/login.tpl');
 			} else {
 				return $a;
 			}
 		} else {
-			$this->_pluginAPI->addMessage ('You are now logged in.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('You are now logged in.'), NOTICE);
 			$this->_pluginAPI->doAction ('admin');
 		}
 	}
@@ -113,10 +115,11 @@ class adminCorePlugin extends plugin {
 	function onLogout () {
 		$userManager = &$this->_pluginAPI->getUserManager ();
 		$a = $userManager->logout ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		if (isError ($a)) {
 			return $a;
 		} else {
-			$this->_pluginAPI->addMessage ('You are logged out.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('You are logged out.'), NOTICE);
 			$this->_pluginAPI->doAction ('admin');
 		}
 	}
