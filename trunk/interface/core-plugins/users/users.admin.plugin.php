@@ -38,6 +38,8 @@ class adminCoreUserAdminPlugin extends plugin {
 			'adminMakeUserAdmin', 'POST', array ($this, 'onMakeUserAdmin'), array (new IDInput ('userID')), array ()));
 		$am->addAction (new action (
 			'adminMakeUserNormal', 'POST', array ($this, 'onMakeUserNormal'), array (new IDInput ('userID')), array ()));
+		$am->addAction (new action (
+			'adminUserDelete', 'GET', array ($this, 'onDeleteUser'), array (new IDInput ('userID')), array ()));
 			
 	}
 	
@@ -112,6 +114,28 @@ class adminCoreUserAdminPlugin extends plugin {
 		}
 	}
 	
+	function onDeleteUser ($userID) {
+		$em = &$this->_pluginAPI->getEventManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$userM = &$this->_pluginAPI->getUserManager ();
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ('MorgOS_Admin_UserManager');
+		$pageID = $page->getID ();
+
+		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
+			$user = $userM->newUser ();
+			$user->initFromDatabaseID ($userID);
+			$userM->removeUserFromDatabase ($user);
+			
+			$this->_pluginAPI->addMessage ('User is deleted', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		} else {
+			$sm->display ('admin/login.tpl');
+		}
+	}
+	
 	function getCurrrentAdmins () {
 		$userM = &$this->_pluginAPI->getUserManager ();
 		$db = &$this->_pluginAPI->getDBModule ();
@@ -122,10 +146,19 @@ class adminCoreUserAdminPlugin extends plugin {
 		$sql = "SELECT userID FROM {$tPrefix}group_users WHERE groupID=$adminID";
 		$q = $db->query ($sql);
 		$admins = array ();
+		$currentUser = $userM->getCurrentUser ();
 		while ($row = $db->fetchArray ($q)) {
 			$admin = $userM->newUser ();
-			$admin->initFromDatabaseID ($row['userID']);
-			$adminArray = array ('Login'=>$admin->getLogin (), 'ID'=>$admin->getID ());
+			$a = $admin->initFromDatabaseID ($row['userID']);
+			if (isError ($a)) {
+				continue;
+			}
+			if ($admin->getID () == $currentUser->getID ())  {
+				$isCurrent = true;
+			} else {
+				$isCurrent = false;
+			}
+			$adminArray = array ('Login'=>$admin->getLogin (), 'ID'=>$admin->getID (), 'IsCurrent'=>$isCurrent);
 			//$permissions = array ('UserManager'=>'Y', 'PluginManager'=>'N');
 			//$adminArray['Permissions'] = $permissions;
 			$admins[] = $adminArray;
