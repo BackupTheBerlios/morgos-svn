@@ -1,0 +1,215 @@
+#footer{
+  font-size: 12px;
+  text-align: center;
+  clear: both;
+}
+
+span #mess {
+margin-bottom: 45px;
+color: white;
+}
+
+div .notice img{
+float: right;
+}
+
+div .warning img{
+float: right;
+}
+
+div .error img{
+float: right;
+}
+
+div .error{
+min-height: 20px;
+background-color: #BE1F1F;
+padding: 5px;
+margin: 7px;
+}
+
+div .warning{
+min-height: 20px;
+background-color: #DCC249;
+padding: 5px;
+margin: 7px;
+}
+
+div .notice{
+min-height: 20px;
+background-color: #657e3e;
+padding: 5px;
+margin: 7px;
+}
+
+h1{
+  font-size: 25px;
+}
+
+body {
+  background-color: white;
+  background-image: url(../images/gradient.png);
+  background-repeat: repeat-x;
+  font-family: "plantagenet cherokee", Times, serif;
+  color: #657e3e;
+  cursor: default;
+}
+
+#header img {
+  margin-left: 20px;
+}
+
+#linktext hr{
+  border: 1px #657e3e solid; 
+  height: 2px;
+  max-width: 200px;
+}
+
+#maintext{
+  z-index:1;
+  background-image: url(../images/trans.png);
+  min-height:50%;
+  min-width: 150px;
+  width: auto;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 15px;
+  padding-top: 0px;
+  text-align: left;
+  margin-left: 235px;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+#infoBox{
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  background: white;
+  width: 350px;
+  height: 200px;
+  padding: 15px;
+  padding-top: 0px;
+  border: 2px #657e3e solid;
+  opacity: 0.8;
+}
+
+#blackbox{
+  position: absolute;
+  background-color: black;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  opacity: 0.1;
+}
+
+ol.menu, ol.menu ol{
+  padding: 0px;           
+  margin-left: 0px;
+  background-image: url(../images/trans.png);
+}
+
+ol.menu li{
+  list-style-type: none;
+  position: relative;
+}
+
+ol.menu li > ol{
+  display: none;
+  position: absolute;
+  top: -1px;
+  left: 100%;    
+  background-color: #d7e9bc;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+ol.menu li:hover, ol.menu li.CSStoHighlight {
+  background-color: #c9e2a5;
+}
+
+#linktext ol li ol{
+  border-left: 2px #657e3e dashed;
+}
+
+ol.menu li:hover > ol{
+ display: block; 
+}
+
+#linktext{ 
+  z-index:2;
+  float: left;
+  width: 14%;
+  font-size: 18px;
+  min-width: 155px;
+  max-width: 180px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  line-height: 30px;
+  padding: 15px;
+  margin: 0px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+li a:hover{
+  text-decoration: none;
+}
+
+a img{
+  border:0;
+}
+
+a img:hover{
+  opacity: 0.9;
+}
+
+a img:active{
+  opacity: 0.7;
+}
+
+a:link{
+  font-family: "plantagenet cherokee", Times, serif;
+  color: #657e3e;
+  text-decoration: none;
+}
+
+a:visited{
+  font-family: "plantagenet cherokee", Times, serif;
+  color: #657e3e;
+  text-decoration: none;
+}
+
+a:hover{
+  text-decoration: underline;
+}
+
+a:active{
+  opacity: 0.7;
+}
+
+table{
+  border-collapse: collapse;
+  border: 0;
+}
+
+td{
+  border: 1px #657e3e solid;
+  padding-left: 10px; 
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+input{
+  background-color: transparent;
+  border: 1px #657e3e solid;
+  color: #657e3e;
+}
+
+textarea{
+  background-color: transparent;
+  border: 1px #657e3e solid;
+  color: #657e3e;
+}
