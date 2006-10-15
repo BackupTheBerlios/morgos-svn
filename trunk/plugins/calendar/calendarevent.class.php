@@ -15,13 +15,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
+
+class calendarGroup extends databaseObject {
+
+	function calendarGroup (&$db, $extraOptions, &$creator) {
+		$name = new dbField ('name', 'string');
+		$color = new dbField ('color', 'string');
+	
+		parent::databaseObject ($db, $extraOptions, 
+			array ('name'=>$name, 'color'=>$color),
+			'calendarGroup', 'groupID', $creator);
+	}
+
+	function getName () {return $this->getOption ('name');}
+	function getColor () {return $this->getOption ('color');}
+}
+
 /**
  * This is the calendarEvent class.
  *
  * @since 0.2
  * @author Nathan Samson
 */
-
 class calendarEvent extends databaseObject {
 		
 	function calendarEvent (&$db, $extraOptions, &$creator) {
@@ -29,9 +44,10 @@ class calendarEvent extends databaseObject {
 		$start = new dbField ('start', 'datetime');
 		$end = new dbField ('end', 'datetime');
 		$desc = new dbField ('description', 'text');	
+		$group = new dbField ('groupID', 'int');	
 	
 		parent::databaseObject ($db, $extraOptions, 
-			array ('name'=>$name, 'start'=>$start, 'end'=>$end, 'description'=>$desc),
+			array ('name'=>$name, 'start'=>$start, 'end'=>$end, 'description'=>$desc, 'groupID'=>$group),
 			'calendar', 'eventID', $creator);
 	}
 	
@@ -39,4 +55,10 @@ class calendarEvent extends databaseObject {
 	function getEndDate () {return $this->getOption ('end');}
 	function getTitle () {return $this->getOption ('name');}
 	function getDescription () {return $this->getOption ('description');}
+	
+	function getGroup () {
+		$group = $this->creator->newGroup ();
+		$group->initFromDatabaseID ($this->getOption ('groupID'));
+		return $group;
+	}
 }

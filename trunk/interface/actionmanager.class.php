@@ -95,6 +95,14 @@ class StringInput extends baseInput {
 }
 
 /**
+ * An int input class
+ * @ingroup interface
+ * @since 0.2
+*/
+class IntInput extends baseInput {
+}
+
+/**
  * An email input class
  * @ingroup interface
  * @since 0.2

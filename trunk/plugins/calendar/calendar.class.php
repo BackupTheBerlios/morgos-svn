@@ -123,8 +123,11 @@ class calendar {
 	}
 	
 	function eventToArray ($event) {
+		$group = $event->getGroup ();
+		$c = $group->getColor ();
+		$groupN = $group->getName ();
 		return array ('Startdate'=>$event->getStartDate (), 'Description'=>$event->getDescription (),
-				'Enddate'=>$event->getEndDate (), 'Title'=>$event->getTitle ());
+				'Enddate'=>$event->getEndDate (), 'Title'=>$event->getTitle (), 'Group'=>array ('Color'=>$c, 'GroupName'=>$groupN));
 	}
 	
 	function getNextDay ($timestamp) {
@@ -134,5 +137,33 @@ class calendar {
 	function newEvent () {
 		return new calendarEvent ($this->_db, array (), $this);
 	}
-
+	
+	function getAllGroups () {
+		$groups = array ();
+		$fTN = $this->_db->getPrefix ().'calendarGroup';
+		$sql = "SELECT groupID FROM $fTN";
+		$q = $this->_db->query ($sql);
+		while ($row = $this->_db->fetchArray ($q)) {
+			$group = $this->newGroup ();
+			$group->initFromDatabaseID ($row['groupID']);
+			$groups[] = $group;
+		}
+		return $groups;
+	}
+	
+	function addGroupToDatabase ($group) {
+		return $group->addToDatabase ();
+	}
+	
+	function removeGroupFromDatabase ($group) {
+		$fTN = $this->db->getPrefix () . 'calendarGroupEvents';
+		$groupID = $group->getID ();
+		$sql = "DROP FROM $fTN WHERE groupID='$groupID'";
+		$this->db->query ($sql);
+		return $group->removeFromDatabase ();
+	}
+	
+	function newGroup () {
+		return new calendarGroup ($this->_db, array (), $this);
+	}
 }

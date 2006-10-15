@@ -17,6 +17,7 @@
 	  	<!--[if IE]>
 			<link href="ie_win.css" rel="stylesheet" type="text/css" />
 		<![endif]-->
+		{$MorgOS_ExtraHead}
 	</head>
 	<div class="header">
 		<div id="nav">
@@ -38,4 +39,5 @@
 			</ol>
 		</div>
 	</div>
+	<div class="content">
 	

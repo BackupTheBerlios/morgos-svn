@@ -11,6 +11,7 @@
 		<!--[IF IE lte 6]>
 			<link rel="stylesheet" ref="{$SkinPath}/styles/default.hacks.IE6-55-5.css" />
 		<![endif]-->
+		{$MorgOS_ExtraHead}
 	</head>
 	<body>
 		<div class="header">

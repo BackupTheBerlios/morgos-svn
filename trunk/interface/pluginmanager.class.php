@@ -203,6 +203,19 @@ class plugin {
 		}
 	}
 	
+	function getSkinDir () {
+		$skinM = &$this->_pluginAPI->getSkinManager ();
+		$plugSkinM = new skinManager ($this->_pluginAPI);
+		$plugSkinM->findAllSkins ($this->getLoadedDir ().'/skins/');
+		$IDLoadedSkin = $skinM->_loadedSkin[0]->getID ();
+		if ($plugSkinM->existsSkin ($IDLoadedSkin)) {
+			$skin = $plugSkinM->_allFoundSkins[$IDLoadedSkin];
+			return $this->getLoadedDir ().'/skins/'.$skin->_baseSkinDir;
+		} else {
+			return $this->getLoadedDir ().'/skins/default';
+		}
+	}
+	
 	function isInstalled (&$foo) {return true;}
 	function install (&$foo) {}
 	function unInstall (&$foo) {}

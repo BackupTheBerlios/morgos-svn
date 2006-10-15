@@ -6,7 +6,6 @@
 				<th colspan="3">&lt; {$Calendar_Year} &gt;</th>
 			</tr>
 			<tr>
-				<th>&nbsp;</th>
 				<th>Ma</th>
 				<th>Di</th>
 				<th>Wo</th>
@@ -17,7 +16,6 @@
 			</tr>
 			{foreach from=$Calendar_Weeks item='week'}
 				<tr>
-					<th>{$week.Nr}</th>
 				{foreach from=$week.Days item='day'}
 					<td class="day">{$day.Nr}
 						{if $day.Events}
