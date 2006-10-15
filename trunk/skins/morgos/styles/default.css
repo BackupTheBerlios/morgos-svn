@@ -4,7 +4,7 @@
   clear: both;
 }
 
-span #mess {
+div#mess {
 margin-bottom: 45px;
 color: white;
 }
@@ -82,26 +82,29 @@ body {
 }
 
 #infoBox{
-  position: absolute;
-  top: 25%;
-  left: 25%;
+  margin-bottom: auto;
+  margin-top: 20%;
+  margin-left: auto;
+  margin-right: auto;
   background: white;
-  width: 350px;
-  height: 200px;
+  /*height: 200px;*/
+  width: 500px;
+  /*padding-left: auto;
+  padding-right: auto;*/
   padding: 15px;
-  padding-top: 0px;
+  padding-top: 0;
   border: 2px #657e3e solid;
-  opacity: 0.8;
+  /*opacity: 0.8;*/
 }
 
 #blackbox{
-  position: absolute;
   background-color: black;
   top: 0px;
   left: 0px;
   height: 100%;
   width: 100%;
   opacity: 0.1;
+  border: solid 1px red;
 }
 
 ol.menu, ol.menu ol{

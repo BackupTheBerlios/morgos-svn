@@ -1,3 +1,4 @@
+</div>
 <div id="footer">
 {$MorgOS_Copyright} <br />
         <a href="http://morgos.heijens.eu">
@@ -17,7 +18,7 @@
         alt="php powered" height="15" width="80" /></a>
         
         <a href="http://www.w3.org/Style/CSS/">
-        <img src="http://morgos.heijens.eu/cssonly.png"
+        <img src="{$SkinPath}/images/cssonly.png"
         alt="Made purely with css" height="15" width="80" /></a>
         
         <a href="http://www.mysql.org/">
@@ -25,4 +26,4 @@
         alt="made with mysql" height="15" width="80" /></a>
 
         
-         </div>
+</div>

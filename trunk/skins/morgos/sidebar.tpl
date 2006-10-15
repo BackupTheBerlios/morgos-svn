@@ -2,9 +2,7 @@
 	{foreach from=$MorgOS_RootMenu item='menuItem' name='menu'}
 
 	<li>
-    {if !$smarty.foreach.menu.first}
-	<hr />
-	{/if}
+	{if !$smarty.foreach.menu.first}<hr />{/if}
 	<a href="{$menuItem.Link|xhtml}">{$menuItem.Title}</a>
         {if $menuItem.Childs}
 		<ol>

@@ -7,10 +7,10 @@
 		<title>{t s='Login'}</title>
 	</head>
 	<body>
-		<div id="blackbox"></div><div id="infoBox">
+		<div id="infoBox">
 			<h2>{t s='Login'}</h2>
 
-			{include file="admin/messages.tpl"}			
+			{include file="admin/messages.tpl"}
 			
 			<form method="post" action="index.php">
 				{morgos_form_action a="adminLogin"}
