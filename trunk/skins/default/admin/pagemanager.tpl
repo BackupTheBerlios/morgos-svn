@@ -1,5 +1,4 @@
 {include file="admin/header.tpl"}
-	<div id="main">
 		<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
 		<p>{$MorgOS_CurrentAdminPage.Content}</p>
 		
@@ -86,5 +85,4 @@
 			<input type="submit" value="{t s="Save page"}" />
 		</form>
 		{/if}
-	</div>
 {include file="admin/footer.tpl"}

@@ -1,5 +1,4 @@
 {include file="admin/header.tpl"}
-	<div id="main">
 		<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
 		
 		{include file="admin/messages.tpl"}
@@ -35,5 +34,4 @@
 				</tr>			
 			{/foreach}
 		</table>
-	</div>
 {include file="admin/footer.tpl"}

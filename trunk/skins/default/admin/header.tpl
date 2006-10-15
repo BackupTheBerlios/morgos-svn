@@ -16,3 +16,4 @@
 		</div>
 		{include file="admin/nav.tpl"}
 		{include file="admin/sidebar.tpl"}
+		<div id="main">
