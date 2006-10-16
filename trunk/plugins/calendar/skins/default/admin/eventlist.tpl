@@ -6,7 +6,7 @@
 		<th>End</th>
 	</tr>
 	{foreach from=$events item='event'}
-		<tr>
+		<tr style="background-color: {$event.Group.Color};">
 			<td>{$event.Title}</td>
 			<td>{$event.Description}</td>
 			<td>{$event.Startdate}</td>

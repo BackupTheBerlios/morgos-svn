@@ -15,3 +15,4 @@
 		{include file="admin/nav.tpl"}
 		{include file="admin/sidebar.tpl"}
 		<div id="maintext">
+		{include file="admin/messages.tpl"}

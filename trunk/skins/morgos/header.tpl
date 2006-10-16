@@ -17,4 +17,5 @@
 	<div id="header"><img src="{$SkinPath}/images/logo.png" alt="logo" width="80%"/></div>
 			{include file="sidebar.tpl"}
 	<div id="maintext">
+	{include file="messages.tpl"}
 	

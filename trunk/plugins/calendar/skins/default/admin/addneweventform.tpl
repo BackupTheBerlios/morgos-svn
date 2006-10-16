@@ -17,6 +17,12 @@
 		<label for="eventDescription">{t s="Description: "}</label>
 		<textarea id="eventDescription" name="description" rows="3" cols="30"></textarea>
 	</p>
+
+	<p>
+		<label for="eventGroup">{t s="Group: "}</label>
+		<select name="groupID" id="eventGroup">{html_options options=$Calendar_AvGroups}</select>
+	</p>	
+	
 	<input type="hidden" name="action" value="adminNewCalendarEvent" />
 	<label>&nbsp;</label><input type="submit" value="{t s="Add event"}" />
 </form>
