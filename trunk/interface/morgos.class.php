@@ -199,8 +199,8 @@ class morgos {
 			$this->_skinManager = new skinManager ($this->_pluginAPI);
 			$this->_pluginAPI->setSkinManager ($this->_skinManager);
 			$this->_skinManager->findAllSkins ('skins/');
-			$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
-			//$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
+			//$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
+			$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
 			//$this->_skinManager->loadSkin ('{c11681a8-5889-41cd-8fe1-d6fba2978804}');
 			$this->_smarty->plugins_dir[] = 'interface/smarty-plugins/';
 			$this->_smarty->assign_by_ref ('t', $this->_i18nManager);

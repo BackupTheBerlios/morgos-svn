@@ -141,7 +141,17 @@ class pluginAPI {
 	
 	function addRuntimeMessage ($tMessage, $type) {
 		$sm = &$this->getSmarty ();
-		$sm->append_by_ref ('MorgOS_Notices', $tMessage);
+		switch ($type) {
+			case ERROR: 
+				$sm->append_by_ref ('MorgOS_Errors', $tMessage);
+				break;
+			case WARNING:
+				$sm->append_by_ref ('MorgOS_Warnings', $tMessage);
+				break;
+			case NOTICE:
+				$sm->append_by_ref ('MorgOS_Notices', $tMessage);
+				break;
+		}
 	}	
 	
 	function canUserViewPage ($pageID) {
