@@ -35,15 +35,14 @@ class helloWorldPlugin extends plugin {
 	function load ($pluginAPI) {
 		parent::load ($pluginAPI);
 		
-		$eventM = $this->_pluginAPI->getEventManager ();
+		$eventM = &$this->_pluginAPI->getEventManager ();
 		$a = $eventM->subscribeToEvent ('viewPage', 
 			new Callback ('onViewHelloWorld', array ($this, 'onViewPage')));
 	}
 	
 	function onViewPage () {
-		$sm = $this->_pluginAPI->getSmarty ();
-		$sm->assign ('MorgOS_CurrentPage_Content', 
-			'Hello world. <br />' . $sm->get_template_vars ('MorgOS_CurrentPage_Content'));
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$sm->prependTo ('MorgOS_CurrentPage_Content', 'Hello world. <br />');
 		return true;
 	}
 	
