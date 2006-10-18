@@ -122,12 +122,27 @@ class calendar {
 		return $results;
 	}
 	
+	function getAllEvents () {
+		$fTN = $this->_db->getPrefix ().'calendar';
+		$sql = "SELECT eventID FROM $fTN";
+		$q = $this->_db->query ($sql);
+		if (isError ($q)) {
+			return $q;
+		}
+		$events = array ();
+		while ($row = $this->_db->fetchArray ($q)) {
+			$event = $this->newEvent ();
+			$event->initFromDatabaseID ($row['eventID']);
+			$events[] = $event;
+		}
+		return $events;
+	}
+	
 	function eventToArray ($event) {
-		$group = $event->getGroup ();
-		$c = $group->getColor ();
-		$groupN = $group->getName ();
-		return array ('Startdate'=>$event->getStartDate (), 'Description'=>$event->getDescription (),
-				'Enddate'=>$event->getEndDate (), 'Title'=>$event->getTitle (), 'Group'=>array ('Color'=>$c, 'GroupName'=>$groupN));
+		 return array ('ID'=>$event->getID (), 'Group'=>$this->group2Array ($event->getGroup ()), 
+			'StartDate'=>$event->getStartDate (), 'EndDate'=>$event->getEndDate (), 
+			'Title'=>$event->getTitle (), 'Description'=>$event->getDescription (), 
+			'EditLink'=>'index.php?action=adminEditCalendarEventForm&eventID='.$event->getID ());
 	}
 	
 	function getNextDay ($timestamp) {
@@ -166,4 +181,8 @@ class calendar {
 	function newGroup () {
 		return new calendarGroup ($this->_db, array (), $this);
 	}
+	
+	function group2Array ($group) {
+		return array ('Color'=>$group->getColor (), 'Name'=>$group->getName ());
+	}	
 }

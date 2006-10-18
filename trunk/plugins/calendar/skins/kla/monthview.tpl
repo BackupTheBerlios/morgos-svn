@@ -1,5 +1,4 @@
 {include file="header.tpl"}
-<div class="content">
 	<h1>{$MorgOS_CurrentPage_Title}</h1>
 	{$MorgOS_CurrentPage_Content}
 	
@@ -18,13 +17,9 @@
 		</tr>
 		<tr>
 			<th>&nbsp;</th>
-			<th>Maandag</th>
-			<th>Dinsdag</th>
-			<th>Woensdag</th>
-			<th>Donderdag</th>
-			<th>Vrijdag</th>
-			<th>Zaterdag</th>
-			<th>Zondag</th>
+			{foreach from=$Calendar_WeekDays item='day'}
+				<th>{$day}</th>
+			{/foreach}
 		</tr>
 		{foreach from=$Calendar_Weeks item='week'}
 			<tr>
@@ -45,7 +40,9 @@
 					{if $day.Events}
 						<ul class="events">
 							{foreach from=$day.Events item='event'}
-									<li style="background-color: {$event.Group.Color};">{$event.Title}</li>
+									<li style="background-color: {$event.Group.Color};">
+										<a href="{$event.MonthMoreInfoLink|xhtml}" onClick="showEvent ({$event.ID}); return false;">{$event.Title}</a>
+									</li>
 							{/foreach}
 						</ul>
 					{/if}
@@ -54,5 +51,15 @@
 			</tr>
 		{/foreach}
 	</table>
-</div>
+	<div id="eventBox">
+		{if $Calendar_CurrentEvent}
+			<span>{$Calendar_CurrentEvent.StartDate|date_format:"%d/%m %H:%m"} -- {$Calendar_CurrentEvent.EndDate|date_format:"%d/%m %H:%m"}</span>
+			<span>{$Calendar_CurrentEvent.Name}</span>
+			<p>
+			{$Calendar_CurrentEvent.Description}
+			</p>
+		{else}
+		{t s="Click on an event to show more information about it."}
+		{/if}
+	</div>
 {include file="footer.tpl"}
