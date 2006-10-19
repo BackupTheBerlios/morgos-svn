@@ -155,6 +155,15 @@ class IDInput extends baseInput {
 			}
 		}
 	}
+	
+/*	function getValue ($from) {
+		if ($this->isGiven ($from)) {
+			$fromArray = $this->getFromArray ($from);
+			return (int) $fromArray[$this->_name];
+		} else {
+			return null;
+		}
+	}*/
 }
 
 /**
@@ -261,8 +270,8 @@ class action {
 	 * @param $name (string)
 	 * @param $method (string) POST or GET
 	 * @param $executor (PHP callback)
-	 * @param $requiredOptions (string array)
-	 * @param $notRequiredOptions (empty array) Not used yet
+	 * @param $requiredOptions (baseInput array)
+	 * @param $notRequiredOptions (baseInput array) default array ()
 	*/
 	function action ($name, $method, $executor, $requiredOptions, $notRequiredOptions = array ()) {
 		$this->_name = $name;
