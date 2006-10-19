@@ -24,16 +24,17 @@
 
 class mailingMember extends databaseObject 
   {
-  function mailingList ($dbModule,$creator) 
+  function mailingMember ($dbModule) 
     {
 	$extraOptions= '';
 	$listName = new dbField ('userName', 'varchar (255)'); 
 	$emailAdres = new dbField ('emailAdres', 'varchar (255)');
 	$groupID = new dbField ('ListID', 'int (11)');
-    $basicOptions = new array ('listName'=>$listName, 'emailAdres'=>$emailAdres, 'groupID'=>$groupID);
+    $basicOptions = array ('listName'=>$listName, 'emailAdres'=>$emailAdres, 'groupID'=>$groupID);
     $tableName = 'mailingMembers';
     $IDName = 'memberID';
-	base::databaseObject (&$dbModule, $extraOptions, $basicOptions, $tableName, $IDName, &$creator);
+    $creator = null;
+	base::databaseObject ($dbModule, $extraOptions, $basicOptions, $tableName, $IDName, $creator);
 	}
 
   function getName() 
@@ -45,10 +46,5 @@ class mailingMember extends databaseObject
 	{
 	return $this->getOption ('emailAdres');
  	}
-
-  function getListID()
-	{
-	return $this->getOption ('listID');
-	}
   }
 ?>

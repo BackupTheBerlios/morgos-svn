@@ -35,6 +35,8 @@ class mailListPlugin extends plugin
 	
   function load (&$pluginAPI) 
     {
+     include_once ($this->getLoadedDir ().'/mailingList.class.php');
+     include_once ($this->getLoadedDir ().'/mailingMember.class.php');
 	parent::load (&$pluginAPI);
 	$executor = array ($this, 'onViewManager');
     $requiredOptions = array ();

@@ -24,14 +24,15 @@
 
 class mailingList extends databaseObject 
   {
-  function mailingList ($dbModule,$creator) 
+  function mailingList ($dbModule) 
     {
 	$extraOptions= '';
 	$listName = new dbField ('listName', 'varchar (255)'); // veld met naam name, en type varchar(255)
-    $basicOptions = new array ('listName'=>$listName;
+    $basicOptions = array ('listName'=>$listName);
     $tableName = 'mailingLists';
     $IDName = 'listID';
-	base::databaseObject (&$dbModule, $extraOptions, $basicOptions, $tableName, $IDName, &$creator);
+    $creator = null;
+	base::databaseObject ($dbModule, $extraOptions, $basicOptions, $tableName, $IDName, $creator);
 	}
 	
   function sendmail ($from, $subject, $content) 
@@ -41,22 +42,22 @@ class mailingList extends databaseObject
     $headers .= 'From:' . $from . "\r\n";
 	$headers .= 'Reply-To: ' . $from . "\r\n";
 	foreach ($this->getAllMembers as $member) 
-	  {
+	{
       $emails .= ', ' . $mailingMember->getEmail();
-      }
+     }
 	mail($emails, $subject, $message, $headers);
 	}
 		
   function getAllMembers()
     {
-    $table = $db->getPrefix (). 'mailingMembers'
-    $listID = $this->getID ()
+    $table = $db->getPrefix (). 'mailingMembers';
+    $listID = $this->getID ();
     $query = "SELET memberID FROM $tableName WHERE listID='$listID'";
     $q = $db->query ($qurey);
     $members = array();
     while ($row = $db->fetchArray ($q))
       {
-      $member = new mailingMember();
+      $member = new mailingMember($this->_db);
       $member->initFromDatabaseID ($row['memberID']);
       $members[] = $member;
       }
