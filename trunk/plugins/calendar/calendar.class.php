@@ -142,7 +142,8 @@ class calendar {
 		 return array ('ID'=>$event->getID (), 'Group'=>$this->group2Array ($event->getGroup ()), 
 			'StartDate'=>$event->getStartDate (), 'EndDate'=>$event->getEndDate (), 
 			'Title'=>$event->getTitle (), 'Description'=>$event->getDescription (), 
-			'EditLink'=>'index.php?action=adminEditCalendarEventForm&eventID='.$event->getID ());
+			'EditLink'=>'index.php?action=adminEditCalendarEventForm&eventID='.$event->getID (),
+			'DeleteLink'=>'index.php?action=adminDeleteCalendarEvent&eventID='.$event->getID ());
 	}
 	
 	function getNextDay ($timestamp) {

@@ -51,6 +51,9 @@ class calendarPlugin extends plugin {
 			array ('title', 'description',
 				'Start_Date_Year', 'Start_Date_Month', 'Start_Date_Day', 'Start_Time_Hour', 'Start_Time_Minute',
 				'End_Date_Year', 'End_Date_Month', 'End_Date_Day', 'End_Time_Hour', 'End_Time_Minute', 'groupID'), array ()));
+				
+		$am->addAction (new Action ('adminDeleteCalendarEvent', 'GET', array ($this, 'onDeleteEvent'),
+			array (new IDInput ('eventID')), array ()));
 			
 		$am->addAction (new Action ('adminEditCalendarEvent', 'GET', array ($this, 'onEditEvent'),
 			array ('eventID', 'title', 'description',
@@ -58,7 +61,7 @@ class calendarPlugin extends plugin {
 				'End_Date_Year', 'End_Date_Month', 'End_Date_Day', 'End_Time_Hour', 'End_Time_Minute', 'groupID'), array ()));
 				
 		$am->addAction (new Action ('adminEditCalendarEventForm', 'GET', array ($this, 'onEditEventForm'),
-			array (), array (new IDInput ('event'))));
+			array (), array (new IDInput ('eventID'))));
 		
 		$am->addAction (new Action ('adminNewCalendarGroup', 'GET', array ($this, 'onNewGroup'),
 			array (new StringInput ('groupName'), new StringInput ('groupColor')), array ()));
@@ -234,6 +237,22 @@ class calendarPlugin extends plugin {
 		}
 	}
 	
+	function onDeleteEvent ($eventID) {
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$em = &$this->_pluginAPI->getEventManager ();
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ('Calendar_Admin_CalendarManager');
+		$pageID = $page->getID ();
+		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
+			$event = $this->_calendarM->newEvent ();
+			$event->initFromDatabaseID ($eventID);
+			$event->removeFromDatabase ();
+			$this->_pluginAPI->addMessage ('Event succesfully deleted.', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
+	}
+	
 	function onNewGroup ($groupName, $groupColor) {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
@@ -303,7 +322,28 @@ class calendarPlugin extends plugin {
 		$sm->display ('monthview.tpl');
 	}
 	
-	function onEditEvent () {
+	function onEditEvent ($eventID, $title, $description, 
+			$yearStart, $monthStart, $dayStart, $hourStart, $minuteStart,
+			$yearEnd, $monthEnd, $dayEnd, $hourEnd, $minuteEnd, $groupID) {
+			
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$em = &$this->_pluginAPI->getEventManager ();
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ('Calendar_Admin_CalendarManager');
+		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
+			
+			$event = $this->_calendarM->newEvent ();
+			$event->initFromDatabaseID ($eventID);			
+			$startSQLTime = $yearStart.'-'.$monthStart.'-'.$dayStart.' '.$hourStart.':'.$minuteStart.':00';
+			$endSQLTime = $yearEnd.'-'.$monthEnd.'-'.$dayEnd.' '.$hourEnd.':'.$minuteEnd.':00';
+		
+			$event->updateFromArray (array ('start'=>$startSQLTime, 'end'=>$endSQLTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
+			$event->updateToDatabase ();
+			$this->_pluginAPI->addMessage ('Event saved.', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
 	}
 	
 	function onEditEventForm ($eventID) {
@@ -316,9 +356,10 @@ class calendarPlugin extends plugin {
 		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
 			$em->triggerEvent ('viewAnyAdminPage', array ($page->getID (), 'en_UK'));
 			$eventC = $this->_calendarM->newEvent ();
-			$eventC->initFromDatabaseID ($eventID);
+			$a = $eventC->initFromDatabaseID ($eventID);
 			$eventA = $this->event2Array ($eventC);
 			$sm->assign ('Calendar_Event', $eventA);
+			$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
 			$sm->display ('admin/editevent.tpl');
 		}
 	}
@@ -357,9 +398,10 @@ class calendarPlugin extends plugin {
 		$curWeek =  array ();
 		while ($cur <= $end)	{
 			$day = $calendarM->getDayArray ($cur);
-			foreach ($day['Events'] as &$event) {
+			foreach ($day['Events'] as $k=>$event) {
 				$event['MonthMoreInfoLink'] = 'index.php?action=calendarMonthView&month='.$curMonth
 					.'&year='.$curYear.'&eventID='.$event['ID'];
+				$day['Events'][$k] = $event;
 			}
 			$w = date ('w', $cur);
 			if ($w == 0 or $w == 6) {
@@ -449,7 +491,7 @@ class calendarPlugin extends plugin {
 	}
 	
 	function group2Array (&$group)  {
-		$group = array ('Color'=>$group->getColor (), 'Name'=>$group->getName ());
+		$group = array ('Color'=>$group->getColor (), 'Name'=>$group->getName (), 'ID'=>$group->getID ());
 		return $group;
 	}
 	
