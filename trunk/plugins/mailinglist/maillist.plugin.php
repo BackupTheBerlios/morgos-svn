@@ -104,9 +104,9 @@ class mailListPlugin extends plugin
   function isInstalled (&$pluginAPI) 
 	{
 	$db = &$pluginAPI->getDBModule ();
-    $allTables = $db->getAllTables ();
-    $listTable = in_array ($db->getPrefix ().'mailingLists', $allTables);
-    $memberTable = in_array ($db->getPrefix().'mailingMembers', $allTables);
+    $listTable = $db->tableExists ('mailingLists');
+    $memberTable = $db->tableExists ('mailingMembers');
+    
     if ($listTable and $memberTable) 
       {
       return true;

@@ -309,7 +309,7 @@ class morgos {
 	function run ($defaultAction = 'viewPage') {
 		//var_dump ($this->_pluginAPI);
 		$allMessages = $this->_pluginAPI->getAllMessages ();
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
 		$sm->assign_by_ref ('MorgOS_Errors', $allMessages[ERROR]);
 		$sm->assign_by_ref ('MorgOS_Warnings', $allMessages[WARNING]);
 		$sm->assign_by_ref ('MorgOS_Notices', $allMessages[NOTICE]);

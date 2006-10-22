@@ -13,7 +13,7 @@
 	  	<link rel="alternate stylesheet" type="text/css" href="{$SkinPath}/styles/leerlingenraad/basis.css" title="Leerlingenraad"/>
 	  	<link rel="alternate stylesheet" type="text/css" href="{$SkinPath}/styles/leerlingenraad/menu.css" title="Leerlingenraad"/>
 	  	
-	  	<script type="text/javascript" src="switchstyle.js"></script>
+	  	<script type="text/javascript" src="{$SkinPath}/styles/navfixes.js"></script>
 	  	<!--[if IE]>
 			<link href="ie_win.css" rel="stylesheet" type="text/css" />
 		<![endif]-->

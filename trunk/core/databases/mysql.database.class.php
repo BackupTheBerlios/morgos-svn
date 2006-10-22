@@ -152,6 +152,15 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			}
 			return mysql_real_escape_string ($value, $this->connection);
 		}
+		
+		function tableExists ($tableName) {
+			$allTables = $this->getAllTables ();
+			if (in_array ($this->getPrefix().$tableName, $allTables)) {
+				return true;
+			} else {
+				return in_array (strtolower ($this->getPrefix().$tableName), $allTables);
+			}
+		}
 	
 	}
 }

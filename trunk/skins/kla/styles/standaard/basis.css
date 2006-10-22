@@ -26,8 +26,8 @@ body div.header {
 	background-image: url('../../images/logo.png'); /*punt van de CSS bezien en niet van het bestand dat CSS aanroept*/
 	background-repeat: no-repeat;
 	background-position: top center;
-	_height: 155px; /*voor IE een plezier te doen, werkt niet op IE 4 voor MAC*/
-	min-height: 155px; /*min-heigt om eventuele foutmeldingen er ook in te laten passen*/
+	/*_height: 155px;*/ /*voor IE een plezier te doen, werkt niet op IE 4 voor MAC*/
+	/*min-height: 155px;*/ /*min-heigt om eventuele foutmeldingen er ook in te laten passen*/
 	z-index: 2;
 }
 

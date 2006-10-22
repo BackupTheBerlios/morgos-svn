@@ -5,9 +5,10 @@
 	/*border-right: solid #E2E2E2 5px;
 	/*-moz-border-radius-topright: 15px;*/
 	color: #000000;
-	height: 1em;
+	/*height: 1em;*/
 	margin-top: 130px;
-	position: relative;
+	/*position: relative;*/
+	text-align: center;
 }
 
 #nav ol {
@@ -16,9 +17,10 @@
 }
 
 #nav li { /* all list items */
-	float: left;
+	/*float: left;*/
 	position: relative;
 	list-style: none;
+	display: inline;
 	/*width: 10em;*/
 
 	padding-left: 25px;
@@ -26,18 +28,34 @@
 	text-align: center;
 
 	/*Mozilla only, css3??*/
-	opacity: .9;
+	/*-moz-opacity: .9;*/
 }
 
 #nav li ol { /* second-level lists */
 	display: none;
+	float: left;
 	position: absolute;
 	top: 1em;
-
+	margin-top: 1px;
+	left: 25px;
 	padding: 0; /* nodig voor ao FFx 1.0 */
 	border: solid #A4a4A4 1px;
 	background-color: #E5E3E3;
-	width: 12em;
+	/*width: 12em;*/
+	text-align: left;
+}
+
+/*added myself*/
+#nav li li {
+}
+
+#nav li ol li {
+	border: 0;
+	border-top: solid #A4a4A4 1px;
+	text-align: left;
+	padding: 2px;
+	
+	list-style: none;
 }
 
 #nav li ol.ie {
@@ -53,24 +71,13 @@ li>ol { /* to override top and left in browsers other than IE, which will positi
 	display: block;
 }
 
-#nav li.over ol {
+/*#nav li.over ol {
 	display: block;
 	left: -1em;
-}
+	margin-top: 3px;
+}*/
 
-/*added myself*/
-#nav li li {
-	display: block;
-	float: none;
-	list-style: none;
-}
 
-#nav li ol li {
-	border: 0;
-	border-top: solid #A4a4A4 1px;
-	text-align: left;
-	padding: 2px;
-}
 
 /* Werkt niet in IE 6*/
 #nav li ol li:first-child {
