@@ -7,38 +7,44 @@
 	color: #000000;
 	/*height: 1em;*/
 	margin-top: 130px;
-	/*position: relative;*/
-	text-align: center;
+	position: relative;
+	/*text-align: center;*/
 }
 
 #nav ol {
 	padding: 0;
 	margin: 0;
+	/*z-index: 200;*/
+	/*position: relative;*/
+
 }
 
-#nav li { /* all list items */
+#nav ol li { /* all list items */
 	/*float: left;*/
 	position: relative;
-	list-style: none;
-	display: inline;
+	list-style: none;	display: inline;
 	/*width: 10em;*/
 
-	padding-left: 25px;
-	padding-right: 25px;
+	/*padding-left: 25px;*/
+	/*padding-right: 25px;*/
 	text-align: center;
 
 	/*Mozilla only, css3??*/
 	/*-moz-opacity: .9;*/
+/*	margin-left: 25px;*/
+	margin-right: 25px;
+	z-index: 1000;
 }
 
 #nav li ol { /* second-level lists */
 	display: none;
-	float: left;
+	/*float: left;*/
 	position: absolute;
 	top: 1em;
 	margin-top: 1px;
-	left: 25px;
+	margin-left: 0;
 	padding: 0; /* nodig voor ao FFx 1.0 */
+	padding-right: 25px;
 	border: solid #A4a4A4 1px;
 	background-color: #E5E3E3;
 	/*width: 12em;*/
@@ -51,12 +57,18 @@
 
 #nav li ol li {
 	border: 0;
-	border-top: solid #A4a4A4 1px;
+	/*border-top: solid #A4a4A4 1px;*/
 	text-align: left;
-	padding: 2px;
-	
+	padding: 0;
+	margin: 0;
+	/*padding: 20px;*/
+	/*margin-left: 20px;
+	margin-right: 20px;*/
+	/*border: solid 1px red;*/
 	list-style: none;
-}
+	/*left: -1em;*/
+}
+
 
 #nav li ol.ie {
 	top: 1em;
@@ -71,11 +83,21 @@ li>ol { /* to override top and left in browsers other than IE, which will positi
 	display: block;
 }
 
-/*#nav li.over ol {
+#nav li:hover ol li { /* list items nested under hovered list items */
 	display: block;
-	left: -1em;
+}
+
+#nav li.over ol {
+	display: block;
+	left: 0;
 	margin-top: 3px;
-}*/
+	z-index: 200;
+	padding:0;
+}
+
+#nav li.over ol li {
+	display: block;
+}
 
 
 
@@ -87,3 +109,7 @@ li>ol { /* to override top and left in browsers other than IE, which will positi
 #nav a {
 	text-decoration: none;
 }
+
+/*#nav ol li ol li {
+	padding: 50px;
+}*/

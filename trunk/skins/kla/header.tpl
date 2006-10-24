@@ -40,4 +40,5 @@
 		</div>
 	</div>
 	<div class="content">
+	{include file="admin/messages.tpl"}
 	

@@ -179,7 +179,7 @@ body div.content table tr td.kop {
 body div.content table tr td.title {
 	font-weight: bold;
 	text-align: center;
-	border: solid black 1px;
+	/*border: solid black 1px;*/
 }
 
 body div.content table {
@@ -188,7 +188,7 @@ body div.content table {
 }
 
 body div.content table td, body div.content table th {
-	border: solid 1px #E2E2E2;
+	/*border: solid 1px #E2E2E2;*/
 }
 
 /*body div.content div {

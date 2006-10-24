@@ -135,7 +135,22 @@ class EnumInput extends baseInput {
 class BoolInput extends EnumInput {
 	
 	function BoolInput ($name) {
-		parent::EnumInput ($name, array ('Y', 'N'));
+		parent::EnumInput ($name, array (true, false));
+	}
+	
+	function getValue ($from) {
+		if ($this->isGiven ($from)) {
+			$fromArray = $this->getFromArray ($from);
+			if ($fromArray[$this->_name] == 'Y') {
+				return true;
+			} elseif ($fromArray[$this->_name] == 'N') {
+				return false;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
 
 }
