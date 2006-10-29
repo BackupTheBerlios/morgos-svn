@@ -1,0 +1,29 @@
+body div.header {
+	background-image: none;
+	text-align: center;
+	/*height: 100px;*/
+	min-height: 1px;
+}
+
+#nav {
+	margin-top: 0;
+}
+
+/*== FORMS ==*/
+label {
+	cursor: pointer;
+	
+	/*need to splitted up for only some fields (text...)*/
+	float: left;
+	width: 15em;
+	text-align: right;
+	padding-right: 3px;
+}
+
+input, select {
+	border: solid 1px black;
+}
+
+body div.content img {
+	display: inline;
+}

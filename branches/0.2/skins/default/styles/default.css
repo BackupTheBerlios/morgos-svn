@@ -1,0 +1,132 @@
+/*== DEBUG ==*/
+/*#header {
+	border: solid 1px green;
+}
+
+#sidebar {
+	border: solid 1px blue;
+}
+
+#footer {
+	border: solid 1px yellow;
+}
+
+#main {
+	border: solid 1px red;
+}
+
+#nav {
+	border: solid 1px cyan;
+}*/
+
+
+/*== HEADER ==*/
+#header {
+	width: 100%;
+	text-align: center;
+}
+
+/*== MAIN NAV ==*/
+#nav {
+	width: 100%;
+	text-align: right;
+}
+
+#nav ol {
+	padding: 0;
+	margin-left: 3px;
+}
+
+#nav ol li {
+	display: inline;
+	list-style-type: none;
+	border: solid 1px black;
+	background: #BBB;
+	padding: 5px;
+	margin: -3px;
+}
+
+#nav ol li:hover {
+	border-top: solid 5px black;
+	background: #EEEEEE;
+}
+
+#nav ol li a {
+	color: black;
+	text-decoration: none;
+}
+
+/*== SIDEBAR ==*/
+#sidebar {
+	float: left;
+	width: 220px;
+}
+
+/*== MAIN CONTENT==*/
+#main {
+	margin-left: 230px; /*10px margin with sidebar*/
+}
+
+#main h1 {
+	text-align: center;
+	margin-top: 5px;
+}
+
+/*== FOOTER ==*/
+#footer {
+	width: 100%;
+	text-align: center;
+	clear: both;
+}
+
+#footer .copyright {
+	font-size: 0.8em;
+}
+
+/*== FORMS ==*/
+label {
+	cursor: pointer;
+	
+	/*need to splitted up for only some fields (text...)*/
+	float: left;
+	width: 15em;
+	text-align: right;
+	padding-right: 3px;
+}
+
+input, select {
+	border: solid 1px black;
+}
+
+fieldset {
+	border: dotted 3px green;
+	margin-bottom: 0.3em;
+}
+
+legend {
+	font-weight: bold;
+}
+
+#sidebar label {
+	float: none;
+	text-align: left;
+	display: block;
+}
+
+/*== OTHER ==*/
+
+a img {
+	border: none;
+}
+
+#infoBox {
+	position: absolute;
+
+	border: solid 1px black;
+	padding: 15px;
+	/*center hor*/
+	width: 40%;
+	left: 30%;
+	
+	top: 30%;
+}

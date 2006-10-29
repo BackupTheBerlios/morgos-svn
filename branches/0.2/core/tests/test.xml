@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<database>
+	<table name="books" newID="5">
+		<field type="int(11)">bookID</field>
+		<field type="varchar(255)">Title</field>
+		<field type="int(11)">Author</field>
+		<field type="int(1)">Rating</field>
+		<unique>Title,Author</unique>
+		<primary autocount="true">bookID</primary>
+		<row>
+			<value field="bookID">1</value>
+			<value field="Title">Book 1</value>
+			<value field="Author">1</value>
+			<value field="Rating">6</value>
+		</row>
+		<row>
+			<value field="bookID">2</value>
+			<value field="Title">Book 2</value>
+			<value field="Author">1</value>
+			<value field="Rating">5</value>
+		</row>
+		<row>
+			<value field="bookID">3</value>
+			<value field="Title">Book 3</value>
+			<value field="Author">1</value>
+			<value field="Rating">4</value>
+		</row>
+		<row>
+			<value field="bookID">4</value>
+			<value field="Title">Book 4</value>
+			<value field="Author">2</value>
+			<value field="Rating">7</value>
+		</row>
+	</table>
+	<!--<table name="authors">
+		<field></field>
+		<field></field>
+	</table>-->
+</database>

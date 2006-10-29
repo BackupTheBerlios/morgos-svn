@@ -1,0 +1,9 @@
+dbModule = YourModule_Probably_MySQL
+
+dbHost = localhost
+dbUser = userName
+dbPass = yourPass
+dbDatabaseName = your_test_database
+dbPrefix = your_prefix
+
+dbAvailableModules = module1, module2
