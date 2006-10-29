@@ -36,7 +36,10 @@ class calendarPlugin extends plugin {
 	}
 	
 	function load (&$pluginAPI) {
-		parent::load ($pluginAPI);	
+		parent::load ($pluginAPI);
+		$t = &$this->_pluginAPI->getI18NManager ();
+		$t->loadTranslation ($this->getLoadedDir ().'/i18n');		
+			
 		$this->_calendarM = new calendar ($this->_pluginAPI->getDBModule ());		
 		
 		$em = &$this->_pluginAPI->getEventManager ();
@@ -79,6 +82,8 @@ class calendarPlugin extends plugin {
 	function install (&$pluginAPI) {
 		$db = &$pluginAPI->getDBModule ();
 		$pageM = &$pluginAPI->getPageManager ();		
+		$t = &$pluginAPI->getI18NManager ();
+		$t->loadTranslation ($this->getLoadedDir ().'/i18n');
 		
 		$fTN = $db->getPrefix ().'calendar';
 		$sql = "CREATE TABLE $fTN (
@@ -121,7 +126,7 @@ class calendarPlugin extends plugin {
 		$pageM->addPageToDatabase ($cMP);
 		$cMPT = $pageM->newTranslatedPage ();
 		$cMPT->initFromArray (array ('languageCode'=>'en_UK', 
-				'translatedTitle'=>'Manage calendar', 'translatedContent'=>''));
+				'translatedTitle'=>$t->translate ('Manage calendar'), 'translatedContent'=>''));
 		$cMP->addTranslation ($cMPT);
 		
 		$cMP = $pageM->newPage ();
@@ -130,7 +135,7 @@ class calendarPlugin extends plugin {
 		$pageM->addPageToDatabase ($cMP);
 		$cMPT = $pageM->newTranslatedPage ();
 		$cMPT->initFromArray (array ('languageCode'=>'en_UK', 
-				'translatedTitle'=>'Calendar', 'translatedContent'=>''));
+				'translatedTitle'=>$t->translate ('Calendar'), 'translatedContent'=>''));
 		$cMP->addTranslation ($cMPT);
 	}
 	
@@ -145,6 +150,16 @@ class calendarPlugin extends plugin {
 		/*$fTN = $db->getPrefix ().'calendarGroupEvents';
 		$sql = "DROP TABLE $fTN";
 		$q = $db->query ($sql);*/
+		
+		$pageM = &$pluginAPI->getPageManager ();
+		$page = $pageM->newPage ();
+		$page->initFromName ('Calendar_Admin_CalendarManager');
+		$pageM->removePageFromDatabase ($page);
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ('Calendar_CalendarMonthView');
+		$pageM->removePageFromDatabase ($page);
+
 	}
 	
 	function isInstalled (&$pluginAPI) {
@@ -184,7 +199,7 @@ class calendarPlugin extends plugin {
 			$eventMessages = $calendarM->getUpcomingEvents (2);
 			$eventMessagesString = '';
 			foreach ($eventMessages as $event) {
-				$sm->assign ('UpcomingEventMessage', $this->event2Array ($event));
+				$sm->assign ('UpcomingEventMessage', $this->_calendarM->event2Array ($event));
 				$eventMessagesString .= $sm->fetch ('eventmessage.tpl');
 				$sm->assign ('UpcomingEventMessage', '');
 			}
@@ -198,6 +213,7 @@ class calendarPlugin extends plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -226,6 +242,7 @@ class calendarPlugin extends plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -238,7 +255,7 @@ class calendarPlugin extends plugin {
 			$event = $this->_calendarM->newEvent ();
 			$event->initFromArray (array ('start'=>$startSQLTime, 'end'=>$endSQLTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
 			$event->addToDatabase ();
-			$this->_pluginAPI->addMessage ('Event succesfully added.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Event succesfully added.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -246,6 +263,7 @@ class calendarPlugin extends plugin {
 	function onDeleteEvent ($eventID) {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -254,7 +272,7 @@ class calendarPlugin extends plugin {
 			$event = $this->_calendarM->newEvent ();
 			$event->initFromDatabaseID ($eventID);
 			$event->removeFromDatabase ();
-			$this->_pluginAPI->addMessage ('Event succesfully deleted.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Event succesfully deleted.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -262,6 +280,7 @@ class calendarPlugin extends plugin {
 	function onNewGroup ($groupName, $groupColor) {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -270,7 +289,7 @@ class calendarPlugin extends plugin {
 			$group = $this->_calendarM->newGroup ();
 			$group->initFromArray (array ('name'=>$groupName, 'color'=>$groupColor));
 			$this->_calendarM->addGroupToDatabase ($group);
-			$this->_pluginAPI->addMessage ('Group succesfully added.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Group succesfully added.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -278,6 +297,7 @@ class calendarPlugin extends plugin {
 	function onDeleteGroup ($groupID) {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -286,13 +306,14 @@ class calendarPlugin extends plugin {
 			$group = $this->_calendarM->newGroup ();
 			$group->initFromDatabaseID ($groupID);
 			$group->removeFromDatabase ();
-			$this->_pluginAPI->addMessage ('Group succesfully deleted.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Group succesfully deleted.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
 	
 	function onEditGroup ($groupID, $newName, $newColor) {
 		$pageM = &$this->_pluginAPI->getPageManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -302,7 +323,7 @@ class calendarPlugin extends plugin {
 			$group->initFromDatabaseID ($groupID);
 			$group->updateFromArray (array ('name'=>$newName, 'color'=>$newColor));
 			$group->updateToDatabase ();
-			$this->_pluginAPI->addMessage ('Group succesfully updated.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Group succesfully updated.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -367,6 +388,7 @@ class calendarPlugin extends plugin {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$page = $pageM->newPage ();
 		$page->initFromName ('Calendar_Admin_CalendarManager');
@@ -379,7 +401,7 @@ class calendarPlugin extends plugin {
 		
 			$event->updateFromArray (array ('start'=>$startSQLTime, 'end'=>$endSQLTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
 			$event->updateToDatabase ();
-			$this->_pluginAPI->addMessage ('Event saved.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Event saved.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}

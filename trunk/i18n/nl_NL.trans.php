@@ -81,4 +81,12 @@ $strings['This was an invalid choice.'] = 'U gaf een ongeldige keuze';
 $strings['Passwords didn\'t match.'] = 'Wachtwoorden kwamen niet overeen.';
 $strings['You are running PHP version %1 which is too old to run MorgOS, please upgrade to at least %2 .\', array (PHP_VERSION, \'4.3'] = '';
 $strings['Empty input, please give %1.'] = 'Lege invoer, vul %1 in.';
+$strings['New page created.'] = 'Niewe pagina aangemaakt';
+$strings['Page not found'] = 'Pagina niet gevonden.';
+$strings['The page you requested is not found. If you typed in the adress manually check for type errors. If you followed a link report it to the administrator of the site.'] = 'De pagina die U opvroeg is niet gevonden. Als U het adres zelf hebt getypt kijk het dan na op spellingsfouten. Als U een link hebt gevolgd, meld dit dan aan de beheerder van de site.';
+$strings['Error'] = 'Fout';
+$strings['Warning'] = 'Waarschuwing';
+$strings['Notice'] = 'Info';
+$strings['Inloggen'] = '';
+$strings['Page saved'] = 'Pagina is gewijzigd.';
 ?>

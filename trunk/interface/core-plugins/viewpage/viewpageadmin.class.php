@@ -222,7 +222,7 @@ class viewPageCoreAdminPlugin extends plugin {
 				$this->_pluginAPI->executePreviousAction ();
 			} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
 				$i18nM = &$this->_pluginAPI->getI18NManager ();
-				$this->_pluginAPI->error ($$i18nM->translate ('Page doesn\'t exists'), true);
+				$this->_pluginAPI->error ($i18nM->translate ('Page doesn\'t exists'), true);
 			} else {
 				$this->_pluginAPI->error ('Onverwachte fout', true);
 			}
@@ -236,7 +236,8 @@ class viewPageCoreAdminPlugin extends plugin {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$page = &$pageManager->newPage ();			
 		$page->initFromName ('MorgOS_Admin_PageManager');
-		$sm = $this->_pluginAPI->getSmarty ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {	
 			$editedPage = $pageManager->newPage ();
 			$editedPage->initFromDatabaseID ($pageID);
@@ -244,6 +245,7 @@ class viewPageCoreAdminPlugin extends plugin {
 			$pageContent = secureHTMLInput ($pageContent);
 			$tPage->updateFromArray (array ('translatedContent'=>$pageContent, 'translatedTitle'=>$pageTitle, 'translatedNavTitle'=>$pageNavTitle));
 			$tPage->updateToDatabase ();
+			$this->_pluginAPI->addMessage ($t->translate ('Page saved'), NOTICE);
 			$a = $this->_pluginAPI->executePreviousAction ();
 		} else {
 			$this->_pluginAPI->addRuntimeMessage ('Login as a valid admin user to view this page.', NOTICE);

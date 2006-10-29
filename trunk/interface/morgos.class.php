@@ -168,7 +168,7 @@ class morgos {
 			$this->_configManager = new configurator ();
 			$this->_configManager->loadConfigFile ('config.php');
 			$this->_i18nManager = new localizer ();
-			//$this->_i18nManager->loadLanguage ('nl_NL', 'i18n');
+			$this->_i18nManager->loadLanguage ('nl_NL', 'i18n');
 			$this->setDefaultErrors ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
 			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 

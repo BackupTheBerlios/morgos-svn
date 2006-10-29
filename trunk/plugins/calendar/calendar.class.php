@@ -92,7 +92,7 @@ class calendar {
 	function getUpcomingEventsArray ($count, $offset = 0) {
 		$results = array ();
 		foreach ($this->getUpcomingEvents ($count, $offset) as $event) {
-			$results[] = $this->eventToArray ($event);
+			$results[] = $this->event2Array ($event);
 		}
 		return $results;
 	}

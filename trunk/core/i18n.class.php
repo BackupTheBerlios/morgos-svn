@@ -33,24 +33,32 @@
 class localizer {
 	var $_strings;
 	var $_knownErrors;
+	var $_lang;
 
 	function localizer () {
 		$this->_strings = array ();
 		$this->_knownErrors = array ();
+		$this->_lang = 'en_UK';
 	}
 	
 	function getLanguage () {
+		return $this->_lang;
 	}
 	
 	function loadLanguage ($language, $rootDir) {
-		$file = $rootDir.'/'.$language.'.trans.php';
+		$this->_lang = $language;
+		$this->loadTranslation ($rootDir);
+	}
+	
+	function loadTranslation ($dir) {
+		$file = $dir.'/'.$this->getLanguage ().'.trans.php'; 
 		if (file_exists ($file)) {
 			$strings = array ();
 			$errorStrings = array ();
 			include ($file);
-			$this->_strings = $strings;
+			$this->_strings = array_merge ($this->_strings, $strings);
 		} else {
-			die ();
+			//die ();
 		}
 	}
 
