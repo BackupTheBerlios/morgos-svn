@@ -89,4 +89,13 @@ $strings['Warning'] = 'Waarschuwing';
 $strings['Notice'] = 'Info';
 $strings['Inloggen'] = '';
 $strings['Page saved'] = 'Pagina is gewijzigd.';
+$strings['Home'] = 'Home';
+$strings['This is the homepage.'] = 'Dit is de hoofdpagina';
+$strings['Admin'] = 'Beheer';
+$strings['Page Manager'] = 'Pagina beheer';
+$strings['Edit pages here.'] = 'Hier kunt U pagina\'s wijzigen';
+$strings['Registration'] = 'Registratie';
+$strings['Give up all your user details in order to registrate to this site.'] = 'Geef al uw gegevens op, om zo te kunnen registreren.';
+$strings['Plugin Manager'] = 'Plugin beheer';
+$strings['User manager'] = 'Gebruiker beheer';
 ?>

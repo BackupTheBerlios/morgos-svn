@@ -378,6 +378,7 @@ class morgos {
 			}
 		}
 		echo 'ERROR: A required dir is not found or writable!! fix it (skins_c/default)';
+		die ();
 	}
 	
 	function setDefaultErrors () {

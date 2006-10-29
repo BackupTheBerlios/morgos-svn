@@ -236,13 +236,15 @@ class installerBasePlugin extends plugin {
 			$tALogout = $pageM->newTranslatedPage ();
 			$tAdminUser = $pageM->newTranslatedPage ();
 
-			$tHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Home', 'translatedContent'=>'This is the homepage.'));
-			$tAHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Admin', 'translatedContent'=>'This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.'));
-			$tPMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Page Manager', 'translatedContent'=>'Edit pages here.'));
-			$tRegForm->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Registration', 'translatedContent'=>'Give up all your user details in order to registrate to this site.'));
-			$tPlugMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Plugin Manager', 'translatedContent'=>'Enable/disable plugins.'));
-			$tALogout->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'Logout', 'translatedContent'=>'Logout'));
-			$tAdminUser->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>'User manager', 'translatedContent'=>'Manage users here, remove/add them from administrators list.'));
+			$t = &$this->_pluginAPI->getI18NManager();
+
+			$tHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Home'), 'translatedContent'=>$t->translate ('This is the homepage.')));
+			$tAHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Admin'), 'translatedContent'=>$t->translate ('This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.')));
+			$tPMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Page Manager'), 'translatedContent'=>$t->translate ('Edit pages here.')));
+			$tRegForm->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Registration'), 'translatedContent'=>$t->translate ('Give up all your user details in order to registrate to this site.')));
+			$tPlugMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Plugin Manager'), 'translatedContent'=>$t->translate ('Enable/disable plugins.')));
+			$tALogout->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Logout'), 'translatedContent'=>$t->translate ('Logout')));
+			$tAdminUser->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('User manager'), 'translatedContent'=>$t->translate ('Manage users here, remove/add them from administrators list.')));
 			
 			$home->addTranslation ($tHome);
 			$ahome->addTranslation ($tAHome);
@@ -263,7 +265,7 @@ class installerBasePlugin extends plugin {
 			
 			$configContents .= '$configItems[\'/site/title\']=\''.$siteName.'\';'.PHP_NL;
 			$configContents .= '?>';
-			$c = fopen ('config.php', 'w');
+			$c = @fopen ('config.php', 'w');
 			if ($c !== false) {
 				fwrite ($c, $configContents);
 				fclose ($c);
