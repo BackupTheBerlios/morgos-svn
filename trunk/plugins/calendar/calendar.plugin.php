@@ -65,6 +65,12 @@ class calendarPlugin extends plugin {
 		
 		$am->addAction (new Action ('adminNewCalendarGroup', 'GET', array ($this, 'onNewGroup'),
 			array (new StringInput ('groupName'), new StringInput ('groupColor')), array ()));
+		$am->addAction (new Action ('adminDeleteCalendarGroup', 'GET', array ($this, 'onDeleteGroup'),
+			array (new IDInput ('groupID')), array ()));
+		$am->addAction (new Action ('adminEditCalendarGroupForm', 'GET', array ($this, 'onEditGroupForm'),
+			array (new IDInput ('groupID')), array ()));
+		$am->addAction (new Action ('adminEditCalendarGroup', 'POST', array ($this, 'onEditGroup'),
+			array (new IDInput ('groupID'), new StringInput ('groupName'), new StringInput ('groupColor')), array ()));
 				
 		$am->addAction (new Action ('calendarMonthView', 'GET', array ($this, 'onMonthView'),
 			array (), array (new IntInput ('month'), new IntInput ('year'), new IDInput ('eventID'))));
@@ -206,7 +212,7 @@ class calendarPlugin extends plugin {
 			$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
 			$groups = array ();
 			foreach ($this->_calendarM->getAllGroups () as $group) {
-				$groups[] = array ('Color'=>$group->getColor (), 'Name'=>$group->getName ());
+				$groups[] = $this->_calendarM->group2Array ($group);
 			}
 			$sm->assign ('Calendar_Groups', $groups);
 			$sm->appendTo ('MorgOS_ExtraHead', '<link rel="stylesheet" type="text/css" href="'.$this->getSkinDir ().'/styles/calendar.css'.'" />');
@@ -269,6 +275,38 @@ class calendarPlugin extends plugin {
 		}
 	}
 	
+	function onDeleteGroup ($groupID) {
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$em = &$this->_pluginAPI->getEventManager ();
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ('Calendar_Admin_CalendarManager');
+		$pageID = $page->getID ();
+		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
+			$group = $this->_calendarM->newGroup ();
+			$group->initFromDatabaseID ($groupID);
+			$group->removeFromDatabase ();
+			$this->_pluginAPI->addMessage ('Group succesfully deleted.', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
+	}
+	
+	function onEditGroup ($groupID, $newName, $newColor) {
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ('Calendar_Admin_CalendarManager');
+		$pageID = $page->getID ();
+		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
+			$group = $this->_calendarM->newGroup ();
+			$group->initFromDatabaseID ($groupID);
+			$group->updateFromArray (array ('name'=>$newName, 'color'=>$newColor));
+			$group->updateToDatabase ();
+			$this->_pluginAPI->addMessage ('Group succesfully updated.', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
+	}
+	
 	function onMonthView ($month, $year, $eventID) {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$pageM = &$this->_pluginAPI->getPageManager ();
@@ -293,7 +331,7 @@ class calendarPlugin extends plugin {
 		if ($eventID != null) {
 			$event = $this->_calendarM->newEvent ();
 			$event->initFromDatabaseID ($eventID);
-			$sm->assign ('Calendar_CurrentEvent', $this->_calendarM->eventToArray ($event));
+			$sm->assign ('Calendar_CurrentEvent', $this->_calendarM->event2Array ($event));
 		}
 		
 		$prevYear = $year;
@@ -316,7 +354,7 @@ class calendarPlugin extends plugin {
 		$sm->assign ('Calendar_Weeks', $weeks);
 		$sm->assign ('Calendar_WeekDays', $this->getWeekDays (1));
 		$events = $this->_calendarM->getAllEvents ();
-		array_walk ($events, array ($this, 'event2Array'));
+		array_walk ($events, array ($this->_calendarM, 'event2Array'));
 		$sm->assign ('Calendar_Events', $events);
 		$sm->appendTo ('MorgOS_ExtraHead', '<script type="text/javascript">'.$sm->fetch ('js/eventListing.js.tpl').'</script>');
 		$sm->display ('monthview.tpl');
@@ -357,7 +395,7 @@ class calendarPlugin extends plugin {
 			$em->triggerEvent ('viewAnyAdminPage', array ($page->getID (), 'en_UK'));
 			$eventC = $this->_calendarM->newEvent ();
 			$a = $eventC->initFromDatabaseID ($eventID);
-			$eventA = $this->event2Array ($eventC);
+			$eventA = $this->_calendarM->event2Array ($eventC);
 			$sm->assign ('Calendar_Event', $eventA);
 			$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
 			$sm->display ('admin/editevent.tpl');
@@ -482,7 +520,7 @@ class calendarPlugin extends plugin {
 		return $groups;
 	}
 	
-	function event2Array (&$event) {
+	/*function event2Array (&$event) {
 		$event = array ('ID'=>$event->getID (), 'group'=>$this->group2Array ($event->getGroup ()), 
 			'StartDate'=>$event->getStartDate (), 'EndDate'=>$event->getEndDate (), 
 			'Title'=>$event->getTitle (), 'Description'=>$event->getDescription (), 
@@ -493,7 +531,7 @@ class calendarPlugin extends plugin {
 	function group2Array (&$group)  {
 		$group = array ('Color'=>$group->getColor (), 'Name'=>$group->getName (), 'ID'=>$group->getID ());
 		return $group;
-	}
+	}*/
 	
 	function getWeekDays ($firstDayOfWeek) {
 		$days = array ();

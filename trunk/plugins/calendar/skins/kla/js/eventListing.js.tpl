@@ -10,7 +10,7 @@ var events = new Array ();
 	eventData['Title'] = "{$event.Title}";
 	eventData['StartDate'] = "{$event.StartDate|date_format:"%d/%m %H:%m"}";
 	eventData['EndDate'] = "{$event.EndDate|date_format:"%d/%m %H:%m"}";
-	eventData['Description'] = "{$event.Description}";
+	eventData['Description'] = "{$event.Description|nl2br|strip}";
 	eventData['Group'] = groupData;
 	events[{$event.ID}] = eventData;
 {/foreach}
@@ -34,8 +34,7 @@ function showEvent (ID) {
 	var name = document.createTextNode (events[ID]['Title']);
 	nameBox.appendChild (name);
 	
-	var desc = document.createTextNode (events[ID]['Description']);
-	descBox.appendChild (desc);
+	descBox.innerHTML = events[ID]['Description']; // to prevent showing up <br /> tags
 	
 	eventBox.appendChild (dateBox);
 	eventBox.appendChild (nameBox);

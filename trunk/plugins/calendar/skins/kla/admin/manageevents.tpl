@@ -16,4 +16,7 @@
 	
 	<h2>{t s="Create a new group"}</h2>
 	{include file="admin/addnewgroupform.tpl"}
+	
+	<h2>{t s="Current groups"}</h2>
+	{include file="admin/grouplist.tpl" groups="$Calendar_Groups"}
 {include file="admin/footer.tpl"}

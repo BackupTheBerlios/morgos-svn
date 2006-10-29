@@ -66,7 +66,7 @@ class calendar {
 	function getAllEventsOnArray ($timestamp) {
 		$results = array ();
 		foreach ($this->getAllEventsOn ($timestamp) as $event) {
-			$results[] = $this->eventToArray ($event);
+			$results[] = $this->event2Array ($event);
 		}
 		return $results;
 	}
@@ -117,7 +117,7 @@ class calendar {
 	function getCurrentEventsArray ($count, $offset = 0) {
 		$results = array ();
 		foreach ($this->getCurrentEvents ($count, $offset) as $event) {
-			$results[] = $this->eventToArray ($event);
+			$results[] = $this->event2Array ($event);
 		}
 		return $results;
 	}
@@ -138,12 +138,13 @@ class calendar {
 		return $events;
 	}
 	
-	function eventToArray ($event) {
-		 return array ('ID'=>$event->getID (), 'Group'=>$this->group2Array ($event->getGroup ()), 
+	function event2Array (&$event) {
+		 $event = array ('ID'=>$event->getID (), 'Group'=>$this->group2Array ($event->getGroup ()), 
 			'StartDate'=>$event->getStartDate (), 'EndDate'=>$event->getEndDate (), 
 			'Title'=>$event->getTitle (), 'Description'=>$event->getDescription (), 
 			'EditLink'=>'index.php?action=adminEditCalendarEventForm&eventID='.$event->getID (),
 			'DeleteLink'=>'index.php?action=adminDeleteCalendarEvent&eventID='.$event->getID ());
+		return $event;
 	}
 	
 	function getNextDay ($timestamp) {
@@ -183,7 +184,10 @@ class calendar {
 		return new calendarGroup ($this->_db, array (), $this);
 	}
 	
-	function group2Array ($group) {
-		return array ('Color'=>$group->getColor (), 'Name'=>$group->getName ());
+	function group2Array (&$group) {
+		$group = array ('Color'=>$group->getColor (), 'Name'=>$group->getName (), 'ID'=>$group->getID (), 
+			'DeleteLink'=>'index.php?action=adminDeleteCalendarGroup&groupID='.$group->getID (),
+			'EditLink'=>'index.php?action=adminEditCalendarGroupForm&groupID='.$group->getID ());
+		return $group;
 	}	
 }
