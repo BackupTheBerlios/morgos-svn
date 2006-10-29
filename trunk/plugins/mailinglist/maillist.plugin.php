@@ -28,9 +28,9 @@ class mailListPlugin extends plugin
     parent::plugin ($dir);
 	$this->_name = 'Mailinglist Plugin';
 	$this->_ID = '{263bd2e5-a996-461a-b5e9-c2aec9d38b47}';
-	$this->_minMorgOSVersion = '0.2';
-    $this->_maxMorgOSVersion = '0.2';
-	$this->_version = '1.0';
+	$this->_minMorgOSVersion = '0.3';
+    $this->_maxMorgOSVersion = '0.3';
+	$this->_version = '1.1';
 	}
 	
   function load (&$pluginAPI) 

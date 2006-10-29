@@ -29,8 +29,8 @@ class userCorePlugin extends plugin {
 		parent::plugin ($dir);
 		$this->_name = 'Users core plugin';
 		$this->_ID = '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}';
-		$this->_minMorgOSVersion = '0.2';
-		$this->_maxMorgOSVersion = '0.2';
+		$this->_minMorgOSVersion = '0.3';
+		$this->_maxMorgOSVersion = '0.3';
 		$this->_adminPlugin = null;
 	}
 	

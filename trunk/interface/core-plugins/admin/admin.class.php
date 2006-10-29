@@ -28,8 +28,8 @@ class adminCorePlugin extends plugin {
 		parent::plugin ($dir);
 		$this->_name = 'Admin core plugin';
 		$this->_ID = MORGOS_ADMIN_PLUGINID;
-		$this->_minMorgOSVersion = '0.2';
-		$this->_maxMorgOSVersion = '0.2';
+		$this->_minMorgOSVersion = '0.3';
+		$this->_maxMorgOSVersion = '0.3';
 	}
 	
 	function load (&$pluginAPI) {

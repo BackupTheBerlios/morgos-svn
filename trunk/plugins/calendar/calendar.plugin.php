@@ -30,9 +30,9 @@ class calendarPlugin extends plugin {
 		include_once ($dir.'/calendar.class.php');
 		$this->_name = 'Calendar plugin';
 		$this->_ID = '{f8db0ac9-13e3-4aa6-9d94-4ee22d6ca974}';
-		$this->_minMorgOSVersion = '0.2';
-		$this->_maxMorgOSVersion = '0.2';
-		$this->_version = '0.1';
+		$this->_minMorgOSVersion = '0.3';
+		$this->_maxMorgOSVersion = '0.3';
+		$this->_version = '0.3';
 	}
 	
 	function load (&$pluginAPI) {

@@ -27,9 +27,9 @@ class helloWorldPlugin extends plugin {
 		parent::plugin ($dir);
 		$this->_name = 'Hello world example plugin';
 		$this->_ID = '{5c81a4b6-8141-45d6-8003-652e46447575}';
-		$this->_minMorgOSVersion = '0.2';
-		$this->_maxMorgOSVersion = '0.2';
-		$this->_version = '1.0';
+		$this->_minMorgOSVersion = '0.3';
+		$this->_maxMorgOSVersion = '0.3';
+		$this->_version = '1.1';
 	}
 	
 	function load ($pluginAPI) {

@@ -22,7 +22,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-define ('MORGOS_VERSION', '0.2.0');
+define ('MORGOS_VERSION', '0.3.0');
 define ('MORGOS_VIEWPAGE_PLUGINID', '{529e4a98-02a7-46bb-be2a-671a7dfc852f}');
 define ('MORGOS_USER_PLUGINID', '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}');
 define ('MORGOS_ADMIN_PLUGINID', '{b8731582-9309-4629-a3d9-647f26a5a345}');
