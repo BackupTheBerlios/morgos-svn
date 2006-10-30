@@ -35,7 +35,7 @@ class userCorePlugin extends plugin {
 	}
 	
 	function load (&$pluginAPI) {
-		parent::load (&$pluginAPI);
+		parent::load ($pluginAPI);
 		include ($this->getLoadedDir ().'/users.admin.plugin.php');
 		$this->_adminPlugin = new adminCoreUserAdminPlugin ($this->getLoadedDir ());
 		$this->_adminPlugin->load ($this->_pluginAPI);

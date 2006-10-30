@@ -37,7 +37,7 @@ class mailListPlugin extends plugin
     {
      include_once ($this->getLoadedDir ().'/mailingList.class.php');
      include_once ($this->getLoadedDir ().'/mailingMember.class.php');
-	parent::load (&$pluginAPI);
+	parent::load ($pluginAPI);
 	$executor = array ($this, 'onViewManager');
     $requiredOptions = array ();
     $smth = new action('adminMailingListManager','GET', $executor, $requiredOptions);
