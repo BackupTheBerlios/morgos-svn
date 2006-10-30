@@ -226,7 +226,18 @@ class pluginAPI {
 			fwrite ($file, $out);
 			fclose ($file);
 		} else {
-			die ('Cant handle this (yet)');
+			$sm = &$this->getSmarty ();
+			$em = &$this->getEventManager ();
+			$pm = &$this->getPageManager ();
+			$am = &$this->getActionManager ();
+			$page = $pm->newPage ();
+			$page->initFromName ('MorgOS_Admin_SaveConfig');
+			
+			$a = $em->triggerEvent ('viewAnyAdminPage', array ($page->getID (), 'en_UK'));
+			$sm->assign ('MorgOS_ConfigContent', htmlspecialchars ($out));
+			$sm->assign ('MorgOS_ConfigProceedLink', $am->getPreviousActionLinkString ());
+			$sm->display ('admin/saveconfig.tpl');
+			exit ();
 		}
 	}
 }

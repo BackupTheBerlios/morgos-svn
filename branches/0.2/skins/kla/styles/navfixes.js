@@ -3,7 +3,7 @@
 	een iets andere CSS die ervoor zorgt dat het menu niet teveel naar rechts staat.
 */
 window.onload = function(){
-if ((navigator.userAgent.match ("MSIE")) || (navigator.userAgent.match ("Opera"))) {
+if ((navigator.userAgent.match ("MSIE"))) {
 	var all = getAllMenuItems ();
 	
 	for (i=0;i < all.length; i++) {
@@ -14,6 +14,7 @@ if ((navigator.userAgent.match ("MSIE")) || (navigator.userAgent.match ("Opera")
 		node.onmouseout=function() {
 			this.className=this.className.replace(" over", "");
 		}
+		node.style.zIndex = all.length-i;
 	}
 }
 

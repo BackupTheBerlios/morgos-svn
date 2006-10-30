@@ -497,11 +497,11 @@ class calendarPlugin extends plugin {
 	}
 	
 	function getCurrentYear () {
-		return 2006;
+		return (int) date ('Y');
 	}
 	
 	function getCurrentMonth () {
-		return 10;
+		return (int) date ('m');
 	}
 	
 	function getMonthName ($month) {

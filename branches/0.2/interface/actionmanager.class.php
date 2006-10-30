@@ -523,6 +523,10 @@ class actionManager {
 	 * @return (bool)
 	*/
 	function getPreviousActionHeaderString () {
+		return 'Location: '.$this->getPreviousActionLinkString ();
+	}
+	
+	function getPreviousActionLinkString () {
 		$params = array ();
 		foreach ($_COOKIE as $n=>$v) {
 			$k = substr ($n, 0, strlen ('lastActionParameters_'));
@@ -540,7 +544,7 @@ class actionManager {
 			$paramString .= '&'.$k.'='.$v;
 		}
 		
-		return 'Location: index.php?action='.$_COOKIE['lastActionName'].$paramString;
+		return 'index.php?action='.$_COOKIE['lastActionName'].$paramString;
 	}
 	
 	function saveLastAction () {

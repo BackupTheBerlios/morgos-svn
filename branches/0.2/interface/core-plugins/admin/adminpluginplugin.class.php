@@ -116,8 +116,8 @@ class adminCorePluginAdminPlugin extends plugin {
 			$a->setValue (true);
 			$cm->addOption ($a);
 			
-			$this->_pluginAPI->writeConfigFile ($cm);
 			$this->_pluginAPI->addMessage ($t->translate ('Plugin is enabled'), NOTICE);
+			$this->_pluginAPI->writeConfigFile ($cm);			
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -157,8 +157,8 @@ class adminCorePluginAdminPlugin extends plugin {
 			$cm = &$this->_pluginAPI->getConfigManager ();
 			$a = $cm->getItem ('/extplugs/'.$pluginID, BOOL);
 			$cm->removeOption ($a);
-			$this->_pluginAPI->writeConfigFile ($cm);
 			$this->_pluginAPI->addMessage ($t->translate ('Plugin is disabled'), NOTICE);
+			$this->_pluginAPI->writeConfigFile ($cm);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
