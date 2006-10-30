@@ -50,7 +50,9 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		}
 		
 		function disconnect () {
-			mysql_close ($this->connection);
+			if ($this->connection) {
+				mysql_close ($this->connection);
+			}
 		}
 	
 		function selectDatabase ($dbName) {

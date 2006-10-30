@@ -3,7 +3,8 @@ Version 0.3
 [Changes]
  * Added a admin/saveconfig.tpl so when config.php is not writable instructions for manual saving are given
 [Bugs]
+ * Add startup warnings when their are problems with config.php and database 
 
 Version 0.2 5 November 2006??
 ===========
-* First public release
+ * First public release

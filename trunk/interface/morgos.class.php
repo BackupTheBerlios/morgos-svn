@@ -162,21 +162,44 @@ class morgos {
 	*/
 	function init () {
 		$this->checkSmartyDirs ();
-		if ($this->isInstalled ()) {
+		if ($this->isConfigInstalled ()) {
 			ob_start ();
 			$this->_eventManager = new eventManager ();
 			$this->_configManager = new configurator ();
-			$this->_configManager->loadConfigFile ('config.php');
+			$e = $this->_configManager->loadConfigFile ('config.php');
+			if (isError ($e)) {
+				$this->tinyInit ();
+				$this->error ('An error occured while reading the config file.');
+				exit;
+			}
 			$this->_i18nManager = new localizer ();
 			$this->_i18nManager->loadLanguage ('nl_NL', 'i18n');
 			$this->setDefaultErrors ();
 			$this->_dbModule = databaseLoadModule ('MySQL');
-			$a = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
+			$e = $this->_dbModule->connect ($this->_configManager->getStringItem ('/databases/host'), 
 								  $this->_configManager->getStringItem ('/databases/user'), 
 								  $this->_configManager->getStringItem ('/databases/password'));
-						
-			$this->_dbModule->selectDatabase ($this->_configManager->getStringItem ('/databases/database'));
+			
+			
+			if (isError ($e)) {
+				$this->tinyInit ();
+				$this->error ('An error occured while trying to connect the database.');
+				exit;
+			}		
+			$e = $this->_dbModule->selectDatabase ($this->_configManager->getStringItem ('/databases/database'));
+			if (isError ($e)) {
+				$this->tinyInit ();
+				$this->error ('An error occured while trying to connect the database.');
+				exit;
+			}	
 			$this->_dbModule->setPrefix ($this->_configManager->getStringItem ('/databases/table_prefix'));
+			
+			if (! $this->isDatabaseInstalled ()) {
+				$this->tinyInit ();
+				$this->error ('It seems that morgos isn\'t installed correctly.');
+				exit;
+			}			
+			
 			$this->_userManager = new userManager ($this->_dbModule);
 			$this->_pageManager = new pageManager ($this->_dbModule);
 			$this->_actionManager = new actionManager ();
@@ -356,12 +379,24 @@ class morgos {
 	}
 	
 	/**
-	 * Returns that morgos is installed
+	 * Returns that morgos configuration is installed
 	 * @public
 	 * @return (bool)
 	*/
-	function isInstalled () {
+	function isConfigInstalled () {
 		return file_exists ('config.php');
+	}
+	
+	/**
+	 * Returns that morgos database is installed
+	 * @public
+	 * @return (bool)
+	*/	
+	function isDatabaseInstalled () {
+		$d = $this->_dbModule;
+		return $d->tableExists ('groupPermissions') && $d->tableExists ('groups') && 
+			$d->tableExists ('translatedGroups') && $d->tableExists ('group_users') && $d->tableExists ('users') && 
+			$d->tableExists ('pages') && $d->tableExists ('translatedPages');
 	}
 	
 	/**
@@ -378,7 +413,7 @@ class morgos {
 			}
 		}
 		echo 'ERROR: A required dir is not found or writable!! fix it (skins_c/default)';
-		die ();
+		exit ();
 	}
 	
 	function setDefaultErrors () {
