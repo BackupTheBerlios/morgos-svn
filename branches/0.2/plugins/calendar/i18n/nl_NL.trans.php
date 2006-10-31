@@ -23,7 +23,7 @@ $strings['Start of event: '] = 'Start van het evenement: ';
 $strings['End of event: '] = 'Einde van het evenement: ';
 $strings['Description: '] = 'Omschrijving: ';
 $strings['Group: '] = 'Groep: ';
-$strings['Add event'] = 'Sla evenement op: ';
+$strings['Add event'] = 'Sla evenement op';
 $strings['Groupname: '] = 'Groepsnaam';
 $strings['Colour: '] = 'Kleur: ';
 $strings['New group'] = 'Nieuwe groep';
@@ -52,6 +52,6 @@ $strings['Event succesfully deleted.'] = 'Evenement verwijderd.';
 $strings['Group succesfully added.'] = 'Groep toegevoegd.';
 $strings['Group succesfully deleted.'] = 'Groep verwijderd.';
 $strings['Group succesfully updated.'] = 'Groep gewijzigd.';
-$strings['Event saved.'] = 'Evenemnt gewijzigd.';
+$strings['Event saved.'] = 'Evenement gewijzigd.';
 $strings['Manage calendar'] = 'Beheer kalender';
 ?>
