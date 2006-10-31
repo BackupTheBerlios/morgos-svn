@@ -21,7 +21,7 @@
 		</tr>
 	{foreach from=$MorgOS_PagesList item='childPage' name='pageslist'}
 		<tr>
-			<td><a href="index.php?action=adminPageManager&amp;pageID={$childPage.ID}">{$childPage.Title}</a></td>
+			<td><a href="{$childPage.AdminLink}">{$childPage.Title}</a></td>
 			<td>
 				{$childPage.PlaceInMenu}
 				{if $smarty.foreach.pageslist.first and $smarty.foreach.pageslist.last}

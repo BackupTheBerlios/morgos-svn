@@ -190,7 +190,68 @@ class LocaleInput extends baseInput {
 }
 
 /**
- * A password input class. This is used when the user inputs a new password (that should be repeated)
+ * A multiple input class
+ * @ingroup interface
+ * @since 0.3
+*/
+class MultipleInput extends baseInput {
+	var $_prefix;
+	var $_childs;
+
+	function MultipleInput ($prefix, $childs) {
+		$this->_prefix = $prefix;
+		$this->_childs = array ();
+		foreach ($childs as $name=>$class) {
+			if (is_array ($class)) {
+				/*$classN = $class[0];
+				$childs[] = new $classN ($prefix.$name, );*/
+				die ('Not yet implemented'.__FILE__.'@'.__LINE__);
+			} else {
+				$this->_childs[$name] = new $class ($prefix.$name);
+			}
+		}
+	}
+	
+	function checkInput ($from) {
+		if ($this->isGiven ($from)) {
+			foreach ($this->_childs as $child) {
+				$i = $child->checkInput ($from);
+				if ($i !== true) {
+					return $i;
+				}
+			}
+			return true;
+		} else {
+			return new Error ('EMPTY_INPUT', $this->_name);
+		}
+	}
+	
+	function isGiven ($from) {
+		foreach ($this->_childs as $child) {
+			$a = $child->isGiven ($from);
+			if (! $a) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	function getChildValue ($from, $name) {
+		$c = $this->_childs[$name];
+		return $c->getValue ($from);
+	}	
+	
+	function getValue ($from) {
+		/*should be overriden*/
+		return true;
+	}
+
+	function getName () {return $this->_prefix;}
+}
+
+/**
+ * A password input class. This is used when the user inputs a new password 
+ *	(that should be repeated)
  * @ingroup interface
  * @since 0.2
 */
@@ -214,7 +275,8 @@ class PasswordNewInput extends baseInput {
 		$a = (array_key_exists ($this->_name.'1', $fromArray) and 
 			array_key_exists ($this->_name.'2', $fromArray));
 		if ($a) {
-			return ($fromArray[$this->_name.'1'] != null) and ($fromArray[$this->_name.'2'] != null);
+			return ($fromArray[$this->_name.'1'] != null) 
+				and ($fromArray[$this->_name.'2'] != null);
 		} else {
 			return false;
 		}
@@ -278,6 +340,11 @@ class action {
 	 * @protected
 	*/
 	var $_executor;
+	/**
+	 * The associated page
+	 * @protected
+	*/
+	var $_pageName;
 
 	/**
 	 * Constructor.
@@ -287,19 +354,23 @@ class action {
 	 * @param $executor (PHP callback)
 	 * @param $requiredOptions (baseInput array)
 	 * @param $notRequiredOptions (baseInput array) default array ()
+	 * @param $pageName (string) default null
 	*/
-	function action ($name, $method, $executor, $requiredOptions, $notRequiredOptions = array ()) {
+	function action ($name, $method, $executor, $requiredOptions, 
+		$notRequiredOptions = array (), $pageName = null) {
 		$this->_name = $name;
 		$this->_method = $method;
 		$this->_requiredOptions = $requiredOptions;
 		$this->_notRequiredOptions = $notRequiredOptions;
 		$this->_executor = $executor;
+		$this->_pageName = $pageName;
 	}
 	
 	/**
 	 * Executes the action and returns it result.
 	 *
-	 * @param $params (mixed array) array with the parameters to use, if empty use default source. (GET/POST)
+	 * @param $params (mixed array) array with the parameters to use, 
+	 *	if empty use default source. (GET/POST)
 	 * @public
 	 * @return (mixed)
 	*/
@@ -331,7 +402,8 @@ class action {
 				if (array_key_exists ($option, $a)) {
 					$vals[$option] = $a[$option];
 				} else {
-					$errors[] = new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
+					$errors[] = 
+						new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
 				}
 			} else {
 				$cI = $option->checkInput ($this->_method);
@@ -412,6 +484,8 @@ class action {
 		}
 		return $vals;
 	}
+	
+	function getPageName () {return $this->_pageName;}
 }
 
 /**
@@ -450,16 +524,23 @@ class actionManager {
 	 * Executes an action.
 	 * @param $actionName (string)
 	 * @param $var (mixed array)
+	 * @param $cache (bool) if false the action parameters aren't cached (default = true)
+	 * @since 0.3 parameter $cache
 	*/	
-	function executeAction ($actionName, $var = array ()) {
+	function executeAction ($actionName, $var = array (), $cache = true) {
 		if ($this->existsAction ($actionName)) {
-			$action = $this->getAction ($actionName);
+			$actionArray = $this->getAction ($actionName);
+			$action = $actionArray['action'];
 			if (! isError ($action->getParameters ($var))) {
-				$this->_lastActionName = $actionName;
-				$this->_lastActionParameters = $action->getParameters ($var);
+				if ($cache) {
+					$this->_lastActionName = $actionName;
+					$this->_lastActionParameters = $action->getParameters ($var);
+				}
 				return $action->execute ($var);
 			} else {
-				$this->_lastActionParameters = $action->getCorrectParameters ($var);
+				if ($cache) {
+					$this->_lastActionParameters = $action->getCorrectParameters ($var);
+				}
 				return $action->getParameters ($var);
 			}
 		} else {
@@ -470,12 +551,14 @@ class actionManager {
 	/**
 	 * Adds an action
 	 * @param $action (object action)
+	 * @param $permission (string array) The permissions required to run the action
 	 * @public
 	*/
-	function addAction ($action) {
+	function addAction ($action, $permissions = array ()) {
 		$actionName = $action->getName ();
 		if (! $this->existsAction ($actionName)) {
-			$this->_actionsList[$actionName] = $action;
+			$this->_actionsList[$actionName] = 
+				array ('action'=>$action, 'permissions'=>$permissions);
 		} else {
 			return new Error ('ACTIONMANAGER_ACTION_EXISTS', $actionName);
 		}
@@ -524,6 +607,20 @@ class actionManager {
 	*/
 	function getPreviousActionHeaderString () {
 		return 'Location: '.$this->getPreviousActionLinkString ();
+	}
+	
+	/**
+	 * Returns the permissions that are required to execute an action.
+	 * @param $actionName (string)
+	 * @public
+	 * @return (string array) 
+	*/
+	function getActionRequiredPermissions ($actionName) {
+		$a = $this->getAction ($actionName);
+		if (isError ($a)) {
+			return $a;
+		}
+		return $a['permissions'];
 	}
 	
 	function getPreviousActionLinkString () {

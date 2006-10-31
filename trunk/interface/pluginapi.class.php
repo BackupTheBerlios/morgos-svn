@@ -143,13 +143,13 @@ class pluginAPI {
 		$sm = &$this->getSmarty ();
 		switch ($type) {
 			case ERROR: 
-				$sm->append_by_ref ('MorgOS_Errors', $tMessage);
+				$sm->append ('MorgOS_Errors', $tMessage);
 				break;
 			case WARNING:
-				$sm->append_by_ref ('MorgOS_Warnings', $tMessage);
+				$sm->append ('MorgOS_Warnings', $tMessage);
 				break;
 			case NOTICE:
-				$sm->append_by_ref ('MorgOS_Notices', $tMessage);
+				$sm->append ('MorgOS_Notices', $tMessage);
 				break;
 		}
 	}	
@@ -181,8 +181,30 @@ class pluginAPI {
 		}
 	}
 	
+	function warnUserNoPermission ($pageName) {
+		$pageM = &$this->getPageManager ();
+		$t = &$this->getI18NManager ();
+		$sm = &$this->getSmarty ();		
+		
+		$page = $pageM->newPage ();
+		$page->initFromName ($pageName);		
+		
+		if ($page->isAdminPage ()) {
+			$this->addRuntimeMessage ($t->translate ('Please login as an administrator.'), ERROR);
+			$sm->display ('admin/login.tpl');
+		} else {
+			$this->addMessage ($t->translate ('You don\'t have the permission to view this page.'));
+			$this->executePreviousAction ();
+		}
+	}
+	
 	function menuToArray ($menu) {
 		$pageLang = 'en_UK';
+		$pageM = &$this->getPageManager ();
+		$page = $pageM->newPage ();
+		$page->initFromName ('MorgOS_Admin_PageManager');
+		$pID = $page->getID ();			
+		
 		$array = array ();
 		foreach ($menu as $menuItem) {
 			if (($menuItem->getPluginID () == null) or
@@ -206,7 +228,9 @@ class pluginAPI {
 				}
 				$itemArray['PossibleNewParents'] = $newParents;
 				$parent = $menuItem->getParentPage ();
-				$itemArray['canMoveUp'] = !$parent->isRootPage ();
+				$itemArray['canMoveUp'] = !$parent->isRootPage ();					
+				
+				$itemArray['AdminLink'] = 'index.php?action=admin&pageID='.$pID.'&parentPageID='.$menuItem->getID ();
 				$array[] = $itemArray;
 			}
 		}

@@ -113,9 +113,7 @@ class page extends databaseObject {
 	*/
 	function getLink () {
 		$baseLink = 'index.php';
-		if ($this->getAction ()) {
-			return $baseLink .= '?action='.$this->getAction ();
-		} elseif ($this->isAdminPage ()) {
+		if ($this->isAdminPage ()) {
 			return $baseLink .= '?action=admin&pageID='.$this->getID ();
 		} else {
 			return $baseLink .= '?action=viewPage&pageID='.$this->getID ();

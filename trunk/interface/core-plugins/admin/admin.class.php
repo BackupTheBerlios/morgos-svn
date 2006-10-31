@@ -84,7 +84,7 @@ class adminCorePlugin extends plugin {
 			$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
 			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 			if ($page->getAction ()) {
-				$am->executeAction ($page->getAction ());
+				$am->executeAction ($page->getAction (), array (), false);
 			} else {
 				$sm->display ('admin/genericpage.tpl');
 			}

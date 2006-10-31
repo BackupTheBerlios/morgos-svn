@@ -33,107 +33,62 @@ class adminCoreUserAdminPlugin extends plugin {
 		$em = &$this->_pluginAPI->getEventManager ();
 		
 		$am->addAction (new action (
-			'adminUserManager', 'GET', array ($this, 'onViewUserManager'), array (), array ()));
+			'adminUserManager', 'GET', array ($this, 'onViewUserManager'), array (), array (), 'MorgOS_Admin_UserManager'));
 		$am->addAction (new action (
-			'adminMakeUserAdmin', 'POST', array ($this, 'onMakeUserAdmin'), array (new IDInput ('userID')), array ()));
+			'adminMakeUserAdmin', 'POST', array ($this, 'onMakeUserAdmin'), array (new IDInput ('userID')), array (), 'MorgOS_Admin_UserManager'));
 		$am->addAction (new action (
-			'adminMakeUserNormal', 'POST', array ($this, 'onMakeUserNormal'), array (new IDInput ('userID')), array ()));
+			'adminMakeUserNormal', 'POST', array ($this, 'onMakeUserNormal'), array (new IDInput ('userID')), array (), 'MorgOS_Admin_UserManager'));
 		$am->addAction (new action (
-			'adminUserDelete', 'GET', array ($this, 'onDeleteUser'), array (new IDInput ('userID')), array ()));
+			'adminUserDelete', 'GET', array ($this, 'onDeleteUser'), array (new IDInput ('userID')), array (), 'MorgOS_Admin_UserManager'));
 			
 	}
 	
 	function onViewUserManager () {
-		$em = &$this->_pluginAPI->getEventManager ();
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$plugM = &$this->_pluginAPI->getPluginManager ();
-		$dbM = &$this->_pluginAPI->getDBModule ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_UserManager');
-		$pageID = $page->getID ();
-
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));				
-			
-			$sm->assign ('MorgOS_Current_Admins', $this->getCurrrentAdmins ());
-			$sm->assign ('MorgOS_All_Users', $this->getAllNormalUsers ());
-				
-			$sm->display ('admin/usermanager.tpl');
-		} else {
-			$sm->display ('admin/login.tpl');
-		}
+		$sm = &$this->_pluginAPI->getSmarty ();				
+		$sm->assign ('MorgOS_Current_Admins', $this->getCurrrentAdmins ());
+		$sm->assign ('MorgOS_All_Users', $this->getAllNormalUsers ());
+		$sm->display ('admin/usermanager.tpl');
 	}
 	
 	function onMakeUserAdmin ($userID) {
-		$em = &$this->_pluginAPI->getEventManager ();
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$userM = &$this->_pluginAPI->getUserManager ();
+		$t = &$this->getI18NManager ();		
 		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_UserManager');
-		$pageID = $page->getID ();
-
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$user = $userM->newUser ();
-			$user->initFromDatabaseID ($userID);
-			$adminGroup = $userM->newGroup ();
-			$adminGroup->initFromDatabaseGenericName ('administrator');
-			$user->addToGroup ($adminGroup);
+		$user = $userM->newUser ();
+		$user->initFromDatabaseID ($userID);
+		$adminGroup = $userM->newGroup ();
+		$adminGroup->initFromDatabaseGenericName ('administrator');
+		$user->addToGroup ($adminGroup);
 			
-			$this->_pluginAPI->addMessage ('User is new administrator', NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		} else {
-			$sm->display ('admin/login.tpl');
-		}
+		$this->_pluginAPI->addMessage ($t->translate ('User is new administrator'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onMakeUserNormal ($userID)  {
-		$em = &$this->_pluginAPI->getEventManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$userM = &$this->_pluginAPI->getUserManager ();
+		$t = &$this->getI18NManager ();
 		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_UserManager');
-		$pageID = $page->getID ();
-
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$user = $userM->newUser ();
-			$user->initFromDatabaseID ($userID);
-			$adminGroup = $userM->newGroup ();
-			$adminGroup->initFromDatabaseGenericName ('administrator');
-			$user->removeFromGroup ($adminGroup);
-			
-			$this->_pluginAPI->addMessage ('User is again a normal user', NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		} else {
-			$sm->display ('admin/login.tpl');
-		}
+		$user = $userM->newUser ();
+		$user->initFromDatabaseID ($userID);
+		$adminGroup = $userM->newGroup ();
+		$adminGroup->initFromDatabaseGenericName ('administrator');
+		$user->removeFromGroup ($adminGroup);
+		
+		$this->_pluginAPI->addMessage ($t->translate ('User is again a normal user'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onDeleteUser ($userID) {
-		$em = &$this->_pluginAPI->getEventManager ();
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$userM = &$this->_pluginAPI->getUserManager ();
+		$t = &$this->getI18NManager ();
 		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_UserManager');
-		$pageID = $page->getID ();
-
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$user = $userM->newUser ();
-			$user->initFromDatabaseID ($userID);
-			$userM->removeUserFromDatabase ($user);
+		$user = $userM->newUser ();
+		$user->initFromDatabaseID ($userID);
+		$userM->removeUserFromDatabase ($user);
 			
-			$this->_pluginAPI->addMessage ('User is deleted', NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		} else {
-			$sm->display ('admin/login.tpl');
-		}
+		$this->_pluginAPI->addMessage ('User is deleted', NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function getCurrrentAdmins () {

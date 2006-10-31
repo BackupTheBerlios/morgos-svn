@@ -333,17 +333,37 @@ class morgos {
 		//var_dump ($this->_pluginAPI);
 		$allMessages = $this->_pluginAPI->getAllMessages ();
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->assign_by_ref ('MorgOS_Errors', $allMessages[ERROR]);
-		$sm->assign_by_ref ('MorgOS_Warnings', $allMessages[WARNING]);
-		$sm->assign_by_ref ('MorgOS_Notices', $allMessages[NOTICE]);
+		$sm->assign ('MorgOS_Errors', $allMessages[ERROR]);
+		$sm->assign ('MorgOS_Warnings', $allMessages[WARNING]);
+		$sm->assign ('MorgOS_Notices', $allMessages[NOTICE]);
 	
 		if (isset ($_GET['action'])) {
-			$r = $this->_actionManager->executeAction ($_GET['action']);
+			$a = $_GET['action'];
 		} elseif (isset ($_POST['action'])) {
-			$r = $this->_actionManager->executeAction ($_POST['action']);
+			$a = $_POST['action'];
 		} else {
-			$r = $this->_actionManager->executeAction ($defaultAction);
+			$a = $defaultAction;
 		}
+		
+		$user = $this->_userManager->getCurrentUser ();
+		$perms = $this->_actionManager->getActionRequiredPermissions ($a);
+		foreach ($perms as $perm) {
+			if (! $user->hasPermission ($perm)) {
+				$this->error ('You don\'t have the permission to do this.');
+			}
+		}
+		$actionArray =  $this->_actionManager->getAction ($a);
+		$action = $actionArray['action'];
+		if ($action->getPageName ()) {
+			$pageM = $this->_pageManager;
+			$page = $pageM->newPage ();
+			$page->initFromName ($action->getPageName ());
+			if (! $this->_pluginAPI->canUserViewPage ($page->getID ())) {
+				$this->_pluginAPI->warnUserNoPermission ($action->getPageName ());
+				return;
+			}
+		}
+		$r = $this->_actionManager->executeAction ($a);
 
 		if (isError ($r)) {
 			if ($r->is ('ACTIONMANAGER_ACTION_NOT_FOUND')) {

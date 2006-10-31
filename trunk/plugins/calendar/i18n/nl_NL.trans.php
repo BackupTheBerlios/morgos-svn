@@ -52,6 +52,6 @@ $strings['Event succesfully deleted.'] = 'Evenement verwijderd.';
 $strings['Group succesfully added.'] = 'Groep toegevoegd.';
 $strings['Group succesfully deleted.'] = 'Groep verwijderd.';
 $strings['Group succesfully updated.'] = 'Groep gewijzigd.';
-$strings['Event saved.'] = 'Evenemnt gewijzigd.';
+$strings['Event saved.'] = 'Evenement gewijzigd.';
 $strings['Manage calendar'] = 'Beheer kalender';
 ?>

@@ -22,6 +22,24 @@
  * @author Nathan Samson
 */
 
+/*Do not include in morgos, could be done later*/
+class DateTimeInput extends MultipleInput {
+
+	function DateTimeInput ($prefix) {
+		$values = array ('_Date_Year'=>'IntInput', '_Date_Month'=>'IntInput', 
+			'_Date_Day'=>'IntInput', '_Time_Hour'=>'IntInput', '_Time_Minute'=>'IntInput');
+		parent::MultipleInput ($prefix, $values);
+	}
+	
+	function getValue ($from) {
+		return $this->getChildValue ($from, '_Date_Year').'-'.
+			$this->getChildValue ($from, '_Date_Month').'-'.
+			$this->getChildValue ($from, '_Date_Day').' '.
+			$this->getChildValue ($from, '_Time_Hour').':'.
+			$this->getChildValue ($from, '_Time_Minute').':'.'00';
+	} 
+}
+
 class calendarPlugin extends plugin {
 	
 	function calendarPlugin ($dir) {
@@ -48,32 +66,31 @@ class calendarPlugin extends plugin {
 			new callback ('AddMiniCalendar', array ($this, 'addMiniCalendarToSidebar'), array ('pageID')));
 			
 		$am->addAction (new Action ('adminCalendarManager', 'GET', array ($this, 'onManageCalendar'),
-			array (), array ()));
+			array (), array (), 'Calendar_Admin_CalendarManager'));
 
 		$am->addAction (new Action ('adminNewCalendarEvent', 'GET', array ($this, 'onNewEvent'),
-			array ('title', 'description',
-				'Start_Date_Year', 'Start_Date_Month', 'Start_Date_Day', 'Start_Time_Hour', 'Start_Time_Minute',
-				'End_Date_Year', 'End_Date_Month', 'End_Date_Day', 'End_Time_Hour', 'End_Time_Minute', 'groupID'), array ()));
+			array (new StringInput ('title'), new StringInput ('description'),
+				new DateTimeInput ('Start'), new DateTimeInput ('End'), new IDInput ('groupID')), array (), 'Calendar_Admin_CalendarManager'));
 				
 		$am->addAction (new Action ('adminDeleteCalendarEvent', 'GET', array ($this, 'onDeleteEvent'),
-			array (new IDInput ('eventID')), array ()));
+			array (new IDInput ('eventID')), array (), 'Calendar_Admin_CalendarManager'));
 			
 		$am->addAction (new Action ('adminEditCalendarEvent', 'GET', array ($this, 'onEditEvent'),
 			array ('eventID', 'title', 'description',
 				'Start_Date_Year', 'Start_Date_Month', 'Start_Date_Day', 'Start_Time_Hour', 'Start_Time_Minute',
-				'End_Date_Year', 'End_Date_Month', 'End_Date_Day', 'End_Time_Hour', 'End_Time_Minute', 'groupID'), array ()));
+				'End_Date_Year', 'End_Date_Month', 'End_Date_Day', 'End_Time_Hour', 'End_Time_Minute', 'groupID'), array (), 'Calendar_Admin_CalendarManager'));
 				
 		$am->addAction (new Action ('adminEditCalendarEventForm', 'GET', array ($this, 'onEditEventForm'),
-			array (), array (new IDInput ('eventID'))));
+			array (new IDInput ('eventID')), array ()));
 		
 		$am->addAction (new Action ('adminNewCalendarGroup', 'GET', array ($this, 'onNewGroup'),
-			array (new StringInput ('groupName'), new StringInput ('groupColor')), array ()));
+			array (new StringInput ('groupName'), new StringInput ('groupColor')), array (), 'Calendar_Admin_CalendarManager'));
 		$am->addAction (new Action ('adminDeleteCalendarGroup', 'GET', array ($this, 'onDeleteGroup'),
-			array (new IDInput ('groupID')), array ()));
+			array (new IDInput ('groupID')), array (), 'Calendar_Admin_CalendarManager'));
 		$am->addAction (new Action ('adminEditCalendarGroupForm', 'GET', array ($this, 'onEditGroupForm'),
-			array (new IDInput ('groupID')), array ()));
+			array (new IDInput ('groupID')), array (), 'Calendar_Admin_CalendarManager'));
 		$am->addAction (new Action ('adminEditCalendarGroup', 'POST', array ($this, 'onEditGroup'),
-			array (new IDInput ('groupID'), new StringInput ('groupName'), new StringInput ('groupColor')), array ()));
+			array (new IDInput ('groupID'), new StringInput ('groupName'), new StringInput ('groupColor')), array (), 'Calendar_Admin_CalendarManager'));
 				
 		$am->addAction (new Action ('calendarMonthView', 'GET', array ($this, 'onMonthView'),
 			array (), array (new IntInput ('month'), new IntInput ('year'), new IDInput ('eventID'))));
@@ -211,121 +228,70 @@ class calendarPlugin extends plugin {
 	
 	function onManageCalendar () {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$em = &$this->_pluginAPI->getEventManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
 		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$currentEvents = $this->_calendarM->getCurrentEventsArray (10);			
-			$upcomingEvents = $this->_calendarM->getUpcomingEventsArray (10);
-			
-			$em->triggerEvent ('viewAnyAdminPage', array ($pageID, 'en_UK'));
-			$sm->assign ('Calendar_CurrentEvents', $currentEvents);
-			$sm->assign ('Calendar_UpcomingEvents', $upcomingEvents);
-			$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
-			$groups = array ();
-			foreach ($this->_calendarM->getAllGroups () as $group) {
-				$groups[] = $this->_calendarM->group2Array ($group);
-			}
-			$sm->assign ('Calendar_Groups', $groups);
-			$sm->appendTo ('MorgOS_ExtraHead', '<link rel="stylesheet" type="text/css" href="'.$this->getSkinDir ().'/styles/calendar.css'.'" />');
-			$sm->display ('admin/manageevents.tpl');
+		$currentEvents = $this->_calendarM->getCurrentEventsArray (10);			
+		$upcomingEvents = $this->_calendarM->getUpcomingEventsArray (10);
+		
+		$sm->assign ('Calendar_CurrentEvents', $currentEvents);
+		$sm->assign ('Calendar_UpcomingEvents', $upcomingEvents);
+		$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
+		$groups = array ();
+		foreach ($this->_calendarM->getAllGroups () as $group) {
+			$groups[] = $this->_calendarM->group2Array ($group);
 		}
+		$sm->assign ('Calendar_Groups', $groups);
+		$sm->appendTo ('MorgOS_ExtraHead', '<link rel="stylesheet" type="text/css" href="'.$this->getSkinDir ().'/styles/calendar.css'.'" />');
+		$sm->display ('admin/manageevents.tpl');
 	}
 	
 	function onNewEvent ($title, $description, 
-			$yearStart, $monthStart, $dayStart, $hourStart, $minuteStart,
-			$yearEnd, $monthEnd, $dayEnd, $hourEnd, $minuteEnd, $groupID) {	
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$em = &$this->_pluginAPI->getEventManager ();
+			$startDateTime, $endDateTime, $groupID) {	
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-		
-			$startSQLTime = $yearStart.'-'.$monthStart.'-'.$dayStart.' '.$hourStart.':'.$minuteStart.':00';
-			$endSQLTime = $yearEnd.'-'.$monthEnd.'-'.$dayEnd.' '.$hourEnd.':'.$minuteEnd.':00';
-		
-			$event = $this->_calendarM->newEvent ();
-			$event->initFromArray (array ('start'=>$startSQLTime, 'end'=>$endSQLTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
-			$event->addToDatabase ();
-			$this->_pluginAPI->addMessage ($t->translate ('Event succesfully added.'), NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+
+		$event = $this->_calendarM->newEvent ();
+		$event->initFromArray (array ('start'=>$startDateTime, 'end'=>$endDateTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
+		$event->addToDatabase ();
+		$this->_pluginAPI->addMessage ($t->translate ('Event succesfully added.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onDeleteEvent ($eventID) {
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$em = &$this->_pluginAPI->getEventManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$event = $this->_calendarM->newEvent ();
-			$event->initFromDatabaseID ($eventID);
-			$event->removeFromDatabase ();
-			$this->_pluginAPI->addMessage ($t->translate ('Event succesfully deleted.'), NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+
+		$event = $this->_calendarM->newEvent ();
+		$event->initFromDatabaseID ($eventID);
+		$event->removeFromDatabase ();
+		$this->_pluginAPI->addMessage ($t->translate ('Event succesfully deleted.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onNewGroup ($groupName, $groupColor) {
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$em = &$this->_pluginAPI->getEventManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$group = $this->_calendarM->newGroup ();
-			$group->initFromArray (array ('name'=>$groupName, 'color'=>$groupColor));
-			$this->_calendarM->addGroupToDatabase ($group);
-			$this->_pluginAPI->addMessage ($t->translate ('Group succesfully added.'), NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+		$group = $this->_calendarM->newGroup ();
+		$group->initFromArray (array ('name'=>$groupName, 'color'=>$groupColor));
+		$this->_calendarM->addGroupToDatabase ($group);
+		$this->_pluginAPI->addMessage ($t->translate ('Group succesfully added.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onDeleteGroup ($groupID) {
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$em = &$this->_pluginAPI->getEventManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$group = $this->_calendarM->newGroup ();
-			$group->initFromDatabaseID ($groupID);
-			$group->removeFromDatabase ();
-			$this->_pluginAPI->addMessage ($t->translate ('Group succesfully deleted.'), NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+		$group = $this->_calendarM->newGroup ();
+		$group->initFromDatabaseID ($groupID);
+		$group->removeFromDatabase ();
+		$this->_pluginAPI->addMessage ($t->translate ('Group succesfully deleted.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onEditGroup ($groupID, $newName, $newColor) {
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$group = $this->_calendarM->newGroup ();
-			$group->initFromDatabaseID ($groupID);
-			$group->updateFromArray (array ('name'=>$newName, 'color'=>$newColor));
-			$group->updateToDatabase ();
-			$this->_pluginAPI->addMessage ($t->translate ('Group succesfully updated.'), NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+		$group = $this->_calendarM->newGroup ();
+		$group->initFromDatabaseID ($groupID);
+		$group->updateFromArray (array ('name'=>$newName, 'color'=>$newColor));
+		$group->updateToDatabase ();
+		$this->_pluginAPI->addMessage ($t->translate ('Group succesfully updated.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onMonthView ($month, $year, $eventID) {
@@ -385,43 +351,26 @@ class calendarPlugin extends plugin {
 			$yearStart, $monthStart, $dayStart, $hourStart, $minuteStart,
 			$yearEnd, $monthEnd, $dayEnd, $hourEnd, $minuteEnd, $groupID) {
 			
-		$pageM = &$this->_pluginAPI->getPageManager ();
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$em = &$this->_pluginAPI->getEventManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
-			
-			$event = $this->_calendarM->newEvent ();
-			$event->initFromDatabaseID ($eventID);			
-			$startSQLTime = $yearStart.'-'.$monthStart.'-'.$dayStart.' '.$hourStart.':'.$minuteStart.':00';
-			$endSQLTime = $yearEnd.'-'.$monthEnd.'-'.$dayEnd.' '.$hourEnd.':'.$minuteEnd.':00';
-		
-			$event->updateFromArray (array ('start'=>$startSQLTime, 'end'=>$endSQLTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
-			$event->updateToDatabase ();
-			$this->_pluginAPI->addMessage ($t->translate ('Event saved.'), NOTICE);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+
+		$event = $this->_calendarM->newEvent ();
+		$event->initFromDatabaseID ($eventID);			
+		$startSQLTime = $yearStart.'-'.$monthStart.'-'.$dayStart.' '.$hourStart.':'.$minuteStart.':00';
+		$endSQLTime = $yearEnd.'-'.$monthEnd.'-'.$dayEnd.' '.$hourEnd.':'.$minuteEnd.':00';
+		$event->updateFromArray (array ('start'=>$startSQLTime, 'end'=>$endSQLTime, 'name'=>$title, 'description'=>$description, 'groupID'=>$groupID));
+		$event->updateToDatabase ();
+		$this->_pluginAPI->addMessage ($t->translate ('Event saved.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onEditEventForm ($eventID) {
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$em = &$this->_pluginAPI->getEventManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('Calendar_Admin_CalendarManager');
-		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
-			$em->triggerEvent ('viewAnyAdminPage', array ($page->getID (), 'en_UK'));
-			$eventC = $this->_calendarM->newEvent ();
-			$a = $eventC->initFromDatabaseID ($eventID);
-			$eventA = $this->_calendarM->event2Array ($eventC);
-			$sm->assign ('Calendar_Event', $eventA);
-			$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
-			$sm->display ('admin/editevent.tpl');
-		}
+		$eventC = $this->_calendarM->newEvent ();
+		$a = $eventC->initFromDatabaseID ($eventID);
+		$eventA = $this->_calendarM->event2Array ($eventC);
+		$sm->assign ('Calendar_Event', $eventA);
+		$sm->assign ('Calendar_AvGroups', $this->getAvGroups ());
+		$sm->display ('admin/editevent.tpl');
 	}
 	
 	function buildWeeksArray ($curMonth, $curYear, $firstDayOfWeek) {

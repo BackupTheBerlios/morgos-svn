@@ -33,155 +33,114 @@ class adminCorePluginAdminPlugin extends plugin {
 		$em = &$this->_pluginAPI->getEventManager ();
 		
 		$am->addAction (new action (
-			'adminPluginManager', 'GET', array ($this, 'onViewPluginManager'), array (), array ()));
+			'adminPluginManager', 'GET', array ($this, 'onViewPluginManager'), array (), array (), 'MorgOS_Admin_PluginManager'));
 			
 		$am->addAction (new action (
 			'adminEnablePlugin', 'GET', array ($this, 'onEnablePlugin'), 
-				array (new StringInput ('pluginID')), array ()));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
 			
 		$am->addAction (new action (
 			'adminInstallPlugin', 'GET', array ($this, 'onInstallPlugin'), 
-				array (new StringInput ('pluginID')), array ()));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
 			
 		$am->addAction (new action (
 			'adminDisablePlugin', 'GET', array ($this, 'onDisablePlugin'), 
-				array (new StringInput ('pluginID')), array ()));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
 			
 		$am->addAction (new action (
 			'adminUnInstallPlugin', 'GET', array ($this, 'onUnInstallPlugin'), 
-				array (new StringInput ('pluginID')), array ()));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
 	}
 	
 	function onViewPluginManager () {
-		$em = &$this->_pluginAPI->getEventManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
-		$dbM = &$this->_pluginAPI->getDBModule ();
-		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_PluginManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));				
+		$t = &$this->_pluginAPI->getI18NManager ();		
 			
-			$availablePlugins = array ();
-			foreach ($plugM->getAllFoundPlugins () as $plugin) {
-				if ($plugin->isCorePlugin () === false) {
-					if ($plugin->isCompatible ()) {
-						$cMessage = '';
-					} else {
-						if (! $plugin->isPHPCompatible ()) {
-							$cMessage = $t->translate ('Your version of PHP (%1) is not compatible with this plugin.', array (PHP_VERSION));
-						} elseif (! $plugin->isMinVersionReached ()) {
-							$cMessage = $t->translate ('Your version of MorgOS is too old.');
-						} elseif ($plugin->isMaxVersionExceeded ()) {
-							$cMessage = $t->translate ('Your version of MorgOS is too new.');
-						}
+		$availablePlugins = array ();
+		foreach ($plugM->getAllFoundPlugins () as $plugin) {
+			if ($plugin->isCorePlugin () === false) {
+				if ($plugin->isCompatible ()) {
+					$cMessage = '';
+				} else {
+					if (! $plugin->isPHPCompatible ()) {
+						$cMessage = $t->translate ('Your version of PHP (%1) is not compatible with this plugin.', array (PHP_VERSION));
+					} elseif (! $plugin->isMinVersionReached ()) {
+						$cMessage = $t->translate ('Your version of MorgOS is too old.');
+					} elseif ($plugin->isMaxVersionExceeded ()) {
+						$cMessage = $t->translate ('Your version of MorgOS is too new.');
 					}
-					$availablePlugins[] = array (
-						'Name'=>$plugin->getName (), 'Version'=>$plugin->getVersion (), 'Enabled'=>$plugin->isLoaded (), 
-						'EnableLink'=>'index.php?action=adminEnablePlugin&pluginID='.$plugin->getID (),
-						'DisableLink'=>'index.php?action=adminDisablePlugin&pluginID='.$plugin->getID (),
-						'Compatible'=>$plugin->isCompatible (), 'CompatibleMessage'=>$cMessage,
-						'Installed'=>$plugin->isInstalled ($this->_pluginAPI), 
-						'InstallLink'=>'index.php?action=adminInstallPlugin&pluginID='.$plugin->getID (),
-						'UnInstallLink'=>'index.php?action=adminUnInstallPlugin&pluginID='.$plugin->getID ());
 				}
+				$availablePlugins[] = array (
+					'Name'=>$plugin->getName (), 'Version'=>$plugin->getVersion (), 'Enabled'=>$plugin->isLoaded (), 
+					'EnableLink'=>'index.php?action=adminEnablePlugin&pluginID='.$plugin->getID (),
+					'DisableLink'=>'index.php?action=adminDisablePlugin&pluginID='.$plugin->getID (),
+					'Compatible'=>$plugin->isCompatible (), 'CompatibleMessage'=>$cMessage,
+					'Installed'=>$plugin->isInstalled ($this->_pluginAPI), 
+					'InstallLink'=>'index.php?action=adminInstallPlugin&pluginID='.$plugin->getID (),
+					'UnInstallLink'=>'index.php?action=adminUnInstallPlugin&pluginID='.$plugin->getID ());
 			}
-			$sm->assign ('MorgOS_AvailablePlugins', $availablePlugins);
-			$sm->display ('admin/pluginmanager.tpl');
-		} else {
-			$sm->display ('admin/login.tpl');
 		}
+		$sm->assign ('MorgOS_AvailablePlugins', $availablePlugins);
+		$sm->display ('admin/pluginmanager.tpl');
 	}
 	
 	function onEnablePlugin ($pluginID) {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_PluginManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$plugin = $plugM->getPlugin ($pluginID);
-			if (! $plugin->isInstalled ($this->_pluginAPI)) {
-				$plugin->install ($this->_pluginAPI);
-			}
-			$cm = &$this->_pluginAPI->getConfigManager ();
-			$a = new configItem ('/extplugs/'.$pluginID, BOOL);
-			$a->setValue (true);
-			$cm->addOption ($a);
-			
-			$this->_pluginAPI->addMessage ($t->translate ('Plugin is enabled'), NOTICE);
-			$this->_pluginAPI->writeConfigFile ($cm);			
-			$this->_pluginAPI->executePreviousAction ();
+		$plugin = $plugM->getPlugin ($pluginID);
+		if (! $plugin->isInstalled ($this->_pluginAPI)) {
+			$plugin->install ($this->_pluginAPI);
 		}
+		$cm = &$this->_pluginAPI->getConfigManager ();
+		$a = new configItem ('/extplugs/'.$pluginID, BOOL);
+		$a->setValue (true);
+		$cm->addOption ($a);
+		
+		$this->_pluginAPI->addMessage ($t->translate ('Plugin is enabled'), NOTICE);
+		$this->_pluginAPI->writeConfigFile ($cm);			
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onInstallPlugin ($pluginID) {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_PluginManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$plugin = $plugM->getPlugin ($pluginID);
-			if (! $plugin->isInstalled ($this->_pluginAPI)) {
-				$plugin->install ($this->_pluginAPI);
-				$this->_pluginAPI->addMessage ($t->translate ('Plugin is installed'), NOTICE);
-			} else {
-				$this->_pluginAPI->addMessage ($t->translate ('Plugin was already installed'), WARNING);
-			}
-			
-			$this->_pluginAPI->executePreviousAction ();
+		$plugin = $plugM->getPlugin ($pluginID);
+		if (! $plugin->isInstalled ($this->_pluginAPI)) {
+			$plugin->install ($this->_pluginAPI);
+			$this->_pluginAPI->addMessage ($t->translate ('Plugin is installed'), NOTICE);
+		} else {
+			$this->_pluginAPI->addMessage ($t->translate ('Plugin was already installed'), WARNING);
 		}
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onDisablePlugin ($pluginID) {
-		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
-		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_PluginManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$cm = &$this->_pluginAPI->getConfigManager ();
-			$a = $cm->getItem ('/extplugs/'.$pluginID, BOOL);
-			$cm->removeOption ($a);
-			$this->_pluginAPI->addMessage ($t->translate ('Plugin is disabled'), NOTICE);
-			$this->_pluginAPI->writeConfigFile ($cm);
-			$this->_pluginAPI->executePreviousAction ();
-		}
+		$cm = &$this->_pluginAPI->getConfigManager ();
+		$a = $cm->getItem ('/extplugs/'.$pluginID, BOOL);
+		$cm->removeOption ($a);
+		$this->_pluginAPI->addMessage ($t->translate ('Plugin is disabled'), NOTICE);
+		$this->_pluginAPI->writeConfigFile ($cm);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onUnInstallPlugin ($pluginID) {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$pageM = &$this->_pluginAPI->getPageManager ();
 		$plugM = &$this->_pluginAPI->getPluginManager ();	
 		$t = &$this->_pluginAPI->getI18NManager ();
 		
-		$page = $pageM->newPage ();
-		$page->initFromName ('MorgOS_Admin_PluginManager');
-		$pageID = $page->getID ();
-		if ($this->_pluginAPI->canUserViewPage ($pageID)) {
-			$plugin = $plugM->getPlugin ($pluginID);
-			if ($plugin->isInstalled ($this->_pluginAPI)) {
-				$plugin->Uninstall ($this->_pluginAPI);
-				$this->_pluginAPI->addMessage ($t->translate ('Plugin is uninstalled'), NOTICE);
-			} else {
-				$this->_pluginAPI->addMessage ($t->translate ('Plugin was not installed'), WARNING);
-			}
-			
-			$this->_pluginAPI->executePreviousAction ();
+		$plugin = $plugM->getPlugin ($pluginID);
+		if ($plugin->isInstalled ($this->_pluginAPI)) {
+			$plugin->Uninstall ($this->_pluginAPI);
+			$this->_pluginAPI->addMessage ($t->translate ('Plugin is uninstalled'), NOTICE);
+		} else {
+			$this->_pluginAPI->addMessage ($t->translate ('Plugin was not installed'), WARNING);
 		}
+		
+		$this->_pluginAPI->executePreviousAction ();
 	}
 }
