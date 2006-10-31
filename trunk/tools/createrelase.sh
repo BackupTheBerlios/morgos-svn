@@ -1,10 +1,17 @@
+#! /bin/bash
+
 function testIn () {
-	for t in $2
+	i=0
+	for t in $@
 	do
-		if [ "$t" = "$1" ]
+		if [ $i != 0 ]
 		then
-			return 0
+			if [ "$t" = "$1" ]
+			then
+				return 0
+			fi
 		fi
+		i=$i+1
 	done
 	return 1
 }
@@ -13,24 +20,41 @@ function testIn () {
 rel=$1
 tempDir='temp-dirs'
 svn export ../ $tempDir  > /dev/null
-includedskins=('default')
-includedplugins=('helloWorld')
-for dir in ${array[@]}
+
+for param in $@
 do
-	echo $dir
+	c=0
+	a=`expr $param : "skins=\(.*\)"` && c=1
+	if [ $c = 1 ]
+	then
+		extraskins=$( echo $a | awk 'BEGIN{ FS="," } { print $1 "\n" $2 }' ) # command substitution
+	fi
+	
+	c=0
+	a=`expr $param : "plugins=\(.*\)"` && c=1
+	if [ $c = 1 ]
+	then
+		extraplugins=$( echo $a | awk 'BEGIN{ FS="," } { print $1 "\n" $2 }' ) # command substitution
+	fi
 done
+
+includedskins='default '$extraskins
+includedplugins='helloWorld '$extraplugins
 
 cd $tempDir
 # delete non-used dirs
-rm -rf cache configs docs logs tools
+rm -rf cache configs logs tools
 # delete non-release skins
 for skin in `dir skins`
 do
 	a=0
-	`testIn $skin $includedskins` && a=1
+	testIn $skin $includedskins && a=1
 	if [ $a = 0 ]
 	then
 		rm -rf skins/$skin
+		echo "deleting " $skin
+	else
+		echo "leaving " $skin
 	fi
 done
 
@@ -38,10 +62,13 @@ done
 for plugin in `dir plugins`
 do
 	a=0
-	`testIn $plugin $includedplugins` && a=1
+	testIn $plugin $includedplugins && a=1
 	if [ $a = 0 ]
 	then
 		rm -rf plugins/$plugin
+		echo "deleting " $plugin
+	else
+		echo "leaving " $plugin
 	fi
 done
 
