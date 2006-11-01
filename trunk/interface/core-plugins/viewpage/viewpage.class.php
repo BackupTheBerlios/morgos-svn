@@ -29,8 +29,9 @@ class viewPageCorePlugin extends plugin {
 		include_once ($dir.'/viewpageadmin.class.php');
 		$this->_name = 'Viewpage core plugin';
 		$this->_ID = '{529e4a98-02a7-46bb-be2a-671a7dfc852f}';
-		$this->_minMorgOSVersion = '0.3';
-		$this->_maxMorgOSVersion = '0.3';
+		$this->_minMorgOSVersion = MORGOS_VERSION;
+		$this->_maxMorgOSVersion = MORGOS_VERSION;
+		$this->_version = MORGOS_VERSION;
 	}
 	
 	function load (&$pluginAPI) {
