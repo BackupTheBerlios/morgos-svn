@@ -90,8 +90,13 @@ class viewPageCorePlugin extends plugin {
 			if ($r == false or isError ($r)) {
 				return;
 			}
-		}		
-		$sm->display ('index.tpl');
+		}
+		if ($page->getAction ()) {
+			$aM = &$this->_pluginAPI->getActionManager ();
+			$aM->executeAction ($page->getAction (), false);
+		} else {		
+			$sm->display ('index.tpl');
+		}
 	}
 
 	function getMenuArray ($rootPage, $pageLang) {

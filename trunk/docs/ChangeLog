@@ -1,6 +1,8 @@
 Version 0.3
 ===========
 [Changes]
+	[API]
+	 * Actions have their associated pages
 [Bugs]
  * Add startup warnings when their are problems with config.php and database 
 

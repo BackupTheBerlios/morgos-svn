@@ -355,9 +355,10 @@ class action {
 	 * @param $requiredOptions (baseInput array)
 	 * @param $notRequiredOptions (baseInput array) default array ()
 	 * @param $pageName (string) default null
+	 * @since 0.3 parameter $pageName
 	*/
 	function action ($name, $method, $executor, $requiredOptions, 
-		$notRequiredOptions = array (), $pageName = null) {
+			$notRequiredOptions = array (), $pageName = null) {
 		$this->_name = $name;
 		$this->_method = $method;
 		$this->_requiredOptions = $requiredOptions;
