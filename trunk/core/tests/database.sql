@@ -51,6 +51,7 @@ CREATE TABLE {prefix}pages (
 CREATE TABLE {prefix}translatedPages (
   translatedPageID int(11) auto_increment NOT NULL,
   translatedTitle varchar(255) NOT NULL,
+  translatedNavTitle varchar(255) NOT NULL,
   translatedContent text,
   pageID int(11) NOT NULL,
   languageCode varchar(5),

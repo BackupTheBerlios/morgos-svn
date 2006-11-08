@@ -30,7 +30,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class translatedPage extends databaseObject {
+class translatedPage extends DBTableObject {
 
 	/**
 	 * Constructor
@@ -39,7 +39,7 @@ class translatedPage extends databaseObject {
 	 * @param $extraOptions (object dbField array)
 	 * @param $parent (object) the creator of this object (a pagemanager object)
 	*/
-	function translatedPage ($db, $extraOptions, &$parent) {
+	function translatedPage ($db, $extraFields, &$parent) {
 		$translatedTitle = new dbField ('translatedTitle', 'varchar(255)');
 		$translatedNavTitle = new dbField ('translatedNavTitle', 'varchar(255)');
 		$translatedNavTitle->canBeNull = true;
@@ -47,9 +47,10 @@ class translatedPage extends databaseObject {
 		$translatedContent->canBeNull = true;		
 		$pageID = new dbField ('pageID', 'int(11)');
 		$pageID->canBeNull = true;
-		$languageCode = new dbField ('languageCode', 'varchar(5)');		
+		$languageCode = new dbField ('languageCode', 'varchar(5)');	
+		$ID = new dbField ('translatedPageID', 'int (11)');
 		
-		parent::databaseObject ($db, $extraOptions, array ('translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent);
+		parent::databaseObject ($db, array ('translatedPageID'=>$ID, 'translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent, $extraFields);
 	}
 	
 	/**
@@ -63,15 +64,15 @@ class translatedPage extends databaseObject {
 		if (! is_numeric ($pageID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
-		$languageCode = $this->db->escapeString ($languageCode);
+		$languageCode = $this->_db->escapeString ($languageCode);
 		$fTN = $this->getFullTableName ();
 		$sql = "SELECT * FROM $fTN WHERE $pageID='$pageID' AND languageCode='$languageCode'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
-				$row = $this->db->fetchArray ($q);
+			if ($this->_db->numRows ($q) == 1) {
+				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setOption ('ID', $row['translatedPageID']);
+				$this->setField ('ID', $row['translatedPageID']);
 			} else {
 				return new Error ('ERROR_TRANSLATEDPAGE_CANTFIND_PAGE', $pageID, $languageCode);
 			}
@@ -85,7 +86,7 @@ class translatedPage extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getTitle () {return $this->getOption ('translatedTitle');}
+	function getTitle () {return $this->getFieldValue ('translatedTitle');}
 	
 	/**
 	 * Returns the navigation title of the page
@@ -93,10 +94,10 @@ class translatedPage extends databaseObject {
 	 * @return (string)
 	*/
 	function getNavTitle () {
-		if ($this->getOption ('translatedNavTitle')) {
-			return $this->getOption ('translatedNavTitle');
+		if ($this->getField ('translatedNavTitle')) {
+			return $this->getFieldValue ('translatedNavTitle');
 		} else {
-			return $this->getOption ('translatedTitle');
+			return $this->getFieldValue ('translatedTitle');
 		}
 	}
 	
@@ -105,19 +106,19 @@ class translatedPage extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getContent () {return $this->getOption ('translatedContent');}
+	function getContent () {return $this->getFieldValue ('translatedContent');}
 	/**
 	 * Returns the pageID
 	 * @public
 	 * @return (int)
 	*/
-	function getPageID () {return $this->getOption ('pageID');}
+	function getPageID () {return $this->getFieldValue ('pageID');}
 	/**
 	 * Returns the languageCode
 	 * @public
 	 * @returns (string)
 	*/	
-	function getLanguageCode () {return $this->getOption ('languageCode');}
+	function getLanguageCode () {return $this->getFieldValue ('languageCode');}
 	
 	/**
 	 * Returns the original page where this is a translation for.

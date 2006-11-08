@@ -30,16 +30,16 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class page extends databaseObject {
+class page extends DBTableObject {
 
 	/**
 	 * Constructor
 	 *
 	 * @param $db (object dbModule)
-	 * @param $allOptions (null array)
+	 * @param $allEFields (dbField array)
 	 * @param $parent (object) The creator
 	*/	
-	function page ($db, $allOptions, &$parent) {
+	function page ($db, $allEFields, &$parent) {
 		$name = new dbField ('name', 'varchar (255)');
 		$parentPageID = new dbField ('parentPageID', 'int(11)');
 		$placeInMenu = new dbField ('placeInMenu', 'int(4)');
@@ -48,8 +48,18 @@ class page extends databaseObject {
 		$action->canBeNull = true;
 		$pluginID = new dbField ('pluginID', 'varchar(36)');
 		$pluginID->canBeNull = true;
+		$ID = new dbField ('pageID', 'int (11)');
+		
+		$translatedJoin = new oneToMultipleJoinField ('translatedPages', 
+				$db->getPrefix ().'translatedPages', 'pageID', $ID);
 				
-		parent::databaseObject ($db, $allOptions, array ('name'=>$name, 'parentPageID'=>$parentPageID, 'placeInMenu'=>$placeInMenu, 'action'=>$action, 'pluginID'=>$pluginID), 'pages', 'pageID', $parent);
+		$childJoin = new oneToMultipleJoinField ('childPages', 'int(11)', 
+				$db->getPrefix ().'pages', 'parentPageID', $ID);
+		
+				
+		parent::databaseObject ($db, array ($ID, $name, $parentPageID, 
+			$placeInMenu, $action, $pluginID), 
+			'pages', 'pageID', $parent, $allEFields, array ($translatedJoin, $childJoin));
 	}
 
 	/**
@@ -60,14 +70,19 @@ class page extends databaseObject {
 	*/
 	function initFromName ($name) {
 		$fullTableName = $this->getFullTableName ();
-		$name = $this->db->escapeString ($name);
+		$name = $this->_db->escapeString ($name);
 		$sql = "SELECT * FROM $fullTableName WHERE name='$name'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
-				$row = $this->db->fetchArray ($q);
+			if ($this->_db->numRows ($q) == 1) {
+				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setOption ('ID', $row[$this->getIDName ()]);
+				$this->setField ('ID', $row[$this->getIDName ()]);
+				//var_dump ($this->_basicFields['pageID']->getValue ());
+				if (! $this->isInDatabase ()) {
+					print_r ($row);
+				}
+				//var_dump ($row);
 			} else {
 				return new Error ('PAGE_NAME_DOESNT_EXISTS', $name);
 			}
@@ -82,7 +97,7 @@ class page extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getName () {return $this->getOption ('name');}
+	function getName () {return $this->getFieldValue ('name');}
 	
 	/**
 	 * Returns the ID of the parentPage. 0 if it is a root element.
@@ -90,7 +105,7 @@ class page extends databaseObject {
 	 * @public
 	 * @return (int)
 	*/
-	function getParentPageID () {return $this->getOption ('parentPageID');}
+	function getParentPageID () {return $this->getFieldValue ('parentPageID');}
 	
 	/**
 	 * Returns the place in the menu
@@ -98,14 +113,14 @@ class page extends databaseObject {
 	 * @public
 	 * @return (int)
 	*/
-	function getPlaceInMenu () {return $this->getOption ('placeInMenu');}
+	function getPlaceInMenu () {return $this->getFieldValue ('placeInMenu');}
 
 	/**
 	 * If the page needs a special action returns it.
 	 * @public
 	 * @return (string)
 	*/
-	function getAction () {return $this->getOption ('action');}
+	function getAction () {return $this->getFieldValue ('action');}
 	/**
 	 * Returns the link for the page.
 	 * @public
@@ -124,7 +139,7 @@ class page extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getPluginID () {return $this->getOption ('pluginID');}
+	function getPluginID () {return $this->getFieldValue ('pluginID');}
 	
 	/**
 	 * Returns of the page is in the admin site
@@ -173,45 +188,54 @@ class page extends databaseObject {
 	 * @return (object translatedPage) 
 	*/
 	function getTranslation ($languageCode) {
-		$languageCode = $this->db->escapeString ($languageCode);
-		$fullTranslationTableName = $this->db->getPrefix ().'translatedPages';
-		$ID = $this->getID ();
-		$sql = "SELECT translatedPageID FROM $fullTranslationTableName WHERE pageID='$ID' AND languageCode='$languageCode'";
-		$q = $this->db->query ($sql);
-		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
-				$row = $this->db->fetchArray ($q);
-				$c = $this->getCreator ();
-				$tPage = $c->newTranslatedPage ();
-				$tPage->initFromDatabaseID ($row['translatedPageID']);
-				return $tPage;
-			} else {
-				if (strlen ($languageCode) > 2) {
-					$firstLang = substr ($languageCode, 0, 2);
-					return $this->getTranslation ($firstLang);
-				} else {
-					return new Error ('PAGE_TRANSLATION_NOT_FOUND');
-				}
-			} 
+		$trans = $this->getAllChildTables ('translatedPages', 'languageCode', ORDER_ASC, 
+				array (new WhereClause ('languageCode', $languageCode, '=')));
+		if ((count ($trans) >= 1) and (! isError ($trans))) {
+			$tPageArray = $trans[0]; /*Normally I should get only one*/
+			$creator = $this->getCreator ();
+			$tPage = $creator->newTranslatedPage ();
+			$tPage->initFromArray ($tPageArray);
 			return $tPage;
-		} else {
-			return $q;
 		}
+		
+		if (strpos ($languageCode, '-')) {
+			$mainCode = substr ($languageCode, 0, strpos ($languageCode, '-'));
+			$mLang = $this->getTranslation ($mainCode);
+			if (! isError ($mLang)) {
+				return $mLang;			
+			} else {
+				if (! $mLang->is ('OBJECT_NOT_FOUND')) {
+					return $mLang;				
+				}
+			}	
+		}
+	
+		return new Error ('OBJECT_NOT_FOUND', $languageCode);
 	}
 	
 	function getAllTranslations () {
-		$fullTranslationTableName = $this->db->getPrefix ().'translatedPages';
-		$ID = $this->getID ();
-		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE pageID='$ID' ORDER BY languageCode ASC";
-		$q = $this->db->query ($sql);
-		if (! isError ($q)) {
-			$lCodes = array ();
-			while ($row = $this->db->fetchArray ($q)) {
-				$lCodes[] = $row['languageCode'];
+		$tPages = array ();
+		foreach ($this->getAllChildTables ('translatedPages', 'languageCode', ORDER_ASC) 
+				as $tPageArray) {
+			$creator = $this->getCreator ();
+			$tPage = $creator->newTranslatedPage ();
+			$tPage->initFromArray ($tPageArray);
+			$tPages[] = $tPage;
+		}
+		return $tPages;
+	}
+	
+	function getAllTranslationCodes () {
+		$tCodes = array ();
+		$c = $this->getAllChildTables ('translatedPages', 'languageCode', ORDER_ASC, array (), 
+				'languageCode');
+		if (! isError ($c)) {
+			foreach ($c as $tPageArray) {
+				$tCodes[] = $tPageArray['languageCode'];
 			}
-			return $lCodes;
-		} else {
-			return $q;
+			return $tCodes;
+		} else {	
+			return $c;
 		}
 	}
 	
@@ -219,7 +243,7 @@ class page extends databaseObject {
 		if (! $this->translationExists ($translation->getLanguageCode ())) {
 			$a['pageID'] = $this->getID ();
 			$translation->updateFromArray ($a);
-			$translation->addToDatabase ();
+			$a = $translation->addToDatabase ();
 		} else {
 			return new Error ('PAGE_TRANSLATION_EXISTS', $translation->getLanguageCode ());
 		}
@@ -229,12 +253,13 @@ class page extends databaseObject {
 		if ($this->translationExists ($translation->getLanguageCode ())) {
 			return $translation->removeFromDatabase ();
 		} else {
-			return new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', $translation->getLanguageCode ());
+			return new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', 
+				$translation->getLanguageCode ());
 		}
 	}
 	
 	function translationExists ($languageCode) {
-		if (in_array ($languageCode, $this->getAllTranslations ())) {
+		if (in_array ($languageCode, $this->getAllTranslationCodes ())) {
 			return true;
 		} else {
 			return false;
@@ -242,25 +267,23 @@ class page extends databaseObject {
 	}
 	
 	function getAllChilds () {
-		$fTN = $this->getFullTableName ();
-		$ID = $this->getID ();
-		$sql = "SELECT pageID FROM $fTN WHERE parentPageID='$ID'";
-		$q = $this->db->query ($sql);
-		$childPages = array ();
-		while ($row = $this->db->fetchArray ($q)) {
-			$c = $this->getCreator ();
-			$childPage = $c->newPage ();
-			$childPage->initFromDatabaseID ($row['pageID']);
-			$childPages[] = $childPage;
+		$cPages = array ();
+		foreach ($this->getAllChildTables ('childPages', 'placeInMenu', ORDER_ASC) 
+				as $cPageArray) {
+			$creator = $this->getCreator ();
+			$cPage = $creator->newPage ();
+			$cPage->initFromArray ($cPageArray);
+			$cPages[] = $tPage;
 		}
-		return $childPages;
+		return $cPages;
 	}
 	
 	function getMaxPlaceInMenu () {
-		$sql = "SELECT MAX(placeInMenu) FROM ".$this->getFullTableName ()." WHERE parentPageID='". $this->getID ()."'";
-		$q = $this->db->query ($sql);
+		$sql = "SELECT MAX(placeInMenu) FROM ".$this->getFullTableName ()." 
+				WHERE parentPageID='". $this->getID ()."'";
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			$row = $this->db->fetchArray ($q);
+			$row = $this->_db->fetchArray ($q);
 			return $row['MAX(placeInMenu)']+1;
 		} else {
 			return $a;

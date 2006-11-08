@@ -30,16 +30,16 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class group extends databaseObject {
+class group extends DBTableObject {
 	
 	/**
 	 * Constructor
 	 *
 	 * @param $db (object database) the database module
-	 * @param $allExtraOptions (null array) an array with empty values. The keys are the extra options.
+	 * @param $extraFields (dbField array) an array with empty values. The keys are the extra options.
 	 * @param $creator (object)
 	*/
-	function group ($db, $allExtraOptions, &$creator) {
+	function group ($db, $extraFields, &$creator) {
 		$genericName = new dbField ();
 		$genericName->name = 'genericName';
 		$genericName->type = 'varchar (255)';
@@ -48,7 +48,9 @@ class group extends databaseObject {
 		$genericDescription->name = 'genericDescription';
 		$genericDescription->type = 'text';
 		
-		parent::databaseObject ($db, $allExtraOptions, array ('genericName'=>$genericName, 'genericDescription'=>$genericDescription), 'groups', 'groupID', $creator);
+		$ID = new dbField ('groupID', 'int (11)');
+		
+		parent::databaseObject ($db, array ('groupID'=>$ID, 'genericName'=>$genericName, 'genericDescription'=>$genericDescription), 'groups', 'groupID', $creator, $extraFields);
 	}
 	
 	/**
@@ -59,14 +61,14 @@ class group extends databaseObject {
 	*/
 	function initFromDatabaseGenericName ($genericName) {
 		$fullTableName = $this->getFullTableName ();
-		$genericName = $this->db->escapeString ($genericName);
+		$genericName = $this->_db->escapeString ($genericName);
 		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q)) {
-				$row = $this->db->fetchArray ($q);
+			if ($this->_db->numRows ($q)) {
+				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setOption ('ID',$row['groupID']);
+				$this->setField ('ID',$row['groupID']);
 			} else {
 				return new Error ('GROUP_GENERICNAME_DONT_EXISTS', $genericName);
 			}
@@ -85,14 +87,14 @@ class group extends databaseObject {
 	 * @return (bool)
 	*/
 	function hasPermission ($permissionName) {
-		$permissionName = $this->db->escapeString ($permissionName);
-		$prefix = $this->db->getPrefix ();
+		$permissionName = $this->_db->escapeString ($permissionName);
+		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
 		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE groupID='$ID' AND permissionName='$permissionName'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
-				$row = $this->db->fetchArray ($q);
+			if ($this->_db->numRows ($q) == 1) {
+				$row = $this->_db->fetchArray ($q);
 				if ($row['enabled'] == 'Y') {
 					return true;
 				} else {
@@ -114,13 +116,13 @@ class group extends databaseObject {
 	 * @public
 	*/
 	function assignPermission ($permissionName, $enabled) {
-		$permissionName = $this->db->escapeString ($permissionName);
-		$prefix = $this->db->getPrefix ();
+		$permissionName = $this->_db->escapeString ($permissionName);
+		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
 		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE groupID='$ID' AND permissionName='$permissionName'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
+			if ($this->_db->numRows ($q) == 1) {
 				if ($enabled) {
 					$enabled = 'Y';
 				} else {
@@ -128,7 +130,7 @@ class group extends databaseObject {
 				}
 				$ID = $this->getID ();
 				$sql = "UPDATE {$prefix}groupPermissions SET enabled='$enabled' WHERE groupID='$ID' AND permissionName='$permissionName'";
-				$q = $this->db->query ($sql);
+				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
 				}
@@ -140,7 +142,7 @@ class group extends databaseObject {
 				}
 				$groupID = $this->getID ();
 				$sql = "INSERT INTO {$prefix}groupPermissions (groupID, permissionName, enabled) VALUES ('$groupID', '$permissionName', '$enabled')";
-				$q = $this->db->query ($sql);
+				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
 				}
@@ -160,7 +162,7 @@ class group extends databaseObject {
 		$isInGroup = $this->isUserInGroup ($user); 
 		if (! isError ($isInGroup)) {
 			if ($isInGroup == false) {
-				$prefix = $this->db->getPrefix();
+				$prefix = $this->_db->getPrefix();
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
 
@@ -172,7 +174,7 @@ class group extends databaseObject {
 					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}				
 				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('$groupID', '$userID')";
-				$q = $this->db->query ($sql);
+				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
 				}
@@ -194,7 +196,7 @@ class group extends databaseObject {
 		$isInGroup = $this->isUserInGroup ($user); 
 		if (! isError ($isInGroup)) {
 			if ($isInGroup == true) {
-				$prefix = $this->db->getPrefix();
+				$prefix = $this->_db->getPrefix();
 				$groupID = $this->getID ();
 				$userID = $user->getID ();
 				if (! is_numeric ($groupID)) {
@@ -206,7 +208,7 @@ class group extends databaseObject {
 				}
 				
 				$sql = "DELETE FROM ".$prefix."group_users WHERE groupID='$groupID' AND userID='$userID'";
-				$q = $this->db->query ($sql);
+				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
 				}
@@ -242,13 +244,13 @@ class group extends databaseObject {
 	 * @return (int array)
 	*/
 	function getAllUsersID () {
-		$prefix = $this->db->getPrefix ();
+		$prefix = $this->_db->getPrefix ();
 		$groupID = $this->getID ();
 		$sql = "SELECT userID FROM ".$prefix."group_users WHERE groupID='$groupID'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allUsers = array ();
-			while ($row = $this->db->fetchArray ($q)) {
+			while ($row = $this->_db->fetchArray ($q)) {
 				$allUsers[] = $row['userID'];
 			}
 			return $allUsers;
@@ -285,7 +287,7 @@ class group extends databaseObject {
 	 * @return (string)
 	*/
 	function getGenericName () {
-		return $this->getOption ('genericName');
+		return $this->getFieldValue ('genericName');
 	}
 	
 	/**
@@ -295,7 +297,7 @@ class group extends databaseObject {
 	 * @return (string)
 	*/
 	function getGenericDescription () {
-		return $this->getOption ('genericDescription');
+		return $this->getOptionValue ('genericDescription');
 	}	
 	
 	/**
@@ -362,13 +364,13 @@ class group extends databaseObject {
 	 * @return (string array)
 	*/
 	function getAllTranslations () {
-		$fullTranslationTableName = $this->db->getPrefix ().'translatedGroups';
+		$fullTranslationTableName = $this->_db->getPrefix ().'translatedGroups';
 		$ID = $this->getID ();
 		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE groupID='$ID' ORDER BY languageCode ASC";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$lCodes = array ();
-			while ($row = $this->db->fetchArray ($q)) {
+			while ($row = $this->_db->fetchArray ($q)) {
 				$lCodes[] = $row['languageCode'];
 			}
 			return $lCodes;
@@ -408,7 +410,7 @@ class group extends databaseObject {
 	*/
 	function addTranslationToDatabase ($translatedGroup) {
 		if (! $this->existsTranslatedGroup ($translatedGroup->getLanguageCode ())) {
-			$translatedGroup->setOption ('groupID', $this->getID ());
+			$translatedGroup->setField ('groupID', $this->getID ());
 			return $translatedGroup->addToDatabase ();
 		} else {
 			return new Error ('GROUP_TRANSLATION_EXISTS', $translatedGroup->getLanguageCode ());

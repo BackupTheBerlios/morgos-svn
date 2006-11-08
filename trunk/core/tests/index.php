@@ -34,6 +34,7 @@ class MorgOSSuit extends TestSuite {
 		global $dbModule;
 		include_once ('core/varia.functions.php');
 		include_once ('core/databasemanager.functions.php');
+		include_once ('core/sqlwrapper.class.php');
 		$testerOptions = parse_ini_file ('core/tests/options.ini');
 		$dbModule = databaseLoadModule ($testerOptions['dbModule']);
 		if (isError ($dbModule)) {

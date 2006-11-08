@@ -203,7 +203,7 @@ function morgosBacktrace () {
 			echo '<td>'.$trace['line'].'</td>';
 			foreach ($trace['args'] as $arg) {
 				if (is_object ($arg)) {
-					echo '<td>'.$arg->getType ().'</td>';
+					//echo '<td>'.$arg->getType ().'</td>';
 				} elseif (is_array ($arg)) {
 					echo '<td>'.$arg.'</td>';
 				} else {
@@ -216,7 +216,7 @@ function morgosBacktrace () {
 	}
 	
 	echo '</table>';
-	exit;
+	//exit;
 }
 
 ?>

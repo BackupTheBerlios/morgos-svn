@@ -33,6 +33,7 @@ include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
 include_once ('core/varia.functions.php');
 include_once ('core/databasemanager.functions.php');
+include_once ('core/sqlwrapper.class.php');
 include_once ('core/i18n.class.php');
 include_once ('core/user/usermanager.class.php');
 include_once ('core/page/pagemanager.class.php');

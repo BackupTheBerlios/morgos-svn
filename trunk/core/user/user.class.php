@@ -30,15 +30,15 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class user extends databaseObject {
+class user extends DBTableObject {
 	/**
 	 * Constructor
 	 *
 	 * @param $db (object database) the database module
-	 * @param $allOptions (null array) an array with empty values. The keys are the extra options.
+	 * @param $extraFields (null array) an array with empty values. The keys are the extra options.
 	 * @param $parent (object)
 	*/
-	function user ($db, $allOptions, &$parent) {
+	function user ($db, $extraFields, &$parent) {
 		$login = new dbField ();
 		$login->name = 'login';
 		$login->type = 'varchar (255)';
@@ -50,8 +50,10 @@ class user extends databaseObject {
 		$pass = new dbField ();
 		$pass->name = 'password';
 		$pass->type = 'varchar (32)';
+		
+		$ID = new dbField ('userID', 'int (11)');
 	
-		parent::databaseObject ($db, $allOptions, array ('login'=>$login, 'email'=>$email, 'password'=>$pass), 'users', 'userID', $parent);
+		parent::databaseObject ($db, array ('userID'=>$ID, 'login'=>$login, 'email'=>$email, 'password'=>$pass), 'users', 'userID', $parent, $extraFields);
 	}
 	
 	/*Public initters*/
@@ -65,14 +67,14 @@ class user extends databaseObject {
 	*/
 	function initFromDatabaseLogin ($login) {
 		$fullTableName = $this->getFullTableName ();
-		$login = $this->db->escapeString ($login);
+		$login = $this->_db->escapeString ($login);
 		$sql = "SELECT * FROM ".$fullTableName." WHERE login='$login'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
-				$row = $this->db->fetchArray ($q);
+			if ($this->_db->numRows ($q) == 1) {
+				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setOption ('ID', $row[$this->getIDName ()]);
+				$this->setField ('ID', $row[$this->getIDName ()]);
 			} else {
 				return new Error ('USER_LOGIN_DONT_EXISTS', $login);
 			}
@@ -156,7 +158,7 @@ class user extends databaseObject {
 	 * @return (string)
 	 * @public
 	*/
-	function getLogin () { return $this->getOption ('login'); }
+	function getLogin () { return $this->getFieldValue ('login'); }
 	
 	/**
 	 * Returns the email of the user.
@@ -164,7 +166,7 @@ class user extends databaseObject {
 	 * @return (string)
 	 * @public
 	*/
-	function getEmail () { return $this->getOption ('email'); }
+	function getEmail () { return $this->getFieldValue ('email'); }
 	
 	/**
 	 * Gets all the groups where the user is in
@@ -173,13 +175,13 @@ class user extends databaseObject {
 	 * @return (object group array)
 	*/	
 	function getAllGroups () {
-		$prefix = $this->db->getPrefix ();
+		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
 		$sql = "SELECT groupID FROM {$prefix}group_users WHERE userID='$ID'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();
-			while ($row = $this->db->fetchArray ($q)) {
+			while ($row = $this->_db->fetchArray ($q)) {
 				$c = $this->getCreator ();
 				$g = $c->newGroup ();
 				$g->initFromDatabaseID ($row['groupID']);
@@ -197,7 +199,7 @@ class user extends databaseObject {
 	 * @param $password (string) Can be both md5-ed or plain
 	*/
 	function isValidPassword ($password) {
-		return (($this->getOption ('password') == $password) OR 
-			($this->getOption ('password') == md5 ($password))); 
+		return (($this->getFieldValue ('password') == $password) OR 
+			($this->getFieldValue ('password') == md5 ($password))); 
 	}
 }

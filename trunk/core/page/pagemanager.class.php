@@ -284,16 +284,16 @@ class pageManager {
 	function addOptionToPage ($newOption) {
 		$curOptions = $this->getAllOptionsForPage ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->name, $curOptions)) {
+			if (! array_key_exists ($newOption->getName (), $curOptions)) {
 				$newOption->canBeNull = true;
 				$r = $this->db->addNewField ($newOption, $this->db->prefix.'pages');
 				if (! isError ($r)) {
-					$this->allOptionsForPage[$newOption->name] = $newOption;
+					$this->allOptionsForPage[$newOption->getName ()] = $newOption;
 				} else {
 					return $r;
 				}
 			} else {
-				return new Error ('PAGEMANAGER_OPTION_FORPAGE_EXISTS', $newOption->name);
+				return new Error ('PAGEMANAGER_OPTION_FORPAGE_EXISTS', $newOption->getName ());
 			}
 		} else {
 			return $curOptions;
@@ -358,16 +358,16 @@ class pageManager {
 	function addOptionToTranslatedPage ($newOption) {
 		$curOptions = $this->getAllOptionsForTranslatedPage ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->name, $curOptions)) {
+			if (! array_key_exists ($newOption->getName (), $curOptions)) {
 				$newOption->canBeNull = true;
 				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedPages');
 				if (! isError ($r)) {
-					$this->allOptionsForTranslatedPage[$newOption->name] = $newOption;
+					$this->allOptionsForTranslatedPage[$newOption->getName ()] = $newOption;
 				} else {
 					return $r;
 				}
 			} else {
-				return new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS', $newOption->name);
+				return new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS', $newOption->getName ());
 			}
 		} else {
 			return $curOptions;

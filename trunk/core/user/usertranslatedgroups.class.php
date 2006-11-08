@@ -30,16 +30,16 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class translatedGroup extends databaseObject {
+class translatedGroup extends DBTableObject {
 
 	/**
 	 * Constructor.
 	 *
 	 * @param $db (dbModule)
-	 * @param $allExtraOptions (object dbField array)
+	 * @param $extraFields (object dbField array)
 	 * @param $creator (object)
 	*/
-	function translatedGroup ($db, $allExtraOptions, &$creator) {
+	function translatedGroup ($db, $extraFields, &$creator) {
 		$name = new dbField ();
 		$name->name = 'name';
 		$name->type = 'varchar (255)';
@@ -53,9 +53,10 @@ class translatedGroup extends databaseObject {
 		$groupID->type = 'int (11)';
 		$groupID->canBeNull = true;	
 		
-		$lCode = new dbField ('languageCode', 'varchar(5)');		
+		$lCode = new dbField ('languageCode', 'varchar(5)');
+		$ID = new dbField ('translatedGroupID', 'int (11)');	
 	
-		parent::databaseObject ($db, $allExtraOptions, array ('name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', $creator);
+		parent::databaseObject ($db, array ('translatedGroupID'=>$ID,'name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', $creator, $extraFields);
 	}
 
 	/**
@@ -69,15 +70,15 @@ class translatedGroup extends databaseObject {
 		if (! is_numeric ($groupID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_FAILED',__FILE__,__LINE__);
 		}
-		$languageCode = $this->db->escapeString ($lCode);
+		$languageCode = $this->_db->escapeString ($lCode);
 		$fullTableName = $this->getFullTableName ();
 		$sql = "SELECT * FROM $fullTableName WHERE $groupID='$groupID' AND languageCode='$languageCode'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			if ($this->db->numRows ($q) == 1) {
-				$row = $this->db->fetchArray ($q);
+			if ($this->_db->numRows ($q) == 1) {
+				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setOption ('ID', $row['translatedGroupID']);
+				$this->setField ('ID', $row['translatedGroupID']);
 			} else {
 				return new Error ('TRANSLATEDGROUP_CANTFIND_GROUP', $groupID, $languageCode);
 			}
@@ -91,25 +92,25 @@ class translatedGroup extends databaseObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getName () {return $this->getOption ('name');}
+	function getName () {return $this->getField ('name');}
 	/**
 	 * Returns the description.
 	 * @public
 	 * @return (string)
 	*/
-	function getDescription () {return $this->getOption ('description');}
+	function getDescription () {return $this->getField ('description');}
 	/**
 	 * Returns the language code.
 	 * @public
 	 * @return (string)
 	*/
-	function getLanguageCode () {return $this->getOption ('languageCode');}
+	function getLanguageCode () {return $this->getField ('languageCode');}
 	/**
 	 * Returns the groupID.
 	 * @public
 	 * @return (int)
 	*/
-	function getGroupID () {return $this->getOption ('groupID');}
+	function getGroupID () {return $this->getField ('groupID');}
 	
 	/**
 	 * Returns the group
