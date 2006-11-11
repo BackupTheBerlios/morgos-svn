@@ -50,7 +50,7 @@ class group extends DBTableObject {
 		
 		$ID = new dbField ('groupID', 'int (11)');
 		
-		parent::databaseObject ($db, array ('groupID'=>$ID, 'genericName'=>$genericName, 'genericDescription'=>$genericDescription), 'groups', 'groupID', $creator, $extraFields);
+		parent::DBTableObject ($db, array ('groupID'=>$ID, 'genericName'=>$genericName, 'genericDescription'=>$genericDescription), 'groups', 'groupID', $creator, $extraFields);
 	}
 	
 	/**

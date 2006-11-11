@@ -126,8 +126,8 @@ class oneToMultipleJoinField extends genericJoinField {
  * @since 0.3
  * @author Nathan Samson
 */
-class mulitpleToOneJoinField extends genericJoinField {
-	function mulitpleToOneJoinField ($name, $otherTable, $otherField, $dbField) {
+class multipleToOneJoinField extends genericJoinField {
+	function multipleToOneJoinField ($name, $otherTable, $otherField, $dbField) {
 		parent::genericJoinField ($name, $otherTable, $otherField, $dbField);
 	} 
 }
@@ -191,13 +191,13 @@ class WhereClause {
 	
 	function isValidOperator ($op) {
 		switch ($op) {
-			case '=':
-			case '>=':
-			case '<=':
-			case '>' :
-			case '<' :
-			case '<>':
-			case 'LIKE':
+			case '='      :
+			case '>='     :
+			case '<='     :
+			case '>'      :
+			case '<'      :
+			case '<>'     :
+			case 'LIKE'   :
 			case 'BETWEEN':
 				return true;
 			default:
@@ -259,7 +259,7 @@ class DBTableObject {
 	 * @param $extraFields (object option array) default array ()
 	 * @param $joins (object genericJoind array) default array ()
 	*/
-	function databaseObject (&$db, $basicFields, $tableName, $IDName, &$creator = null, 
+	function DBTableObject (&$db, $basicFields, $tableName, $IDName, &$creator = null, 
 			$extraFields = array (), $joins = array ()) {
 		$this->_db = &$db;
 		
@@ -284,7 +284,8 @@ class DBTableObject {
 	*/
 	function initFromDatabaseID ($ID) {
 		if (! is_numeric ($ID)) {
-			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__,__LINE__);
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
+				__FILE__,__LINE__);
 		}
 		$prefix = $this->_db->getPrefix ();
 		$tableName = $this->getTableName ();
@@ -325,7 +326,8 @@ class DBTableObject {
 			if (array_key_exists ($name, $array)) {
 				$this->setField ($name, $array[$name]);
 			} else {
-				if ((! $dbField->canBeNull) and ($dbField->getName () != $this->getIDName ())) {
+				if ((! $dbField->canBeNull) and 
+					($dbField->getName () != $this->getIDName ())) {
 					$this->initEmpty ();
 					return new Error ('DATABASEOBJECT_KEY_NOT_EXISTS', $name);
 				}
@@ -683,7 +685,8 @@ class DBTableObject {
 			$this->_basicFields[$e->getName ()] = $e;
 		}
 		if (! array_key_exists ($this->getIDName (), $this->_basicFields)) {
-			$this->_basicFields[$this->getIDName ()] = new dbField ($this->getIDName (), 'int (11)');
+			$this->_basicFields[$this->getIDName ()] = 
+				new dbField ($this->getIDName (), 'int (11)');
 		}
 	}
 	
@@ -747,7 +750,256 @@ class DBTableObject {
 			}
 		}
 	}
+}
 
+/**
+ * A class that can hold information about several tables that should be grouped.
+ * @since 0.3
+ * @author Nathan Samson
+*/
+class DBTableManager {
+	/**
+	 * An array of all the tables that this manages.
+	 * @private
+	*/
+	var $_tableList;
+	/**
+	 * A  multideminsional array for extra joinst for all tables
+	 * @private
+	*/
+	var $_extraJoinList;
+	/**
+	 * The DBModule
+	 * @protected
+	*/
+	var $_db;
+
+	/**
+	 * The constructor
+	 *
+	 * @params $db (object DBManager) 
+	 * @params $table (string)... The tablename (without prefix),
+	 * @params $object (string)... The object name
+	 *	Repeat this last 2 params for each table.
+	*/
+	function DBTableManager (&$db, $table, $object) {
+		$this->_db = &$db;
+		$this->_tableList = array ();
+		$this->_extraJoinList = array ();
+		for ($i = 1; $i<func_num_args (); $i=$i+2) {
+			$table = func_get_arg ($i);
+			$object = func_get_arg ($i+1);
+			$this->_tableList[$table] = $object;
+			$this->_extraJoinList[$table] = array ();
+		}
+	}
+
+	/**
+	 * Return all tables.
+	 *
+	 * @public
+	 * @return (string array)
+	*/
+	function getAllTables () {
+		$t = array ();
+		foreach ($this->_tableList as $tName=>$tClass) { 
+			$t[] = $tName;
+		}
+		return $t;
+	}
+	
+	/**
+	 * Install a table.
+	 *
+	 * @param $tableName (without prefix)
+	 * @public
+	*/
+	function installTable ($tableName) {
+		if ($this->managesTable ($tableName)) {		
+			$oName = $this->_tableList[$tableName];
+			$sql = 'CREATE TABLE '. $this->_db->getPrefix().$tableName . ' (';
+			$o = new $oName ($this->_db, $this);
+			foreach ($o->getAllFields () as $field) {
+				$sql .= $field->getName ().' '.$field->getType ();
+				if ($field->getName () == $o->getIDName ()) {
+					$sql .= ' auto_increment ';
+				}
+				if (! $field->canBeNull) {
+					$sql .= ' NOT NULL';
+				}
+				$sql .= ", \n";
+			}
+			$sql .= 'PRIMARY KEY ('.$o->getIDName ().')';
+			$sql .= ')';
+			$this->_db->query ($sql);
+		}
+	}
+	
+	/**
+	 * Install all tables
+	 * @public
+	*/
+	function installAllTables () {
+		foreach ($this->getAllTables () as $t) {
+			$this->installTable ($t);
+		}
+	}
+	
+	/**
+	 * Checks if all tables are installed.
+	 * @public
+	 * @return (bool)
+	*/
+	function isInstalled () {
+		foreach ($this->getAllTables () as $t) {
+			if (! $this->isTableInstalled ($t)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks if a table is installed.
+	 * @public
+	 * @param $tableName (string) the name of the table (with or without prefix)
+	 * @return (bool)
+	*/
+	function isTableInstalled ($tableName) {
+		return $this->_db->tableExists ($tableName);
+	}
+	
+	/**
+	 * Checks that this objects manages a table.
+	 *
+	 * @param $tName (string) table Name (Without prefix)
+	 * @public
+	 * @return (bool)
+	*/
+	function managesTable ($tName) {
+		return array_key_exists ($tName, $this->_tableList);
+	}
+	
+	/**
+	 * Returns a new object for a table.
+	 *
+	 * @param $tableName (string) The table name (Without prefix)
+	 * @public
+	 * @return (object DBTableObject)
+	*/
+	function createObject ($tableName) {
+		if ($this->managesTable ($tableName)) {
+			$oName = $this->_tableList[$tableName];
+			return new $oName ($this->_db, $this,
+				$this->getExtraFieldsForTable ($tableName));
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	} 
+	
+	/**
+	 * Adds an extra option for a table.
+	 *
+	 * @param $tableName (string) The table name
+	 * @param $newField (object dbField) The new field
+	 * @public
+	*/	
+	function addExtraFieldForTable ($tableName, $newField) {
+		if ($this->managesTable ($tableName)) {
+			$curFields = $this->getAllFieldsForTable ($tableName);
+			if (! isError ($curFields)) {
+				if (! array_key_exists ($newField->getName (), $curFields)) {
+					$newField->canBeNull = true;
+					$r = $this->_db->addNewField ($newField, 
+							$this->_db->prefix.$tableName);
+					if (isError ($r)) {
+						return $r;
+					}
+				} else {
+					return new Error ('TABLEMANAGER_OPTION_FORPAGE_EXISTS', 
+						$tableName, $newOption->getName ());
+				}
+			} else {
+				return $curOptions;
+			}			
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
+	
+	/**
+	 * Returns all extra fields for a table.
+	 *
+	 * @todo This function uses a quite hackish method, think of another.  
+	 * @param $tableName (string) The table name
+	 * @public
+	 * @return (array dbField) 
+	*/
+	function getExtraFieldsForTable ($tableName) {
+		if ($this->managesTable ($tableName)) {
+			$oName = $this->_tableList[$tableName];
+			$o = new $oName ($this->_db, $this);
+
+			$filter = array ();
+			foreach ($o->getBasicFields () as $fI) {
+				$filter[] = $fI->getName ();
+			}
+			return $this->_db->getAlldbFields (
+					$this->_db->getPrefix ().$tableName, $filter);		
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
+	
+	/**
+	 * Returns all fields for a table.
+	 *
+	 * @todo This function uses a quite hackish method, think of another.  
+	 * @param $tableName (string) The table name
+	 * @public
+	 * @return (array dbField) 
+	*/
+	function getAllFieldsForTable ($tableName) {
+		if ($this->managesTable ($tableName)) {
+			$oName = $this->_tableList[$tableName];
+			$o = new $oName ($this->_db, $this);
+
+			return $this->_db->getAlldbFields (
+					$this->_db->getPrefix ().$tableName);		
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
+	
+	/**
+	 * Returns all extra JoinFields for a table
+	 *  
+	 * @param $tableName (string) The table name
+	 * @public
+	 * @return (array dbGenericJoinField) 
+	*/
+	function getExtraJoinFieldsForTable ($tableName) {
+		if ($this->managesTable ($tableName)) {
+			return $this->_extraJoinList[$tableName];			
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
+	
+	/**
+	 * Adds an extra join field fot a table
+	 *
+	 * @param $tableName (string) The table name
+	 * @param $newJoin (genericDBJoinField) The newly added join
+	 * @public
+	*/
+	function addExtraJoinFieldForTable ($tableName, $newJoin) {
+		if ($this->managesTable ($tableName)) {
+			return $this->_extraJoinList[$tableName][] = $newJoin;			
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
 }
 
 ?>

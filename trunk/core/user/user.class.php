@@ -53,7 +53,7 @@ class user extends DBTableObject {
 		
 		$ID = new dbField ('userID', 'int (11)');
 	
-		parent::databaseObject ($db, array ('userID'=>$ID, 'login'=>$login, 'email'=>$email, 'password'=>$pass), 'users', 'userID', $parent, $extraFields);
+		parent::DBTableObject ($db, array ('userID'=>$ID, 'login'=>$login, 'email'=>$email, 'password'=>$pass), 'users', 'userID', $parent, $extraFields);
 	}
 	
 	/*Public initters*/

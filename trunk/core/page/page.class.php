@@ -57,7 +57,7 @@ class page extends DBTableObject {
 				$db->getPrefix ().'pages', 'parentPageID', $ID);
 		
 				
-		parent::databaseObject ($db, array ($ID, $name, $parentPageID, 
+		parent::DBTableObject ($db, array ($ID, $name, $parentPageID, 
 			$placeInMenu, $action, $pluginID), 
 			'pages', 'pageID', $parent, $allEFields, array ($translatedJoin, $childJoin));
 	}

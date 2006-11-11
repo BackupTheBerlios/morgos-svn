@@ -122,14 +122,12 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			$allFields = $this->getAllFields ($tableName);
 			$alldbFields = array ();
 			foreach ($allFields as $field) {
-				$dbField = new dbField ();
-				$dbField->name = $field['Field'];
-				$dbField->type = $field['Type'];
+				$dbField = new dbField ($field['Field'], $field['Type']);
 				if ($field['Null']) {
 					$dbField->canBeNull = true;
 				}
-				if (! in_array ($dbField->name, $filter)) {
-					$alldbFields[$dbField->name] = $dbField;
+				if (! in_array ($dbField->getName (), $filter)) {
+					$alldbFields[] = $dbField;
 				}
 			}
 			return $alldbFields;

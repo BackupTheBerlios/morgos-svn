@@ -50,7 +50,7 @@ class translatedPage extends DBTableObject {
 		$languageCode = new dbField ('languageCode', 'varchar(5)');	
 		$ID = new dbField ('translatedPageID', 'int (11)');
 		
-		parent::databaseObject ($db, array ('translatedPageID'=>$ID, 'translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent, $extraFields);
+		parent::DBTableObject ($db, array ('translatedPageID'=>$ID, 'translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent, $extraFields);
 	}
 	
 	/**

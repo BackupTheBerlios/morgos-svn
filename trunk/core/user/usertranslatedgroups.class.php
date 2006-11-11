@@ -56,7 +56,7 @@ class translatedGroup extends DBTableObject {
 		$lCode = new dbField ('languageCode', 'varchar(5)');
 		$ID = new dbField ('translatedGroupID', 'int (11)');	
 	
-		parent::databaseObject ($db, array ('translatedGroupID'=>$ID,'name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', $creator, $extraFields);
+		parent::DBTableObject ($db, array ('translatedGroupID'=>$ID,'name'=>$name, 'description'=>$description, 'groupID'=>$groupID, 'languageCode'=>$lCode), 'translatedGroups', 'translatedGroupID', $creator, $extraFields);
 	}
 
 	/**
