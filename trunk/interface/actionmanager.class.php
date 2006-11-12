@@ -83,7 +83,7 @@ class baseInput {
 		}
 	}
 	
-	function getName () { return $this->_name; }
+	function getName () { return $this->_name;}
 }
 
 /**
@@ -243,7 +243,7 @@ class MultipleInput extends baseInput {
 	
 	function getValue ($from) {
 		/*should be overriden*/
-		return true;
+		return new Error ('MULTIPLE_INPUT_HANDLER_GET_VALUE_NOT_IMPLEMENTED');
 	}
 
 	function getName () {return $this->_prefix;}
@@ -370,8 +370,8 @@ class action {
 	/**
 	 * Executes the action and returns it result.
 	 *
-	 * @param $params (mixed array) array with the parameters to use, 
-	 *	if empty use default source. (GET/POST)
+	 * @param $params (mixed array) array with the parameters to use, if empty use default source. 
+	 * 	(GET/POST)
 	 * @public
 	 * @return (mixed)
 	*/

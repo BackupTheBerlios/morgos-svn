@@ -27,8 +27,8 @@ class installerBasePlugin extends plugin {
 		parent::plugin ($dir);
 		$this->_name = 'Installer plugin';
 		$this->_ID = '{e29500ef-6cf9-45b9-9319-2c6937a1c1f8}';
-		$this->_minMorgOSVersion = '0.2';
-		$this->_maxMorgOSVersion = '0.2';
+		$this->_minMorgOSVersion = MORGOS_VERSION;
+		$this->_maxMorgOSVersion = MORGOS_VERSION;
 	}
 	
 	function load (&$pluginAPI) {
@@ -37,7 +37,6 @@ class installerBasePlugin extends plugin {
 		/*$this->_pluginAPI->getActionManager ()->addAction (
 			new action ('installerAskLanguage', 'GET',  
 				array (&$this, 'askLanguage'), array (), array ()));*/
-		
 		
 		$aM = &$this->_pluginAPI->getActionManager ();		
 		$aM->addAction (
