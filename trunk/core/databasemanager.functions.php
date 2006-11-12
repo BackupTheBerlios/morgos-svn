@@ -152,7 +152,7 @@ class databaseActions {
 	*/
 	function addNewField ($newField, $dbName) {
 		$name = $newField->getName ();
-		$type = $newField->getType ();
+		$type = $newField->getDBType ();
 		$sql = "ALTER TABLE $dbName ADD {$name} {$type}";
 		if (! $newField->canBeNull) {
 			$sql .= " NOT NULL";

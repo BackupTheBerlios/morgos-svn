@@ -27,6 +27,12 @@
 define ('ORDER_ASC', 'ASC');
 define ('ORDER_DESC', 'DESC');
 
+define ('DB_TYPE_STRING', 0);
+define ('DB_TYPE_INT', 1);
+define ('DB_TYPE_TEXT', 2);
+define ('DB_TYPE_ENUM', 3);
+//define ('DB_TYPE_STRING', 0);
+
 /**
  * A class that represents a field in some database
  *
@@ -38,21 +44,31 @@ class dbField {
 	var $_name;
 	var $_type;
 	var $_value;
+	var $_maxLength;
 	var $canBeNull;
 	
-	function dbField ($name = null, $type = null) {
+	function dbField ($name, $type, $maxLength = 0) {
 		$this->canBeNull = false;
 		$this->_type = $type;
 		$this->_name = $name;
 		$this->_value = null;
+		$this->_maxLength = $maxLength;
 	}	
 	
 	function setValue ($newValue) {
+	
+		if ($this->getMaxLength () != 0) {
+			if (strlen ($newValue) > $this->getMaxLength ()) {
+				return new Error ('MAX_LENGTH_EXCEEDED', $this->getName (),
+					$this->getMaxLength (), $newValue);
+			}
+		}	
+	
 		if ($newValue === null) {
 			$this->_value = null;			
-		} elseif ($this->getNonDBType () == 'string') {
+		} elseif ($this->getType () == DB_TYPE_STRING or $this->getType () == DB_TYPE_TEXT){
 			$this->_value = strval ($newValue);
-		} elseif ($this->getNonDBType () == 'int') {
+		} elseif ($this->getType () == DB_TYPE_INT) {
 			$this->_value = (int) ($newValue);
 		} else {
 			$this->_value = $newValue;
@@ -63,23 +79,50 @@ class dbField {
 		return $this->_value;
 	}
 	
-	function getNonDBType () {
-		if (substr ($this->getType (), 0, 3) == 'int') {
-			return 'int';
-		} else {
-			return 'string';
-		}
-	}
-	
 	function getName () {return $this->_name;}
 	
 	/**
-	 * Returns the raw db type of the field
+	 * Returns the type of the field
+	 *
+	 * @return (int) (sort of an enum) 
+	 * @since 0.3
+	*/
+	function getType () {return $this->_type;}
+	
+	/**
+	 * Returns the type of the field as is it used in the db
 	 *
 	 * @return (string) 
 	 * @since 0.3
 	*/
-	function getType () {return $this->_type;}	
+	function getDBType () {
+		switch ($this->getType ()) {
+			case DB_TYPE_INT:
+				if ($this->getMaxLength () != 0) {
+					return 'int ('.$this->getMaxLength ().')';
+				} else {
+					return 'int';
+				}
+			case DB_TYPE_STRING:
+				if ($this->getMaxLength () != 0) {
+					return 'varchar ('.$this->getMaxLength ().')';
+				} else {
+					return 'varchar';
+				}
+			case DB_TYPE_TEXT:
+				return 'text';
+			case DB_TYPE_ENUM:
+				return 'ENUM ()';
+		}
+	}
+	
+	/**
+	 * Returns the max length
+	 *
+	 * @return (int)
+	 * @since 0.3
+	*/	
+	function getMaxLength () {return $this->_maxLength;}
 	
 }
 
@@ -315,7 +358,6 @@ class DBTableObject {
 	*/
 	function initFromArray ($array) {
 		if (! is_array ($array)) {
-			var_dump ($array);
 			return new Error ('PAREMTER_WRONG_PARAMETER', $array);
 		}
 		$pVal = $this->getFieldValue ('ID');
@@ -686,7 +728,7 @@ class DBTableObject {
 		}
 		if (! array_key_exists ($this->getIDName (), $this->_basicFields)) {
 			$this->_basicFields[$this->getIDName ()] = 
-				new dbField ($this->getIDName (), 'int (11)');
+				new dbField ($this->getIDName (), DB_TYPE_INT, 11);
 		}
 	}
 	
@@ -777,9 +819,9 @@ class DBTableManager {
 	/**
 	 * The constructor
 	 *
-	 * @params $db (object DBManager) 
-	 * @params $table (string)... The tablename (without prefix),
-	 * @params $object (string)... The object name
+	 * @param $db (object DBManager) 
+	 * @param $table (string)... The tablename (without prefix),
+	 * @param $object (string)... The object name
 	 *	Repeat this last 2 params for each table.
 	*/
 	function DBTableManager (&$db, $table, $object) {
@@ -820,7 +862,7 @@ class DBTableManager {
 			$sql = 'CREATE TABLE '. $this->_db->getPrefix().$tableName . ' (';
 			$o = new $oName ($this->_db, $this);
 			foreach ($o->getAllFields () as $field) {
-				$sql .= $field->getName ().' '.$field->getType ();
+				$sql .= $field->getName ().' '.$field->getDBType ();
 				if ($field->getName () == $o->getIDName ()) {
 					$sql .= ' auto_increment ';
 				}
@@ -831,7 +873,7 @@ class DBTableManager {
 			}
 			$sql .= 'PRIMARY KEY ('.$o->getIDName ().')';
 			$sql .= ')';
-			$this->_db->query ($sql);
+			$a = $this->_db->query ($sql);
 		}
 	}
 	
@@ -920,7 +962,7 @@ class DBTableManager {
 						$tableName, $newOption->getName ());
 				}
 			} else {
-				return $curOptions;
+				return $curFields;
 			}			
 		} else {
 			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
@@ -944,6 +986,7 @@ class DBTableManager {
 			foreach ($o->getBasicFields () as $fI) {
 				$filter[] = $fI->getName ();
 			}
+			//var_dump ($filter);
 			return $this->_db->getAlldbFields (
 					$this->_db->getPrefix ().$tableName, $filter);		
 		} else {

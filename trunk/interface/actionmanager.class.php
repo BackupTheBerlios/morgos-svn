@@ -552,7 +552,7 @@ class actionManager {
 	/**
 	 * Adds an action
 	 * @param $action (object action)
-	 * @param $permission (string array) The permissions required to run the action
+	 * @param $permissions (string array) The permissions required to run the action
 	 * @public
 	*/
 	function addAction ($action, $permissions = array ()) {

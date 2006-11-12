@@ -121,16 +121,42 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		function getAlldbFields ($tableName, $filter = array ()) {
 			$allFields = $this->getAllFields ($tableName);
 			$alldbFields = array ();
-			foreach ($allFields as $field) {
-				$dbField = new dbField ($field['Field'], $field['Type']);
-				if ($field['Null']) {
-					$dbField->canBeNull = true;
+			if (! isError ($allFields)) {
+				foreach ($allFields as $field) {
+					$type = $field['Type'];
+					if (substr ($type, 0, 3) == 'int') {
+						$dbtype = DB_TYPE_INT;
+					} elseif (substr ($type, 0, 7) == 'varchar') {
+						$dbtype = DB_TYPE_STRING;
+					} elseif (substr ($type, 0,5) == 'text') {
+						$dbtype = DB_TYPE_TEXT;
+					} elseif (substr ($type, 0, 5) == 'enum') {
+						$dbtype = DB_TYPE_ENUM;
+					} else {
+						$dbtype = DB_TYPE_STRING;
+					}
+					
+					$maxSize = 0;
+					if ($dbtype != DB_TYPE_ENUM) {
+						if (strpos ($type, '(') and strpos ($type, '(')) {
+							$maxSize = substr ($type, strpos ($type, '(')+1, 
+								strpos ($type, ')')-strpos ($type, '(')-1); 
+						}
+					} 				
+	
+					$dbField = new dbField ($field['Field'], $dbtype, (int) $maxSize);
+					if ($field['Null']) {
+						$dbField->canBeNull = true;
+					}
+					if (! in_array ($dbField->getName (), $filter)) {
+						//var_dump ($dbField);
+						$alldbFields[] = $dbField;
+					}
 				}
-				if (! in_array ($dbField->getName (), $filter)) {
-					$alldbFields[] = $dbField;
-				}
+				return $alldbFields;
+			} else {
+				return $allFields;
 			}
-			return $alldbFields;
 		}
 		
 		function getAllTables () {

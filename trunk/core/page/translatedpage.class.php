@@ -36,7 +36,7 @@ class translatedPage extends DBTableObject {
 	 * Constructor
 	 *
 	 * @param $db (dbModule)
-	 * @param $extraOptions (object dbField array)
+	 * @param $extraFields (object dbField array)
 	 * @param $parent (object) the creator of this object (a pagemanager object)
 	*/
 	function translatedPage ($db, $extraFields, &$parent) {
