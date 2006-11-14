@@ -40,17 +40,10 @@ class group extends DBTableObject {
 	 * @param $creator (object)
 	*/
 	function group ($db, $extraFields, &$creator) {
-		$genericName = new dbField ();
-		$genericName->name = 'genericName';
-		$genericName->type = 'varchar (255)';
-
-		$genericDescription = new dbField ();
-		$genericDescription->name = 'genericDescription';
-		$genericDescription->type = 'text';
+		$genericName = new dbField ('genericName', DB_TYPE_STRING, 255);
+		$genericDescription = new dbField ('genericDescription', DB_TYPE_TEXT);
 		
-		$ID = new dbField ('groupID', 'int (11)');
-		
-		parent::DBTableObject ($db, array ('groupID'=>$ID, 'genericName'=>$genericName, 'genericDescription'=>$genericDescription), 'groups', 'groupID', $creator, $extraFields);
+		parent::DBTableObject ($db, array ($genericName, $genericDescription), 'groups', 'groupID', $creator, $extraFields);
 	}
 	
 	/**

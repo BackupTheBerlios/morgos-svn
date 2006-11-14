@@ -198,16 +198,16 @@ class userManager {
 	function addOptionToUser ($newOption) {
 		$curOptions = $this->getAllOptionsForUser ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->name, $curOptions)) {
+			if (! array_key_exists ($newOption->getName (), $curOptions)) {
 				$newOption->canBeNull = true;
 				$r = $this->db->addNewField ($newOption, $this->db->prefix.'users');
 				if (! isError ($r)) {
-					$this->allOptionsForUser[$newOption->name] = $newOption;
+					$this->allOptionsForUser[$newOption->getName ()] = $newOption;
 				} else {
 					return $r;
 				}
 			} else {
-				return new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', $newOption->name);
+				return new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', $newOption->getName ());
 			}
 		} else {
 			return $curOptions;
@@ -438,16 +438,16 @@ class userManager {
 	function addOptionToGroup ($newOption) {
 		$curOptions = $this->getAllOptionsForGroup ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->name, $curOptions)) {
+			if (! array_key_exists ($newOption->getName (), $curOptions)) {
 				$newOption->canBeNull = true;
 				$r = $this->db->addNewField ($newOption, $this->db->getPrefix().'groups');
 				if (! isError ($r)) {
-					$this->allOptionsForGroup[$newOption->name] = $newOption;
+					$this->allOptionsForGroup[$newOption->getName ()] = $newOption;
 				} else {
 					return $r;
 				}
 			} else {
-				return new Error ('USERMANAGER_OPTION_FORGROUP_EXISTS', $newOption->name);
+				return new Error ('USERMANAGER_OPTION_FORGROUP_EXISTS', $newOption->getName ());
 			}
 		} else {
 			return $curOptions;
@@ -576,16 +576,16 @@ class userManager {
 	function addOptionToTranslatedGroup ($newOption) {
 		$curOptions = $this->getAllOptionsForTranslatedGroup ();
 		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->name, $curOptions)) {
+			if (! array_key_exists ($newOption->getName (), $curOptions)) {
 				$newOption->canBeNull = true;
 				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedGroups');
 				if (! isError ($r)) {
-					$this->allOptionsForTranslatedGroup[$newOption->name] = $newOption;
+					$this->allOptionsForTranslatedGroup[$newOption->getName ()] = $newOption;
 				} else {
 					return $r;
 				}
 			} else {
-				return new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS', $newOption->name);
+				return new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS', $newOption->getName ());
 			}
 		} else {
 			return $curOptions;

@@ -100,20 +100,18 @@ class userManagerTest extends TestCase {
 	}
 	
 	function testAddOptionForUser () {
-		$preName = new dbField ();
-		$preName->name = 'preName';
-		$preName->type = 'varchar(255)';
+		$firstName = new dbField ('firstName', DB_TYPE_STRING, 255);
 		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
-		$preName2 = $preName;
-		$preName2->canBeNull = true;
-		$oldAllOptions['preName'] = $preName2;
-		$r = $this->userManager->addOptionToUser ($preName);
+		$firstName2 = $firstName;
+		$firstNale2->canBeNull = true;
+		$oldAllOptions['firstName'] = $firstName2;
+		$r = $this->userManager->addOptionToUser ($firstName);
 		$this->assertFalse (isError ($r), 'Unexpectd error');
 		$newAllOptions = $this->userManager->getAllOptionsForUser ();
 		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
 		
-		$r = $this->userManager->addOptionToUser ($preName);
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', 'preName'), $r);
+		$r = $this->userManager->addOptionToUser ($firstName);
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', 'firstName'), $r);
 		
 		/*Hack to clean allOptionsForUser cache*/
 		$this->userManager->allOptionsForUser = null;
@@ -123,14 +121,14 @@ class userManagerTest extends TestCase {
 	
 	function testRemoveOptionForUser () {
 		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
-		unset ($oldAllOptions['preName']);
-		$r = $this->userManager->removeOptionToUser ('preName');
+		unset ($oldAllOptions['firstName']);
+		$r = $this->userManager->removeOptionToUser ('firstName');
 		$this->assertEquals (null, $r);
 		$newAllOptions = $this->userManager->getAllOptionsForUser ();
 		$this->assertEquals ($oldAllOptions, $newAllOptions);
 
 		$r = $this->userManager->removeOptionToUser ('preName');
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_DONT_EXISTS', 'preName'), $r);
+		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_DONT_EXISTS', 'firstName'), $r);
 	}
 	
 	function testGetAllUsers () {
@@ -206,9 +204,7 @@ class userManagerTest extends TestCase {
 	
 	function testAddGroupOption () {
 		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Options are not empty');
-		$anOption = new dbField ();
-		$anOption->name = 'anOption';
-		$anOption->type = 'varchar(255)';
+		$anOption = new dbField ('anOption', DB_TYPE_STRING);
 		$anOption2 = $anOption;
 		$anOption2->canBeNull = true;
 		$r = $this->userManager->addOptionToGroup ($anOption);
@@ -400,9 +396,7 @@ class userManagerTest extends TestCase {
 	
 	function testAddTranslatedGroupOption () {
 		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Options are not empty');
-		$anOption = new dbField ();
-		$anOption->name = 'anOption';
-		$anOption->type = 'varchar(255)';
+		$anOption = new dbField ('anOption', DB_TYPE_STRING, 255);
 		$anOption2 = $anOption;
 		$anOption2->canBeNull = true;
 		$r = $this->userManager->addOptionToTranslatedGroup ($anOption);

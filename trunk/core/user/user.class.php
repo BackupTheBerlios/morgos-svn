@@ -39,21 +39,11 @@ class user extends DBTableObject {
 	 * @param $parent (object)
 	*/
 	function user ($db, $extraFields, &$parent) {
-		$login = new dbField ();
-		$login->name = 'login';
-		$login->type = 'varchar (255)';
+		$login = new dbField ('login', DB_TYPE_STRING, 255);
+		$email = new dbField ('email', DB_TYPE_STRING, 255);
+		$pass = new dbField ('password', DB_TYPE_STRING, 32); // md5ied
 	
-		$email = new dbField ();
-		$email->name = 'email';
-		$email->type = 'varchar (255)';
-		
-		$pass = new dbField ();
-		$pass->name = 'password';
-		$pass->type = 'varchar (32)';
-		
-		$ID = new dbField ('userID', 'int (11)');
-	
-		parent::DBTableObject ($db, array ('userID'=>$ID, 'login'=>$login, 'email'=>$email, 'password'=>$pass), 'users', 'userID', $parent, $extraFields);
+		parent::DBTableObject ($db, array ($login, $email, $pass), 'users', 'userID', $parent, $extraFields);
 	}
 	
 	/*Public initters*/
