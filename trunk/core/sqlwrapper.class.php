@@ -940,6 +940,46 @@ class DBTableManager {
 	} 
 	
 	/**
+	 * Adds a new row to the table.
+	 *
+	 * @param $newRow (object dbField)
+	 * @param $tableName (string) Guess what this is?
+	*/	
+	function addRowToTable ($newRow, $tableName) {
+		if ($this->managesTable ($tableName)) {
+			return $newRow->addToDatabase ();
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
+	
+	/**
+	 * Returns all  rows for a table.
+	 *
+	 * @param $tableName (string)
+	*/
+	function getAllRowsFromTable ($tableName) {
+		if ($this->managesTable ($tableName)) {
+			$prefix = $this->_db->getPrefix ();
+			$SQL = "SELECT * FROM {$prefix}{$tableName}";
+			$q = $this->_db->query ($SQL);
+			if (! isError ($q)) {
+				$rows = array ();
+				while ($row = $this->_db->fetchArray ($q)) {
+					$rowObject = $this->createObject ($tableName);
+					$rowObject->initFromArray ($row);
+					$rows[] = $rowObject;
+				}
+				return $rows;
+			} else {
+				return $q;
+			}
+		} else {
+			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
+		}
+	}
+	
+	/**
 	 * Adds an extra option for a table.
 	 *
 	 * @param $tableName (string) The table name

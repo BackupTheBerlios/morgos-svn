@@ -16,13 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 
-class calendarGroup extends databaseObject {
+class calendarGroup extends DBTableObject {
 
 	function calendarGroup (&$db, $extraOptions, &$creator) {
 		$name = new dbField ('name', 'string');
 		$color = new dbField ('color', 'string');
 	
-		parent::databaseObject ($db, $extraOptions, 
+		parent::DBTableObject ($db, $extraOptions, 
 			array ('name'=>$name, 'color'=>$color),
 			'calendarGroup', 'groupID', $creator);
 	}
@@ -37,7 +37,7 @@ class calendarGroup extends databaseObject {
  * @since 0.2
  * @author Nathan Samson
 */
-class calendarEvent extends databaseObject {
+class calendarEvent extends DBTableObject {
 		
 	function calendarEvent (&$db, $extraOptions, &$creator) {
 		$name = new dbField ('name', 'string');
@@ -46,7 +46,7 @@ class calendarEvent extends databaseObject {
 		$desc = new dbField ('description', 'text');	
 		$group = new dbField ('groupID', 'int');	
 	
-		parent::databaseObject ($db, $extraOptions, 
+		parent::DBTableObject ($db, $extraOptions, 
 			array ('name'=>$name, 'start'=>$start, 'end'=>$end, 'description'=>$desc, 'groupID'=>$group),
 			'calendar', 'eventID', $creator);
 	}

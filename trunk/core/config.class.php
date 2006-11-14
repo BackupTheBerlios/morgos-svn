@@ -354,7 +354,6 @@ class configurator {
 		if ($this->existsItem ($option->getName ())) {
 			$fullName = '/'.$option->getType () . $option->getName ();
 			unset ($this->allConfigItems[$fullName]);
-			print_r ($this->allConfigItems);
 		} else {
 			return new Error ('CONFIGURATOR_OPTION_DOESNT_EXISTS', $option->getName ());
 		}
