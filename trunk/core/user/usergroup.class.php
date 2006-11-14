@@ -30,16 +30,17 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class group extends DBTableObject {
+class UserGroup extends DBTableObject {
 	
 	/**
 	 * Constructor
 	 *
 	 * @param $db (object database) the database module
-	 * @param $extraFields (dbField array) an array with empty values. The keys are the extra options.
 	 * @param $creator (object)
+	 * @param $extraFields (dbField array)
+	 * @param $extraJoins (dbGenericJoinField array)
 	*/
-	function group ($db, $extraFields, &$creator) {
+	function UserGroup ($db, &$creator, $extraFields = array (), $extraJoins = array ()) {
 		$genericName = new dbField ('genericName', DB_TYPE_STRING, 255);
 		$genericDescription = new dbField ('genericDescription', DB_TYPE_TEXT);
 		

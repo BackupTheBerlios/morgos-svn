@@ -30,15 +30,16 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class user extends DBTableObject {
+class User extends DBTableObject {
 	/**
 	 * Constructor
 	 *
 	 * @param $db (object database) the database module
-	 * @param $extraFields (null array) an array with empty values. The keys are the extra options.
 	 * @param $parent (object)
+	 * @param $extraFields (dbField array) an array with extra fields
+	 * @param $extraJoins (dbGenericJoinField array) an array with extra joins
 	*/
-	function user ($db, $extraFields, &$parent) {
+	function User ($db, &$parent, $extraFields = array ()) {
 		$login = new dbField ('login', DB_TYPE_STRING, 255);
 		$email = new dbField ('email', DB_TYPE_STRING, 255);
 		$pass = new dbField ('password', DB_TYPE_STRING, 32); // md5ied

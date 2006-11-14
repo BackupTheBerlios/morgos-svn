@@ -99,38 +99,6 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (new Error ('USERMANAGER_EMAIL_EXISTS', 'ANOTHEREMAIL'), $result);
 	}
 	
-	function testAddOptionForUser () {
-		$firstName = new dbField ('firstName', DB_TYPE_STRING, 255);
-		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
-		$firstName2 = $firstName;
-		$firstNale2->canBeNull = true;
-		$oldAllOptions['firstName'] = $firstName2;
-		$r = $this->userManager->addOptionToUser ($firstName);
-		$this->assertFalse (isError ($r), 'Unexpectd error');
-		$newAllOptions = $this->userManager->getAllOptionsForUser ();
-		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
-		
-		$r = $this->userManager->addOptionToUser ($firstName);
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_EXISTS', 'firstName'), $r);
-		
-		/*Hack to clean allOptionsForUser cache*/
-		$this->userManager->allOptionsForUser = null;
-		$newAllOptions = $this->userManager->getAllOptionsForUser ();
-		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
-	}
-	
-	function testRemoveOptionForUser () {
-		$oldAllOptions = $this->userManager->getAllOptionsForUser ();
-		unset ($oldAllOptions['firstName']);
-		$r = $this->userManager->removeOptionToUser ('firstName');
-		$this->assertEquals (null, $r);
-		$newAllOptions = $this->userManager->getAllOptionsForUser ();
-		$this->assertEquals ($oldAllOptions, $newAllOptions);
-
-		$r = $this->userManager->removeOptionToUser ('preName');
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORUSER_DONT_EXISTS', 'firstName'), $r);
-	}
-	
 	function testGetAllUsers () {
 		// We can not test getAllUsersID but this test depends on it.
 		$allUsers = $this->userManager->getAllUsers ();
@@ -200,33 +168,6 @@ class userManagerTest extends TestCase {
 		$result = $this->userManager->removeGroupFromDatabase ($group);
 		$this->assertFalse (isError ($result), "An unexpected error is returnd");
 		$this->assertFalse ($this->userManager->isGroupNameRegistered ('aGroup'), "group is not deleted");
-	}
-	
-	function testAddGroupOption () {
-		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Options are not empty');
-		$anOption = new dbField ('anOption', DB_TYPE_STRING);
-		$anOption2 = $anOption;
-		$anOption2->canBeNull = true;
-		$r = $this->userManager->addOptionToGroup ($anOption);
-		$oldAllOptions = $this->userManager->getAllOptionsForGroup ();
-		$oldAllOptions['anOption'] = $anOption2;
-		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals ($oldAllOptions, $this->userManager->getAllOptionsForGroup (), 'Not added');
-		$r = $this->userManager->addOptionToGroup ($anOption);
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORGROUP_EXISTS', 'anOption'), $r, 'Wrong error returned');
-		
-		/*Hack to clean allOptionsForGroup cache*/
-		$this->userManager->allOptionsForGroup = null;
-		$newAllOptions = $this->userManager->getAllOptionsForGroup ();
-		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
-	}
-	
-	function testRemoveGroupOption () {
-		$r = $this->userManager->removeOptionFromGroup ('anOption');
-		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals (array (), $this->userManager->getAllOptionsForGroup (), 'Not removed');
-		$r = $this->userManager->removeOptionFromGroup ('anOption');
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORGROUP_DONT_EXISTS', 'anOption'), $r, 'Wrong error returned');
 	}
 	
 	function testGetAllGroups () {
@@ -349,10 +290,6 @@ class userManagerTest extends TestCase {
 		$gNL_BE = $group->getTranslation ('NL-BE'); // doesn't exists, NL exists
 		$this->assertFalse (isError ($gNL_BE));
 		$this->assertEquals ('NL', $gNL_BE->getName ());
-		
-		$gFR_BE = $group->getTranslation ('FR-BE'); // doesn't exists, FR-FR exists
-		$this->assertFalse (isError ($gFR_BE), 'Unexpected error?');
-		$this->assertEquals ('NL', $gNL_BE->getName ());
 	}	
 	
 	function testGetAllTranslations () {
@@ -392,33 +329,6 @@ class userManagerTest extends TestCase {
 		
 		$r = $group->removeTranslationFromDatabase ($groupFR_BE);	
 		$this->assertEquals (new Error ('GROUP_TRANSLATION_DOESNT_EXISTS', 'FR-BE'), $r);
-	}
-	
-	function testAddTranslatedGroupOption () {
-		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Options are not empty');
-		$anOption = new dbField ('anOption', DB_TYPE_STRING, 255);
-		$anOption2 = $anOption;
-		$anOption2->canBeNull = true;
-		$r = $this->userManager->addOptionToTranslatedGroup ($anOption);
-		$oldAllOptions = $this->userManager->getAllOptionsForTranslatedGroup ();
-		$oldAllOptions['anOption'] = $anOption2;
-		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals ($oldAllOptions, $this->userManager->getAllOptionsForTranslatedGroup (), 'Not added');
-		$r = $this->userManager->addOptionToTranslatedGroup ($anOption);
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_EXISTS', 'anOption'), $r, 'Wrong error returned');
-		
-		/*Hack to clean allOptionsForGroup cache*/
-		$this->userManager->allOptionsForTranslatedGroup = null;
-		$newAllOptions = $this->userManager->getAllOptionsForTranslatedGroup ();
-		$this->assertEquals ($oldAllOptions, $newAllOptions, 'Wrong options returned');
-	}
-	
-	function testTranslatedGroupOption () {
-		$r = $this->userManager->removeOptionFromTranslatedGroup ('anOption');
-		$this->assertFalse (isError ($r), 'Unexpected error');
-		$this->assertEquals (array (), $this->userManager->getAllOptionsForTranslatedGroup (), 'Not removed');
-		$r = $this->userManager->removeOptionFromTranslatedGroup ('anOption');
-		$this->assertEquals (new Error ('USERMANAGER_OPTION_FORTRANSLATEDGROUP_DONT_EXISTS', 'anOption'), $r, 'Wrong error returned');
 	}
 }
 ?>

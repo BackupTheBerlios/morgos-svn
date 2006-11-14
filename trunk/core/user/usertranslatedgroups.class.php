@@ -30,16 +30,17 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class translatedGroup extends DBTableObject {
+class UserTranslatedGroup extends DBTableObject {
 
 	/**
 	 * Constructor.
 	 *
 	 * @param $db (dbModule)
-	 * @param $extraFields (object dbField array)
 	 * @param $creator (object)
+	 * @param $extraFields (object dbField array)
+	 * @param $extraJoins (object genericJoinField array)
 	*/
-	function translatedGroup ($db, $extraFields, &$creator) {
+	function UserTranslatedGroup ($db, &$creator, $extraFields = array (), $extraJoins = array ()) {
 		$name = new dbField ('name', DB_TYPE_STRING, 255);
 		$description = new dbField ('description', DB_TYPE_TEXT);
 		$groupID = new dbField ('groupID', DB_TYPE_INT);
