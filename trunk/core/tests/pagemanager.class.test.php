@@ -79,29 +79,19 @@ class pageManagerTest extends TestCase {
 		$packages->initFromName ('Packages');	
 		
 		$siteMenu = $this->pageManager->getMenu ($root);
-		/*var_dump ($siteMenu == array ($home, $news, $development, $packages));
+
 		
-		foreach (array ($home, $news, $development, $packages) as $k=>$i) {
-			if ($i != $siteMenu[$k]) {
-				var_dump ($i);
-				
-				var_dump ($siteMenu[$k]);
-			} else {
-				echo 'OK';
-			}
-		}	*/		
-			
-		$this->assertEquals (array ($home, $news, $development, $packages), $siteMenu, 
-			'Wronge menu order');
+		$this->assertEquals (array ($home, $news, $development, $packages), $siteMenu);
 		$appendPage = $this->pageManager->newPage ();
 		$array = array ();
 		$array['name'] = 'lastPage';
 		$array['parentPageID'] = $root->getID ();
 		$a = $appendPage->initFromArray ($array);
 		$r = $this->pageManager->addPageToDatabase ($appendPage);
-		//$this->assertFalse (isError ($r), 'Unexpected error');
-		$siteMenu = $this->pageManager->getMenu ($root);	
+		$this->assertFalse (isError ($r), 'Unexpected error');
+		$siteMenu = $this->pageManager->getMenu ($root);
 		$this->assertEquals (5, $appendPage->getPlaceInMenu ());
+
 		$this->assertEquals (array ($home, $news, $development, $packages, $appendPage), 
 			$siteMenu, 'Wronge menu order');
 		

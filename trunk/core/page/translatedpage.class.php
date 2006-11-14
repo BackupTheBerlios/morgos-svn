@@ -41,15 +41,15 @@ class TranslatedPage extends DBTableObject {
 	 * @param $extraFields (object dbGenericJoinField array)
 	*/
 	function TranslatedPage ($db, &$parent, $extraFields = array (), $extraJoins = array ()) {
-		$translatedTitle = new dbField ('translatedTitle', 'varchar(255)');
-		$translatedNavTitle = new dbField ('translatedNavTitle', 'varchar(255)');
+		$translatedTitle = new dbField ('translatedTitle', DB_TYPE_STRING, 255);
+		$translatedNavTitle = new dbField ('translatedNavTitle', DB_TYPE_STRING, 255);
 		$translatedNavTitle->canBeNull = true;
-		$translatedContent = new dbField ('translatedContent', 'varchar(255)');
+		$translatedContent = new dbField ('translatedContent', DB_TYPE_STRING, 255);
 		$translatedContent->canBeNull = true;		
-		$pageID = new dbField ('pageID', 'int(11)');
+		$pageID = new dbField ('pageID', DB_TYPE_INT, 11);
 		$pageID->canBeNull = true;
-		$languageCode = new dbField ('languageCode', 'varchar(5)');	
-		$ID = new dbField ('translatedPageID', 'int (11)');
+		$languageCode = new dbField ('languageCode', DB_TYPE_STRING, 5);	
+		$ID = new dbField ('translatedPageID', DB_TYPE_INT, 11);
 		
 		parent::DBTableObject ($db, array ('translatedPageID'=>$ID, 'translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent, $extraFields);
 	}
@@ -95,7 +95,7 @@ class TranslatedPage extends DBTableObject {
 	 * @return (string)
 	*/
 	function getNavTitle () {
-		if ($this->getField ('translatedNavTitle')) {
+		if ($this->getFieldValue ('translatedNavTitle')) {
 			return $this->getFieldValue ('translatedNavTitle');
 		} else {
 			return $this->getFieldValue ('translatedTitle');

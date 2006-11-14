@@ -48,10 +48,14 @@ class dbField {
 	var $canBeNull;
 	
 	function dbField ($name, $type, $maxLength = 0) {
+		if (! $this->isValidDBType ($type)) {
+			var_dump (new Error ('INVALID_DB_TYPE', $type));
+			die ();
+		}
 		$this->canBeNull = false;
 		$this->_type = $type;
 		$this->_name = $name;
-		$this->_value = null;
+		$this->setValue (null);
 		$this->_maxLength = $maxLength;
 	}	
 	
@@ -65,13 +69,19 @@ class dbField {
 		}	
 	
 		if ($newValue === null) {
-			$this->_value = null;			
-		} elseif ($this->getType () == DB_TYPE_STRING or $this->getType () == DB_TYPE_TEXT){
+			$this->setValue (''); 			
+		} elseif ($this->getType () == DB_TYPE_STRING or 
+				$this->getType () == DB_TYPE_TEXT){
 			$this->_value = strval ($newValue);
 		} elseif ($this->getType () == DB_TYPE_INT) {
 			$this->_value = (int) ($newValue);
 		} else {
 			$this->_value = $newValue;
+		}
+		
+		if ($this->_value === null) {
+			morgosBacktrace ();
+			die ("Someone nulliefied");
 		}
 	}
 	
@@ -123,6 +133,11 @@ class dbField {
 	 * @since 0.3
 	*/	
 	function getMaxLength () {return $this->_maxLength;}
+	
+	function isValidDBType ($t) {
+		return ($t === DB_TYPE_INT or $t === DB_TYPE_STRING or 
+			   $t === DB_TYPE_TEXT or $t === DB_TYPE_ENUM); 
+	}
 	
 }
 
@@ -441,7 +456,8 @@ class DBTableObject {
 	/**
 	 * Updates all values from an array.
 	 *
-	 * @param $array (mixed array) The keys are the fields names, values are the new values.
+	 * @param $array (mixed array) The keys are the fields names, 
+	 *  values are the new values.
 	 * @public
 	*/
 	function updateFromArray ($array) {
@@ -674,7 +690,9 @@ class DBTableObject {
 	 * @protected
 	 * @return (string)
 	*/
-	function getFullTableName () {return $this->_db->getPrefix () . $this->getTableName ();}
+	function getFullTableName () {
+		return $this->_db->getPrefix ().$this->getTableName ();
+	}
 	
 	/**
 	 * Set the creator of the object.

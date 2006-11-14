@@ -41,26 +41,27 @@ class Page extends DBTableObject {
 	 * @param $allEJoins (dbGenericJoin array) all extra joins
 	*/	
 	function Page ($db, &$parent, $allEFields = array (), $allEJoins = array ()) {
-		$name = new dbField ('name', 'varchar (255)');
-		$parentPageID = new dbField ('parentPageID', 'int(11)');
-		$placeInMenu = new dbField ('placeInMenu', 'int(4)');
+		$name = new dbField ('name', DB_TYPE_STRING, 255);
+		$parentPageID = new dbField ('parentPageID', DB_TYPE_INT, 11);
+		$placeInMenu = new dbField ('placeInMenu', DB_TYPE_INT, 4);
 		$placeInMenu->canBeNull = true;
-		$action = new dbField ('action', 'varchar(255)');
+		$action = new dbField ('action', DB_TYPE_STRING, 255);
 		$action->canBeNull = true;
-		$pluginID = new dbField ('pluginID', 'varchar(36)');
+		$pluginID = new dbField ('pluginID', DB_TYPE_STRING, 36);
 		$pluginID->canBeNull = true;
-		$ID = new dbField ('pageID', 'int (11)');
+		$ID = new dbField ('pageID', DB_TYPE_INT, 11);
 		
 		$translatedJoin = new oneToMultipleJoinField ('translatedPages', 
 				$db->getPrefix ().'translatedPages', 'pageID', $ID);
 				
-		$childJoin = new oneToMultipleJoinField ('childPages', 'int(11)', 
+		$childJoin = new oneToMultipleJoinField ('childPages', 
 				$db->getPrefix ().'pages', 'parentPageID', $ID);
 		
 				
 		parent::DBTableObject ($db, array ($ID, $name, $parentPageID, 
 			$placeInMenu, $action, $pluginID), 
-			'pages', 'pageID', $parent, $allEFields, array ($translatedJoin, $childJoin));
+			'pages', 'pageID', $parent, $allEFields, 
+			array ($translatedJoin, $childJoin));
 	}
 
 	/**
@@ -289,6 +290,11 @@ class Page extends DBTableObject {
 		} else {
 			return $a;
 		}
+	}
+	
+	function initEmpty () {
+		parent::initEmpty ();
+		$this->setField ('placeInMenu', -1);
 	}
 }
 ?>

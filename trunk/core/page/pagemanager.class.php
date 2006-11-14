@@ -72,7 +72,7 @@ class PageManager extends DBTableManager {
 	
 		if ($page->getPlaceInMenu () === 0) {
 			// do nothing, everything should be OK
-		} elseif ($page->getPlaceInMenu () === null) {
+		} elseif ($page->getPlaceInMenu () === -1) {
 			$parentPage = $page->getParentPage ();
 			$pInMen = $parentPage->getMaxPlaceInMenu ();
 			if (! isError ($pInMen)) {
@@ -94,7 +94,6 @@ class PageManager extends DBTableManager {
 				return $q;
 			}
 		}
-		
 		return $page->addToDatabase ();
 	}
 	
