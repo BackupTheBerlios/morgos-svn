@@ -37,36 +37,17 @@ include_once ('core/page/translatedpage.class.php');
  *
  * @ingroup page
  * @since 0.2
+ * @since 0.3 its derived from DBTableManager
  * @author Nathan Samson
 */
-class pageManager {
-	/**
-	 * The database module.
-	 * @private
-	*/
-	var $db;
-	
-	/**
-	 * Cached array for options for a page
-	 * @private
-	*/
-	var $allOptionsForPage;
-	
-	/**
-	 * Cached array for options for a translated page
-	 * @private
-	*/
-	var $allOptionsForTranslatedPage;
-
+class PageManager extends DBTableManager {
 	/**
 	 * Constructor
 	 *
 	 * @param $db (obejct dbModule)
 	*/
-	function pageManager ($db) {
-		$this->db = $db;
-		$this->allOptionsForPage = null;
-		$this->allOptionsForTranslatedPage = null;
+	function PageManager ($db) {
+		parent::DBTableManager ($db, 'pages', 'Page', 'translatedPages', 'TranslatedPage');
 	}
 	
 	/**
@@ -106,9 +87,9 @@ class pageManager {
 			if (! is_numeric ($place)) {
 				return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 			}
-			$pagesTableName = $this->db->getPrefix ().'pages';
+			$pagesTableName = $this->_db->getPrefix ().'pages';
 			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu>=$place AND parentPageID='$parentPageID'";
-			$q = $this->db->query ($sql);
+			$q = $this->_db->query ($sql);
 			if (isError ($q)) {
 				return $q;
 			}
@@ -127,17 +108,17 @@ class pageManager {
 		$page = $this->newPage ();
 		$r = $page->initFromDatabaseID ($pageID);
 		if (! isError ($r)) {
-			$pagesTableName = $this->db->getPrefix ().'pages';
+			$pagesTableName = $this->_db->getPrefix ().'pages';
 			$placeInMenu = $page->getPlaceInMenu ();
 			$ppID = $page->getParentPageID ();
 			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=($placeInMenu)-1 AND placeInMenu>0 AND parentPageID='$ppID'";
-			$a = $this->db->query ($sql);
+			$a = $this->_db->query ($sql);
 			if (isError ($a)) {
 				return $a;
 			}
 			
 			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)-1 WHERE pageID=\''.$page->getID ().'\' AND placeInMenu>1';
-			$a = $this->db->query ($sql);
+			$a = $this->_db->query ($sql);
 			if (isError ($a)) {
 				return $a;
 			}
@@ -156,19 +137,19 @@ class pageManager {
 		$page = $this->newPage ();
 		$r = $page->initFromDatabaseID ($pageID);
 		if (! isError ($r)) {
-			$pagesTableName = $this->db->getPrefix ().'pages';
+			$pagesTableName = $this->_db->getPrefix ().'pages';
 			$placeInMenu = $page->getPlaceInMenu ();
 			$ppID = $page->getParentPageID ();
 			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)-1 WHERE placeInMenu=($placeInMenu)+1 AND parentPageID='$ppID'";
-			$a = $this->db->query ($sql);
+			$a = $this->_db->query ($sql);
 			if (isError ($a)) {
 				return $a;
 			}
 			
 			// check their was a menu item down the one to be moved
-			if ($this->db->affectedRows ($a) !== 0) {
+			if ($this->_db->affectedRows ($a) !== 0) {
 				$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)+1 WHERE pageID=\''.$page->getID ().'\'';
-				$a = $this->db->query ($sql);
+				$a = $this->_db->query ($sql);
 				if (isError ($a)) {
 					return $a;
 				}
@@ -192,7 +173,7 @@ class pageManager {
 		}
 		
 		$placeInMenu = $page->getPlaceInMenu ();
-		$pagesDatabaseName = $this->db->getPrefix ().'pages';
+		$pagesDatabaseName = $this->_db->getPrefix ().'pages';
 		$parentPageID = $page->getParentPageID ();
 		if (! is_numeric ($placeInMenu)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
@@ -201,7 +182,7 @@ class pageManager {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		$sql = "UPDATE $pagesDatabaseName SET placeInMenu=(placeInMenu-1) WHERE placeInMenu>=$placeInMenu AND parentPageID='$parentPageID'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			return $page->removeFromDatabase ();
 		} else {
@@ -216,7 +197,7 @@ class pageManager {
 	 * @return (object page)
 	*/
 	function newPage () {
-		return new page ($this->db, $this->getAllOptionsForPage (), $this);
+		return $this->createObject ('pages');
 	}
 	
 	/**
@@ -227,12 +208,12 @@ class pageManager {
 	 * @return (bool)
 	*/
 	function pageExists ($pageName) {
-		$fullPagesTableName = $this->db->getPrefix ().'pages';
-		$pageName = $this->db->escapeString ($pageName);
+		$fullPagesTableName = $this->_db->getPrefix ().'pages';
+		$pageName = $this->_db->escapeString ($pageName);
 		$sql = "SELECT COUNT(pageID) FROM $fullPagesTableName WHERE name='$pageName'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			$row = $this->db->fetchArray ($q);
+			$row = $this->_db->fetchArray ($q);
 			if ($row['COUNT(pageID)'] == 1) {
 				return true;
 			} else {
@@ -251,16 +232,16 @@ class pageManager {
 	 * @return (object page array)
 	*/	
 	function getMenu ($rootPage) {
-		$tableName = $this->db->getPrefix ().'pages';
+		$tableName = $this->_db->getPrefix ().'pages';
 		$parentPageID = $rootPage->getID ();
 		if (! is_numeric ($parentPageID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
 		$sql = "SELECT pageID FROM $tableName WHERE parentPageID='$parentPageID' AND placeInMenu>0 ORDER BY placeInMenu ASC";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allPages = array ();
-			while ($pageRow = $this->db->fetchArray ($q)) {
+			while ($pageRow = $this->_db->fetchArray ($q)) {
 				$newPage = $this->newPage ();
 				$newPage->initFromDatabaseID ($pageRow['pageID']);
 				$allPages[] = $newPage;
@@ -269,159 +250,7 @@ class pageManager {
 		} else {
 			return $q;
 		}
-	}
-	
-	/**
-	 * Adds an extra option to the database for the pages.
-	 *
-	 * @param $newOption (object dbField) the new option
-	 * @warning old page objects don't profit of this. 
-	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
-	 * @bug when after adding one, someone ask wich exists the new is not added in.
-	 *    if that "asker" want to do something with it on an old page object it can cause weird errors.
-	 * @public
-	*/
-	function addOptionToPage ($newOption) {
-		$curOptions = $this->getAllOptionsForPage ();
-		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->getName (), $curOptions)) {
-				$newOption->canBeNull = true;
-				$r = $this->db->addNewField ($newOption, $this->db->prefix.'pages');
-				if (! isError ($r)) {
-					$this->allOptionsForPage[$newOption->getName ()] = $newOption;
-				} else {
-					return $r;
-				}
-			} else {
-				return new Error ('PAGEMANAGER_OPTION_FORPAGE_EXISTS', $newOption->getName ());
-			}
-		} else {
-			return $curOptions;
-		}
-	}
-	
-	/**
-	 * Removes an extra option to the database for the pages.
-	 *
-	 * @param $optionName (string) the name of the option
-	 * @warning old page objects don't profit of this. 
-	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
-	 * @public
-	*/
-	function removeOptionForPage ($optionName) {
-		$curOptions = $this->getAllOptionsForPage ();
-		if (! isError ($curOptions)) {
-			if (array_key_exists ($optionName, $curOptions)) {
-				$r = $this->db->removeField ($optionName, $this->db->getPrefix ().'pages');
-				if (! isError ($r)) {
-					unset ($this->allOptionsForPage[$optionName]);
-				} else {
-					return $r;
-				}
-			} else {
-				return new Error ('PAGEMANAGER_OPTION_FORPAGE_DOESNT_EXISTS', $optionName);
-			}
-		} else {
-			return $curOptions;
-		}
-	}
-	
-	/**
-	 * Returns an associative array with values of object dbField
-	 *
-	 * @return (object dbField array)
-	 * @public
-	*/
-	function getAllOptionsForPage () {
-		if ($this->allOptionsForPage === null) {
-			$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'pages', 
-				array ('pageID', 'name', 'parentPageID', 'placeInMenu', 'action', 'pluginID'));
-			if (! isError ($allOptions)) {
-				$this->allOptionsForPage = $allOptions;
-			}
-			return $allOptions;
-		} else {
-			return $this->allOptionsForPage;
-		}
-	}
-	
-	/**
-	 * Adds an extra option to the database for the translated pages.
-	 *
-	 * @param $newOption (object dbField) the  new option
-	 * @warning old translated page objects don't profit of this. 
-	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
-	 * @bug when after adding one, someone ask wich exists the new is not added in.
-	 *    if that "asker" want to do something with it on an old translatedpage object it can cause weird errors.
-	 * @public
-	*/
-	function addOptionToTranslatedPage ($newOption) {
-		$curOptions = $this->getAllOptionsForTranslatedPage ();
-		if (! isError ($curOptions)) {
-			if (! array_key_exists ($newOption->getName (), $curOptions)) {
-				$newOption->canBeNull = true;
-				$r = $this->db->addNewField ($newOption, $this->db->prefix.'translatedPages');
-				if (! isError ($r)) {
-					$this->allOptionsForTranslatedPage[$newOption->getName ()] = $newOption;
-				} else {
-					return $r;
-				}
-			} else {
-				return new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_EXISTS', $newOption->getName ());
-			}
-		} else {
-			return $curOptions;
-		}
-	}
-	
-	/**
-	 * Removes an extra option to the database for the translatdepages.
-	 *
-	 * @param $optionName (string) the name of the option
-	 * @warning old translatedpage objects don't profit of this. 
-	 *  Wait for a restart of the system (reload of the page) to be sure its applied.
-	 * @public
-	*/
-	function removeOptionForTranslatedPage ($optionName) {
-		$curOptions = $this->getAllOptionsForTranslatedPage ();
-		if (! isError ($curOptions)) {
-			if (array_key_exists ($optionName, $curOptions)) {
-				$r = $this->db->removeField ($optionName, $this->db->getPrefix().'translatedPages');
-				if (! isError ($r)) {
-					unset ($this->allOptionsForTranslatedPage[$optionName]);					
-				} else {
-					return $r;
-				}
-			} else {
-				return new Error ('PAGEMANAGER_OPTION_FORTRANSLATEDPAGE_DOESNT_EXISTS', $optionName);
-			}
-		} else {
-			return $curOptions;
-		}
 	}	
-	
-	/**
-	 * Returns an associative array with values of type object dbField
-	 *
-	 * @return (object dbField array)
-	 * @public
-	*/
-	function getAllOptionsForTranslatedPage () {
-		if ($this->allOptionsForTranslatedPage === null) {
-			$fields = $this->db->getAllFields ($this->db->getPrefix ().'translatedPages');
-			if (! isError ($fields)) {
-				$allOptions = $this->db->getAlldbFields ($this->db->getPrefix ().'translatedPages', array ('translatedPageID', 'translatedTitle', 'translatedNavTitle', 'translatedContent', 'pageID', 'languageCode'));
-				if (! isError ($allOptions)) {
-					$this->allOptionsForTranslatedPage = $allOptions;
-				}
-				return $allOptions;
-			} else {
-				return $fields;
-			}
-		} else {
-			return $this->allOptionsForTranslatedPage;
-		}
-	}
 
 	/**
 	 * Returns a new object translatedPage.
@@ -430,6 +259,6 @@ class pageManager {
 	 * @returns (object translatedPage)
 	*/
 	function newTranslatedPage () {
-		return new translatedPage ($this->db, $this->getAllOptionsForTranslatedPage (), $this);
+		return $this->createObject ('translatedPages');
 	}
 }

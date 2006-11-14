@@ -30,16 +30,17 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class translatedPage extends DBTableObject {
+class TranslatedPage extends DBTableObject {
 
 	/**
 	 * Constructor
 	 *
 	 * @param $db (dbModule)
-	 * @param $extraFields (object dbField array)
 	 * @param $parent (object) the creator of this object (a pagemanager object)
+	 * @param $extraFields (object dbField array)
+	 * @param $extraFields (object dbGenericJoinField array)
 	*/
-	function translatedPage ($db, $extraFields, &$parent) {
+	function TranslatedPage ($db, &$parent, $extraFields = array (), $extraJoins = array ()) {
 		$translatedTitle = new dbField ('translatedTitle', 'varchar(255)');
 		$translatedNavTitle = new dbField ('translatedNavTitle', 'varchar(255)');
 		$translatedNavTitle->canBeNull = true;

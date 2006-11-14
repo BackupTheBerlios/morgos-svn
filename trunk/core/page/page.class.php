@@ -30,16 +30,17 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class page extends DBTableObject {
+class Page extends DBTableObject {
 
 	/**
 	 * Constructor
 	 *
 	 * @param $db (object dbModule)
-	 * @param $allEFields (dbField array)
 	 * @param $parent (object) The creator
+	 * @param $allEFields (dbField array) all extra fields
+	 * @param $allEJoins (dbGenericJoin array) all extra joins
 	*/	
-	function page ($db, $allEFields, &$parent) {
+	function Page ($db, &$parent, $allEFields = array (), $allEJoins = array ()) {
 		$name = new dbField ('name', 'varchar (255)');
 		$parentPageID = new dbField ('parentPageID', 'int(11)');
 		$placeInMenu = new dbField ('placeInMenu', 'int(4)');

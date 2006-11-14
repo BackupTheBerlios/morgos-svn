@@ -3,6 +3,9 @@ Version 0.3
 [Changes]
 	[API]
 	 * Actions have their associated pages
+	 * Added DBTableManager
+	 * Added joins
+	 * Changed dbFields API
 [Bugs]
  * Add startup warnings when their are problems with config.php and database 
 
