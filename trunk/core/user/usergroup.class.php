@@ -167,7 +167,7 @@ class UserGroup extends DBTableObject {
 				if (! is_numeric ($userID)) {
 					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}				
-				$sql = "INSERT INTO ".$prefix."group_users (groupID, userID) VALUES ('$groupID', '$userID')";
+				$sql = "INSERT INTO ".$prefix."groupUsers (groupID, userID) VALUES ('$groupID', '$userID')";
 				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -201,7 +201,7 @@ class UserGroup extends DBTableObject {
 					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}
 				
-				$sql = "DELETE FROM ".$prefix."group_users WHERE groupID='$groupID' AND userID='$userID'";
+				$sql = "DELETE FROM ".$prefix."groupUsers WHERE groupID='$groupID' AND userID='$userID'";
 				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -240,7 +240,7 @@ class UserGroup extends DBTableObject {
 	function getAllUsersID () {
 		$prefix = $this->_db->getPrefix ();
 		$groupID = $this->getID ();
-		$sql = "SELECT userID FROM ".$prefix."group_users WHERE groupID='$groupID'";
+		$sql = "SELECT userID FROM ".$prefix."groupUsers WHERE groupID='$groupID'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allUsers = array ();

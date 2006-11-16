@@ -42,9 +42,13 @@ class User extends DBTableObject {
 	function User ($db, &$parent, $extraFields = array ()) {
 		$login = new dbField ('login', DB_TYPE_STRING, 255);
 		$email = new dbField ('email', DB_TYPE_STRING, 255);
-		$pass = new dbField ('password', DB_TYPE_STRING, 32); // md5ied
+		$pass = new dbField ('password', DB_TYPE_STRING, 32); // md5ied always length 32
+		$ID = new dbField ('userID', DB_TYPE_INT, 11);	
+		
+		$groupJoin = new MultipleToMultipleJoinField ('groups', 'group', 'groupID', $ID, 'groupUsers');
 	
-		parent::DBTableObject ($db, array ($login, $email, $pass), 'users', 'userID', $parent, $extraFields);
+		parent::DBTableObject ($db, array ($login, $email, $pass), 'users', 'userID', $parent, 
+			$extraFields, array ($groupJoin));
 	}
 	
 	/*Public initters*/
@@ -168,7 +172,7 @@ class User extends DBTableObject {
 	function getAllGroups () {
 		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
-		$sql = "SELECT groupID FROM {$prefix}group_users WHERE userID='$ID'";
+		$sql = "SELECT groupID FROM {$prefix}groupUsers WHERE userID='$ID'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();

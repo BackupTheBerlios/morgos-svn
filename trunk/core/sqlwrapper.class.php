@@ -121,8 +121,8 @@ class dbField {
 				}
 			case DB_TYPE_TEXT:
 				return 'text';
-			case DB_TYPE_ENUM:
-				return 'ENUM ()';
+			/*case DB_TYPE_ENUM:
+				return 'ENUM ()';*/
 		}
 	}
 	
@@ -139,6 +139,26 @@ class dbField {
 			   $t === DB_TYPE_TEXT or $t === DB_TYPE_ENUM); 
 	}
 	
+}
+
+class dbEnumField extends dbField {
+	var $_posValues;
+	
+	function dbEnumField ($name, $type, $value) {
+		parent::dbField ($name, $type);
+		$this->_posValues = array ();
+		for ($i=2;$i<func_num_args ();$i++) {
+			$this->_posValues[] = func_get_arg ($i);
+		}
+	}
+	
+	function getDBType () {
+		$t = 'ENUM (\'';
+		$values = implode ('\', \'', $this->_posValues);
+		$t .=$values.'\')';
+		return $t;
+	}
+
 }
 
 /**
@@ -164,6 +184,7 @@ class genericJoinField {
 	function getOtherField () {return $this->_otherField;}
 	function getName () {return $this->_name;}
 	function getValue () {return $this->_dbField->getValue ();}
+	function getDBField () {return $this->_dbField;}
 }
 
 /**
@@ -184,7 +205,7 @@ class oneToMultipleJoinField extends genericJoinField {
  * @since 0.3
  * @author Nathan Samson
 */
-class multipleToOneJoinField extends genericJoinField {
+class MultipleToOneJoinField extends genericJoinField {
 	function multipleToOneJoinField ($name, $otherTable, $otherField, $dbField) {
 		parent::genericJoinField ($name, $otherTable, $otherField, $dbField);
 	} 
@@ -200,6 +221,32 @@ class oneToOneJoinField extends genericJoinField {
 	function oneToOneJoinField ($name, $otherTable, $otherField, $dbField) {
 		parent::genericJoinField ($name, $otherTable, $otherField, $dbField);
 	} 
+}
+
+/**
+ * A class that represents a multiple-to-multiple join field in a table
+ * @ingroup core database
+ * @since 0.3
+ * @author Nathan Samson
+*/
+class MultipleToMultipleJoinField extends genericJoinField {
+	var $_linkTable;	
+	
+	function MultipleToMultipleJoinField ($name, $otherTable, $otherField, $dbField, 
+			$linkTable) {
+		$this->_linkTable = $linkTable;
+		parent::genericJoinField ($name, $otherTable, $otherField, $dbField);
+		
+	} 
+	
+	function getLinkTable () {
+		return $this->_linkTable;
+	}
+	
+	// Hardcoded for now
+	function getOtherTableDBType () {
+		return 'int (11)';
+	}
 }
 
 /**
@@ -768,6 +815,10 @@ class DBTableObject {
 		return array_merge ($this->getExtraFields (), $this->getBasicFields ()); 
 	}
 	
+	function getAllJoinFields () {
+		return $this->_joins;
+	}
+	
 	/**
 	 * Set the join fields.
 	 *
@@ -892,6 +943,24 @@ class DBTableManager {
 			$sql .= 'PRIMARY KEY ('.$o->getIDName ().')';
 			$sql .= ')';
 			$a = $this->_db->query ($sql);
+			
+			foreach ($o->getAllJoinFields () as $join) {
+				if (get_class ($join) == 'MultipleToMultipleJoinField') {
+					$fullLinkTable = $this->_db->getPrefix().$join->getLinkTable ();
+					if (! $this->_db->tableExists ($fullLinkTable)) {
+						$thisField = $join->getDBField ();
+						$sql = 'CREATE TABLE '.$fullLinkTable.' (';
+						$sql .= $join->getOtherField ().' '.
+								$join->getOtherTableDBType ();
+						/*var_dump ($join);
+						var_dump ($thisField);*/
+						$sql .= ', '.$thisField->getName ().' '.
+							$thisField->getDBType ();
+						$sql .= ')';
+						$this->_db->query ($sql);
+					}
+				}
+			}
 		}
 	}
 	

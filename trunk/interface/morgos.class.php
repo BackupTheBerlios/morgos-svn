@@ -346,11 +346,13 @@ class morgos {
 			$a = $defaultAction;
 		}
 		
-		$user = $this->_userManager->getCurrentUser ();
-		$perms = $this->_actionManager->getActionRequiredPermissions ($a);
-		foreach ($perms as $perm) {
-			if (! $user->hasPermission ($perm)) {
-				$this->error ('You don\'t have the permission to do this.');
+		if ($this->_userManager) {
+			$user = $this->_userManager->getCurrentUser ();
+			$perms = $this->_actionManager->getActionRequiredPermissions ($a);
+			foreach ($perms as $perm) {
+				if (! $user->hasPermission ($perm)) {
+					$this->error ('You don\'t have the permission to do this.');
+				}
 			}
 		}
 		$actionArray =  $this->_actionManager->getAction ($a);
@@ -416,7 +418,7 @@ class morgos {
 	function isDatabaseInstalled () {
 		$d = $this->_dbModule;
 		return $d->tableExists ('groupPermissions') && $d->tableExists ('groups') && 
-			$d->tableExists ('translatedGroups') && $d->tableExists ('group_users') && $d->tableExists ('users') && 
+			$d->tableExists ('translatedGroups') && $d->tableExists ('groupUsers') && $d->tableExists ('users') && 
 			$d->tableExists ('pages') && $d->tableExists ('translatedPages');
 	}
 	

@@ -136,5 +136,10 @@ class userCorePlugin extends plugin {
 	}
 
 	function isCorePlugin () {return true;}
+	
+	function install (&$db) {
+		$uM = new UserManager ($db);
+		return $uM->installAllTables ();
+	}
 }
 ?>

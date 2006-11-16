@@ -6,9 +6,14 @@ Version 0.3
 	 * Added DBTableManager
 	 * Added joins
 	 * Changed dbFields API
+	[Installer]
+	 * (Core-)Plugins are responsible for installing their DB tables
 [Bugs]
  * Add startup warnings when their are problems with config.php and database 
 
-Version 0.2 5 November 2006??
+Version 0.2 5 November 2006
 ===========
- * First public release
+ * First working release
+ * It is only a "working hack"
+ * No default layout
+ * It is used as base for a school website

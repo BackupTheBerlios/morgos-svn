@@ -135,5 +135,10 @@ class viewPageCorePlugin extends plugin {
 	}
 	
 	function isCorePlugin () {return true;}
+	
+	function install (&$db) {
+		$PM = new PageManager ($db);
+		return $PM->installAllTables ();
+	}
 }
 ?>

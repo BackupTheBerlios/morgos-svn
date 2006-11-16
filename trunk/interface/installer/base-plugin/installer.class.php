@@ -167,10 +167,16 @@ class installerBasePlugin extends plugin {
 			$dbModule->connect ($databaseHost, $databaseUser, $databasePassword);
 			$dbModule->selectDatabase ($databaseName);
 			$dbModule->setPrefix ($databasePrefix);
-			$dbModule->queryFile ('interface/installer/base-plugin/sqlCode.sql');
+			$pluginManager = new pluginManager ($this->_pluginAPI);
+			$pluginManager->findAllPlugins ('interface/core-plugins/');			
 			
-			//var_dump ($dbModule);
-			//die ('End');
+			foreach ($pluginManager->getAllFoundPlugins () as $plugin) {
+				$a = $plugin->install ($dbModule);
+				if (isError ($a)) {
+					var_dump ($a);
+					die ('Something went wrong');
+				}
+			}
 			
 			$userM = new userManager ($dbModule);
 			$admin = $userM->newUser ();

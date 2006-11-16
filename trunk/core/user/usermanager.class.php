@@ -34,7 +34,29 @@ include_once ('core/user/usergroup.class.php');
 include_once ('core/user/usertranslatedgroups.class.php');
 
 /**
- * A class that represents a user
+ * A class that represents a permisson
+ *
+ * @ingroup user core
+ * @since 0.3
+ * @author Nathan Samson
+*/
+class GroupPermission extends DBTableObject {
+
+	function GroupPermission ($db, &$creator) {
+		$enabled = new dbEnumField ('enabled', DB_TYPE_ENUM, 'Y', 'N');
+		$permName = new dbField ('permissionName', DB_TYPE_STRING, 255);
+		$groupID = new dbField ('groupID', DB_TYPE_INT, 255);
+		$groupJoin = new oneToOneJoinField ('group', 'groups', 'groupID', $groupID);
+		
+		parent::DBTableObject ($db, array ($enabled, $permName, $groupID), 
+			'groupPermissions', 'permissionID', $creator);
+	}
+
+}
+
+
+/**
+ * The User manager
  *
  * @ingroup user core
  * @since 0.2
@@ -47,8 +69,10 @@ class UserManager extends DBTableManager {
 	 * @param &$db (dbModule object)
 	*/
 	function UserManager (&$db) {
-		parent::DBTableManager (&$db, 'users', 'User', 'groups', 'UserGroup', 
-			'translatedGroups', 'UserTranslatedGroup');
+		parent::DBTableManager (&$db, 'users', 'User', 
+			'groups', 'UserGroup', 
+			'translatedGroups', 'UserTranslatedGroup', 
+			'groupPermissions', 'GroupPermission');
 	}
 	
 	/*Public functions*/
@@ -276,7 +300,8 @@ class UserManager extends DBTableManager {
 	function isGroupNameRegistered ($groupName) {
 		$prefix = $this->_db->getPrefix ();
 		$groupName = $this->_db->escapeString ($groupName);
-		$sql = "SELECT COUNT(groupID) FROM ".$prefix."groups WHERE genericName='$groupName'";
+		$sql = "SELECT COUNT(groupID) FROM ".$prefix."groups 
+				WHERE genericName='$groupName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);

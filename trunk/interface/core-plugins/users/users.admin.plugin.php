@@ -98,7 +98,7 @@ class adminCoreUserAdminPlugin extends plugin {
 		$adminGroup = $userM->newGroup ();
 		$adminGroup->initFromDatabaseGenericName ('administrator');
 		$adminID = $adminGroup->getID ();
-		$sql = "SELECT userID FROM {$tPrefix}group_users WHERE groupID=$adminID";
+		$sql = "SELECT userID FROM {$tPrefix}groupUsers WHERE groupID=$adminID";
 		$q = $db->query ($sql);
 		$admins = array ();
 		$currentUser = $userM->getCurrentUser ();
