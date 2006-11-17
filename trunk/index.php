@@ -62,10 +62,9 @@ function unregister_GLOBALS () {
 unregister_GLOBALS ();
 startMorgOS ();
 
-
 function startMorgOS () {
-	$morgos = &new morgos ();
-	$morgos->run ();
+	$morgos = &loadMorgOS ();
+	$morgos->run ('viewPage');
 	$morgos->shutdown ();
 }
 

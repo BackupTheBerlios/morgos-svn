@@ -6,6 +6,7 @@ Version 0.3
 	 * Added DBTableManager
 	 * Added joins
 	 * Changed dbFields API
+	 * [Splitted up in MorgOS class, where some are less advanced (no db, no config, no smarty)]
 	[Installer]
 	 * (Core-)Plugins are responsible for installing their DB tables
 [Bugs]

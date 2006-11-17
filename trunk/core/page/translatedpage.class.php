@@ -38,7 +38,7 @@ class TranslatedPage extends DBTableObject {
 	 * @param $db (dbModule)
 	 * @param $parent (object) the creator of this object (a pagemanager object)
 	 * @param $extraFields (object dbField array)
-	 * @param $extraFields (object dbGenericJoinField array)
+	 * @param $extraJoins (object dbGenericJoinField array)
 	*/
 	function TranslatedPage ($db, &$parent, $extraFields = array (), $extraJoins = array ()) {
 		$translatedTitle = new dbField ('translatedTitle', DB_TYPE_STRING, 255);

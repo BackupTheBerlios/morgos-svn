@@ -39,7 +39,7 @@ class User extends DBTableObject {
 	 * @param $extraFields (dbField array) an array with extra fields
 	 * @param $extraJoins (dbGenericJoinField array) an array with extra joins
 	*/
-	function User ($db, &$parent, $extraFields = array ()) {
+	function User ($db, &$parent, $extraFields = array (), $extraJoins = array ()) {
 		$login = new dbField ('login', DB_TYPE_STRING, 255);
 		$email = new dbField ('email', DB_TYPE_STRING, 255);
 		$pass = new dbField ('password', DB_TYPE_STRING, 32); // md5ied always length 32
@@ -48,7 +48,7 @@ class User extends DBTableObject {
 		$groupJoin = new MultipleToMultipleJoinField ('groups', 'group', 'groupID', $ID, 'groupUsers');
 	
 		parent::DBTableObject ($db, array ($login, $email, $pass), 'users', 'userID', $parent, 
-			$extraFields, array ($groupJoin));
+			$extraFields, array_merge (array ($groupJoin), $extraJoins));
 	}
 	
 	/*Public initters*/
