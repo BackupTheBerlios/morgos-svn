@@ -28,41 +28,21 @@ define ('ERROR', 1);
 define ('WARNING', 2);
 define ('NOTICE', 3);
 
-/**
- * A class that have all functions/classes that plugins could use.
- *
- * @ingroup interface
- * @since 0.2
- * @author Nathan Samson
-*/
-class pluginAPI {
-	var $_dbModule;
-	var $_configManager;
+class BasePluginAPI {
+	var $_morgos;
+
 	var $_i18nManager;
-	var $_userManager;
-	var $_pageManager;
-	
 	var $_pluginManager;
 	var $_eventManager;
 	var $_actionManager;
 	var $_smarty;
 	var $_skinManager;
 	
-	var $_morgos;
-	var $_messages;
-	
 	function pluginAPI (&$morgos) {
 		$this->_morgos = &$morgos;
-		
 		$this->_messages = array (ERROR=>array(), WARNING=>array (), NOTICE=>array ());
 	}
 
-	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
-	function &getDBModule () {return $this->_dbModule;}
-
-	function setConfigManager (&$configManager) {$this->_configManager = &$configManager;}
-	function &getConfigManager () {return $this->_configManager;}
-	
 	function setI18NManager (&$i18nManager) {$this->_i18nManager = &$i18nManager;}
 	function &getI18NManager () {return $this->_i18nManager;}	
 	
@@ -86,27 +66,6 @@ class pluginAPI {
 	
 	function setSkinManager (&$skinManager) {$this->_skinManager = &$skinManager;}
 	function &getSkinManager () {return $this->_skinManager;}
-	
-	/**
-	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
-	 * 
-	 * @param $action (string)
-	 * @param $params (string array) The params that shopuld be given.
-	*/
-	function doAction ($action, $params = array ()) {
-		$loc = 'index.php?action='.$action;
-		foreach ($params as $name=>$value) {
-			$loc .= '&'.$name.'='.$value;
-		}
-		$this->_morgos->shutdown ();
-		header ('Location: '.$loc);
-	}
-	
-	function executePreviousAction () {
-		$hString = $this->_actionManager->getPreviousActionHeaderString (); 
-		$this->_morgos->shutdown ();
-		header ($hString);
-	}
 	
 	/**
 	 * Adds a message to the queue.
@@ -153,6 +112,54 @@ class pluginAPI {
 				break;
 		}
 	}	
+}
+
+class ConfigPluginAPI extends BasePluginAPI {
+	var $_configManager;
+
+	function setConfigManager (&$configManager) {$this->_configManager = &$configManager;}
+	function &getConfigManager () {return $this->_configManager;}
+} 
+
+
+
+/**
+ * A class that have all functions/classes that plugins could use.
+ *
+ * @ingroup interface
+ * @since 0.2
+ * @author Nathan Samson
+*/
+class PluginAPI extends ConfigPluginAPI {
+	var $_dbModule;
+	var $_userManager;
+	var $_pageManager;
+	var $_messages;
+
+
+	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
+	function &getDBModule () {return $this->_dbModule;}
+	
+	/**
+	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
+	 * 
+	 * @param $action (string)
+	 * @param $params (string array) The params that shopuld be given.
+	*/
+	function doAction ($action, $params = array ()) {
+		$loc = 'index.php?action='.$action;
+		foreach ($params as $name=>$value) {
+			$loc .= '&'.$name.'='.$value;
+		}
+		$this->_morgos->shutdown ();
+		header ('Location: '.$loc);
+	}
+	
+	function executePreviousAction () {
+		$hString = $this->_actionManager->getPreviousActionHeaderString (); 
+		$this->_morgos->shutdown ();
+		header ($hString);
+	}
 	
 	function canUserViewPage ($pageID) {
 		$page = $this->_pageManager->newPage ();

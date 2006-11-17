@@ -246,7 +246,7 @@ class BaseMorgos extends NoGUIMorgOS {
 		parent::init ();
 		
 		//$this->_pluginAPI = new BasePluginAPI ();
-		$this->_pluginAPI = new PluginAPI ($this);
+		$this->_pluginAPI = new BasePluginAPI ($this);
 		$this->_smarty = new ExtendedSmarty ();
 		$this->_pluginManager = new PluginManager ($this->_pluginAPI);
 		$this->_actionManager = new ActionManager ();
@@ -462,6 +462,7 @@ class ConfigMorgos extends BaseMorgos {
 	*/
 	function init () {
 		parent::init ();
+		$this->_pluginAPI = new ConfigPluginAPI ($this);
 		$this->_configManager = new configurator ();
 		$e = $this->_configManager->loadConfigFile ('config.php');		
 		if (isError ($e)) {
@@ -541,7 +542,7 @@ class Morgos extends ConfigMorgos {
 	*/
 	function init () {
 		parent::init ();
-
+		$this->_pluginAPI = new PluginAPI ($this);
 		$this->_dbModule = databaseLoadModule ('MySQL');
 		$e = $this->_dbModule->connect (
 			$this->_configManager->getStringItem ('/databases/host'), 
