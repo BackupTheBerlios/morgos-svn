@@ -562,23 +562,8 @@ class Morgos extends ConfigMorgos {
 
 		$this->_pageManager = new PageManager ($this->_dbModule);
 		$this->_userManager = new UserManager ($this->_dbModule);
-		$this->loadPluginAPI ();
-		
 		$this->_pluginManager->findAllPlugins ('interface/core-plugins');
-		// hardcore loading of core plugins
-		$a = $this->_pluginManager->setPluginToLoad (MORGOS_VIEWPAGE_PLUGINID);
-		$a = $this->_pluginManager->setPluginToLoad (MORGOS_USER_PLUGINID);
-		$a = $this->_pluginManager->setPluginToLoad (MORGOS_ADMIN_PLUGINID);
-		$a = $this->_pluginManager->loadPlugins ();
-
-		$this->_pluginManager->findAllPlugins ('plugins');
-		$allExternalPlugins = $this->_configManager->getArrayItem ('/extplugs');
-		foreach ($allExternalPlugins as $pID => $item) {
-			if ($item->getCurrentValue () == true) {
-				$this->_pluginManager->setPluginToLoad ($pID);
-			}
-		}
-		$this->_pluginManager->loadPlugins ();
+		$this->loadPluginAPI ();
 	}
 	
 	/**
@@ -606,11 +591,34 @@ class Morgos extends ConfigMorgos {
 	}
 	
 	/**
+	 * Loads the plugins
+	 *
+	 * @protected
+	*/
+	function loadPlugins () {
+		// hardcore loading of core plugins
+		$a = $this->_pluginManager->setPluginToLoad (MORGOS_VIEWPAGE_PLUGINID);
+		$a = $this->_pluginManager->setPluginToLoad (MORGOS_USER_PLUGINID);
+		$a = $this->_pluginManager->setPluginToLoad (MORGOS_ADMIN_PLUGINID);
+		$a = $this->_pluginManager->loadPlugins ();
+
+		$this->_pluginManager->findAllPlugins ('plugins');
+		$allExternalPlugins = $this->_configManager->getArrayItem ('/extplugs');
+		foreach ($allExternalPlugins as $pID => $item) {
+			if ($item->getCurrentValue () == true) {
+				$this->_pluginManager->setPluginToLoad ($pID);
+			}
+		}
+		$this->_pluginManager->loadPlugins ();
+	}
+	
+	/**
 	 * Runs the system and show a page (or redirect to another page)
 	 * @param $defaultAction (string)
 	 * @public
 	*/
 	function run ($defaultAction) {
+		$this->loadPlugins ();
 		$this->loadSkin ();
 		
 		$this->assignErrors ();
@@ -644,11 +652,12 @@ class Morgos extends ConfigMorgos {
 	 * @return (bool)
 	*/	
 	function isDatabaseInstalled () {
-		$d = $this->_dbModule;
-		return $d->tableExists ('groupPermissions') && $d->tableExists ('groups') && 
-			$d->tableExists ('translatedGroups') && $d->tableExists ('groupUsers') && 
-			$d->tableExists ('users') && 
-			$d->tableExists ('pages') && $d->tableExists ('translatedPages');
+		$viewP = $this->_pluginManager->getPlugin (MORGOS_VIEWPAGE_PLUGINID);
+		$userP = $this->_pluginManager->getPlugin (MORGOS_USER_PLUGINID);
+		$adminP = $this->_pluginManager->getPlugin (MORGOS_ADMIN_PLUGINID);
+		return $viewP->isInstalled ($this->_pluginAPI) && 
+			$userP->isInstalled ($this->_pluginAPI) && 
+			$adminP->isInstalled ($this->_pluginAPI);
 	}
 }
 

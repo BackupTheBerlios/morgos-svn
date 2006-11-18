@@ -140,5 +140,10 @@ class viewPageCorePlugin extends plugin {
 		$PM = new PageManager ($db);
 		return $PM->installAllTables ();
 	}
+	
+	function isInstalled (&$pluginAPI) {
+		$db = &$pluginAPI->getDBModule ();
+		return $db->tableExists ('pages') && $db->tableExists ('translatedPages');
+	}
 }
 ?>

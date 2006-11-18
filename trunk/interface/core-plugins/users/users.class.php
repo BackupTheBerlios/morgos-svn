@@ -141,5 +141,12 @@ class userCorePlugin extends plugin {
 		$uM = new UserManager ($db);
 		return $uM->installAllTables ();
 	}
+	
+	function isInstalled (&$pluginAPI) {
+		$db = &$pluginAPI->getDBModule ();
+		return $db->tableExists ('groupPermissions') && 
+			$db->tableExists ('groups') && $db->tableExists ('translatedGroups') && 
+			$db->tableExists ('groupUsers') && $db->tableExists ('users');
+	}
 }
 ?>
