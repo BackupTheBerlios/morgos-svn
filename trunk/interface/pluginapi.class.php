@@ -38,7 +38,7 @@ class BasePluginAPI {
 	var $_smarty;
 	var $_skinManager;
 	
-	function pluginAPI (&$morgos) {
+	function BasePluginAPI (&$morgos) {
 		$this->_morgos = &$morgos;
 		$this->_messages = array (ERROR=>array(), WARNING=>array (), NOTICE=>array ());
 	}
@@ -135,7 +135,6 @@ class PluginAPI extends ConfigPluginAPI {
 	var $_userManager;
 	var $_pageManager;
 	var $_messages;
-
 
 	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
 	function &getDBModule () {return $this->_dbModule;}

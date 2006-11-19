@@ -586,7 +586,7 @@ class Morgos extends ConfigMorgos {
 		$this->_dbModule->disconnect ();
 		$this->_dbModule = null;
 		$this->_pageManager = null;
-		$this->_userManager = null;	
+		$this->_userManager = null;
 		parent::shutdown ();
 	}
 	

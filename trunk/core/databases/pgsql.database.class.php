@@ -47,7 +47,7 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 		
 		function disconnect () {
 			if ($this->_connection) {
-				@pgsql_close ($this->_connection);
+				@pg_close ($this->_connection);
 			}
 			$this->_connectionString = '';
 		}

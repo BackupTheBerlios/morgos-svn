@@ -87,7 +87,7 @@ class TranslatedPage extends DBTableObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getTitle () {return $this->getFieldValue ('translatedTitle');}
+	function getTitle () {return $this->getFieldValue ('translated_title');}
 	
 	/**
 	 * Returns the navigation title of the page
@@ -95,10 +95,10 @@ class TranslatedPage extends DBTableObject {
 	 * @return (string)
 	*/
 	function getNavTitle () {
-		if ($this->getFieldValue ('translatedNavTitle')) {
-			return $this->getFieldValue ('translatedNavTitle');
+		if ($this->getFieldValue ('translated_nav_title')) {
+			return $this->getFieldValue ('translated_nav_title');
 		} else {
-			return $this->getFieldValue ('translatedTitle');
+			return $this->getFieldValue ('translated_title');
 		}
 	}
 	
