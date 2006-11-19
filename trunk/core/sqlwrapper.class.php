@@ -107,12 +107,8 @@ class dbField {
 	*/
 	function getDBType () {
 		switch ($this->getType ()) {
-			case DB_TYPE_INT:
-				if ($this->getMaxLength () != 0) {
-					return 'int ('.$this->getMaxLength ().')';
-				} else {
-					return 'int';
-				}
+			case DB_TYPE_INT:				
+				return 'int';
 			case DB_TYPE_STRING:
 				if ($this->getMaxLength () != 0) {
 					return 'varchar ('.$this->getMaxLength ().')';
@@ -153,10 +149,16 @@ class dbEnumField extends dbField {
 	}
 	
 	function getDBType () {
-		$t = 'ENUM (\'';
+		/*$t = 'ENUM (\'';
 		$values = implode ('\', \'', $this->_posValues);
-		$t .=$values.'\')';
-		return $t;
+		$t .=$values.'\')';*/
+		$longest = 0;
+		foreach ($this->_posValues as $val)  {
+			if (strlen ($val) > $longest) {
+				$longes = strlen ($val);
+			}
+		}
+		return 'char ('.$longes.')';
 	}
 
 }
@@ -245,7 +247,7 @@ class MultipleToMultipleJoinField extends genericJoinField {
 	
 	// Hardcoded for now
 	function getOtherTableDBType () {
-		return 'int (11)';
+		return 'int';
 	}
 }
 
@@ -931,9 +933,15 @@ class DBTableManager {
 			$sql = 'CREATE TABLE '. $this->_db->getPrefix().$tableName . ' (';
 			$o = new $oName ($this->_db, $this);
 			foreach ($o->getAllFields () as $field) {
-				$sql .= $field->getName ().' '.$field->getDBType ();
+				$sql .= $field->getName ();
 				if ($field->getName () == $o->getIDName ()) {
-					$sql .= ' auto_increment ';
+					if ($this->_db->getType () == 'PostgreSQL') {
+						$sql .= ' serial ';
+					} else {
+						$sql .= ' int AUTO_INCREMENT ';
+					}
+				} else {
+					$sql .= ' '.$field->getDBType ();
 				}
 				if (! $field->canBeNull) {
 					$sql .= ' NOT NULL';

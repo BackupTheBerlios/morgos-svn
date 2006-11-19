@@ -100,7 +100,7 @@ class installerBasePlugin extends plugin {
 			}
 			
 			$aMods = databaseGetAllModules (true);
-			if (count ($aMods) > 1) {
+			if (count ($aMods) >= 1) {
 				$sm->assign ('dbMError', false);
 				$sm->assign ('dbMMessage', $t->translate ('You have at least installed 1 database module.'));
 			} else {
@@ -184,19 +184,19 @@ class installerBasePlugin extends plugin {
 			$userM->addUserToDatabase ($admin);
 			
 			$group = $userM->newGroup ();
-			$group->initFromArray (array ('genericName'=>'administrator', 'genericDescription'=>'The admin users'));
+			$group->initFromArray (array ('generic_name'=>'administrator', 'generic_description'=>'The admin users'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', true);
 			$admin->addToGroup ($group);
 			
 			$group = $userM->newGroup ();
-			$group->initFromArray (array ('genericName'=>'normaluser', 'genericDescription'=>'All users'));
+			$group->initFromArray (array ('generic_name'=>'normaluser', 'generic_description'=>'All users'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', false);
 			$admin->addToGroup ($group);
 			
 			$group = $userM->newGroup ();
-			$group->initFromArray (array ('genericName'=>'anonymous', 'genericDescription'=>'Not logged in'));
+			$group->initFromArray (array ('generic_name'=>'anonymous', 'generic_description'=>'Not logged in'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', false);
 			
@@ -211,19 +211,18 @@ class installerBasePlugin extends plugin {
 			$adminLogout = $pageM->newPage ();
 			$adminUser = $pageM->newPage ();
 			
-			$site->initFromArray (array ('name'=>'site', 'parentPageID'=>0, 'placeInMenu'=>0));
-			$admin->initFromArray (array ('name'=>'admin', 'parentPageID'=>0, 'placeInMenu'=>0));
+			$site->initFromArray (array ('name'=>'site', 'parent_page_id'=>0, 'place_in_menu'=>0));
+			$admin->initFromArray (array ('name'=>'admin', 'parent_page_id'=>0, 'place_in_menu'=>0));
 			
 			$pageM->addPageToDatabase ($site);
 			$pageM->addPageToDatabase ($admin);
-			
-			$home->initFromArray (array ('name'=>'MorgOS_Home', 'parentPageID'=>$site->getID ()));
-			$ahome->initFromArray (array ('name'=>'MorgOS_Admin_Home', 'parentPageID'=>$admin->getID ()));
-			$pman->initFromArray (array ('name'=>'MorgOS_Admin_PageManager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPageManager'));
-			$pluman->initFromArray (array ('name'=>'MorgOS_Admin_PluginManager', 'parentPageID'=>$admin->getID (), 'action'=>'adminPluginManager'));
-			$regform->initFromArray (array ('name'=>'MorgOS_RegisterForm',  'parentPageID'=>$site->getID (), 'action'=>'userRegisterForm', 'placeInMenu'=>0));
-			$adminLogout->initFromArray (array ('name'=>'MorgOS_Admin_Logout',  'parentPageID'=>$admin->getID (), 'action'=>'adminLogout'));
-			$adminUser->initFromArray (array ('name'=>'MorgOS_Admin_UserManager',  'parentPageID'=>$admin->getID (), 'action'=>'adminUserManager'));
+			$home->initFromArray (array ('name'=>'MorgOS_Home', 'parent_page_id'=>$site->getID ()));
+			$ahome->initFromArray (array ('name'=>'MorgOS_Admin_Home', 'parent_page_id'=>$admin->getID ()));
+			$pman->initFromArray (array ('name'=>'MorgOS_Admin_PageManager', 'parent_page_id'=>$admin->getID (), 'action'=>'adminPageManager'));
+			$pluman->initFromArray (array ('name'=>'MorgOS_Admin_PluginManager', 'parent_page_id'=>$admin->getID (), 'action'=>'adminPluginManager'));
+			$regform->initFromArray (array ('name'=>'MorgOS_RegisterForm',  'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 'place_in_menu'=>0));
+			$adminLogout->initFromArray (array ('name'=>'MorgOS_Admin_Logout',  'parent_page_id'=>$admin->getID (), 'action'=>'adminLogout'));
+			$adminUser->initFromArray (array ('name'=>'MorgOS_Admin_UserManager',  'parent_page_id'=>$admin->getID (), 'action'=>'adminUserManager'));
 
 			$pageM->addPageToDatabase ($home);
 			$pageM->addPageToDatabase ($ahome);
@@ -243,13 +242,13 @@ class installerBasePlugin extends plugin {
 
 			$t = &$this->_pluginAPI->getI18NManager();
 
-			$tHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Home'), 'translatedContent'=>$t->translate ('This is the homepage.')));
-			$tAHome->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Admin'), 'translatedContent'=>$t->translate ('This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.')));
-			$tPMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Page Manager'), 'translatedContent'=>$t->translate ('Edit pages here.')));
-			$tRegForm->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Registration'), 'translatedContent'=>$t->translate ('Give up all your user details in order to registrate to this site.')));
-			$tPlugMan->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Plugin Manager'), 'translatedContent'=>$t->translate ('Enable/disable plugins.')));
-			$tALogout->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('Logout'), 'translatedContent'=>$t->translate ('Logout')));
-			$tAdminUser->initFromArray (array ('languageCode'=>'en_UK', 'translatedTitle'=>$t->translate ('User manager'), 'translatedContent'=>$t->translate ('Manage users here, remove/add them from administrators list.')));
+			$tHome->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Home'), 'translated_content'=>$t->translate ('This is the homepage.')));
+			$tAHome->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Admin'), 'translated_content'=>$t->translate ('This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.')));
+			$tPMan->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Page Manager'), 'translated_content'=>$t->translate ('Edit pages here.')));
+			$tRegForm->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Registration'), 'translated_content'=>$t->translate ('Give up all your user details in order to registrate to this site.')));
+			$tPlugMan->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Plugin Manager'), 'translated_Content'=>$t->translate ('Enable/disable plugins.')));
+			$tALogout->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Logout'), 'translated_content'=>$t->translate ('Logout')));
+			$tAdminUser->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('User manager'), 'translated_content'=>$t->translate ('Manage users here, remove/add them from administrators list.')));
 			
 			$home->addTranslation ($tHome);
 			$ahome->addTranslation ($tAHome);
@@ -262,6 +261,7 @@ class installerBasePlugin extends plugin {
 			
 			$configContents = '<?php'.PHP_NL.PHP_NL;
 			
+			$configContents .= '$configItems[\'/databases/module\']=\''.$databaseModule.'\';'.PHP_NL;
 			$configContents .= '$configItems[\'/databases/host\']=\''.$databaseHost.'\';'.PHP_NL;
 			$configContents .= '$configItems[\'/databases/password\']=\''.$databasePassword.'\';'.PHP_NL;
 			$configContents .= '$configItems[\'/databases/user\']=\''.$databaseUser.'\';'.PHP_NL;

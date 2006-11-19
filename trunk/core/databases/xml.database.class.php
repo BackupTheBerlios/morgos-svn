@@ -1,7 +1,7 @@
 <?php
 
-$allModules['XML'] = 'XMLDatabase';
-$availableModules['XML'] = 'XMLDatabase';
+/*$allModules['XML'] = 'XMLDatabase';
+$availableModules['XML'] = 'XMLDatabase';*/
 
 if (! class_exists ('XMLDatabase')) {
 

@@ -159,7 +159,7 @@ class NoGUIMorgOS {
 			echo "</div>";
 		echo "</body>";
 		echo "</html>";
-		$this->shutdown;
+		$this->shutdown ();
 		exit;
 	}
 	
@@ -178,7 +178,7 @@ class NoGUIMorgOS {
 	 * @protected
 	*/
 	function run () {
-		$this->error (SKINSC_NOT_WRITABLE);
+		$this->error (new Error ('SKINSC_NOT_WRITABLE'));
 	}
 	
 	/**
@@ -273,7 +273,6 @@ class BaseMorgos extends NoGUIMorgOS {
 		$this->_pluginManager->loadPlugins ();
 		
 		$this->executeAction ('installerShowLicense');
-		$this->shutdown ();
 	}
 	
 	/**
@@ -543,7 +542,8 @@ class Morgos extends ConfigMorgos {
 	function init () {
 		parent::init ();
 		$this->_pluginAPI = new PluginAPI ($this);
-		$this->_dbModule = databaseLoadModule ('MySQL');
+		$this->_dbModule = databaseLoadModule (
+			$this->_configManager->getStringItem ('/databases/module'));
 		$e = $this->_dbModule->connect (
 			$this->_configManager->getStringItem ('/databases/host'), 
 			$this->_configManager->getStringItem ('/databases/user'), 

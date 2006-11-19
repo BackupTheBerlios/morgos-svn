@@ -25,8 +25,8 @@
 include_once ('core/page/pagemanager.class.php');
 class pageManagerTest extends TestCase {
 	function setUp () {
-		global $dbModule;
-		$this->pageManager = new pageManager ($dbModule);
+		global $p;
+		$this->pageManager = $p;
 	}
 	
 	function testPageExists () {
@@ -64,8 +64,8 @@ class pageManagerTest extends TestCase {
 		$development = $this->pageManager->newPage ();
 		$array = array ();
 		$array['name'] = 'Development';
-		$array['parentPageID'] = $root->getID ();
-		$array['placeInMenu'] = 3; //before packages, after news
+		$array['parent_page_id'] = $root->getID ();
+		$array['place_in_menu'] = 3; //before packages, after news
 		$a = $development->initFromArray ($array);
 		$r = $this->pageManager->addPageToDatabase ($development);
 		
@@ -85,7 +85,7 @@ class pageManagerTest extends TestCase {
 		$appendPage = $this->pageManager->newPage ();
 		$array = array ();
 		$array['name'] = 'lastPage';
-		$array['parentPageID'] = $root->getID ();
+		$array['parent_page_id'] = $root->getID ();
 		$a = $appendPage->initFromArray ($array);
 		$r = $this->pageManager->addPageToDatabase ($appendPage);
 		$this->assertFalse (isError ($r), 'Unexpected error');
@@ -130,13 +130,15 @@ class pageManagerTest extends TestCase {
 		$r = $this->pageManager->removePageFromDatabase ($lastPage);
 		$this->assertFalse (isError ($r), 'Unexpected error 2');
 		$siteMenu = $this->pageManager->getMenu ($root);
-		$this->assertEquals (array ($home, $news, $packages), $siteMenu, 'Wronge menu order');
+		$this->assertEquals (array ($home, $news, $packages), $siteMenu, 
+			'Wronge menu order');
 		
 		$r = $this->pageManager->removePageFromDatabase ($lastPage);
 		$this->assertEquals (new Error ('PAGEMANAGER_PAGE_DOESNT_EXISTS', 'lastPage'), $r, 
 			'Wrong error');
 		$siteMenu = $this->pageManager->getMenu ($root);
-		$this->assertEquals (array ($home, $news, $packages), $siteMenu, 'Wronge menu order');
+		$this->assertEquals (array ($home, $news, $packages), $siteMenu, 
+			'Wronge menu order');
 	}
 	
 	function testGetTranslation () {
@@ -165,9 +167,9 @@ class pageManagerTest extends TestCase {
 		$page = $this->pageManager->newPage ();
 		$page->initFromName ('TranslatedPage');
 		$translationNL_BE = $this->pageManager->newTranslatedPage ();
-		$a['translatedTitle'] = 'NL_BE';
-		$a['translatedContent'] = 'NL_BE translation';
-		$a['languageCode'] = 'NL-BE'; 
+		$a['translated_title'] = 'NL_BE';
+		$a['translated_content'] = 'NL_BE translation';
+		$a['language_code'] = 'NL-BE'; 
 		$r = $translationNL_BE->initFromArray ($a);
 		$this->assertFalse (isError ($r), 'Unexpected init error');
 		$r = $page->addTranslation ($translationNL_BE);
@@ -183,13 +185,14 @@ class pageManagerTest extends TestCase {
 		$page = $this->pageManager->newPage ();
 		$page->initFromName ('TranslatedPage');
 		$translationNL_BE = $this->pageManager->newTranslatedPage ();
-		$translationNL_BE->initFromDatabasePageIDandLanguageCode ($page->getID (), 'NL-BE');
+		$translationNL_BE->initFromDatabasePageIDandLanguageCode ($page->getID (), 
+			'NL-BE');
 		
 		$r = $page->removeTranslation ($translationNL_BE);
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		
-		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), $page->getAllTranslationCodes (), 
-			'Not deleted');
+		$this->assertEquals (array ('FR-FR', 'NL', 'NL-NL'), 
+			$page->getAllTranslationCodes (), 'Not deleted');
 		
 		$r = $page->removeTranslation ($translationNL_BE);
 		$this->assertEquals (new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', 'NL-BE'), $r, 
@@ -238,8 +241,8 @@ class pageManagerTest extends TestCase {
 		$packpage->initFromName ('Packages');
 		
 		$this->pageManager->movePageUp ($packpage->getID ());
-		$newspage->setField ('placeInMenu', 3);
-		$packpage->setField ('placeInMenu', 2);
+		$newspage->setField ('place_in_menu', 3);
+		$packpage->setField ('place_in_menu', 2);
 		$this->assertEquals (array ($homepage, $packpage, $newspage), 
 			$this->pageManager->getMenu ($root));
 			
@@ -263,8 +266,8 @@ class pageManagerTest extends TestCase {
 			$this->pageManager->getMenu ($root));
 		
 		$this->pageManager->movePageDown ($homepage->getID ());
-		$homepage->setField ('placeInMenu', 2);
-		$packpage->setField ('placeInMenu', 1);
+		$homepage->setField ('place_in_menu', 2);
+		$packpage->setField ('place_in_menu', 1);
 		$this->assertEquals (array ($packpage, $homepage, $newspage), 
 			$this->pageManager->getMenu ($root));
 	}	

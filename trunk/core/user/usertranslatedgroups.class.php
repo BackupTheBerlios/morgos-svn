@@ -43,11 +43,11 @@ class UserTranslatedGroup extends DBTableObject {
 	function UserTranslatedGroup ($db, &$creator, $extraFields = array (), $extraJoins = array ()) {
 		$name = new dbField ('name', DB_TYPE_STRING, 255);
 		$description = new dbField ('description', DB_TYPE_TEXT);
-		$groupID = new dbField ('groupID', DB_TYPE_INT);
+		$groupID = new dbField ('group_id', DB_TYPE_INT);
 		$groupID->canBeNull = true;	
-		$lCode = new dbField ('languageCode', DB_TYPE_STRING, 5);	
+		$lCode = new dbField ('language_code', DB_TYPE_STRING, 5);	
 	
-		parent::DBTableObject ($db, array ($name, $description, $groupID, $lCode), 'translatedGroups', 'translatedGroupID', $creator, $extraFields);
+		parent::DBTableObject ($db, array ($name, $description, $groupID, $lCode), 'translatedGroups', 'translated_group_id', $creator, $extraFields);
 	}
 
 	/**
@@ -63,13 +63,13 @@ class UserTranslatedGroup extends DBTableObject {
 		}
 		$languageCode = $this->_db->escapeString ($lCode);
 		$fullTableName = $this->getFullTableName ();
-		$sql = "SELECT * FROM $fullTableName WHERE $groupID='$groupID' AND languageCode='$languageCode'";
+		$sql = "SELECT * FROM $fullTableName WHERE group_id='$groupID' AND language_code='$languageCode'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->_db->numRows ($q) == 1) {
 				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setField ('ID', $row['translatedGroupID']);
+				$this->setField ('ID', $row['translated_group_id']);
 			} else {
 				return new Error ('TRANSLATEDGROUP_CANTFIND_GROUP', $groupID, $languageCode);
 			}
@@ -95,13 +95,13 @@ class UserTranslatedGroup extends DBTableObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getLanguageCode () {return $this->getFieldValue ('languageCode');}
+	function getLanguageCode () {return $this->getFieldValue ('language_code');}
 	/**
 	 * Returns the groupID.
 	 * @public
 	 * @return (int)
 	*/
-	function getGroupID () {return $this->getFieldValue ('groupID');}
+	function getGroupID () {return $this->getFieldValue ('group_id');}
 	
 	/**
 	 * Returns the group

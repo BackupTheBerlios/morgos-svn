@@ -42,25 +42,25 @@ class Page extends DBTableObject {
 	*/	
 	function Page ($db, &$parent, $allEFields = array (), $allEJoins = array ()) {
 		$name = new dbField ('name', DB_TYPE_STRING, 255);
-		$parentPageID = new dbField ('parentPageID', DB_TYPE_INT, 11);
-		$placeInMenu = new dbField ('placeInMenu', DB_TYPE_INT, 4);
+		$parentPageID = new dbField ('parent_page_id', DB_TYPE_INT, 11);
+		$placeInMenu = new dbField ('place_in_menu', DB_TYPE_INT, 4);
 		$placeInMenu->canBeNull = true;
 		$action = new dbField ('action', DB_TYPE_STRING, 255);
 		$action->canBeNull = true;
-		$pluginID = new dbField ('pluginID', DB_TYPE_STRING, 36);
+		$pluginID = new dbField ('plugin_id', DB_TYPE_STRING, 36);
 		$pluginID->canBeNull = true;
-		$ID = new dbField ('pageID', DB_TYPE_INT, 11);
+		$ID = new dbField ('page_id', DB_TYPE_INT, 11);
 		
 		$translatedJoin = new oneToMultipleJoinField ('translatedPages', 
-				$db->getPrefix ().'translatedPages', 'pageID', $ID);
+				$db->getPrefix ().'translatedPages', 'page_id', $ID);
 				
 		$childJoin = new oneToMultipleJoinField ('childPages', 
-				$db->getPrefix ().'pages', 'parentPageID', $ID);
+				$db->getPrefix ().'pages', 'parent_page_id', $ID);
 		
 				
 		parent::DBTableObject ($db, array ($ID, $name, $parentPageID, 
 			$placeInMenu, $action, $pluginID), 
-			'pages', 'pageID', $parent, $allEFields, 
+			'pages', 'page_id', $parent, $allEFields, 
 			array ($translatedJoin, $childJoin));
 	}
 
@@ -107,7 +107,7 @@ class Page extends DBTableObject {
 	 * @public
 	 * @return (int)
 	*/
-	function getParentPageID () {return $this->getFieldValue ('parentPageID');}
+	function getParentPageID () {return $this->getFieldValue ('parent_page_id');}
 	
 	/**
 	 * Returns the place in the menu
@@ -115,7 +115,7 @@ class Page extends DBTableObject {
 	 * @public
 	 * @return (int)
 	*/
-	function getPlaceInMenu () {return $this->getFieldValue ('placeInMenu');}
+	function getPlaceInMenu () {return $this->getFieldValue ('place_in_menu');}
 
 	/**
 	 * If the page needs a special action returns it.
@@ -141,7 +141,7 @@ class Page extends DBTableObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getPluginID () {return $this->getFieldValue ('pluginID');}
+	function getPluginID () {return $this->getFieldValue ('plugin_id');}
 	
 	/**
 	 * Returns of the page is in the admin site
@@ -190,8 +190,8 @@ class Page extends DBTableObject {
 	 * @return (object translatedPage) 
 	*/
 	function getTranslation ($languageCode) {
-		$trans = $this->getAllChildTables ('translatedPages', 'languageCode', ORDER_ASC, 
-				array (new WhereClause ('languageCode', $languageCode, '=')));
+		$trans = $this->getAllChildTables ('translatedPages', 'language_code', ORDER_ASC, 
+				array (new WhereClause ('language_code', $languageCode, '=')));
 		if ((count ($trans) >= 1) and (! isError ($trans))) {
 			$tPageArray = $trans[0]; /*Normally I should get only one*/
 			$creator = $this->getCreator ();
@@ -217,7 +217,7 @@ class Page extends DBTableObject {
 	
 	function getAllTranslations () {
 		$tPages = array ();
-		foreach ($this->getAllChildTables ('translatedPages', 'languageCode', ORDER_ASC) 
+		foreach ($this->getAllChildTables ('translatedPages', 'language_code', ORDER_ASC) 
 				as $tPageArray) {
 			$creator = $this->getCreator ();
 			$tPage = $creator->newTranslatedPage ();
@@ -229,11 +229,11 @@ class Page extends DBTableObject {
 	
 	function getAllTranslationCodes () {
 		$tCodes = array ();
-		$c = $this->getAllChildTables ('translatedPages', 'languageCode', ORDER_ASC, array (), 
-				'languageCode');
+		$c = $this->getAllChildTables ('translatedPages', 'language_code', ORDER_ASC, 
+			array (), 'language_code');
 		if (! isError ($c)) {
 			foreach ($c as $tPageArray) {
-				$tCodes[] = $tPageArray['languageCode'];
+				$tCodes[] = $tPageArray['language_code'];
 			}
 			return $tCodes;
 		} else {	
@@ -243,11 +243,12 @@ class Page extends DBTableObject {
 	
 	function addTranslation (&$translation) {
 		if (! $this->translationExists ($translation->getLanguageCode ())) {
-			$a['pageID'] = $this->getID ();
+			$a['page_id'] = $this->getID ();
 			$translation->updateFromArray ($a);
 			$a = $translation->addToDatabase ();
 		} else {
-			return new Error ('PAGE_TRANSLATION_EXISTS', $translation->getLanguageCode ());
+			return new Error ('PAGE_TRANSLATION_EXISTS', 
+				$translation->getLanguageCode ());
 		}
 	}
 	
@@ -281,12 +282,12 @@ class Page extends DBTableObject {
 	}
 	
 	function getMaxPlaceInMenu () {
-		$sql = "SELECT MAX(placeInMenu) FROM ".$this->getFullTableName ()." 
-				WHERE parentPageID='". $this->getID ()."'";
+		$sql = "SELECT MAX(place_in_menu) AS maxplace FROM ".$this->getFullTableName ()." 
+				WHERE parent_page_id='". $this->getID ()."'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);
-			return $row['MAX(placeInMenu)']+1;
+			return $row['maxplace']+1;
 		} else {
 			return $a;
 		}
@@ -294,7 +295,7 @@ class Page extends DBTableObject {
 	
 	function initEmpty () {
 		parent::initEmpty ();
-		$this->setField ('placeInMenu', -1);
+		$this->setField ('place_in_menu', -1);
 	}
 }
 ?>

@@ -41,17 +41,17 @@ class TranslatedPage extends DBTableObject {
 	 * @param $extraJoins (object dbGenericJoinField array)
 	*/
 	function TranslatedPage ($db, &$parent, $extraFields = array (), $extraJoins = array ()) {
-		$translatedTitle = new dbField ('translatedTitle', DB_TYPE_STRING, 255);
-		$translatedNavTitle = new dbField ('translatedNavTitle', DB_TYPE_STRING, 255);
+		$translatedTitle = new dbField ('translated_title', DB_TYPE_STRING, 255);
+		$translatedNavTitle = new dbField ('translated_nav_title', DB_TYPE_STRING, 255);
 		$translatedNavTitle->canBeNull = true;
-		$translatedContent = new dbField ('translatedContent', DB_TYPE_STRING, 255);
+		$translatedContent = new dbField ('translated_content', DB_TYPE_STRING, 255);
 		$translatedContent->canBeNull = true;		
-		$pageID = new dbField ('pageID', DB_TYPE_INT, 11);
+		$pageID = new dbField ('page_id', DB_TYPE_INT, 11);
 		$pageID->canBeNull = true;
-		$languageCode = new dbField ('languageCode', DB_TYPE_STRING, 5);	
-		$ID = new dbField ('translatedPageID', DB_TYPE_INT, 11);
+		$languageCode = new dbField ('language_code', DB_TYPE_STRING, 5);	
+		$ID = new dbField ('translated_page_id', DB_TYPE_INT, 11);
 		
-		parent::DBTableObject ($db, array ('translatedPageID'=>$ID, 'translatedTitle'=>$translatedTitle, 'translatedNavTitle'=>$translatedNavTitle, 'translatedContent'=>$translatedContent,'pageID'=>$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translatedPageID', $parent, $extraFields);
+		parent::DBTableObject ($db, array ($ID, $translatedTitle, $translatedNavTitle, $translatedContent,$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translated_page_id', $parent, $extraFields);
 	}
 	
 	/**
@@ -67,13 +67,13 @@ class TranslatedPage extends DBTableObject {
 		}
 		$languageCode = $this->_db->escapeString ($languageCode);
 		$fTN = $this->getFullTableName ();
-		$sql = "SELECT * FROM $fTN WHERE $pageID='$pageID' AND languageCode='$languageCode'";
+		$sql = "SELECT * FROM $fTN WHERE page_id='$pageID' AND language_code='$languageCode'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->_db->numRows ($q) == 1) {
 				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setField ('ID', $row['translatedPageID']);
+				$this->setField ('ID', $row['translated_page_id']);
 			} else {
 				return new Error ('ERROR_TRANSLATEDPAGE_CANTFIND_PAGE', $pageID, $languageCode);
 			}
@@ -107,19 +107,19 @@ class TranslatedPage extends DBTableObject {
 	 * @public
 	 * @return (string)
 	*/
-	function getContent () {return $this->getFieldValue ('translatedContent');}
+	function getContent () {return $this->getFieldValue ('translated_content');}
 	/**
 	 * Returns the pageID
 	 * @public
 	 * @return (int)
 	*/
-	function getPageID () {return $this->getFieldValue ('pageID');}
+	function getPageID () {return $this->getFieldValue ('page_id');}
 	/**
 	 * Returns the languageCode
 	 * @public
 	 * @returns (string)
 	*/	
-	function getLanguageCode () {return $this->getFieldValue ('languageCode');}
+	function getLanguageCode () {return $this->getFieldValue ('language_code');}
 	
 	/**
 	 * Returns the original page where this is a translation for.

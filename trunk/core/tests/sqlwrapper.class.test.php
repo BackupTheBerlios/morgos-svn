@@ -34,26 +34,26 @@ class BookManager extends DBTableManager {
 class Book extends DBTableObject {
 	function Book (&$db, $creator) {
 		$title = new dbField ('title', DB_TYPE_STRING, 255);
-		$author = new dbField ('author', DB_TYPE_INT, 11);
-		$backText = new dbField ('backText', DB_TYPE_TEXT);
-		$year = new dbField ('year', DB_TYPE_INT, 4);
+		$author = new dbField ('author', DB_TYPE_INT);
+		$backText = new dbField ('backtext', DB_TYPE_TEXT);
+		$year = new dbField ('year', DB_TYPE_INT);
 		
 		$basicFields = array ($title, $author, $backText, $year);		
-		$joins = array (new multipleToOneJoinField ('author', 'Authors', 'authorID', $author)); 		
+		$joins = array (new multipleToOneJoinField ('author', 'Authors', 'authorid', $author)); 		
 		
-		parent::DBTableObject ($db, $basicFields, 'books', 'bookID', $creator, array (), $joins);
+		parent::DBTableObject ($db, $basicFields, 'books', 'bookid', $creator, array (), $joins);
 	}
 }
 
 class Author extends DBTableObject {
 	function Author (&$db, $creator) {
-		$firstName = new dbField ('firstName', DB_TYPE_STRING, 70);
-		$lastName = new dbField ('lastName', DB_TYPE_STRING, 70);
-		$ID = new dbField ('authorID', DB_TYPE_INT, 11);
+		$firstName = new dbField ('firstname', DB_TYPE_STRING, 70);
+		$lastName = new dbField ('lastname', DB_TYPE_STRING, 70);
+		$ID = new dbField ('authorid', DB_TYPE_INT, 11);
 		$basicFields = array ($ID, $firstName, $lastName);		
-		$joins = array (new OneToMultipleJoinField ('books', 'Books', 'authorID', $ID)); 		
+		$joins = array (new OneToMultipleJoinField ('books', 'Books', 'authorid', $ID)); 		
 		
-		parent::DBTableObject ($db, $basicFields, 'authors', 'authorID', $creator, array (), $joins);
+		parent::DBTableObject ($db, $basicFields, 'authors', 'authorid', $creator, array (), $joins);
 	}
 
 }
@@ -92,8 +92,8 @@ class SQLWrapperTest extends TestCase {
 	}
 	
 	function testAddExtraOptionOrJoinForTable () {
-		$newField = new dbField ('editorID', DB_TYPE_INT, 11);
-		$newJoin = new multipleToOneJoinField ('editor', 'Editors', 'editorID', $newField);	
+		$newField = new dbField ('editorid', DB_TYPE_INT);
+		$newJoin = new multipleToOneJoinField ('editor', 'Editors', 'editorid', $newField);	
 			
 		$this->testManager->addExtraJoinFieldForTable ('books', $newJoin);			
 		$this->assertEquals (array ($newJoin), 
@@ -107,12 +107,12 @@ class SQLWrapperTest extends TestCase {
 	
 	function testAddRowToTable () {
 		$newAuthor = $this->testManager->createObject ('authors');
-		$newAuthor->initFromArray (array ('firstName'=>'Nathan', 'lastName'=>'Samson'));
+		$newAuthor->initFromArray (array ('firstname'=>'Nathan', 'lastname'=>'Samson'));
 		$a = $this->testManager->addRowToTable ($newAuthor, 'authors');
 		$this->assertFalse ($newAuthor->getID () == -1, 'Author Not stored');		
 		
 		$newBook = $this->testManager->createObject ('books');
-		$newBook->initFromArray (array ('title'=>'By NS', 'authorID'=>$newAuthor->getID (), 'backText'=>'This is the backtext.'));
+		$newBook->initFromArray (array ('title'=>'By NS', 'authorid'=>$newAuthor->getID (), 'backtext'=>'This is the backtext.'));
 		$this->testManager->addRowToTable ($newBook, 'books');
 		$this->assertFalse ($newBook->getID () == -1, 'Book Not stored'); 
 		

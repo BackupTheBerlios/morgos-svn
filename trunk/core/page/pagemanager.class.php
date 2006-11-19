@@ -77,7 +77,7 @@ class PageManager extends DBTableManager {
 			$pInMen = $parentPage->getMaxPlaceInMenu ();
 			if (! isError ($pInMen)) {
 				$a = array ();
-				$a['placeInMenu'] = $pInMen; 
+				$a['place_in_menu'] = $pInMen; 
 				$page->updateFromArray ($a);
 			} else {
 				return $pInMen;
@@ -88,7 +88,7 @@ class PageManager extends DBTableManager {
 				return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 			}
 			$pagesTableName = $this->_db->getPrefix ().'pages';
-			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu>=$place AND parentPageID='$parentPageID'";
+			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 WHERE place_in_menu>=$place AND parent_page_id='$parentPageID'";
 			$q = $this->_db->query ($sql);
 			if (isError ($q)) {
 				return $q;
@@ -110,13 +110,13 @@ class PageManager extends DBTableManager {
 			$pagesTableName = $this->_db->getPrefix ().'pages';
 			$placeInMenu = $page->getPlaceInMenu ();
 			$ppID = $page->getParentPageID ();
-			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)+1 WHERE placeInMenu=($placeInMenu)-1 AND placeInMenu>0 AND parentPageID='$ppID'";
+			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 WHERE placeInMenu=($place_in_menu)-1 AND place_in_menu>0 AND parent_page_id='$ppID'";
 			$a = $this->_db->query ($sql);
 			if (isError ($a)) {
 				return $a;
 			}
 			
-			$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)-1 WHERE pageID=\''.$page->getID ().'\' AND placeInMenu>1';
+			$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)-1 WHERE page_id=\''.$page->getID ().'\' AND place_in_menu>1';
 			$a = $this->_db->query ($sql);
 			if (isError ($a)) {
 				return $a;
@@ -139,7 +139,7 @@ class PageManager extends DBTableManager {
 			$pagesTableName = $this->_db->getPrefix ().'pages';
 			$placeInMenu = $page->getPlaceInMenu ();
 			$ppID = $page->getParentPageID ();
-			$sql = "UPDATE $pagesTableName SET placeInMenu=(placeInMenu)-1 WHERE placeInMenu=($placeInMenu)+1 AND parentPageID='$ppID'";
+			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)-1 WHERE place_in_menu=($place_in_menu)+1 AND parent_page_id='$ppID'";
 			$a = $this->_db->query ($sql);
 			if (isError ($a)) {
 				return $a;
@@ -147,7 +147,7 @@ class PageManager extends DBTableManager {
 			
 			// check their was a menu item down the one to be moved
 			if ($this->_db->affectedRows ($a) !== 0) {
-				$sql = 'UPDATE '.$pagesTableName.' SET placeInMenu=(placeInMenu)+1 WHERE pageID=\''.$page->getID ().'\'';
+				$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)+1 WHERE page_id=\''.$page->getID ().'\'';
 				$a = $this->_db->query ($sql);
 				if (isError ($a)) {
 					return $a;
@@ -180,7 +180,7 @@ class PageManager extends DBTableManager {
 		if (! is_numeric ($parentPageID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
-		$sql = "UPDATE $pagesDatabaseName SET placeInMenu=(placeInMenu-1) WHERE placeInMenu>=$placeInMenu AND parentPageID='$parentPageID'";
+		$sql = "UPDATE $pagesDatabaseName SET place_in_menu=(place_in_menu-1) WHERE place_in_menu>=$placeInMenu AND parent_page_id='$parentPageID'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			return $page->removeFromDatabase ();
@@ -209,11 +209,11 @@ class PageManager extends DBTableManager {
 	function pageExists ($pageName) {
 		$fullPagesTableName = $this->_db->getPrefix ().'pages';
 		$pageName = $this->_db->escapeString ($pageName);
-		$sql = "SELECT COUNT(pageID) FROM $fullPagesTableName WHERE name='$pageName'";
+		$sql = "SELECT COUNT(page_id) as pages FROM $fullPagesTableName WHERE name='$pageName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);
-			if ($row['COUNT(pageID)'] == 1) {
+			if ($row['pages'] == 1) {
 				return true;
 			} else {
 				return false;
@@ -236,13 +236,13 @@ class PageManager extends DBTableManager {
 		if (! is_numeric ($parentPageID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 		}
-		$sql = "SELECT pageID FROM $tableName WHERE parentPageID='$parentPageID' AND placeInMenu>0 ORDER BY placeInMenu ASC";
+		$sql = "SELECT page_id FROM $tableName WHERE parent_page_id='$parentPageID' AND place_in_menu>0 ORDER BY place_in_menu ASC";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allPages = array ();
 			while ($pageRow = $this->_db->fetchArray ($q)) {
 				$newPage = $this->newPage ();
-				$newPage->initFromDatabaseID ($pageRow['pageID']);
+				$newPage->initFromDatabaseID ($pageRow['page_id']);
 				$allPages[] = $newPage;
 			}
 			return $allPages;

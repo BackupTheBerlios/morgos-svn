@@ -1,16 +1,22 @@
 Version 0.3
 ===========
+[Added]
+	* PostgreSQL database class
 [Changes]
+	 * You can really choose what dbmodule you want. [PostgreSQL 8.1+]
 	[API]
 	 * Actions have their associated pages
 	 * Added DBTableManager
 	 * Added joins
 	 * Changed dbFields API
 	 * [Splitted up in MorgOS class, where some are less advanced (no db, no config, no smarty)]
+	 * Lowercased all fields
 	[Installer]
 	 * (Core-)Plugins are responsible for installing their DB tables
 [Bugs]
- * Add startup warnings when their are problems with config.php and database 
+ * Add startup warnings when their are problems with config.php and database
+ * Fixed a bug when translating an error that doesn't have params
+ * Removed the XMLSQL backend from the list (it was incomplete) 
 
 Version 0.2 5 November 2006
 ===========

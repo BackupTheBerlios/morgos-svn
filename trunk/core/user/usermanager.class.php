@@ -44,12 +44,12 @@ class GroupPermission extends DBTableObject {
 
 	function GroupPermission ($db, &$creator) {
 		$enabled = new dbEnumField ('enabled', DB_TYPE_ENUM, 'Y', 'N');
-		$permName = new dbField ('permissionName', DB_TYPE_STRING, 255);
-		$groupID = new dbField ('groupID', DB_TYPE_INT, 255);
-		$groupJoin = new oneToOneJoinField ('group', 'groups', 'groupID', $groupID);
+		$permName = new dbField ('permission_name', DB_TYPE_STRING, 255);
+		$groupID = new dbField ('group_id', DB_TYPE_INT, 255);
+		$groupJoin = new oneToOneJoinField ('group', 'groups', 'group_id', $groupID);
 		
 		parent::DBTableObject ($db, array ($enabled, $permName, $groupID), 
-			'groupPermissions', 'permissionID', $creator);
+			'groupPermissions', 'permission_id', $creator);
 	}
 
 }
@@ -99,11 +99,11 @@ class UserManager extends DBTableManager {
 	function loginIsRegistered ($login) {
 		$prefix = $this->_db->getPrefix ();
 		$login = $this->_db->escapeString ($login);
-		$sql = "SELECT COUNT(login) FROM ".$prefix."users WHERE login='$login'";
+		$sql = "SELECT COUNT(login) AS logins FROM ".$prefix."users WHERE login='$login'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);
-			if ($row['COUNT(login)'] == 0) {
+			if ($row['logins'] == 0) {
 				return false;
 			} else {
 				return true;
@@ -123,11 +123,11 @@ class UserManager extends DBTableManager {
 	function emailIsRegistered ($email) {
 		$prefix = $this->_db->getPrefix ();
 		$email = $this->_db->escapeString ($email);
-		$sql = "SELECT COUNT(email) FROM ".$prefix."users WHERE email='$email'";
+		$sql = "SELECT COUNT(email) AS emails FROM ".$prefix."users WHERE email='$email'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);
-			if ($row['COUNT(email)'] == 0) {
+			if ($row['emails'] == 0) {
 				return false;
 			} else {
 				return true;
@@ -300,12 +300,12 @@ class UserManager extends DBTableManager {
 	function isGroupNameRegistered ($groupName) {
 		$prefix = $this->_db->getPrefix ();
 		$groupName = $this->_db->escapeString ($groupName);
-		$sql = "SELECT COUNT(groupID) FROM ".$prefix."groups 
-				WHERE genericName='$groupName'";
+		$sql = "SELECT COUNT(group_id) as groups FROM ".$prefix."groups 
+				WHERE generic_name='$groupName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);
-			if ($row['COUNT(groupID)'] == 0) {
+			if ($row['groups'] == 0) {
 				return false;
 			} else {
 				return true;
@@ -362,12 +362,12 @@ class UserManager extends DBTableManager {
 	*/
 	function getAllGroupsID () {
 		$prefix = $this->_db->getPrefix ();
-		$sql = "SELECT groupID FROM ".$prefix."groups";
+		$sql = "SELECT group_id FROM ".$prefix."groups";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();
 			while ($row = $this->_db->fetchArray ($q)) {
-				$allGroups[] = $row['groupID'];
+				$allGroups[] = $row['group_id'];
 			}
 			return $allGroups;
 		}

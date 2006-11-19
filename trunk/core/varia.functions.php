@@ -44,6 +44,7 @@ class Error {
 
 	function Error ($error) {
 		$this->_error = $error;
+		$this->_params = array ();
 		for ($i = 1; $i < func_num_args (); $i++) {
 			$this->_params[$i-1] = func_get_arg ($i);
 		}

@@ -41,10 +41,10 @@ class UserGroup extends DBTableObject {
 	 * @param $extraJoins (dbGenericJoinField array)
 	*/
 	function UserGroup ($db, &$creator, $extraFields = array (), $extraJoins = array ()) {
-		$genericName = new dbField ('genericName', DB_TYPE_STRING, 255);
-		$genericDescription = new dbField ('genericDescription', DB_TYPE_TEXT);
+		$genericName = new dbField ('generic_name', DB_TYPE_STRING, 255);
+		$genericDescription = new dbField ('generic_description', DB_TYPE_TEXT);
 		
-		parent::DBTableObject ($db, array ($genericName, $genericDescription), 'groups', 'groupID', $creator, $extraFields);
+		parent::DBTableObject ($db, array ($genericName, $genericDescription), 'groups', 'group_id', $creator, $extraFields);
 	}
 	
 	/**
@@ -56,13 +56,14 @@ class UserGroup extends DBTableObject {
 	function initFromDatabaseGenericName ($genericName) {
 		$fullTableName = $this->getFullTableName ();
 		$genericName = $this->_db->escapeString ($genericName);
-		$sql = "SELECT * FROM $fullTableName WHERE genericName='$genericName'";
+		$sql = "SELECT * FROM $fullTableName WHERE generic_name='$genericName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->_db->numRows ($q)) {
 				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				$this->setField ('ID',$row['groupID']);
+				var_dump ($row);
+				$this->setField ('ID',$row['group_id']);
 			} else {
 				return new Error ('GROUP_GENERICNAME_DONT_EXISTS', $genericName);
 			}
@@ -84,7 +85,7 @@ class UserGroup extends DBTableObject {
 		$permissionName = $this->_db->escapeString ($permissionName);
 		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
-		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE groupID='$ID' AND permissionName='$permissionName'";
+		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE group_id='$ID' AND permission_name='$permissionName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->_db->numRows ($q) == 1) {
@@ -113,7 +114,7 @@ class UserGroup extends DBTableObject {
 		$permissionName = $this->_db->escapeString ($permissionName);
 		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
-		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE groupID='$ID' AND permissionName='$permissionName'";
+		$sql = "SELECT enabled FROM {$prefix}groupPermissions WHERE group_id='$ID' AND permission_name='$permissionName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			if ($this->_db->numRows ($q) == 1) {
@@ -123,7 +124,7 @@ class UserGroup extends DBTableObject {
 					$enabled = 'N';
 				}
 				$ID = $this->getID ();
-				$sql = "UPDATE {$prefix}groupPermissions SET enabled='$enabled' WHERE groupID='$ID' AND permissionName='$permissionName'";
+				$sql = "UPDATE {$prefix}groupPermissions SET enabled='$enabled' WHERE group_id='$ID' AND permission_name='$permissionName'";
 				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -135,7 +136,7 @@ class UserGroup extends DBTableObject {
 					$enabled = 'N';
 				}
 				$groupID = $this->getID ();
-				$sql = "INSERT INTO {$prefix}groupPermissions (groupID, permissionName, enabled) VALUES ('$groupID', '$permissionName', '$enabled')";
+				$sql = "INSERT INTO {$prefix}groupPermissions (group_id, permission_name, enabled) VALUES ('$groupID', '$permissionName', '$enabled')";
 				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -167,7 +168,7 @@ class UserGroup extends DBTableObject {
 				if (! is_numeric ($userID)) {
 					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}				
-				$sql = "INSERT INTO ".$prefix."groupUsers (groupID, userID) VALUES ('$groupID', '$userID')";
+				$sql = "INSERT INTO ".$prefix."groupUsers (group_id, user_id) VALUES ('$groupID', '$userID')";
 				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -201,7 +202,7 @@ class UserGroup extends DBTableObject {
 					return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
 				}
 				
-				$sql = "DELETE FROM ".$prefix."groupUsers WHERE groupID='$groupID' AND userID='$userID'";
+				$sql = "DELETE FROM ".$prefix."groupUsers WHERE group_id='$groupID' AND user_id='$userID'";
 				$q = $this->_db->query ($sql);
 				if (isError ($q)) {
 					return $q;
@@ -240,12 +241,12 @@ class UserGroup extends DBTableObject {
 	function getAllUsersID () {
 		$prefix = $this->_db->getPrefix ();
 		$groupID = $this->getID ();
-		$sql = "SELECT userID FROM ".$prefix."groupUsers WHERE groupID='$groupID'";
+		$sql = "SELECT user_id FROM ".$prefix."groupUsers WHERE group_id='$groupID'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allUsers = array ();
 			while ($row = $this->_db->fetchArray ($q)) {
-				$allUsers[] = $row['userID'];
+				$allUsers[] = $row['user_id'];
 			}
 			return $allUsers;
 		} else {
@@ -281,7 +282,7 @@ class UserGroup extends DBTableObject {
 	 * @return (string)
 	*/
 	function getGenericName () {
-		return $this->getFieldValue ('genericName');
+		return $this->getFieldValue ('generic_name');
 	}
 	
 	/**
@@ -291,7 +292,7 @@ class UserGroup extends DBTableObject {
 	 * @return (string)
 	*/
 	function getGenericDescription () {
-		return $this->getOptionValue ('genericDescription');
+		return $this->getOptionValue ('generic_description');
 	}	
 	
 	/**
@@ -323,12 +324,12 @@ class UserGroup extends DBTableObject {
 	*/
 	function getAllTranslatedGroupsID () {
 		$prefix = $this->db->getPrefix ();
-		$sql = "SELECT translatedGroupID FROM ".$prefix."translatedgroups";
+		$sql = "SELECT translated_group_id FROM ".$prefix."translatedgroups";
 		$q = $this->db->query ($sql);
 		if (! isError ($q)) {
 			$allGroups = array ();
 			while ($row = $this->db->fetchArray ()) {
-				$allGroups[] = $row['translatedGroupID'];
+				$allGroups[] = $row['translated_group_id'];
 			}
 			return $allGroups;
 		} else {
@@ -360,12 +361,12 @@ class UserGroup extends DBTableObject {
 	function getAllTranslations () {
 		$fullTranslationTableName = $this->_db->getPrefix ().'translatedGroups';
 		$ID = $this->getID ();
-		$sql = "SELECT languageCode FROM $fullTranslationTableName WHERE groupID='$ID' ORDER BY languageCode ASC";
+		$sql = "SELECT language_code FROM $fullTranslationTableName WHERE group_id='$ID' ORDER BY language_code ASC";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$lCodes = array ();
 			while ($row = $this->_db->fetchArray ($q)) {
-				$lCodes[] = $row['languageCode'];
+				$lCodes[] = $row['language_code'];
 			}
 			return $lCodes;
 		} else {
@@ -404,7 +405,7 @@ class UserGroup extends DBTableObject {
 	*/
 	function addTranslationToDatabase ($translatedGroup) {
 		if (! $this->existsTranslatedGroup ($translatedGroup->getLanguageCode ())) {
-			$translatedGroup->setField ('groupID', $this->getID ());
+			$translatedGroup->setField ('group_id', $this->getID ());
 			return $translatedGroup->addToDatabase ();
 		} else {
 			return new Error ('GROUP_TRANSLATION_EXISTS', $translatedGroup->getLanguageCode ());

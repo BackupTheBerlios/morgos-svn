@@ -55,20 +55,7 @@ class MorgOSSuit extends TestSuite {
 				exit ();
 			}
 		}
-		$queries = file_get_contents ("core/tests/database.sql");
-		$queries = str_replace ('{prefix}', $testerOptions['dbPrefix'], $queries);
-		$dbModule->setPrefix ($testerOptions['dbPrefix']);
-		$a = split (';', $queries);
-		foreach ($a as $sql) {
-			if (trim ($sql) != '') {
-				$r = $dbModule->query ($sql);
-				if (isError ($r)) {
-					var_dump ($r);
-					var_dump ($sql);
-					exit ();
-				}
-			}
-		}
+
 		
 		global $avModules;
 		$availableModulesINI = explode (',', $testerOptions['dbAvailableModules']);
@@ -78,8 +65,13 @@ class MorgOSSuit extends TestSuite {
 		}
 	
 		include_once ('core/user/usermanager.class.php');
-		global $u;
-		$u = new userManager ($dbModule);	
+		include_once ('core/page/pagemanager.class.php');
+		global $u, $p;
+		$u = new userManager ($dbModule);
+		$u->installAllTables ();	
+		
+		$p = new pageManager ($dbModule);
+		$p->installAllTables ();
 	
 		$this->setName ('MorgOS automated Tester: results');
 		global $php;
@@ -99,7 +91,7 @@ class MorgOSSuit extends TestSuite {
 			$this->addTestFile ('core/tests/varia.functions.test.php');
 			$this->addTestFile ('core/tests/compatible.functions.test.php');
 			$this->addTestFile ('core/tests/pagemanager.class.test.php');
-			$this->addTestFile ('core/tests/xmlsql.class.test.php');
+		//	$this->addTestFile ('core/tests/xmlsql.class.test.php');
 		}
 
 		$this->result = new TestResult;
