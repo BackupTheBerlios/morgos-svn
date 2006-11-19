@@ -91,7 +91,7 @@ class viewPageCoreAdminPlugin extends plugin {
 		$oldPage->initFromDatabaseID ($pageID);
 		$oldParentPage = $oldPage->getParentPage ();
 		$newParentPage = $oldParentPage->getParentPage ();
-		$oldPage->updateFromArray (array ('parentPageID'=>$newParentPage->getID (), 'placeInMenu'=>$newParentPage->getMaxPlaceInMenu ()));
+		$oldPage->updateFromArray (array ('parent_page_id'=>$newParentPage->getID (), 'place_in_menu'=>$newParentPage->getMaxPlaceInMenu ()));
 		$oldPage->updateToDatabase ();				
 		//$this->_pluginAPI->executeAction (); // fill in
 		$this->_pluginAPI->executePreviousAction ();
@@ -103,7 +103,7 @@ class viewPageCoreAdminPlugin extends plugin {
 		$oldPage->initFromDatabaseID ($pageID);
 		$newParentPage = $pageM->newPage ();
 		$newParentPage->initFromDatabaseID ($newParentPageID);
-		$oldPage->updateFromArray (array ('parentPageID'=>$newParentPage->getID (), 'placeInMenu'=>$newParentPage->getMaxPlaceInMenu ()));
+		$oldPage->updateFromArray (array ('parent_page_id'=>$newParentPage->getID (), 'place_in_menu'=>$newParentPage->getMaxPlaceInMenu ()));
 		$oldPage->updateToDatabase ();				
 		//$this->_pluginAPI->executeAction (); // fill in
 		$this->_pluginAPI->executePreviousAction ();
@@ -191,7 +191,7 @@ class viewPageCoreAdminPlugin extends plugin {
 		$editedPage->initFromDatabaseID ($pageID);
 		$tPage = $editedPage->getTranslation ('en_UK');
 		$pageContent = secureHTMLInput ($pageContent);
-		$tPage->updateFromArray (array ('translatedContent'=>$pageContent, 'translatedTitle'=>$pageTitle, 'translatedNavTitle'=>$pageNavTitle));
+		$tPage->updateFromArray (array ('translated_content'=>$pageContent, 'translated_title'=>$pageTitle, 'translated_nav_title'=>$pageNavTitle));
 		$tPage->updateToDatabase ();
 		$this->_pluginAPI->addMessage ($t->translate ('Page saved'), NOTICE);
 		$a = $this->_pluginAPI->executePreviousAction ();
@@ -202,12 +202,12 @@ class viewPageCoreAdminPlugin extends plugin {
 		$t = &$this->_pluginAPI->getI18nManager ();		
 
 		$newPage = $pageManager->newPage ();
-		$ap = array ('name'=>$title, 'parentPageID'=>$parentPageID);
+		$ap = array ('name'=>$title, 'parent_page_id'=>$parentPageID);
 		$newPage->initFromArray ($ap);
 		$pageManager->addPageToDatabase ($newPage);
 		$tNewPage = $pageManager->newTranslatedPage ();
-		$a = $tNewPage->initFromArray (array ('translatedTitle'=>$title, 
-			'languageCode'=>'en_UK', 'translatedContent'=>'Newly created page.'));
+		$a = $tNewPage->initFromArray (array ('translated_title'=>$title, 
+			'language_code'=>'en_UK', 'translated_content'=>'Newly created page.'));
 		$newPage->addTranslation ($tNewPage);
 		$this->_pluginAPI->addRuntimeMessage ($t->translate ('New page created.'), NOTICE);
 		$this->onViewPageManager ($newPage->getID (), null);

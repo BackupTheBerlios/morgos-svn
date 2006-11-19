@@ -47,7 +47,7 @@
 				<a href="{$childPage.Link|xhtml}">{t s="View"}</a>
 			</td>
 			<td>
-				<a href="index.php?action=adminDeletePage&amp;pageID={$childPage.ID}" onclick="return confirm ('{t s="Are you sure you wan to delete %p" p=$childPage.Title}')">
+				<a href="index.php?action=adminDeletePage&amp;pageID={$childPage.ID}" onclick="return confirm ('{t s="Are you sure you wan to delete %1" 1=$childPage.Title}')">
 					<img src="{$SkinPath}/images/icons/delete.png" alt="{t s='Delete'}"/>
 				</a>
 			</td>
