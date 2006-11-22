@@ -98,13 +98,13 @@ class adminCoreUserAdminPlugin extends plugin {
 		$adminGroup = $userM->newGroup ();
 		$adminGroup->initFromDatabaseGenericName ('administrator');
 		$adminID = $adminGroup->getID ();
-		$sql = "SELECT userID FROM {$tPrefix}groupUsers WHERE groupID=$adminID";
+		$sql = "SELECT user_id FROM {$tPrefix}groupUsers WHERE group_id=$adminID";
 		$q = $db->query ($sql);
 		$admins = array ();
 		$currentUser = $userM->getCurrentUser ();
 		while ($row = $db->fetchArray ($q)) {
 			$admin = $userM->newUser ();
-			$a = $admin->initFromDatabaseID ($row['userID']);
+			$a = $admin->initFromDatabaseID ($row['user_id']);
 			if (isError ($a)) {
 				continue;
 			}

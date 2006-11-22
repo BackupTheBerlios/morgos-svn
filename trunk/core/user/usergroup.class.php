@@ -62,7 +62,6 @@ class UserGroup extends DBTableObject {
 			if ($this->_db->numRows ($q)) {
 				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
-				var_dump ($row);
 				$this->setField ('ID',$row['group_id']);
 			} else {
 				return new Error ('GROUP_GENERICNAME_DONT_EXISTS', $genericName);
