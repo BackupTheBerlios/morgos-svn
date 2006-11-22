@@ -635,8 +635,18 @@ class Morgos extends ConfigMorgos {
 				$this->error ('USER_HASNOTPERMISSION_VIEWPAGE');
 			}
 		}	
-		
 		if ($this->canUserViewPage ($action)) {
+			if ($action->getPageName ()) {
+				$page = $this->_pageManager->newPage ();
+				$page->initFromName ($action->getPageName ());
+				if ($page->isAdminPage ()) {
+					$this->_eventManager->triggerEvent ('viewAnyAdminPage', 
+						array ($page->getID ()));
+				} else {
+					$this->_eventManager->triggerEvent ('viewPage', 
+						array ($page->getID ()));
+				}
+			}
 			$r = $this->_actionManager->executeAction ($a);
 			if (isError ($r)) {
 				$this->error ($r);

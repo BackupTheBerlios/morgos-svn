@@ -345,6 +345,11 @@ class action {
 	 * @protected
 	*/
 	var $_pageName;
+	/**
+	 * If the action should auto trigger viewPage or viewAnyAdminPage
+	 * @protected
+	*/
+	var $_autoTrigger;
 
 	/**
 	 * Constructor.
@@ -355,16 +360,18 @@ class action {
 	 * @param $requiredOptions (baseInput array)
 	 * @param $notRequiredOptions (baseInput array) default array ()
 	 * @param $pageName (string) default null
-	 * @since 0.3 parameter $pageName
+	 * @param $autoTrigger (bool) default true (only important if pageName)
+	 * @since 0.3 parameter $pageName and $autoTrigger
 	*/
 	function action ($name, $method, $executor, $requiredOptions, 
-			$notRequiredOptions = array (), $pageName = null) {
+			$notRequiredOptions = array (), $pageName = null, $autoTrigger = true) {
 		$this->_name = $name;
 		$this->_method = $method;
 		$this->_requiredOptions = $requiredOptions;
 		$this->_notRequiredOptions = $notRequiredOptions;
 		$this->_executor = $executor;
 		$this->_pageName = $pageName;
+		$this->_autoTrigger = $autoTrigger;
 	}
 	
 	/**
@@ -487,6 +494,9 @@ class action {
 	}
 	
 	function getPageName () {return $this->_pageName;}
+	
+	function autoTrigger () {return $this->getPageName () && $this->_autoTrigger;}
+	function setAutoTrigger ($bool) {$this->_autoTrigger = $bool;}
 }
 
 /**

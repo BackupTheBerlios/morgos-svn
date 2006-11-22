@@ -41,47 +41,47 @@ class viewPageCoreAdminPlugin extends plugin {
 		// page edit action
 		$am->addAction (
 			new action ('adminMovePageDown', 'GET',  
-				array (&$this, 'onMovePageDown'), new IDInput ('pageID'), array (), 'MorgOS_Admin_PageManager'));
+				array (&$this, 'onMovePageDown'), new IDInput ('pageID'), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminMovePageUp', 'GET',  
-				array (&$this, 'onMovePageUp'), new IDInput ('pageID'), array (), 'MorgOS_Admin_PageManager'));
+				array (&$this, 'onMovePageUp'), new IDInput ('pageID'), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminSavePage', 'POST',  
 				array (&$this, 'onSavePage'), array (new IDInput ('pageID'), 
 					new StringInput ('pageTitle'), new StringInput ('pageNavTitle'), 
-					new StringInput ('pageContent')), array (), 'MorgOS_Admin_PageManager'));
+					new StringInput ('pageContent')), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminNewPage', 'GET',  
 				array (&$this, 'onNewPage'), array (new IDInput ('parentPageID'), 'pageTitle'), 
-					array (), 'MorgOS_Admin_PageManager'));
+					array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminDeletePage', 'GET',  
 				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), 
-				array (), 'MorgOS_Admin_PageManager'));
+				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminAddPageToMenu', 'GET',  
 				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), 
-				array (), 'MorgOS_Admin_PageManager'));
+				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminRemovePageFromMenu', 'GET',  
 				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), 
-				array (), 'MorgOS_Admin_PageManager'));
+				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminMovePageLevelDown', 'GET',  
 				array (&$this, 'onMovePageLevelDown'), array (new IDInput ('pageID'), new IDInput ('newParentPageID')), 
-				array (), 'MorgOS_Admin_PageManager'));
+				array (), 'MorgOS_Admin_PageManager', false));
 		
 		$am->addAction (
 			new action ('adminMovePageLevelUp', 'GET',  
 				array (&$this, 'onMovePageLevelUp'), array ('pageID'), 
-				array (), 'MorgOS_Admin_PageManager'));
+				array (), 'MorgOS_Admin_PageManager', false));
 	}
 	
 	function onMovePageLevelUp ($pageID) {

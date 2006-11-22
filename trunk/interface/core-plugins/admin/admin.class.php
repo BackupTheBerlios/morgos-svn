@@ -144,6 +144,7 @@ class adminCorePlugin extends plugin {
 		}		
 		$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
 		$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
+		return true;
 	}
 	
 	function isCorePlugin () {return true;}

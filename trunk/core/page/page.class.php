@@ -130,7 +130,10 @@ class Page extends DBTableObject {
 	*/
 	function getLink () {
 		$baseLink = 'index.php';
-		if ($this->isAdminPage ()) {
+		if ($this->getAction ()) {
+			return $baseLink .= '?action='.$this->getAction ();
+		}
+		elseif ($this->isAdminPage ()) {
 			return $baseLink .= '?action=admin&pageID='.$this->getID ();
 		} else {
 			return $baseLink .= '?action=viewPage&pageID='.$this->getID ();

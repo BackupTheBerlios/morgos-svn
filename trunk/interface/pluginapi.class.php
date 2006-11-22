@@ -236,7 +236,7 @@ class PluginAPI extends ConfigPluginAPI {
 				$parent = $menuItem->getParentPage ();
 				$itemArray['canMoveUp'] = !$parent->isRootPage ();					
 				
-				$itemArray['AdminLink'] = 'index.php?action=admin&pageID='.$pID.'&parentPageID='.$menuItem->getID ();
+				$itemArray['AdminLink'] = 'index.php?action=adminPageManager&parentPageID='.$menuItem->getID ();
 				$array[] = $itemArray;
 			}
 		}
@@ -269,6 +269,12 @@ class PluginAPI extends ConfigPluginAPI {
 			$sm->display ('admin/saveconfig.tpl');
 			exit ();
 		}
+	}
+	
+	function getPageIDFromAction (&$action) {
+		$page = $this->_pageManager->newPage ();
+		$page->initFromName ($action->getPageName ());
+		return $page->getID ();
 	}
 }
 
