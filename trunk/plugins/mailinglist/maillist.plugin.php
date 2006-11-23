@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Sam Heijens
 */
-class mailListPlugin extends plugin 
+class mailListPlugin extends InstallablePlugin 
   {
   function mailListPlugin ($dir) 
     {

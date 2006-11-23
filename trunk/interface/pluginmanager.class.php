@@ -32,7 +32,7 @@ include_once ('core/compatible.functions.php');
  * @since 0.2
  * @author Nathan Samson
 */
-class plugin {
+class Plugin {
 	/**
 	 * The name of the plugin
 	 * @protected
@@ -174,7 +174,8 @@ class plugin {
 	}
 	
 	/**
-	 * Returns that the maximal version is exceeded. To have a working plugin this should be false
+	 * Returns that the maximal version is exceeded. 
+	 *  To have a working plugin this should be false
 	 * @public
 	 * @return (bool)
 	*/
@@ -216,9 +217,18 @@ class plugin {
 		}
 	}
 	
-	function isInstalled (&$foo) {return true;}
-	function install (&$foo) {}
-	function unInstall (&$foo) {}
+	/*Only for backwards compatability*/
+	function isInstalled () {return true;}
+}
+
+/**
+ * A installable plugin. You should use this class if your plugin needs installation
+ *  routines.
+*/
+class InstallablePlugin extends Plugin {
+	function install ($pluginManager) {}
+	function isInstalled () {return false;}
+	function unInstall ($pluginManager) {}
 }
 
 /**

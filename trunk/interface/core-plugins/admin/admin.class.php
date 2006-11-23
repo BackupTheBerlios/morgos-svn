@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class adminCorePlugin extends plugin {
+class adminCorePlugin extends Plugin {
 	var $_pluginAdmin;
 	
 	function adminCorePlugin ($dir) {

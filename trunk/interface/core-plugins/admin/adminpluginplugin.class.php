@@ -76,6 +76,7 @@ class adminCorePluginAdminPlugin extends plugin {
 					'EnableLink'=>'index.php?action=adminEnablePlugin&pluginID='.$plugin->getID (),
 					'DisableLink'=>'index.php?action=adminDisablePlugin&pluginID='.$plugin->getID (),
 					'Compatible'=>$plugin->isCompatible (), 'CompatibleMessage'=>$cMessage,
+					'Installable'=> is_a ($plugin, 'InstallablePlugin'),
 					'Installed'=>$plugin->isInstalled ($this->_pluginAPI), 
 					'InstallLink'=>'index.php?action=adminInstallPlugin&pluginID='.$plugin->getID (),
 					'UnInstallLink'=>'index.php?action=adminUnInstallPlugin&pluginID='.$plugin->getID ());

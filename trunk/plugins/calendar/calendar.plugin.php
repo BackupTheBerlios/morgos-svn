@@ -40,7 +40,7 @@ class DateTimeInput extends MultipleInput {
 	} 
 }
 
-class calendarPlugin extends plugin {
+class calendarPlugin extends InstallablePlugin {
 	
 	function calendarPlugin ($dir) {
 		parent::plugin ($dir);

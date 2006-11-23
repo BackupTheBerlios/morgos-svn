@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class helloWorldPlugin extends plugin {
+class helloWorldPlugin extends Plugin {
 	
 	function helloWorldPlugin ($dir) {
 		parent::plugin ($dir);
