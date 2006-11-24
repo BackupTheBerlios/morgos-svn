@@ -140,8 +140,9 @@ class UserManager extends DBTableManager {
 	/**
 	 * Insert an user into the database.
 	 *
+	 * @since 0.3 It creates automatically a group with the same name, and add the user
+	 *  to this group.
 	 * @param $user (object user)  The user.
-	 * @return (error). If an error occurs return it.
 	 * @public
 	*/
 	function addUserToDatabase (&$user) {
@@ -149,11 +150,17 @@ class UserManager extends DBTableManager {
 		if ($lIR == false) {
 			$eIR = $this->emailIsRegistered ($user->getEmail ()); 
 			if ($eIR == false) {
-				return $user->addToDatabase ();
+				$group = $this->newGroup ();
+				$group->initFromArray (array (
+					'generic_name'=>$user->getLogin (),
+					'generic_description'=>$user->getLogin ()));
+				$a = $this->addGroupToDatabase ($group);
+				$user->addToDatabase ();
+				$user->addToGroup ($group);
 			} else {
 				if (! isError ($eIR)) {
 					$email = $user->getEmail ();
-					return new Error ('USERMANAGER_EMAIL_EXISTS', $email);
+					return new Error ('EMAIL_ALREADY_REGISTERED', $email);
 				} else {
 					return $eIR;
 				}
@@ -161,7 +168,7 @@ class UserManager extends DBTableManager {
 		} else {
 			if (! isError ($lIR)) {
 				$login = $user->getLogin ();
-				return new Error ('USERMANAGER_LOGIN_EXISTS', $login);
+				return new Error ('LOGIN_ALREADY_REGISTERED', $login);
 			} else {
 				return $lIR;
 			}
@@ -172,11 +179,18 @@ class UserManager extends DBTableManager {
 	 * Removes an user from the database.
 	 *
 	 * @param $user (object user) The user to delete.
-	 * @return (error). An error if occurs
+	 * @since 0.3 It deleteses also the associated group.
 	 * @public
 	*/
 	function removeUserFromDatabase ($user) {
-		return $user->removeFromDatabase ();
+		$r = $user->removeFromDatabase ();
+		if (! isError ($r)) {
+			$group = $this->newGroup ();
+			$group->initFromDatabaseGenericName ($user->getLogin ());
+			return $this->removeGroupFromDatabase ($group);
+		} else {
+			return $r;
+		}
 	}
 	
 	/**
@@ -188,27 +202,6 @@ class UserManager extends DBTableManager {
 	*/
 	function getAllUsers () {
 		return $this->getAllRowsFromTable ('users');
-	}
-
-	/**
-	 * Returns an array of all users ID that are stored in the database.
-	 *
-	 * @return (int array)
-	 * @public
-	*/
-	function getAllUsersID () {
-		$prefix = $this->_db->getPrefix ();
-		$sql = "SELECT userID FROM ".$prefix."users";
-		$q = $this->_db->query ($sql);
-		if (! isError ($q)) {
-			$allUsers = array ();
-			while ($row = $this->_db->fetchArray ($q)) {
-				$allUsers[] = $row['userID'];
-			}
-			return $allUsers;
-		} else {
-			return $q;
-		}
 	}
 	
 	/**
@@ -223,7 +216,7 @@ class UserManager extends DBTableManager {
 			if ($u->isValidPassword ($_SESSION['userPassword'])) {
 				return $u;
 			} else {
-				return new Error ('USERMANAGER_INVALID_LOGIN');
+				return new Error ('SESSION_LOGIN_FAILED_INCORRECT_VALUES');
 			}
 		} else {
 			return null;
@@ -259,11 +252,11 @@ class UserManager extends DBTableManager {
 				$_SESSION['userID'] = $u->getID ();
 				$_SESSION['userPassword'] = md5 ($password);
 			} else {
-				return new Error ("USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT");
+				return new Error ("LOGIN_FAILED_INCORRECT_VALUES");
 			}
 		} else {
 			if ($a->is ('USER_LOGIN_DONT_EXISTS')) {
-				return new Error ("USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT");
+				return new Error ("LOGIN_FAILED_INCORRECT_VALUES");
 			} else {
 				return $a;
 			}
@@ -327,7 +320,7 @@ class UserManager extends DBTableManager {
 				return $group->addToDatabase ();
 			} else {
 				$groupName = $group->getGenericName ();
-				return new Error ('USERMANAGER_GROUP_ALREADY_EXISTS', $groupName);
+				return new Error ('GROUPNAME_ALREADY_REGISTERED', $groupName);
 			}
 		} else {
 			return $gIR;
@@ -355,22 +348,20 @@ class UserManager extends DBTableManager {
 	}
 	
 	/**
-	 * Returns an array with values of all the groups IDs.
+	 * Returns an array with all groups, but skips these that belongs to an user
 	 *
-	 * @return (int array)
+	 * @return (object array)
+	 * @since 0.3
 	 * @public
 	*/
-	function getAllGroupsID () {
-		$prefix = $this->_db->getPrefix ();
-		$sql = "SELECT group_id FROM ".$prefix."groups";
-		$q = $this->_db->query ($sql);
-		if (! isError ($q)) {
-			$allGroups = array ();
-			while ($row = $this->_db->fetchArray ($q)) {
-				$allGroups[] = $row['group_id'];
+	function getAllNonUserGroups () {
+		$result = array ();
+		foreach ($this->getAllRowsFromTable ('groups') as $group) {
+			if (! $this->loginIsRegistered ($group->getGenericName ())) {
+				$result[] = $group;
 			}
-			return $allGroups;
 		}
+		return $result;
 	}
 	
 	/**

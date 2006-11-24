@@ -173,7 +173,7 @@ class UserGroup extends DBTableObject {
 					return $q;
 				}
 			} else {
-				return new Error ('GROUP_USER_ALREADY_IN_GROUP');
+				return new Error ('USER_ALREADY_IN_GROUP');
 			}
 		} else {
 			return $isInGroup;			
@@ -224,7 +224,7 @@ class UserGroup extends DBTableObject {
 		$allIDS = $this->getAllUsersID ();
 		$allUsers = array ();
 		foreach ($allIDS as $ID) {
-			$newUser = $this->getParent->newUser ();
+			$newUser = $this->_creator->newUser ();
 			$newUser->initFromDatabaseID ($ID);
 			$allUsers[] = $newUser;
 		}
@@ -291,7 +291,7 @@ class UserGroup extends DBTableObject {
 	 * @return (string)
 	*/
 	function getGenericDescription () {
-		return $this->getOptionValue ('generic_description');
+		return $this->getFieldValue ('generic_description');
 	}	
 	
 	/**

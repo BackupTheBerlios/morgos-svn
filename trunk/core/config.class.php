@@ -23,6 +23,8 @@
  * @author Nathan Samson
 */
 
+include_once ('core/varia.functions.php');
+
 /**
  * Manage config items
  * @defgroup config Config

@@ -21,8 +21,8 @@
  * @since 0.2
  * @author Nathan Samson
 */
-chdir ('../../');
-include_once ('core/tests/base.php');
+//chdir ('../../');
+include_once ('core/tests/phpunit.class.php');
 
 class MorgOSSuit extends TestSuite {
 
@@ -89,15 +89,15 @@ class MorgOSSuit extends TestSuite {
 			$this->addTestFile ('core/tests/config.class.test.php');
 			$this->addTestFile ('core/tests/usermanager.class.test.php');
 			$this->addTestFile ('core/tests/varia.functions.test.php');
-			$this->addTestFile ('core/tests/compatible.functions.test.php');
-			$this->addTestFile ('core/tests/pagemanager.class.test.php');
+			//$this->addTestFile ('core/tests/compatible.functions.test.php');
+			//$this->addTestFile ('core/tests/pagemanager.class.test.php');
 		//	$this->addTestFile ('core/tests/xmlsql.class.test.php');
 		}
 
-		$this->result = new TestResult;
+		/*$this->result = new TestResult;
 		if ($php == "5") {
 			$this->result->addListener(new SimpleTestListener);
-		}
+		}*/
 
 		$this->dbModule = $dbModule;
 	}
@@ -109,7 +109,7 @@ class MorgOSSuit extends TestSuite {
 }
 
 
-$suite = new MorgOSSuit ();
+/*$suite = new MorgOSSuit ();
 if ($php == "4") {
 	require_once ('PHPUnit/GUI/HTML.php');
 	$databasesuite = new TestSuite ('databaseManagerTest');
@@ -126,5 +126,5 @@ if ($php == "4") {
 	$suite->run ($suite->result);
 	$suite->tearDown ();
 }
-$suite = null;
+$suite = null;*/
 ?>

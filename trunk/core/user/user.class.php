@@ -87,13 +87,13 @@ class User extends DBTableObject {
 	*/
 	function initFromDatabaseEmail ($email) {
 		$fullTableName = $this->getFullTableName ();
-		$email = $this->db->escapeString ($email);
+		$email = $this->_db->escapeString ($email);
 		$sql = "SELECT * FROM $fullTableName WHERE email='$email'";
-		$q = $this->db->query ($sql);
+		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
-			$row = $this->db->fetchArray ($q);
+			$row = $this->_db->fetchArray ($q);
 			$this->initFromArray ($row);
-			$this->setOption ('ID', $row[$this->getIDName ()]);
+			$this->setField ('ID', $row[$this->getIDName ()]);
 		} else {
 			return $q;
 		}
@@ -127,7 +127,13 @@ class User extends DBTableObject {
 	 * @public
 	*/
 	function isInGroup ($group) {
-		return $group->isUserInGroup ($this);		
+		if (is_string ($group)) {
+			$groupO = $this->_creator->newGroup ();
+			$groupO->initFromDatabaseGenericName ($group);
+			return $this->isInGroup ($groupO);
+		} else {
+			return $group->isUserInGroup ($this);
+		}		
 	}
 
 	
@@ -194,7 +200,15 @@ class User extends DBTableObject {
 	 * @param $password (string) Can be both md5-ed or plain
 	*/
 	function isValidPassword ($password) {
-		return (($this->getFieldValue ('password') == $password) OR 
-			($this->getFieldValue ('password') == md5 ($password))); 
+		return ($this->getFieldValue ('password') == $password) OR 
+			($this->getFieldValue ('password') == md5 ($password)); 
+	}
+	
+	function initFromArray ($a) {
+		if (strlen ($a['password']) != 32) { 
+			// not very safe, but I guess nobody will take a password of 32 chars
+			$a['password'] = md5 ($a['password']);
+		}
+		parent::initFromArray ($a);
 	}
 }

@@ -594,7 +594,7 @@ class DBTableObject {
 				return $q;
 			}
 		} else {
-			return new Error ('DATABASEOBJECT_NOT_IN_DATABASE');
+			return new Error ('OBJECT_NOT_IN_DATABASE');
 		}
 	}
 	
