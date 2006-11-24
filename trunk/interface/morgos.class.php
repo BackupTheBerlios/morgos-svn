@@ -187,18 +187,14 @@ class NoGUIMorgOS {
 	 * @protected
 	*/
 	function setDefaultErrors () {
-		$this->_i18nManager->addError ('EMPTY_INPUT', 
-			$this->_i18nManager->translate ('Empty input, please give %1.'));
-		$this->_i18nManager->addError ('INVALID_CHOICE', 
-			$this->_i18nManager->translate ('This was an invalid choice.'));
-		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 
-			$this->_i18nManager->translate ("Passwords didn't match."));
+		$this->_i18nManager->addError ('EMPTY_INPUT', 'Empty input, please give %1.');
+		$this->_i18nManager->addError ('INVALID_CHOICE','This was an invalid choice.');
+		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 'Passwords didn\'t match.'));
 		$this->_i18nManager->addError ('SKINSC_NOT_WRITABLE', 
-			$this->_i18nManager->translate ("skins_c/default is not writable by PHP. 
-				Please make it writable and proceed."));
+			'skins_c/default is not writable by PHP. 
+			 Please make it writable and proceed.'));
 		$this->_i18nManager->addError ('DATABASE_NOT_INSTALLED', 
-			$this->_i18nManager->translate ("skins_c/default is not writable by PHP. 
-				Please make it writable and proceed."));
+			'It seems that the installation is not complete. Reinstall the database.'));
 	}
 }
 
