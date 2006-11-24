@@ -58,6 +58,8 @@ class adminCorePluginAdminPlugin extends plugin {
 		$t = &$this->_pluginAPI->getI18NManager ();		
 			
 		$availablePlugins = array ();
+		$enabledPlugins = array ();
+		$disabledPlugins = array ();
 		foreach ($plugM->getAllFoundPlugins () as $plugin) {
 			if ($plugin->isCorePlugin () === false) {
 				if ($plugin->isCompatible ()) {
@@ -71,7 +73,7 @@ class adminCorePluginAdminPlugin extends plugin {
 						$cMessage = $t->translate ('Your version of MorgOS is too new.');
 					}
 				}
-				$availablePlugins[] = array (
+				$pInfo = array (
 					'Name'=>$plugin->getName (), 'Version'=>$plugin->getVersion (), 'Enabled'=>$plugin->isLoaded (), 
 					'EnableLink'=>'index.php?action=adminEnablePlugin&pluginID='.$plugin->getID (),
 					'DisableLink'=>'index.php?action=adminDisablePlugin&pluginID='.$plugin->getID (),
@@ -79,10 +81,20 @@ class adminCorePluginAdminPlugin extends plugin {
 					'Installable'=> is_a ($plugin, 'InstallablePlugin'),
 					'Installed'=>$plugin->isInstalled ($this->_pluginAPI), 
 					'InstallLink'=>'index.php?action=adminInstallPlugin&pluginID='.$plugin->getID (),
-					'UnInstallLink'=>'index.php?action=adminUnInstallPlugin&pluginID='.$plugin->getID ());
+					'UnInstallLink'=>'index.php?action=adminUnInstallPlugin&pluginID='.$plugin->getID ());	
+				
+				$availablePlugins[] = $pInfo; 
+				
+				if ($plugin->isLoaded ()) {
+					$enabledPlugins[] = $pInfo;
+				} else {
+					$disabledPlugins[] = $pInfo;
+				}
 			}
 		}
 		$sm->assign ('MorgOS_AvailablePlugins', $availablePlugins);
+		$sm->assign ('MorgOS_EnabledPlugins', $enabledPlugins);
+		$sm->assign ('MorgOS_DisabledPlugins', $disabledPlugins);
 		$sm->display ('admin/pluginmanager.tpl');
 	}
 	

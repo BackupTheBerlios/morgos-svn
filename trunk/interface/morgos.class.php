@@ -189,12 +189,12 @@ class NoGUIMorgOS {
 	function setDefaultErrors () {
 		$this->_i18nManager->addError ('EMPTY_INPUT', 'Empty input, please give %1.');
 		$this->_i18nManager->addError ('INVALID_CHOICE','This was an invalid choice.');
-		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 'Passwords didn\'t match.'));
+		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 'Passwords didn\'t match.');
 		$this->_i18nManager->addError ('SKINSC_NOT_WRITABLE', 
 			'skins_c/default is not writable by PHP. 
-			 Please make it writable and proceed.'));
+			 Please make it writable and proceed.');
 		$this->_i18nManager->addError ('DATABASE_NOT_INSTALLED', 
-			'It seems that the installation is not complete. Reinstall the database.'));
+			'It seems that the installation is not complete. Reinstall the database.');
 	}
 }
 
