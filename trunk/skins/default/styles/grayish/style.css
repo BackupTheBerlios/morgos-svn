@@ -1,0 +1,127 @@
+body {
+	font-size: 12px;
+}
+
+h1 {
+	font-size: 3em;
+	padding: 0;
+}
+
+h2 {
+	font-size: 2em;
+	margin: 0;
+	margin-bottom: 5px;
+}
+
+#header {
+	width: 100%;
+	border: solid 1px red;
+	margin-bottom: 5px;
+}
+
+#main {
+	width: 100%;
+	clear: both;
+	margin-top: 5px;
+}
+
+	#sidebar {
+		width: 16%;
+		border: solid 1px red;
+		/*min-width: 150px;*/
+		/*float: left;*/
+	}
+
+	#mainBox {
+		margin-top: 5px;
+		float: right;
+		width: 83%;
+		margin-bottom: 5px;
+	
+		clear: right;
+		border: solid 1px red;
+	}
+	
+	#userMessages {
+		float: right;
+		width: 83%;
+		clear: right;
+		border: solid 1px green;
+	}
+
+#footer {
+	width: 100%;
+	border: solid 1px red;
+	clear: both;
+	
+	text-align: center;
+	font-size: smaller;
+}
+
+/*The header*/
+#header {
+	min-height: 90px;
+}
+
+#header h1 {
+	text-align: center;
+}
+
+#header img.logo {
+	float: left;
+	width: 90px;
+}
+
+/*The menu*/
+#nav {
+	text-align: right;
+}
+
+#nav ol {
+	list-style-type: none;
+	padding: 0;
+	margin-left: 0;
+	margin-right: 0;
+	
+}
+
+#nav li {
+	/*float: left;*/
+	position: relative;
+	display: inline;
+	
+	font-size: 1.3em;
+	
+	background: white;
+	margin-left: 10px;
+}
+
+#nav li a {
+	text-align: center; 
+	padding: 1px 8px;
+	border: solid 1px blue;
+}
+
+#nav ol ol li a:hover {
+	background: yellow;
+}
+
+#nav ol li:hover a {
+	background: yellow;
+}
+
+#nav ol ol {
+	display: none;
+	position: absolute;
+	margin-left: -10px; /* -(margin-left li)*/
+}
+
+#nav ol li:hover ol {
+	display: block;
+	left: 0;
+}
+
+#nav a {
+	text-decoration: none;
+	color: black;
+}
