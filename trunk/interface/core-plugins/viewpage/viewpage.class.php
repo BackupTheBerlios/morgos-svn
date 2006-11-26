@@ -96,7 +96,7 @@ class viewPageCorePlugin extends plugin {
 			$aM = &$this->_pluginAPI->getActionManager ();
 			$aM->executeAction ($page->getAction (), false);
 		} else {		
-			$sm->display ('index.tpl');
+			$sm->display ('genericpage.tpl');
 		}
 	}
 
@@ -112,6 +112,7 @@ class viewPageCorePlugin extends plugin {
 	
 	function setPageVars ($pageID, $pageLang) {
 		$pM = &$this->_pluginAPI->getPageManager ();
+		$config = &$this->_pluginAPI->getConfigManager ();
 		$root = $pM->newPage ();
 		$root->initFromName ('site');
 		$page = $pM->newPage ();
@@ -131,6 +132,8 @@ class viewPageCorePlugin extends plugin {
 		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, $pageLang));
 		$sm->assign ('MorgOS_ExtraSidebar', '');
 		$sm->assign ('MorgOS_ExtraHead', '');
+		$sm->assign ('MorgOS_SiteTitle', 
+			$config->getStringItem ('/site/title'));
 		return true;
 	}
 	

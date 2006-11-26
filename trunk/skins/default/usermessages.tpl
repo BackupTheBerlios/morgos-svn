@@ -1,3 +1,5 @@
+{if $MorgOS_Errors or $MorgOS_Warnings or $MorgOS_Notices}
+
 <div id="userMessages">
 {foreach from=$MorgOS_Errors item='error'}
 	<div class="error">{$error}</div>
@@ -10,8 +12,6 @@
 {foreach from=$MorgOS_Notices item='notice'}
 	<div class="notice">{$notice}</div>
 {/foreach}
-	<h2>Message 1</h2>
-	<h2>Message 1</h2>
-	<h2>Message 1</h2>
-<h2>Message 1</h2>
 </div>
+
+{/if}

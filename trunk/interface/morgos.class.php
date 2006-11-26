@@ -58,7 +58,6 @@ include_once ('interface/skinmanager.class.php');
  * @author Nathan Samson
 */
 class ExtendedSmarty extends Smarty {
-	
 	/**
 	 * The constructor.
 	*/
@@ -88,7 +87,6 @@ class ExtendedSmarty extends Smarty {
 	function prependTo ($varName, $extraValue) {
 		$this->assign ($varName, $extraValue.$this->get_template_vars ($varName));
 	}
-
 }
 
 /**
@@ -495,14 +493,24 @@ class ConfigMorgos extends BaseMorgos {
 	}
 	
 	/**
+	 * Set the correct variables in the plugin API
+	 *
+	 * @protected
+	*/
+	function loadPluginAPI () {
+		parent::loadPluginAPI ();
+		$this->_pluginAPI->setConfigManager ($this->_configManager);
+	}
+	
+	/**
 	 * Load the skin.
 	 *
 	 * @protected
 	*/
 	function loadSkin () {
 		$this->_skinManager->findAllSkins ('skins/');
-		//$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
-		$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
+		$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
+		//$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
 		//$this->_skinManager->loadSkin ('{c11681a8-5889-41cd-8fe1-d6fba2978804}');
 	}
 }

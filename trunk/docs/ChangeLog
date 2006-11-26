@@ -2,6 +2,8 @@ Version 0.3
 ===========
 [Added]
 	 * PostgreSQL database class backend [PostgreSQL 8.1+ required]
+	 * Skin documentation
+	 * Default skin
 [Changes]
 	 * You can really choose what dbmodule you want.
 	 * Rewrote organisation of tests

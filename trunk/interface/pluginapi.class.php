@@ -46,12 +46,6 @@ class BasePluginAPI {
 	function setI18NManager (&$i18nManager) {$this->_i18nManager = &$i18nManager;}
 	function &getI18NManager () {return $this->_i18nManager;}	
 	
-	function setUserManager (&$userManager) {$this->_userManager = &$userManager;}
-	function &getUserManager () {return $this->_userManager;}
-	
-	function setPageManager (&$pageManager) {$this->_pageManager = &$pageManager;}
-	function &getPageManager () {return $this->_pageManager;}
-	
 	function setPluginManager (&$pluginManager) {$this->_pluginManager = &$pluginManager;}
 	function &getPluginManager () {return $this->_pluginManager;}
 	
@@ -138,6 +132,12 @@ class PluginAPI extends ConfigPluginAPI {
 
 	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
 	function &getDBModule () {return $this->_dbModule;}
+	
+	function setUserManager (&$userManager) {$this->_userManager = &$userManager;}
+	function &getUserManager () {return $this->_userManager;}
+	
+	function setPageManager (&$pageManager) {$this->_pageManager = &$pageManager;}
+	function &getPageManager () {return $this->_pageManager;}	
 	
 	/**
 	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
