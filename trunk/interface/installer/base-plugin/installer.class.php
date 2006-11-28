@@ -171,10 +171,12 @@ class installerBasePlugin extends plugin {
 			$pluginManager->findAllPlugins ('interface/core-plugins/');			
 			
 			foreach ($pluginManager->getAllFoundPlugins () as $plugin) {
-				$a = $plugin->install ($dbModule);
-				if (isError ($a)) {
-					var_dump ($a);
-					die ('Something went wrong');
+				if (is_a ($plugin, 'InstallablePlugin')) {
+					$a = $plugin->install ($dbModule);
+					if (isError ($a)) {
+						var_dump ($a);
+						die ('Something went wrong');
+					}
 				}
 			}
 			

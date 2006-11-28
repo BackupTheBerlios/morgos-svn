@@ -22,7 +22,7 @@
  * @author Sam Heijens
  * @author Nathan Samson
 */
-class userCorePlugin extends plugin {
+class userCorePlugin extends InstallablePlugin {
 	var $_adminPlugin;	
 	
 	function userCorePlugin ($dir) {

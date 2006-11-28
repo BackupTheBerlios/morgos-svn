@@ -251,6 +251,37 @@ class XMLSQLTest extends TestCase {
 		$this->assertEquals (array ($row1, $row2), $allRows, 'Wrong data SELECT returned');
 	}
 	
+	function testCreateTablePrimaryAndUniqueKey () {
+		$sql = 'CREATE TABLE users (
+			ID int (11) auto_increment,
+			email varchar(255) NOT NULL,
+			PRIMARY KEY (ID),
+			UNIQUE KEY (email)
+		)';
+		
+		$query = $this->_dbModule->query ($sql);
+		$this->assertEquals (0, $this->_dbModule->numRows ($query), 'Wrong data CREATE returned');
+		$query = $this->_dbModule->query ('SELECT * FROM users');
+		$this->assertFalse (isError ($query), 'Unexpecter error');
+		$this->assertEquals (0, $this->_dbModule->numRows ($query), 'Wrong data SELECT returned');
+		
+		$query = $this->_dbModule->query ("INSERT INTO users (email) VALUES ('nathan@gmail.com')");
+		$this->assertFalse (isError ($query), 'Unexpecter error');
+		$query = $this->_dbModule->query ("INSERT INTO users (email) VALUES ('nathan2@gmail.com')");
+		$this->assertFalse (isError ($query), 'Unexpecter error');
+		$query = $this->_dbModule->query ("INSERT INTO users (email) VALUES ('nathan@gmail.com')");
+		$this->assertTrue (isError ($query), 'Un non expected error');
+		
+		$query = $this->_dbModule->query ('SELECT * FROM users');
+		$allRows = array ();
+		while ($row = $this->_dbModule->fetchArray ($query)) {
+			$allRows[] = $row;
+		}
+		$row1 = array ('ID' => 1, 'email'=>'nathan@gmail.com');
+		$row2 = array ('ID' => 2, 'email'=>'nathan2@gmail.com');
+		$this->assertEquals (array ($row1, $row2), $allRows, 'Wrong data SELECT returned');
+	}
+	
 	function testUpdate () {
 		$this->fail ('Not Yet implemented');
 	}

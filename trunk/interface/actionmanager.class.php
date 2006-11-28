@@ -614,7 +614,7 @@ class actionManager {
 	/**
 	 * Returns the header string for the previous action.
 	 * @public
-	 * @return (bool)
+	 * @return (string)
 	*/
 	function getPreviousActionHeaderString () {
 		return 'Location: '.$this->getPreviousActionLinkString ();

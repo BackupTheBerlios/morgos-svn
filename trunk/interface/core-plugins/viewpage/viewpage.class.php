@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class viewPageCorePlugin extends plugin {
+class viewPageCorePlugin extends InstallablePlugin {
 	var $_adminPlugin;
 	
 	function viewPageCorePlugin ($dir) {
@@ -95,7 +95,7 @@ class viewPageCorePlugin extends plugin {
 		if ($page->getAction ()) {
 			$aM = &$this->_pluginAPI->getActionManager ();
 			$aM->executeAction ($page->getAction (), false);
-		} else {		
+		} else {
 			$sm->display ('genericpage.tpl');
 		}
 	}

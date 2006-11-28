@@ -6,10 +6,11 @@ class XMLBackend {
 	
 	function __construct () {
 		$this->_tables = array ();
-		$this->_xml = new DOMDocument ();
+		$this->_xml = null;
 	}
 
 	public function load ($database, $user, $pass) {
+		$this->_xml = new DOMDocument ();
 		$this->_xml->load ($database.'.xml');
 		$this->_saveFile = $database.'.xml';
 		$allTablesList = $this->_xml->getElementsByTagName ('table');
@@ -17,9 +18,33 @@ class XMLBackend {
 			$tableNode = $allTablesList->item ($i);
 			$this->addTable ($this->parseTable ($tableNode));
 		}
+		$this->_xml = null;
 	}
 	
 	public function save () {
+		$this->_xml = new DOMDocument ();
+		$rootElement = $this->_xml->createElement ('database');
+		
+		foreach ($this->_tables as $table) {
+			$tEl = $this->_xml->createElement ('table');
+			$tEl->setAttribute ('name', $table->getName ());
+			$tEl->setAttribute ('newID', $table->getNewInternalID ());
+			
+			foreach ($table->getFields () as $fields) {
+				$fEl = $this->_xml->createElement ('field');
+				$fEl->setAttribute ('type', $table->getType ());
+				$fVal = $this->_xml->createTextNode ($table->getName ());
+				$fEl->appendChild ($fVal);
+				$tEl->appendChild ($fEl);
+			}
+			
+			foreach ($table->getRows () as $row) {
+			}
+			
+			$rootElement->appendChild ($tEl);
+		}
+		$this->_xml->appendChild ($rootElement);
+		die ('save');
 		$this->_xml->save ($this->_saveFile);
 	}
 

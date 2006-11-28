@@ -108,6 +108,7 @@ class row {
 	
 	function row (&$fields, $values, $ID) {
 		$this->_fields = $fields;
+		print_r ($fields);
 		$this->_ID = $ID;
 		foreach ($values as $k=>$v) {
 			$this->setValue ($k, $v);
@@ -151,7 +152,13 @@ class row {
 	}
 	
 	function getID () {return $this->_ID;}
-	function getValue ($fieldName) {return $this->_values[$fieldName];}
+	function getValue ($fieldName) {
+		if (array_key_exists ($fieldName, $this->_values)) {
+			return $this->_values[$fieldName];
+		} else {
+			print_r ($this->_values);
+		}
+	}
 	function setValue ($fieldName, $v) {
 		if (substr ($this->_fields[$fieldName]->getType (), 0, 3) == 'int') {
 			$v = (int) $v;
@@ -205,6 +212,7 @@ class table {
 			}
 		} else {
 		}
+		var_dump ($field);
 	}
 	
 	function addRow ($row) {
@@ -217,7 +225,7 @@ class table {
 					}
 					$allConds[] = new SQLCondition ($unique, '=', '\''.$row->getValue ($unique).'\'');
 				}
-
+				
 				$allRows = $this->selectRows (array (), array (), $allConds, null, 0, 0);
 				if (count ($allRows) > 0) {
 					return new Error ('XMLSQL_INSERT_ERROR', 'Duplicate entry for unique key');
@@ -365,6 +373,7 @@ class XMLSQLBackend {
 	}
 
 	function parseCommand ($sqlCommand) {
+		//die ($sqlCommand);
 		$sqlCommand = trim ($sqlCommand);
 		$command = substr ($sqlCommand, 0, $this->firstSpace ($sqlCommand)); // split the $sql after first space
 		$nextSequence = substr ($sqlCommand, $this->firstSpace ($sqlCommand));
@@ -388,6 +397,7 @@ class XMLSQLBackend {
 				return "ERROR_XMLSQLBACKEND_PARSE_ERROR";
 		}
 		$this->_latestQuery = $query;
+		//var_dump ($sqlCommand);
 		return $query;
 	}
 	
@@ -433,10 +443,12 @@ class XMLSQLBackend {
 			$fieldDatas = $this->splitData (' ', $fieldData);
 			if ($fieldDatas[0] == 'PRIMARY') {
 				$data = implode (' ', array_slice ($fieldDatas, 1));
+				$data = ' '.$data; // AllDataAfterKeyWord seems to need this
 				$fields = $this->parseBetweenTwoChars ('(', ')', $this->getAllDataAfterKeyword ($data, 'KEY'));
 				$table->setPrimaryAutocountKey ($fields);
 			} elseif ($fieldDatas[0] == 'UNIQUE') {
 				$data = implode (' ', array_slice ($fieldDatas, 1));
+				$data = ' '.$data; // AllDataAfterKeyWord seems to need this
 				$fields = $this->parseBetweenTwoChars ('(', ')', $this->getAllDataAfterKeyword ($data, 'KEY'));	
 				$table->addUniqueKeys (explode (',',$fields));
 			} else {
@@ -458,12 +470,16 @@ class XMLSQLBackend {
 			$field = trim ($field);
 			$orderOfFields[$key] = $field;
 		}
+		
+		
+		
 		$valuesString = $this->getAllDataAfterKeyword ($sqlSequence, 'VALUES');
 		$valuesString = trim ($valuesString);
 		$valuesString{0} = ' ';
 		$valuesString{strlen ($valuesString)-1} = ' ';
 		$valuesString = trim ($valuesString);
 		$valuesFields = $this->splitData (',', $valuesString);
+		//var_dump ($valuesFields);
 
 		if (count ($orderOfFields) != count ($valuesFields)) {
 			return "ERROR_XMLSQL_PARSE_ERROR";
@@ -479,6 +495,7 @@ class XMLSQLBackend {
 			}
 			$values[$field->getName ()] = $value;
 		}
+		
 		$row = new row ($tableFields, $values, $table->getNewInternalID ());
 		$a = $table->addRow ($row);
 		if (! isError ($a)) {

@@ -366,7 +366,7 @@ class DBTableObject {
 	 * @param $extraFields (object option array) default array ()
 	 * @param $joins (object genericJoind array) default array ()
 	*/
-	function DBTableObject (&$db, $basicFields, $tableName, $IDName, &$creator = null, 
+	function DBTableObject (&$db, $basicFields, $tableName, $IDName, $creator = null, 
 			$extraFields = array (), $joins = array ()) {
 		$this->_db = &$db;
 		
@@ -630,7 +630,8 @@ class DBTableObject {
 			if (is_a ($join, 'oneToMultipleJoinField')) {
 				$table = $join->getOtherTable ();
 				$otherField = $join->getOtherField ();
-				$value = $join->getValue ();
+				$dbField = $join->getDBField ();
+				$value = $this->getFieldValue ($dbField->getName ());
 				$sql = "SELECT $fields FROM $table WHERE $otherField='$value'";
 				
 				if ($extraWhere != array ()) {
@@ -953,7 +954,7 @@ class DBTableManager {
 			$a = $this->_db->query ($sql);
 			
 			foreach ($o->getAllJoinFields () as $join) {
-				if (get_class ($join) == 'MultipleToMultipleJoinField') {
+				if (is_a ($join, 'MultipleToMultipleJoinField')) {
 					$fullLinkTable = $this->_db->getPrefix().$join->getLinkTable ();
 					if (! $this->_db->tableExists ($fullLinkTable)) {
 						$thisField = $join->getDBField ();
@@ -965,7 +966,7 @@ class DBTableManager {
 						$sql .= ', '.$thisField->getName ().' '.
 							$thisField->getDBType ();
 						$sql .= ')';
-						$this->_db->query ($sql);
+						$e = $this->_db->query ($sql);
 					}
 				}
 			}

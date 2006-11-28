@@ -31,6 +31,15 @@ class XMLDatabase extends databaseActions {
 		return $this->_XMLSQLBackend->parseCommand ($sql);
 	}
 	
+	function queryFile ($fileName) {
+		$querieString = file_get_contents ($fileName);
+		$queries = str_replace ('{prefix}', $this->getPrefix (), $querieString);
+		$queries = explode (';', $queries);
+		foreach ($queries as $sql) {
+			$this->query ($sql);
+		}
+	}
+	
 	function fetchArray ($query) {
 		return $query->fetchArray ();
 		
