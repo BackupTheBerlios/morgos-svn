@@ -46,7 +46,7 @@ class userCorePlugin extends plugin {
 			array (), array ()));
 		$am->addAction (
 			new action ('userRegisterForm', 'POST',  array ($this, 'onRegisterForm'), 
-				array (), array (new LocaleInput ('pageLang'))));
+				array (), array (), 'MorgOS_RegisterForm'));
 		$am->addAction (
 			new action ('userRegister', 'POST',  array ($this, 'onRegister'), 
 				array (new StringInput ('login'), new EmailInput ('email'), 
@@ -86,19 +86,10 @@ class userCorePlugin extends plugin {
 		}
 	}
 	
-	function onRegisterForm ($pageLang) {
-		$pM = &$this->_pluginAPI->getPageManager ();
-		$regForm = $pM->newPage ();
-		$regForm->initFromName ('MorgOS_registerForm');
-	
-		$em = &$this->_pluginAPI->getEventManager ();
-		if ($pageLang == null) {
-			$pageLang = 'en_UK';
-		}
-		$em->triggerEvent ('viewPage', array ($regForm->getID (), $pageLang));
-		$this->setUserVars ();
+	function onRegisterForm () {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->display ('user/register.tpl');
+		$sm->appendTo ('MorgOS_CurrentPage_Content', $sm->fetch ('user/register.tpl'));
+		$sm->display ('genericpage.tpl');
 	}	
 	
 	function onRegister ($login, $email, $password) {
@@ -132,6 +123,8 @@ class userCorePlugin extends plugin {
 			$sm->assign ('MorgOS_CurUser', null);
 		}
 		$sm->assign ('MorgOS_RegisterFormLink', 'index.php?action=userRegisterForm');
+		$sm->appendTo ('MorgOS_Sidebar_Content', 
+			$sm->fetch ('user/sideboxcontent.tpl'));
 		return true;
 	}
 

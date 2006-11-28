@@ -117,7 +117,9 @@ class viewPageCorePlugin extends plugin {
 		$root->initFromName ('site');
 		$page = $pM->newPage ();
 		$page->initFromDatabaseID ($pageID);
-		//echo $pageLang;
+		if ($pageLang == null) {
+			$pageLang = 'en_UK';
+		}
 		$tPage = $page->getTranslation ($pageLang);	
 		if (isError ($tPage)) {
 			return $tPage;

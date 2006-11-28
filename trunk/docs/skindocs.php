@@ -16,7 +16,7 @@
  * - \subpage Sidebar
  * - \subpage Footer
  * - \subpage Header
- * - \subpage Userbox
+ * - \subpage BoxLoginForm
  * - \subpage Usermessages
  * - \subpage Sidebox
  * - \subpage Sideelement
@@ -24,7 +24,20 @@
  * - \subpage error
  *
  * \subsection Mandatory admin templates
- * - \subpage Login
+ * - \subpage AdminLogin
+ * - \subpage AdminGenericpage
+ * - \subpage AdminHeader
+ * - \subpage AdminFooter
+ * - \subpage AdminNavigation
+ * - \subpage AdminUsermessages
+ * - \subpage AdminSidebar
+ * - \subpage AdminSidebox
+ * - \subpage AdminSideelement
+ *
+ * \subsection Actual admin content (also mandatory)
+ * - \subpage AdminPage_PageManager and \subpage AdminPage_Editor
+ * - \subpage AdminUser_UserManager
+ * - \subpage AdminPlugin_PluginManager and \subpage AdminPlugin_PluginList
  *
  * \subsection Variables that can be used on every location
  * - $SkinPath: the location of the skin. Usefull for including images/css files 
@@ -88,6 +101,7 @@
  * \paragraph
  * Here do plugins add their side content (login box, poll, latest messages, ...)
  * It is possible you add here another navigation menu.
+ * It should have the var $MorgOS_Sidebar_Content.
 */
 
 /**
@@ -110,7 +124,50 @@
 */
 
 /**
- * \page Userbox
+ * \page BoxLoginForm
+ * Name: user\boxloginform.tpl
+ * \paragraph
+ * This is the content of a sidebox when the user isn't logged in.
+ * It should contain a login form. It should also contain links for 
+ * registring and "Forgot password"
+ * - index.php?action=userRegisterForm: the register page
+ * - index.php?action=userForgotPasswordForm: not yet implemented
+ * \section Form specification
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=userLogin
+ *	- userLogin: type text: the login for the user
+ *	- userPassword: type password: the password
+ * Additional fields:
+ *	None
+*/
+
+/**
+ * \page BoxUserForm
+ * Name: user\boxuserform.tpl
+ * \paragraph
+ * This is the content of a sidebox when the user is logged in.
+ * It should show some links:
+ * - index.php?action=userLogout: Logout link
+*/
+
+/**
+ * \page UserRegisterForm
+ * Name: user\registre.tpl
+ * \paragraph
+ * This is the content of a register form page.
+ * \section Form Definition
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=userRegister
+ *	- login: type text: the login for the user
+ *	- email: type text: the email
+ *	- password1: type password: the password
+ *	- password2: type password: repeat password (should be same as password1)
+ * Additional fields:
+ *	None
 */
 
 /**
@@ -142,7 +199,7 @@
 */
 
 /**
- * \page Login
+ * \page AdminLogin Admin login
  * Name admin/login.tpl
  * \paragraph
  * This is the page that users see when they access the admin but they aren't logged in.
@@ -158,4 +215,76 @@
  * Additional fields:
  *	None
 */
+
+/**
+ * \page AdminGenricpage Admin Genericpage
+ * Name: admin/genricpage.tpl
+ *
+ * \paragraph
+ * This is a genericpage for an admin page.
+ * It should include the admin header, footer, navigation and the sidebar
+ * Userfull vars
+ * - $MorgOS_AdminPage_Title: the page of the title
+ * - $MorgOS_AdminPage_Content: the content of the page
+*/
+
+/**
+ * \page AdminHeader Admin header
+ * The Header of a page
+ * In the <html><head> part on the end you should have
+ * $MorgOS_ExtraAdminHead:
+ * Other usefull vars:
+ * - $MorgOS_AdminTitle: The admin title
+ * - $MorgOS_AdminPage_Title: The page of the title
+*/
+
+/**
+ * \page AdminFooter Admin footer
+ * The footer of an admin page
+ * Variables:
+ * - $MorgOS_Copyright: The copyrigt notice
+*/
+
+/**
+ * \page AdminNavigation Admin navigation
+ * The admin navigation
+ *
+ * Variables:
+ *  - $MorgOS_Admin_RootMenu: same layout as $MorgOS_RootMenu
+*/
+
+/**
+ * \page AdminUsermessages Admin usermessage
+ * Sames as \subpage Usermessages, but for the admin
+*/
+
+/**
+ * \page AdminSidebar Admin sidebar
+ * Same as \subpage Sidebar but for the admin
+*/
+
+/**
+ * \page AdminSidebox Admin sidebox
+ * Same as \subpage Sidebox but for the admin
+*/
+
+/**
+ * \page AdminSideelement Admin sideelement
+ * Same as \subpage Sideelement but for the admin
+*/
+
+/**
+ * \page AdminPage_PageManager Admin pagemanager
+ * TODO: fill this in
+*/
+
+/**
+ * \page AdminPage_Editor Admin pageeditor
+ * This should show a textbox.
+*/
+
+/**
+ * \page AdminUser_UserManager Admin usermanager
+*/
+
 ?>

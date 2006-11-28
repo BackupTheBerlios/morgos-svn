@@ -44,10 +44,14 @@ class adminCoreUserAdminPlugin extends plugin {
 	}
 	
 	function onViewUserManager () {
-		$sm = &$this->_pluginAPI->getSmarty ();				
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$eventM = &$this->_pluginAPI->getEventManager ();				
 		$sm->assign ('MorgOS_Current_Admins', $this->getCurrrentAdmins ());
 		$sm->assign ('MorgOS_All_Users', $this->getAllNormalUsers ());
-		$sm->display ('admin/usermanager.tpl');
+		$sm->appendTo ('MorgOS_AdminPage_Content', 
+			$sm->fetch ('admin/user/usermanager.tpl'));
+		$sm->display ('admin/genericpage.tpl');
+		
 	}
 	
 	function onMakeUserAdmin ($userID) {

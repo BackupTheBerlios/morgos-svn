@@ -126,7 +126,11 @@ class event {
 	function trigger ($paramValues = array ()) {	
 		$assParams = array ();
 		foreach ($this->_paramList as $i=>$name) {
-			$assParams[$name] = $paramValues[$i];
+			if (array_key_exists ($i, $paramValues)) {
+				$assParams[$name] = $paramValues[$i];
+			} else {
+				$assParams[$name] = null;
+			}
 		}
 		$returns = array ();
 		foreach ($this->_callbacksList as $name => $callback) {

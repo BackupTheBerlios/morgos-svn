@@ -95,7 +95,9 @@ class adminCorePluginAdminPlugin extends plugin {
 		$sm->assign ('MorgOS_AvailablePlugins', $availablePlugins);
 		$sm->assign ('MorgOS_EnabledPlugins', $enabledPlugins);
 		$sm->assign ('MorgOS_DisabledPlugins', $disabledPlugins);
-		$sm->display ('admin/pluginmanager.tpl');
+		$sm->appendTo ('MorgOS_AdminPage_Content', 
+			$sm->fetch ('admin/plugin/pluginmanager.tpl'));
+		$sm->display ('admin/genericpage.tpl');
 	}
 	
 	function onEnablePlugin ($pluginID) {

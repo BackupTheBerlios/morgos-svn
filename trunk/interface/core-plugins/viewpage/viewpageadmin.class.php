@@ -111,9 +111,10 @@ class viewPageCoreAdminPlugin extends plugin {
 	
 	function onViewPageManager ($pageID, $pageLang) {
 		$sm = &$this->_pluginAPI->getSmarty ();
+		$eventM = &$this->_pluginAPI->getEventManager ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		if ($pageID === NULL) {
-			$pageID = 1; /*The ID of site */
+			$pageID = 1; /*The ID of /site */
 		}
 		$parentPage = $pageManager->newPage ();
 		$a = $parentPage->initFromDatabaseID ($pageID);
@@ -151,7 +152,10 @@ class viewPageCoreAdminPlugin extends plugin {
 		}
 		$level = array_reverse ($level);
 		$sm->assign ('MorgOS_PageLevel', $level);
-		$sm->display ('admin/pagemanager.tpl'); 
+		$eventM->triggerEvent ('viewAnyAdminPage', array (&$pID));
+		$sm->appendTo ('MorgOS_AdminPage_Content', 
+			$sm->fetch ('admin/page/pagemanager.tpl'));
+		$sm->display ('admin/genericpage.tpl'); 
 	}
 	
 	function onMovePageDown ($pageID) {

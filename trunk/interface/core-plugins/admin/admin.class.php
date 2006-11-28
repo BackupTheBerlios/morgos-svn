@@ -81,9 +81,8 @@ class adminCorePlugin extends Plugin {
 			if ($pageLang == null) {
 				$pageLang = 'en_UK';
 			}
-			$tpage = $page->getTranslation ($pageLang);
-			$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
-			$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
+			
+			
 			if ($page->getAction ()) {
 				$am->executeAction ($page->getAction (), array (), false);
 			} else {
@@ -133,7 +132,8 @@ class adminCorePlugin extends Plugin {
 		$rootPage->initFromName ('admin');
 		$adminNav = $this->_pluginAPI->menuToArray ($pageManager->getMenu ($rootPage));
 		
-		$sm->assign ('MorgOS_AdminNav', $adminNav);
+		$sm->assign ('MorgOS_Admin_RootMenu', $adminNav);
+		$sm->assign ('MorgOS_AdminTitle', 'Admin panel');
 		
 		$page = $pageManager->newPage ();
 		$page->initFromDatabaseID ($pageID);
@@ -142,7 +142,8 @@ class adminCorePlugin extends Plugin {
 			//debug_print_backtrace ();
 			die ('Translation doesnt exists'.$pageID);
 		}		
-		$tpagearray = array ('Title'=>$tpage->getTitle (), 'Content'=>$tpage->getContent ());
+		$sm->assign ('MorgOS_AdminPage_Title', $tpage->getTitle ());
+		$sm->assign ('MorgOS_AdminPage_Content', $tpage->getContent ());
 		$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 		return true;
 	}
