@@ -1,0 +1,12 @@
+#loginBox {
+	position: relative;
+	border: solid 1px black;
+	top: 100px;
+	/*bottom: 50%;*/
+	margin-left: auto;
+	margin-right: auto;
+	width: 600px;
+	padding: 10px;
+	
+	text-align: center;
+}

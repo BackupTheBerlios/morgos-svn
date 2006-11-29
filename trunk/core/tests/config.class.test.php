@@ -206,5 +206,40 @@ class configTest extends TestCase {
 		$this->assertEquals (false, $this->configurator->getBoolItem ('/aBool'));
 		$this->assertEquals ("string", $this->configurator->getStringItem ('/aString'));
 	}
+	
+	function testLoadFromWrongFile () {
+		$a = $this->configurator->loadConfigFile ('core/tests/UNEXISTING.php');
+		$this->assertTrue ($a->is ('CONFIG_FILE_NOT_FOUND'));
+		
+		$a = $this->configurator->loadConfigFile ('core/tests/unreadable.php');
+		$this->assertTrue ($a->is ('CONFIG_FILE_NOT_READABLE'));
+	}
+	
+	function testCheckType () {
+		$a = checkType (7.324, 'Float');
+		$this->assertTrue ($a->is ('TYPE_NOT_RECOGNIZED'));
+	}
+	
+	function testExistsItem () {
+		$this->configurator->loadConfigFile ('core/tests/options.php');
+		$this->assertTrue ($this->configurator->existsItem ('/aBool'));
+		$this->assertTrue ($this->configurator->existsItem ('/aReal'));
+		$this->assertTrue ($this->configurator->existsItem ('/aNumeric'));
+		$this->assertTrue ($this->configurator->existsItem ('/aString'));
+	}
+	
+	function testGetStringValue () {
+		$this->configurator->loadConfigFile ('core/tests/options.php');
+		$real = $this->configurator->getItem ('/aReal', REAL);
+		$this->assertEquals ('1.0', $real->getStringValue ());
+		$string = $this->configurator->getItem ('/aString', STRING);
+		$this->assertEquals ('\'string\'', $string->getStringValue ());
+		$int = $this->configurator->getItem ('/aNumeric', NUMERIC);
+		$this->assertEquals ('1', $int->getStringValue ());
+		$bool = $this->configurator->getItem ('/aBool', BOOL);
+		$this->assertEquals ('false', $bool->getStringValue ());
+		$bool->setValue (true);
+		$this->assertEquals ('true', $bool->getStringValue ());
+	}
 }
 ?>

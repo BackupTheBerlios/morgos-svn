@@ -246,10 +246,10 @@ class configurator {
 				include ($fileName);
 				$this->loadConfigArray ($configItems);
 			} else {
-				return new Error ('CONFIGURATOR_CANT_READ_FILE', $fileName);
+				return new Error ('CONFIG_FILE_NOT_READABLE', $fileName);
 			}
 		} else {
-			return new Error ('CONFIGURATOR_CANT_READ_FILE', $fileName);
+			return new Error ('CONFIG_FILE_NOT_FOUND', $fileName);
 		}
 	}
 	
