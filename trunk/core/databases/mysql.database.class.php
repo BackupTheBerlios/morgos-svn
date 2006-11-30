@@ -37,21 +37,26 @@ if (! class_exists ('mysqlDatabaseActions')) {
 	
 	class mysqlDatabaseActions extends databaseActions {
 		var $dbName;	
+		var $connection;
 	
 		function mysqlDatabaseActions () {
 			$this->setType ('MySQL');
+			$this->connection = null;
 		}
 	
 		function connect($host,$userName,$password) {
 			$this->connection = @mysql_connect ($host,$userName,$password);
 			if ($this->connection == false) {
-				return new Error ('DATABASE_CONNECTION_FAILED', mysql_error ());
+				return new Error ('DBDRIVER_CANT_CONNECT', mysql_error ());
 			}
 		}
 		
 		function disconnect () {
 			if ($this->connection) {
 				mysql_close ($this->connection);
+				$this->connection = null;
+			} else {
+				return new Error ('DBDRIVER_NOT_CONNECTED');
 			}
 		}
 	
@@ -68,16 +73,7 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			if ($result !== false) {
 				return $result;
 			} else {
-				return new Error ('DATABASE_QUERY_FAILED', mysql_error ());
-			}
-		}
-		
-		function queryFile ($fileName) {
-			$queries = file_get_contents ($fileName);
-			$queries = str_replace ('{prefix}', $this->getPrefix (), $queries);
-			$queries = explode (';', $queries);
-			foreach ($queries as $sql) {
-				$this->query ($sql);
+				return new Error ('SQL_QUERY_FAILED', $sql, mysql_error ());
 			}
 		}
 	        
@@ -109,7 +105,36 @@ if (! class_exists ('mysqlDatabaseActions')) {
 				$allFields = array ();
 				if (mysql_num_rows ($q) > 0) {
 					while ($row = mysql_fetch_assoc ($q)) {
-						$allFields[] = $row;
+						$type = $row['Type'];
+						if (substr ($type, 0, 3) == 'int') {
+							$maxlength = substr ($type,
+											 strpos ($type, '(')+1, 
+											 strpos ($type, ')')-
+											 	strpos ($type, '(')-1);
+							$type = 'int';
+						} elseif (substr ($type, 0, 7) == 'varchar') {
+							$maxlength = substr ($type,
+											 strpos ($type, '(')+1, 
+											 strpos ($type, ')')-
+											 	strpos ($type, '(')-1);
+							$type = 'string';
+						} else {
+							$maxlength = null;
+						}
+						if ($row['Null'] == 'YES') {
+							$row['Null'] = true;
+						} else {
+							$row['Null'] = false;
+						}
+						
+						$field = array (
+								'Field'=>$row['Field'],
+								'Type'=>$type,
+								'Null'=>$row['Null'],
+								'MaxLength'=>(int)$maxlength,
+								'Default'=>$row['Default']
+								);
+						$allFields[] = $field;
 					}
 				}
 				return $allFields;
@@ -149,7 +174,6 @@ if (! class_exists ('mysqlDatabaseActions')) {
 						$dbField->canBeNull = true;
 					}
 					if (! in_array ($dbField->getName (), $filter)) {
-						//var_dump ($dbField);
 						$alldbFields[] = $dbField;
 					}
 				}

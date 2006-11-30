@@ -1088,8 +1088,14 @@ class DBTableManager {
 			if (! isError ($curFields)) {
 				if (! array_key_exists ($newField->getName (), $curFields)) {
 					$newField->canBeNull = true;
-					$r = $this->_db->addNewField ($newField, 
-							$this->_db->prefix.$tableName);
+					$name = $newField->getName ();
+					$type = $newField->getDBType ();
+					$fTN = $this->_db->getPrefix () . $tableName;
+					$sql = "ALTER TABLE $fTN ADD {$name} {$type}";
+					if (! $newField->canBeNull) {
+						$sql .= " NOT NULL";
+					}
+        				$r = $this->_db->query ($sql);
 					if (isError ($r)) {
 						return $r;
 					}

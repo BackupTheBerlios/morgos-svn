@@ -41,29 +41,9 @@ foreach ($availableModulesINI as $value) {
 include_once ('core/varia.functions.php');
 include_once ('core/databasemanager.functions.php');
 
-$dbModule = databaseLoadModule ($testerOptions['dbModule']);
-
-$r = $dbModule->connect ($testerOptions['dbHost'], $testerOptions['dbUser'], $testerOptions['dbPass']);
-
-$r = $dbModule->selectDatabase ($testerOptions['dbDatabaseName']);
-
-foreach ($dbModule->getAllTables () as $tableName) {
-	$r = $dbModule->query ("DROP TABLE $tableName");
-	if (isError ($r)) {
-		var_dump ($r);
-		exit ();
-	}
-}
-
 include_once ('core/sqlwrapper.class.php');
 include_once ('core/user/usermanager.class.php');
 include_once ('core/page/pagemanager.class.php');
-global $u, $p;
-$u = new userManager ($dbModule);
-$u->installAllTables ();	
-	
-$p = new pageManager ($dbModule);
-$p->installAllTables ();
 
 /*if ($php == "5") {
 	require_once 'core/tests/testoutput.php';

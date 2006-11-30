@@ -4,26 +4,30 @@
  * \page Skins Creating a skin
  *
  * \section Introduction
- * A skin does is made up from some templates.
- * This templates are progressed, and the actual content will be added.
+ * A skin is made up from some templates.
+ * This templates are processed, and the actual content will be added.
  * The template parser is http://smarty.php.net/
+ *
  *
  * To enable your skin it should have a \subpage skin.php
  * 
- * \subsection Mandatory templates
+ * \subsection a Mandatory templates
  * - \subpage Genericpage
  * - \subpage Navigation
  * - \subpage Sidebar
  * - \subpage Footer
  * - \subpage Header
  * - \subpage BoxLoginForm
+ * - \subpage BoxUserForm
+ * - \subpage UserRegisterForm
+ * - \subpage UserSideboxContent
  * - \subpage Usermessages
  * - \subpage Sidebox
  * - \subpage Sideelement
  * - \subpage 404
  * - \subpage error
  *
- * \subsection Mandatory admin templates
+ * \subsection b Mandatory admin templates
  * - \subpage AdminLogin
  * - \subpage AdminGenericpage
  * - \subpage AdminHeader
@@ -34,12 +38,12 @@
  * - \subpage AdminSidebox
  * - \subpage AdminSideelement
  *
- * \subsection Actual admin content (also mandatory)
+ * \subsection c Actual admin content (also mandatory)
  * - \subpage AdminPage_PageManager and \subpage AdminPage_Editor
  * - \subpage AdminUser_UserManager
  * - \subpage AdminPlugin_PluginManager and \subpage AdminPlugin_PluginList
  *
- * \subsection Variables that can be used on every location
+ * \subsection d Variables that can be used on every location
  * - $SkinPath: the location of the skin. Usefull for including images/css files 
 */
 
@@ -58,10 +62,8 @@
  * 
  * This is a skin with name MySkinName, its on version 1.0. 
  * It supports morgos versions 0.3, 0.4 and 0.5
- * You Should test your skin with 0.3 and 0.5. 
- * If you can't test on MorgOS version 0.3 MinMorgOSVersion should be 0.5 
- *  (unless you test it with 0.4)
- *  
+ * You should test your skin with the lowest and highest version it is compatible with.
+ * If you can't for some reason, you should change your compatible versions.
  * ID should be an unique GUID identifier: You could create one on
  * http://www.hoskinson.net/webservices/guidgeneratorclient.aspx
 */
@@ -125,7 +127,7 @@
 
 /**
  * \page BoxLoginForm
- * Name: user\boxloginform.tpl
+ * Name: user/boxloginform.tpl
  * \paragraph
  * This is the content of a sidebox when the user isn't logged in.
  * It should contain a login form. It should also contain links for 
@@ -145,7 +147,7 @@
 
 /**
  * \page BoxUserForm
- * Name: user\boxuserform.tpl
+ * Name: user/boxuserform.tpl
  * \paragraph
  * This is the content of a sidebox when the user is logged in.
  * It should show some links:
@@ -153,8 +155,20 @@
 */
 
 /**
+ * \page UserSideboxContent
+ * Name: user/sideboxcontent.tpl
+ * \paragraph
+ * This should include the BoxUserForm or BoxLoginForm
+ * You should do it with:
+ * {morgos_side_box EvalBoxTitle="Title"
+		BoxContentFile="user/boxuserform.tpl"}
+ * Check if the user is logged in with $MorgOS_CurUser.
+ * The name of the user is $MorgOS_CurUser.Name
+*/
+
+/**
  * \page UserRegisterForm
- * Name: user\registre.tpl
+ * Name: user\register.tpl
  * \paragraph
  * This is the content of a register form page.
  * \section Form Definition
@@ -185,8 +199,8 @@
  * \page Sidebox
  * Name sidebox.tpl
  * \paragraph
- * This is an element in the sidebar. It does only have this vars
- * $BoxTitle: The title of the box (is always text/image)
+ * This is an element in the sidebar (eg. the user functions). It does only have this vars
+ * $BoxTitle: The title of the box (is always text/image) and
  * $BoxContent: the content of the box (can be text/list/image/form/...)
 */
 
@@ -194,7 +208,10 @@
  * \page Sideelement
  * Name: sideelement.tpl
  * \paragraph
- * This is an element in the sidebar. It does have only one var:
+ * This is an element in the sidebar. It is the same as \subpage Sidebox, 
+ * but doesn't have a title.
+ * \paragraph 
+ * It does have only one var:
  * $ElementContent: The content of the element (can be everything)
 */
 
@@ -275,7 +292,54 @@
 
 /**
  * \page AdminPage_PageManager Admin pagemanager
- * TODO: fill this in
+ * Name: admin/page/pagemanager.tpl
+ *
+ * \paragraph
+ * This should show the pages that are part of the user selected menu.
+ * It should also show some Forms (creating a new page, editing current page)
+ * 
+ * \pragraph Usefull vars
+ * - $MorgOS_PageLevel: An array of level items.
+ * 		a level item is an array with 2 values: Link, and Name
+ *		The level items are the parent in the menus.
+ * - $MorgOS_PagesList: an array of page items (items in the menu)
+ *	They have these values:
+ *	* Title: the title of the page
+ *	* PlaceInMenu: The number of the place
+ *	* ID: the id of the page
+ *		This should be used in some links
+ *		- index.php?action=adminMovePageDown&pageID=$ID (to move the page down in the menu)
+ *		- index.php?action=adminMovePageUp&pageID=$ID the opposite
+ *		- index.php?action=adminDeletePage&pageID=$ID to delete the page
+ *		- index.php?action=adminMovePageLevelUp&pageID=$ID To move the page one level up 
+ *			(check with CanMoveUp if it is not toplevel already)
+ *	* Link: the view link (for normal page view)
+ * - $MorgOS_ParentPage: an array of the current page
+ *	* ID: the ID
+ *	* RootPage: if it is a toplevel page (if it is, don't show editPage)
+ *	* Content: current content
+ *	* Title: current title
+ *	* NavTitle: current menu title
+ * \paragraph Editing page Form Specification:
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=adminSavePage
+ *	- pageID: type hidden, value= the ID of the parentpage
+ *	- pageTitle: type text: new/update page title
+ *	- pageNavTitle: type text: new/updated menu title
+ *	- pageContent: type textarea: new/updated content
+ * Additional fields:
+ *	None
+ * \paragraph Add a new page Form Specification:
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=adminNewPage
+ *	- parentPageID: type hidden, value= the ID of the parentpage
+ *	- pageTitle: type text: page title
+ * Additional fields:
+ *	None
 */
 
 /**

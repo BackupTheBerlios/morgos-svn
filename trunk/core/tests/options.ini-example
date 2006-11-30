@@ -1,9 +1,16 @@
-dbModule = YourModule_Probably_MySQL
+defaultModule = MySQL
+dbAvailableModules = MySQL, PostgreSQL
 
-dbHost = localhost
-dbUser = userName
-dbPass = yourPass
-dbDatabaseName = your_test_database
-dbPrefix = your_prefix
+[MySQL]
+Host = localhost
+User = nathan
+Password = MySQLPASS
+DatabaseName = morgos_test
+Prefix = morgos_
 
-dbAvailableModules = module1, module2
+[PostgreSQL]
+Host = localhost
+User = nathan
+Password = PGSQL_PASS
+DatabaseName = morgos_test
+Prefix = morgos_

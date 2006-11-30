@@ -39,6 +39,7 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 		function pgsqlDatabaseActions () {
 			$this->setType ('PostgreSQL');
 			$this->_connectionString = '';
+			$this->_connection = null;
 		}
 	
 		function connect($host,$userName,$password) {
@@ -46,10 +47,13 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 		}
 		
 		function disconnect () {
+			$this->_connectionString = '';
 			if ($this->_connection) {
 				@pg_close ($this->_connection);
+				$this->_connection = null;
+			} else {
+				return new Error ('DBDRIVER_NOT_CONNECTED');
 			}
-			$this->_connectionString = '';
 		}
 	
 		function selectDatabase ($dbName) {
@@ -57,7 +61,7 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 					$this->_connectionString." dbname=$dbName");
 			$this->_connectionString == '';
 			if ($this->_connection == false) {
-				return new Error ('DATABASE_CONNECTION_FAILED', pg_last_error ());
+				return new Error ('DB_DRIVER_CANT_CONNECT', pg_last_error ());
 			}
 			$this->_dbName = $dbName;
 		}
@@ -67,7 +71,7 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 			if ($result !== false) {
 				return $result;
 			} else {
-				return new Error ('DATABASE_QUERY_FAILED', $sql, pg_last_error ());
+				return new Error ('SQL_QUERY_FAILED', $sql, pg_last_error ());
 			}
 		}
 	        
@@ -98,10 +102,55 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 				$allFields = array ();
 				if (pg_num_rows ($q) > 0) {
 					while ($row = pg_fetch_assoc ($q)) {
-						$allFields[] = $row;
+						$type = $row['data_type'];
+						$default = $row['column_default'];
+						if (substr ($type, 0, 3) == 'int') {
+							$maxlength = 11;
+							$type = 'int';
+							if (substr ($default, 0, 7) == 'nextval') {
+								$default = null;
+							}
+						} elseif (substr ($type, 0, 8) == 'smallint') {
+							$maxlength = 1;
+							$type = 'int';
+						} elseif (substr ($type, 0, 17) == 'character varying') {
+							$maxlength = (int)$row['character_maximum_length'];
+							$type = 'string';
+						} else {
+							$maxlength = null;
+						}
+						if ($row['is_nullable'] == 'YES') {
+							$row['Null'] = true;
+						} else {
+							$row['Null'] = false;
+						}
+						
+						$field = array (
+								'Field'=>$row['column_name'],
+								'Type'=>$type,
+								'Null'=>$row['Null'],
+								'MaxLength'=>$maxlength,
+								'Default'=>$default
+								);
+						$allFields[$row['ordinal_position']] = $field;
+					}	
+				}
+				
+				/*Very unclean method to sort the array*/
+				$alLFieldsOrdered = array ();
+				$i = 1;
+				while ($field = current ($allFields)) {
+					if (key ($allFields) == $i) {
+						$allFieldsOrdered[] = $field;
+						unset ($allFields[$i]);
+						$i++;
+					}
+					$a = next ($allFields);
+					if ($a == false) {
+						reset ($allFields);
 					}
 				}
-				return $allFields;
+				return $allFieldsOrdered;
 			} else {
 				return $q;
 			}
@@ -119,14 +168,12 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 						$dbtype = DB_TYPE_STRING;
 					} elseif (substr ($type, 0,5) == 'text') {
 						$dbtype = DB_TYPE_TEXT;
-					} elseif (substr ($type, 0, 5) == 'enum') {
-						$dbtype = DB_TYPE_ENUM;
 					} else {
 						$dbtype = DB_TYPE_STRING;
 					}
 					
 					$maxSize = $field['character_maximum_length'];
-					if ($dbtype != DB_TYPE_ENUM) {
+					if ($dbtype != DB_TYPE_TEXT) {
 						if (strpos ($type, '(') and strpos ($type, '(')) {
 							$maxSize = substr ($type, strpos ($type, '(')+1, 
 								strpos ($type, ')')-strpos ($type, '(')-1); 

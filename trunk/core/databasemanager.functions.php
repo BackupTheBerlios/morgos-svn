@@ -90,12 +90,6 @@ function databaseModuleExists ($module, $checkReqs = false) {
 	}
 }
 
-function databaseInstallModule () {
-}
-
-function databaseUnInstallModule () {
-}
-
 /**
  * Base class for all databasemodules.
  *
@@ -133,51 +127,6 @@ class databaseActions {
 	 * @return (string)
 	*/
 	function getPrefix () {return $this->prefix;}
-	
-	/**
-	 * Preventing a string from SQL injection
-	*/		
-	function escapeString ($value) {
-		if (get_magic_quotes_gpc ()) {
-			$value = stripslashes ($value);
-		}
-		return addslashes ($value);
-	}
-	
-	/**
-	 * Add a new field to the database
-	 *
-	 * @param $newField (object dbField)
-	 * @param $dbName (string)
-	*/
-	function addNewField ($newField, $dbName) {
-		$name = $newField->getName ();
-		$type = $newField->getDBType ();
-		$sql = "ALTER TABLE $dbName ADD {$name} {$type}";
-		if (! $newField->canBeNull) {
-			$sql .= " NOT NULL";
-		}
-		return $this->query ($sql);
-	}
-	
-	/**
-	 * Remove a field from a table
-	 *
-	 * @param $fieldName (string)
-	 * @param $tableName (string)
-	 * @public
-	*/
-	function removeField ($fieldName, $tableName) {
-		$sql = "ALTER TABLE ".$tableName." DROP $fieldName";
-		return $this->query ($sql);
-		
-	}
-	
-	function queryFile ($fileName) {
-		$sql = file_get_contents ($fileName);
-		$sql = str_replace ('{prefix}', $this->getPrefix (), $sql);
-		$this->query ($sql);
-	}
 	
 	/**
 	 * Sets the type of the database
