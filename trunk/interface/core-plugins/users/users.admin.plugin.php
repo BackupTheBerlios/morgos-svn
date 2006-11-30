@@ -56,7 +56,7 @@ class adminCoreUserAdminPlugin extends plugin {
 	
 	function onMakeUserAdmin ($userID) {
 		$userM = &$this->_pluginAPI->getUserManager ();
-		$t = &$this->getI18NManager ();		
+		$t = &$this->_pluginAPI->getI18NManager ();		
 		
 		$user = $userM->newUser ();
 		$user->initFromDatabaseID ($userID);
@@ -71,7 +71,7 @@ class adminCoreUserAdminPlugin extends plugin {
 	function onMakeUserNormal ($userID)  {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$userM = &$this->_pluginAPI->getUserManager ();
-		$t = &$this->getI18NManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$user = $userM->newUser ();
 		$user->initFromDatabaseID ($userID);
@@ -85,7 +85,7 @@ class adminCoreUserAdminPlugin extends plugin {
 	
 	function onDeleteUser ($userID) {
 		$userM = &$this->_pluginAPI->getUserManager ();
-		$t = &$this->getI18NManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		
 		$user = $userM->newUser ();
 		$user->initFromDatabaseID ($userID);
