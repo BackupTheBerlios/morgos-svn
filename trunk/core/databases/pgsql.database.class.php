@@ -137,7 +137,7 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 				}
 				
 				/*Very unclean method to sort the array*/
-				$alLFieldsOrdered = array ();
+				$allFieldsOrdered = array ();
 				$i = 1;
 				while ($field = current ($allFields)) {
 					if (key ($allFields) == $i) {
@@ -161,10 +161,10 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 			$alldbFields = array ();
 			if (! isError ($allFields)) {
 				foreach ($allFields as $field) {
-					$type = $field['data_type'];
+					$type = $field['Type'];
 					if (substr ($type, 0, 3) == 'int') {
 						$dbtype = DB_TYPE_INT;
-					} elseif (substr ($type, 0, 7) == 'varchar') {
+					} elseif (substr ($type, 0, 6) == 'string') {
 						$dbtype = DB_TYPE_STRING;
 					} elseif (substr ($type, 0,5) == 'text') {
 						$dbtype = DB_TYPE_TEXT;
@@ -172,18 +172,10 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 						$dbtype = DB_TYPE_STRING;
 					}
 					
-					$maxSize = $field['character_maximum_length'];
-					if ($dbtype != DB_TYPE_TEXT) {
-						if (strpos ($type, '(') and strpos ($type, '(')) {
-							$maxSize = substr ($type, strpos ($type, '(')+1, 
-								strpos ($type, ')')-strpos ($type, '(')-1); 
-						}
-					} 				
+					$maxSize = $field['MaxLength'];			
 	
-					$dbField = new dbField ($field['column_name'], $dbtype, (int) $maxSize);
-					if ($field['is_nullable'] == 'YES') {
-						$dbField->canBeNull = true;
-					}
+					$dbField = new dbField ($field['Field'], $dbtype, (int) $maxSize);
+					$dbField->canBeNull = $field['Null'];
 					if (! in_array ($dbField->getName (), $filter)) {
 						//var_dump ($dbField);
 						$alldbFields[] = $dbField;

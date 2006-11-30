@@ -105,7 +105,28 @@ class BasePluginAPI {
 				$sm->append ('MorgOS_Notices', $tMessage);
 				break;
 		}
-	}	
+	}
+	
+	/**
+	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
+	 * 
+	 * @param $action (string)
+	 * @param $params (string array) The params that shopuld be given.
+	*/
+	function doAction ($action, $params = array ()) {
+		$loc = 'index.php?action='.$action;
+		foreach ($params as $name=>$value) {
+			$loc .= '&'.$name.'='.$value;
+		}
+		$this->_morgos->shutdown ();
+		header ('Location: '.$loc);
+	}
+	
+	function executePreviousAction () {
+		$hString = $this->_actionManager->getPreviousActionHeaderString (); 
+		$this->_morgos->shutdown ();
+		header ($hString);
+	}
 }
 
 class ConfigPluginAPI extends BasePluginAPI {
@@ -138,27 +159,6 @@ class PluginAPI extends ConfigPluginAPI {
 	
 	function setPageManager (&$pageManager) {$this->_pageManager = &$pageManager;}
 	function &getPageManager () {return $this->_pageManager;}	
-	
-	/**
-	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
-	 * 
-	 * @param $action (string)
-	 * @param $params (string array) The params that shopuld be given.
-	*/
-	function doAction ($action, $params = array ()) {
-		$loc = 'index.php?action='.$action;
-		foreach ($params as $name=>$value) {
-			$loc .= '&'.$name.'='.$value;
-		}
-		$this->_morgos->shutdown ();
-		header ('Location: '.$loc);
-	}
-	
-	function executePreviousAction () {
-		$hString = $this->_actionManager->getPreviousActionHeaderString (); 
-		$this->_morgos->shutdown ();
-		header ($hString);
-	}
 	
 	function canUserViewPage ($pageID) {
 		$page = $this->_pageManager->newPage ();

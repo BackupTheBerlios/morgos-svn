@@ -512,8 +512,26 @@ class actionManager {
 	 * @private
 	*/
 	var $_actionsList;
+	/**
+	 * The last action name.
+	 * @private
+	*/
 	var $_lastActionName;
+	/**
+	 * An array of the last action parameters
+	 * @private
+	*/
 	var $_lastActionParameters;
+	/**
+	 * The previous action name.
+	 * @private
+	*/
+	//var $_previousAction;
+	/**
+	 * An array of the previous action parameters
+	 * @private
+	*/
+	//var $_previousActionParameters;
 
 	/**
 	 * Constructor
@@ -522,6 +540,22 @@ class actionManager {
 		$this->_actionsList = array ();
 		$this->_lastActionName = '';
 		$this->_lastActionParameters = array ();
+		//var_dump ($_SERVER);
+		/*$this->_previousActionName = $_COOKIE['lastActionName']; 
+		
+		$params = array ();
+		foreach ($_COOKIE as $n=>$v) {
+			$k = substr ($n, 0, strlen ('lastActionParameters_'));
+			if ($k == 'lastActionParameters_') {
+				$z = substr ($n, strlen ('lastActionParameters_')); 
+				$params[$z] = $v;
+			}
+		}	
+		if ($params == array ()) {
+			$params['stubKey'] = 'stubValue';
+		}
+		$this->_previousActionParameters = $params;*/
+				
 	}
 	
 	/**
@@ -634,30 +668,20 @@ class actionManager {
 		return $a['permissions'];
 	}
 	
-	function getPreviousActionLinkString () {
-		$params = array ();
-		foreach ($_COOKIE as $n=>$v) {
-			$k = substr ($n, 0, strlen ('lastActionParameters_'));
-			if ($k == 'lastActionParameters_') {
-				$z = substr ($n, strlen ('lastActionParameters_')); 
-				$params[$z] = $v;
-			}
-		}	
-		if ($params == array ()) {
-			$params['stubKey'] = 'stubValue';
-		}
-				
+	function getPreviousActionLinkString () {	
 		$paramString = '';	
-		foreach ($params as $k=>$v) {
+		foreach ($this->_previousActionParameters as $k=>$v) {
 			$paramString .= '&'.$k.'='.$v;
 		}
 		
-		return 'index.php?action='.$_COOKIE['lastActionName'].$paramString;
+		//return 'index.php?action='.$this->_previousActionName.$paramString;
+		//var_dump ($_SERVER);
+		return $_SERVER['HTTP_REFERER'];
 	}
 	
 	function saveLastAction () {
 		// clean last action
-		foreach ($_COOKIE as $n=>$v) {
+		/*foreach ($_COOKIE as $n=>$v) {
 			if (substr ($n, 0, strlen ('lastActionParameters_')) == 'lastActionParameters_') {
 				setcookie ($n, '');
 			}
@@ -666,7 +690,7 @@ class actionManager {
 		setcookie ('lastActionName', $this->_lastActionName);
 		foreach ($this->_lastActionParameters as $key=>$value) {
 			setcookie ('lastActionParameters_'.$key, $value);
-		}
+		}*/
 	}
 }
 

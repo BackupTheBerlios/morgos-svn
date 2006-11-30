@@ -37,6 +37,7 @@ Version 0.3
  * Removed the XMLSQL backend from the list (it is incomplete) 
  * Deleting a page shows a javascript alert "... %p?" but should be "... Home?"
  * GetAllUsers in UserGroup doesn't work
+ * Fixed a bug whith executePreviousAction and with 2 tabs open
 
 Version 0.2 5 November 2006
 ===========
