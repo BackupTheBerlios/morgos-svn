@@ -21,5 +21,6 @@
 		</ol>
 		{/if}
      </li>		
-	{/foreach}		
+	{/foreach}
+	{$MorgOS_ExtraSidebar}
 </ol>
