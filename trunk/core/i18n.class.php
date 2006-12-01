@@ -86,8 +86,7 @@ class localizer {
 	function translateError ($error) {
 		if (array_key_exists ($error->getError (), $this->_knownErrors)) {
 			$s = $this->_knownErrors[$error->getError ()];
-			
-			$this->translate ($s, $error->getParams ());
+			return $this->translate ($s, $error->getParams ());
 		} else {
 			return $this->replaceParams ('Unexpected error.', array ());
 		}
