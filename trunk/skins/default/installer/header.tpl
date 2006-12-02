@@ -11,4 +11,4 @@
 	<body>
 		<div>
 			<h1>{t s="MorgOS Installer step %1/%2" a=$step b='4'}</h1>
-			{include file="messages.tpl"}
+			{include file="usermessages.tpl"}

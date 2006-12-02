@@ -134,6 +134,17 @@ class ConfigPluginAPI extends BasePluginAPI {
 
 	function setConfigManager (&$configManager) {$this->_configManager = &$configManager;}
 	function &getConfigManager () {return $this->_configManager;}
+	
+	/**
+	 * Returns the default language of MorgOS
+	 *
+	 * @since 0.3
+	 * @public
+	 * @return (string)
+	*/
+	function getDefaultLanguage () {
+		return $this->_configManager->getStringItem ('/site/default_language');
+	}
 } 
 
 

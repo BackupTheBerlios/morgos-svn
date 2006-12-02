@@ -41,29 +41,37 @@ class installerBasePlugin extends plugin {
 		$aM = &$this->_pluginAPI->getActionManager ();		
 		$aM->addAction (
 			new action ('installerShowLicense', 'GET',  
-				array (&$this, 'showLicense'), array (), array (new LocaleInput ('language'))));
+				array (&$this, 'showLicense'), array (), 
+				array (new LocaleInput ('language'))));
 				
 		$aM->addAction (
 			new action ('installerAgreeLicense', 'GET',  
-				array (&$this, 'agreeLicense'), array (new BoolInput ('agreed')), array ()));
+				array (&$this, 'agreeLicense'), array (new BoolInput ('agreed')), 
+				array ()));
 				
 		$aM->addAction (
 			new action ('installerShowRequirements', 'GET',  
-				array (&$this, 'showRequirements'), array (new BoolInput ('agreed')), array ()));
+				array (&$this, 'showRequirements'), array (new BoolInput ('agreed')), 
+				array ()));
 			
 		$aM->addAction (
 			new action ('askConfig', 'GET',  
-				array (&$this, 'askConfig'), array (new BoolInput ('canRun')), array ()));
+				array (&$this, 'askConfig'), array (new BoolInput ('canRun')), 
+				array ()));
 				
 		$aM->addAction (
 			new action ('installerInstall', 'POST',  
 				array (&$this, 'installConfigAndDatabase'), array (
 						new StringInput ('siteName'), 
+						new StringInput ('siteDefaultLanguage'),
 						new StringInput ('databaseModule'), 
-						new StringInput ('databaseHost'), new StringInput ('databaseUser'), 
-						new StringInput ('databasePassword'), new StringInput ('databaseName'), 
+						new StringInput ('databaseHost'), 
+						new StringInput ('databaseUser'), 
+						new StringInput ('databasePassword'), 
+						new StringInput ('databaseName'), 
 						new StringInput ('databasePrefix'), 
-						new StringInput ('adminLogin'), new PasswordNewInput ('adminPassword'), 
+						new StringInput ('adminLogin'), 
+						new PasswordNewInput ('adminPassword'), 
 						new EmailInput ('adminMail')), array ()));	
 		//echo $this->_pluginAPI->_actionManager;
 	}
@@ -79,7 +87,8 @@ class installerBasePlugin extends plugin {
 	function agreeLicense ($agreed) {
 		$aM = &$this->_pluginAPI->getActionManager ();		
 		if ($agreed == 'Y') {
-			$a = $aM->executeAction ('installerShowRequirements', array ('agreed'=>'Y'));
+			$a = $aM->executeAction ('installerShowRequirements', 
+				array ('agreed'=>'Y'));
 		} else {
 			$a = $aM->executeAction ('installerShowLicense', array ('language'=>'en'));
 		}
@@ -92,9 +101,14 @@ class installerBasePlugin extends plugin {
 			$sm->assign ('canRun', true);
 			if (version_compare (PHP_VERSION, '4.3', '>=')) {
 				$sm->assign ('phpError', false);
-				$sm->assign ('phpMessage', $t->translate ('You are running PHP version %1 which is new enough to run MorgOS.', array (PHP_VERSION)));
+				$sm->assign ('phpMessage', 
+					$t->translate ('You are running PHP version %1 which is new'
+					. ' enough to run MorgOS.', array (PHP_VERSION)));
 			} else {
-				$sm->assign ('phpMessage', $t->translate ('You are running PHP version %1 which is too old to run MorgOS, please upgrade to at least %2 .', array (PHP_VERSION, '4.3')));
+				$sm->assign ('phpMessage', 
+					$t->translate ('You are running PHP version %1 which is too old'
+					.' to run MorgOS, please upgrade to at least %2 .', 
+					array (PHP_VERSION, '4.3')));
 				$sm->assign ('phpError', true);
 				$sm->assign ('canRun', false);
 			}
@@ -102,7 +116,9 @@ class installerBasePlugin extends plugin {
 			$aMods = databaseGetAllModules (true);
 			if (count ($aMods) >= 1) {
 				$sm->assign ('dbMError', false);
-				$sm->assign ('dbMMessage', $t->translate ('You have at least installed 1 database module.'));
+				$sm->assign ('dbMMessage', 
+					$t->translate ('You have at least installed' 
+					. ' 1 database module.'));
 			} else {
 				$sm->assign ('canRun', false);
 				$sm->assign ('dbMError', true);
@@ -113,32 +129,42 @@ class installerBasePlugin extends plugin {
 					}
 					$s .= $a;
 				}
-				$sm->assign ('dbMMessage', $t->translate ('You need to install one supported database module. Supported databases by MorgOS are: %1.', array ($s)));	
+				$sm->assign ('dbMMessage', 
+					$t->translate ('You need to install one supported database'
+					. ' module. Supported databases by MorgOS are: %1.', array ($s)));
 			}
 			
 			if (file_exists ('skins_c')) {
 				if (is_writable ('skins_c')) {
 					$sm->assign ('dirsError', false);
-					$sm->assign ('dirsMessage', $t->translate ('All required dirs are ok.'));
+					$sm->assign ('dirsMessage', 
+						$t->translate ('All required dirs are ok.'));
 				} else {
 					$sm->assign ('canRun', false);
 					$sm->assign ('dirsError', true);
-					$sm->assign ('dirsMessage', $t->translate ('You need to make the dir "skins_c" wirtable for PHP.'));
+					$sm->assign ('dirsMessage', 
+						$t->translate ('You need to make the dir "skins_c" writable'
+						.' for PHP.'));
 				}
 			} else {
 				$a = @mkdir ('skins_c');
 				if ($a == false) {
 					$sm->assign ('canRun', false);
 					$sm->assign ('dirsError', true);
-					$sm->assign ('dirsMessage', $t->translate ('You need to have a dir skins_c that is writable by PHP.'));
+					$sm->assign ('dirsMessage', 
+						$t->translate ('You need to have a dir skins_c that is'
+						.' writable by PHP.'));
 				} else {
 					if (is_writable ('skins_c')) {
 						$sm->assign ('dirsError', false);
-						$sm->assign ('dirsMessage', $t->translate ('All required dirs are ok.'));
+						$sm->assign ('dirsMessage', 
+							$t->translate ('All required dirs are ok.'));
 					} else {
 						$sm->assign ('canRun', false);
 						$sm->assign ('dirsError', true);
-						$sm->assign ('dirsMessage', $t->translate ('You need to make the dir "skins_c" wirtable for PHP.'));
+						$sm->assign ('dirsMessage', 
+							$t->translate ('You need to make the dir "skins_c"'
+							.' writable for PHP.'));
 					}
 				}
 			}		
@@ -159,8 +185,9 @@ class installerBasePlugin extends plugin {
 	function testDatabaseConfig () {
 	}
 	
-	function installConfigAndDatabase ($siteName, 
-			$databaseModule, $databaseHost, $databaseUser, $databasePassword, $databaseName, $databasePrefix, 
+	function installConfigAndDatabase ($siteName, $siteDefaultLanguage,
+			$databaseModule, $databaseHost, $databaseUser, $databasePassword, 
+			$databaseName, $databasePrefix, 
 			$adminLogin, $adminPassword, $adminMail) {
 		$dbModule = databaseLoadModule ($databaseModule);
 		if (! isError ($dbModule)) {
@@ -182,29 +209,38 @@ class installerBasePlugin extends plugin {
 			
 			$userM = new userManager ($dbModule);
 			$admin = $userM->newUser ();
-			$a = $admin->initFromArray (array ('login'=>$adminLogin, 'password'=>md5($adminPassword), 'email'=>$adminMail));
+			$a = $admin->initFromArray (array (
+				'login'=>$adminLogin, 
+				'password'=>md5($adminPassword), 
+				'email'=>$adminMail));
 			$userM->addUserToDatabase ($admin);
 			
 			$group = $userM->newGroup ();
-			$group->initFromArray (array ('generic_name'=>'administrator', 'generic_description'=>'The admin users'));
+			$group->initFromArray (array (
+				'generic_name'=>'administrator', 
+				'generic_description'=>'The admin users'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', true);
 			$admin->addToGroup ($group);
 			
 			$group = $userM->newGroup ();
-			$group->initFromArray (array ('generic_name'=>'normaluser', 'generic_description'=>'All users'));
+			$group->initFromArray (array (
+				'generic_name'=>'normaluser', 
+				'generic_description'=>'All users'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', false);
 			$admin->addToGroup ($group);
 			
 			$group = $userM->newGroup ();
-			$group->initFromArray (array ('generic_name'=>'anonymous', 'generic_description'=>'Not logged in'));
+			$group->initFromArray (array (
+				'generic_name'=>'anonymous', 
+				'generic_description'=>'Not logged in'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', false);
 			
 			$pageM = new pageManager ($dbModule);
-			$site = $pageM->newPage ();
-			$admin = $pageM->newPage ();
+			$site = $pageM->getSitePage ();
+			$admin = $pageM->getAdminPage ();
 			$home = $pageM->newPage ();
 			$ahome = $pageM->newPage ();
 			$pman = $pageM->newPage ();
@@ -213,18 +249,34 @@ class installerBasePlugin extends plugin {
 			$adminLogout = $pageM->newPage ();
 			$adminUser = $pageM->newPage ();
 			
-			$site->initFromArray (array ('name'=>'site', 'parent_page_id'=>0, 'place_in_menu'=>0));
-			$admin->initFromArray (array ('name'=>'admin', 'parent_page_id'=>0, 'place_in_menu'=>0));
-			
 			$pageM->addPageToDatabase ($site);
 			$pageM->addPageToDatabase ($admin);
-			$home->initFromArray (array ('name'=>'MorgOS_Home', 'parent_page_id'=>$site->getID ()));
-			$ahome->initFromArray (array ('name'=>'MorgOS_Admin_Home', 'parent_page_id'=>$admin->getID ()));
-			$pman->initFromArray (array ('name'=>'MorgOS_Admin_PageManager', 'parent_page_id'=>$admin->getID (), 'action'=>'adminPageManager'));
-			$pluman->initFromArray (array ('name'=>'MorgOS_Admin_PluginManager', 'parent_page_id'=>$admin->getID (), 'action'=>'adminPluginManager'));
-			$regform->initFromArray (array ('name'=>'MorgOS_RegisterForm',  'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 'place_in_menu'=>0));
-			$adminLogout->initFromArray (array ('name'=>'MorgOS_Admin_Logout',  'parent_page_id'=>$admin->getID (), 'action'=>'adminLogout'));
-			$adminUser->initFromArray (array ('name'=>'MorgOS_Admin_UserManager',  'parent_page_id'=>$admin->getID (), 'action'=>'adminUserManager'));
+			$home->initFromArray (array (
+				'name'=>'MorgOS_Home', 
+				'parent_page_id'=>$site->getID ()));
+			$ahome->initFromArray (array (
+				'name'=>'MorgOS_Admin_Home', 
+				'parent_page_id'=>$admin->getID ()));
+			$pman->initFromArray (array (
+				'name'=>'MorgOS_Admin_PageManager', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminPageManager'));
+			$pluman->initFromArray (array (
+				'name'=>'MorgOS_Admin_PluginManager', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminPluginManager'));
+			$regform->initFromArray (array (
+				'name'=>'MorgOS_RegisterForm',  
+				'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 
+				'place_in_menu'=>0));
+			$adminLogout->initFromArray (array (
+				'name'=>'MorgOS_Admin_Logout', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminLogout'));
+			$adminUser->initFromArray (array (
+				'name'=>'MorgOS_Admin_UserManager', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminUserManager'));
 
 			$pageM->addPageToDatabase ($home);
 			$pageM->addPageToDatabase ($ahome);
@@ -244,13 +296,39 @@ class installerBasePlugin extends plugin {
 
 			$t = &$this->_pluginAPI->getI18NManager();
 
-			$tHome->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Home'), 'translated_content'=>$t->translate ('This is the homepage.')));
-			$tAHome->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Admin'), 'translated_content'=>$t->translate ('This is the admin. Here you can configure the site, add/remove and edit pages, or ban users.')));
-			$tPMan->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Page Manager'), 'translated_content'=>$t->translate ('Edit pages here.')));
-			$tRegForm->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Registration'), 'translated_content'=>$t->translate ('Give up all your user details in order to registrate to this site.')));
-			$tPlugMan->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Plugin Manager'), 'translated_Content'=>$t->translate ('Enable/disable plugins.')));
-			$tALogout->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('Logout'), 'translated_content'=>$t->translate ('Logout')));
-			$tAdminUser->initFromArray (array ('language_code'=>'en_UK', 'translated_title'=>$t->translate ('User manager'), 'translated_content'=>$t->translate ('Manage users here, remove/add them from administrators list.')));
+			$tHome->initFromArray (array (
+				'language_code'=>'en_UK', 
+				'translated_title'=>$t->translate ('Home'), 
+				'translated_content'=>$t->translate ('This is the homepage.')));
+			$tAHome->initFromArray (array (
+				'language_code'=>'en_UK', 
+				'translated_title'=>$t->translate ('Admin'), 
+				'translated_content'=>
+					$t->translate ('This is the admin.'
+						.' Here you can configure the site, add/remove and edit' 
+						.' pages, or ban users.')));
+			$tPMan->initFromArray (array (
+				'language_code'=>'en_UK', 
+				'translated_title'=>$t->translate ('Page Manager'), 
+				'translated_content'=>$t->translate ('Edit pages here.')));
+			$tRegForm->initFromArray (array (
+				'language_code'=>'en_UK', 
+					'translated_title'=>$t->translate ('Registration'), 
+					'translated_content'=>
+						$t->translate ('Give up all your user details in order to'
+							 .' registrate to this site.')));
+			$tPlugMan->initFromArray (array (
+				'language_code'=>'en_UK', 
+				'translated_title'=>$t->translate ('Plugin Manager'), 
+				'translated_Content'=>$t->translate ('Enable/disable plugins.')));
+			$tALogout->initFromArray (array ('language_code'=>'en_UK', 
+				'translated_title'=>$t->translate ('Logout'), 
+				'translated_content'=>$t->translate ('Logout')));
+			$tAdminUser->initFromArray (array ('language_code'=>'en_UK', 
+				'translated_title'=>$t->translate ('User manager'), 
+				'translated_content'=>
+					$t->translate ('Manage users here, remove/add them from'
+						.' administrators list.')));
 			
 			$home->addTranslation ($tHome);
 			$ahome->addTranslation ($tAHome);
@@ -263,14 +341,27 @@ class installerBasePlugin extends plugin {
 			
 			$configContents = '<?php'.PHP_NL.PHP_NL;
 			
-			$configContents .= '$configItems[\'/databases/module\']=\''.$databaseModule.'\';'.PHP_NL;
-			$configContents .= '$configItems[\'/databases/host\']=\''.$databaseHost.'\';'.PHP_NL;
-			$configContents .= '$configItems[\'/databases/password\']=\''.$databasePassword.'\';'.PHP_NL;
-			$configContents .= '$configItems[\'/databases/user\']=\''.$databaseUser.'\';'.PHP_NL;
-			$configContents .= '$configItems[\'/databases/database\']=\''.$databaseName.'\';'.PHP_NL;
-			$configContents .= '$configItems[\'/databases/table_prefix\']=\''.$databasePrefix.'\';'.PHP_NL.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/databases/module\']=\''.$databaseModule.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/databases/host\']=\''.$databaseHost.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/databases/password\']=\''.$databasePassword.'\';'
+				.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/databases/user\']=\''.$databaseUser.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/databases/database\']=\''
+				.$databaseName.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/databases/table_prefix\']=\''
+				.$databasePrefix.'\';'.PHP_NL.PHP_NL;
 			
-			$configContents .= '$configItems[\'/site/title\']=\''.$siteName.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/site/title\']=\''.$siteName.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/site/default_language\']=\''.
+				$siteDefaultLanguage.'\';'.PHP_NL;
 			$configContents .= '?>';
 			$c = @fopen ('config.php', 'w');
 			if ($c !== false) {

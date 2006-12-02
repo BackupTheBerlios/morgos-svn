@@ -3,7 +3,12 @@
 	<form action="index.php" method="post">
 		<fieldset>
 			<legend>{t s="site information"}</legend>
-			<p><label for="siteName">{t s="Sitename: "}</label>{morgos_input type="text" name="siteName" extra="id=\"siteName\" "}</p>
+			<p><label for="siteName">{t s="Sitename: "}</label>
+				{morgos_input type="text" name="siteName" extra="id=\"siteName\" "}</p>
+			<p><label for="siteDefaultLanguage">{t s="Default language: "}</label>
+				{morgos_input type="text" name="siteDefaultLanguage" 
+					extra="id=\"siteDefaultLanguage\" "}
+			</p>
 		</fieldset>	
 		
 		<fieldset>
