@@ -37,6 +37,7 @@
  * - \subpage AdminSidebar
  * - \subpage AdminSidebox
  * - \subpage AdminSideelement
+ * - \subpage AdminSaveConfig
  *
  * \subsection c Actual admin content (also mandatory)
  * - \subpage AdminPage_PageManager and \subpage AdminPage_Editor
@@ -350,5 +351,14 @@
 /**
  * \page AdminUser_UserManager Admin usermanager
 */
+
+/**
+ * \page AdminSaveConfig Manually saving config
+ * When MorgOS couldn't write to config.php, the user should do it manually. 
+ * This page should show how, and the content.
+ * 
+ * - $MorgOS_ConfigContent is the content
+ * - $MorgOS_ConfigProceedLink is the link to proceed
+*/ 
 
 ?>
