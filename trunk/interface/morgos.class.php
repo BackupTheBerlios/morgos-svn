@@ -622,8 +622,8 @@ class Morgos extends ConfigMorgos {
 	 * @public
 	*/
 	function run ($defaultAction) {
-		$this->loadPlugins ();
 		$this->loadSkin ();
+		$this->loadPlugins ();
 		
 		$this->assignErrors ();
 		$a = $this->getActionToExecute ($defaultAction);

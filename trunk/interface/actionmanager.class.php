@@ -669,10 +669,10 @@ class actionManager {
 	}
 	
 	function getPreviousActionLinkString () {	
-		$paramString = '';	
+		/*$paramString = '';	
 		foreach ($this->_previousActionParameters as $k=>$v) {
 			$paramString .= '&'.$k.'='.$v;
-		}
+		}*/
 		
 		//return 'index.php?action='.$this->_previousActionName.$paramString;
 		//var_dump ($_SERVER);

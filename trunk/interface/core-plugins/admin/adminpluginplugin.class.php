@@ -37,19 +37,19 @@ class adminCorePluginAdminPlugin extends plugin {
 			
 		$am->addAction (new action (
 			'adminEnablePlugin', 'GET', array ($this, 'onEnablePlugin'), 
-				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager', false));
 			
 		$am->addAction (new action (
 			'adminInstallPlugin', 'GET', array ($this, 'onInstallPlugin'), 
-				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager', false));
 			
 		$am->addAction (new action (
 			'adminDisablePlugin', 'GET', array ($this, 'onDisablePlugin'), 
-				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager', false));
 			
 		$am->addAction (new action (
 			'adminUnInstallPlugin', 'GET', array ($this, 'onUnInstallPlugin'), 
-				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager'));
+				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager', false));
 	}
 	
 	function onViewPluginManager () {

@@ -277,8 +277,11 @@ class PluginAPI extends ConfigPluginAPI {
 			$a = $em->triggerEvent ('viewAnyAdminPage', array ($page->getID (), 'en_UK'));
 			$sm->assign ('MorgOS_ConfigContent', htmlspecialchars ($out));
 			$sm->assign ('MorgOS_ConfigProceedLink', $am->getPreviousActionLinkString ());
-			$sm->display ('admin/saveconfig.tpl');
-			exit ();
+			$sm->appendTo ('MorgOS_AdminPage_Content', 
+				$sm->fetch ('admin/saveconfig.tpl'));
+			$sm->display ('admin/genericpage.tpl');
+			$this->_morgos->shutdown ();
+			exit;
 		}
 	}
 	
