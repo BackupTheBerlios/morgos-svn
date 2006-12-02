@@ -27,10 +27,7 @@ class MorgOSTests {
 				echo 'SKIPPED: '.$module;
 				continue;
 			}
-			foreach ($mod->getAllTables () as $table) {
-				$sql = "DROP TABLE $table";
-				$a = $mod->query ($sql);
-			}		
+			MorgOSTests::removeAllTablesForModule ($mod);
 		
 			switch ($module) {
 				case 'MySQL':
@@ -40,14 +37,13 @@ class MorgOSTests {
 					$suite->addTestFile ('core/tests/dbdrivers/pgsql.test.driver.class.php');
 					break;
 			}
+			$mod->disconnect ();
 		}
 		global $dbModule;
 		$dbModule = MorgOSTests::loadModuleFromConfig ($config['defaultModule'], $config);
+		MorgOSTests::removeAllTablesForModule ($dbModule);
 		$suite->addTestFile ('core/tests/sqlwrapper.class.test.php');
-		
-		global $p;
-		$p = new PageManager ($dbModule);
-		//$suite->addTestFile ('core/tests/pagemanager.class.test.php');
+		$suite->addTestFile ('core/tests/pagemanager.class.test.php');
 		$suite->addTestFile ('core/tests/usermanager.class.test.php');
 		//$suite->addTestFile ('core/tests/xmlsql.class.test.php');
 		return $suite;
@@ -61,6 +57,13 @@ class MorgOSTests {
 		$a = $mod->selectDatabase ($mOpts['DatabaseName']);
 		
 		return $mod;
+	}
+	
+	public static function removeAllTablesForModule ($module) {
+		foreach ($module->getAllTables () as $tableName) {
+			$sql = "DROP TABLE $tableName";
+			$module->query ($sql);
+		}
 	}
 }
 if (PHPUnit_MAIN_METHOD == 'AllTests::main') {

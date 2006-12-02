@@ -62,7 +62,7 @@ class PageManager extends DBTableManager {
 		$pageName = $page->getName ();
 		$pageExists = $this->pageExists ($pageName);
 		if ($pageExists) {
-			return new Error ('PAGEMANAGER_PAGE_EXISTS', $pageName);
+			return new Error ('PAGE_EXISTS_ALREADY', $pageName);
 		}	
 	
 		$parentPageID = $page->getParentPageID ();
@@ -73,14 +73,16 @@ class PageManager extends DBTableManager {
 		if ($page->getPlaceInMenu () === 0) {
 			// do nothing, everything should be OK
 		} elseif ($page->getPlaceInMenu () === -1) {
-			$parentPage = $page->getParentPage ();
-			$pInMen = $parentPage->getMaxPlaceInMenu ();
-			if (! isError ($pInMen)) {
-				$a = array ();
-				$a['place_in_menu'] = $pInMen; 
-				$page->updateFromArray ($a);
-			} else {
-				return $pInMen;
+			if (! $page->isRootPage ()) {
+				$parentPage = $page->getParentPage ();
+				$pInMen = $parentPage->getMaxPlaceInMenu ();
+				if (! isError ($pInMen)) {
+					$a = array ();
+					$a['place_in_menu'] = $pInMen; 
+					$page->updateFromArray ($a);
+				} else {
+					return $pInMen;
+				}
 			}
 		} else {
 			$place = $page->getPlaceInMenu ();
@@ -100,61 +102,46 @@ class PageManager extends DBTableManager {
 	/**
 	 * Moves a page up in the menu (if possible)
 	 *
-	 * @param $pageID (int)
+	 * @param $page (object Page)
 	 * @public
 	*/	
-	function movePageUp ($pageID) {
-		$page = $this->newPage ();
-		$r = $page->initFromDatabaseID ($pageID);
-		if (! isError ($r)) {
-			$pagesTableName = $this->_db->getPrefix ().'pages';
-			$placeInMenu = $page->getPlaceInMenu ();
-			$ppID = $page->getParentPageID ();
-			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 WHERE placeInMenu=($place_in_menu)-1 AND place_in_menu>0 AND parent_page_id='$ppID'";
-			$a = $this->_db->query ($sql);
-			if (isError ($a)) {
-				return $a;
-			}
-			
-			$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)-1 WHERE page_id=\''.$page->getID ().'\' AND place_in_menu>1';
-			$a = $this->_db->query ($sql);
-			if (isError ($a)) {
-				return $a;
-			}
-		}  else {
-			return $r;
+	function movePageUp ($page) {
+		$pagesTableName = $this->_db->getPrefix ().'pages';
+		$placeInMenu = $page->getPlaceInMenu ();
+		$ppID = $page->getParentPageID ();
+		$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 WHERE place_in_menu=($placeInMenu)-1 AND place_in_menu>0 AND parent_page_id='$ppID'";
+		$a = $this->_db->query ($sql);
+		if (isError ($a)) {
+			return $a;
+		}
+		
+		$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)-1 WHERE page_id=\''.$page->getID ().'\' AND place_in_menu>1';
+		$a = $this->_db->query ($sql);
+		if (isError ($a)) {
+			return $a;
 		}
 	} 
 	
 	/**
 	 * Moves a page down in the menu (if possible)
 	 *
-	 * @param $pageID (int)
+	 * @param $page (object Page)
 	 * @public
 	*/	
-	function movePageDown ($pageID) {
-		$page = $this->newPage ();
-		$r = $page->initFromDatabaseID ($pageID);
-		if (! isError ($r)) {
-			$pagesTableName = $this->_db->getPrefix ().'pages';
-			$placeInMenu = $page->getPlaceInMenu ();
-			$ppID = $page->getParentPageID ();
-			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)-1 WHERE place_in_menu=($place_in_menu)+1 AND parent_page_id='$ppID'";
-			$a = $this->_db->query ($sql);
-			if (isError ($a)) {
-				return $a;
-			}
-			
-			// check their was a menu item down the one to be moved
-			if ($this->_db->affectedRows ($a) !== 0) {
-				$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)+1 WHERE page_id=\''.$page->getID ().'\'';
-				$a = $this->_db->query ($sql);
-				if (isError ($a)) {
-					return $a;
-				}
-			}
-		}  else {
-			return $r;
+	function movePageDown ($page) {
+		$pagesTableName = $this->_db->getPrefix ().'pages';
+		$placeInMenu = $page->getPlaceInMenu ();
+		$ppID = $page->getParentPageID ();
+		$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)-1 WHERE place_in_menu=($placeInMenu)+1 AND parent_page_id='$ppID'";
+		$a = $this->_db->query ($sql);
+		if (isError ($a)) {
+			return $a;
+		}
+		
+		$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)+1 WHERE page_id=\''.$page->getID ().'\'';
+		$a = $this->_db->query ($sql);
+		if (isError ($a)) {
+			return $a;
 		}
 	} 
 	
@@ -168,7 +155,7 @@ class PageManager extends DBTableManager {
 		$pageName = $page->getName ();
 		$pageExists = $this->pageExists ($pageName);
 		if (! $pageExists) {
-			return new Error ('PAGEMANAGER_PAGE_DOESNT_EXISTS', $pageName);
+			return new Error ('PAGE_NOT_FOUND', $pageName);
 		}
 		
 		$placeInMenu = $page->getPlaceInMenu ();
@@ -249,7 +236,19 @@ class PageManager extends DBTableManager {
 		} else {
 			return $q;
 		}
-	}	
+	}
+	
+	function getAdminPage () {
+		$admin = $this->newPage ();
+		$admin->initFromName ('admin');
+		return $admin;
+	}
+	
+	function getSitePage () {
+		$site = $this->newPage ();
+		$site->initFromName ('site');
+		return $site;
+	}
 
 	/**
 	 * Returns a new object translatedPage.
@@ -259,5 +258,33 @@ class PageManager extends DBTableManager {
 	*/
 	function newTranslatedPage () {
 		return $this->createObject ('translatedPages');
+	}
+	
+	function isInstalled () {
+		if (parent::isInstalled ()) {
+			$site = $this->getSitePage ();
+			$admin = $this->getAdminPage ();
+			return ($site->isInDatabase ()
+				and $admin->isInDatabase ());
+		} else {
+			return false;
+		}
+	}	
+	
+	function installAllTables () {
+		parent::installAllTables ();
+		$site = $this->newPage ();
+		$site->initFromArray (array (
+			'name'=>'site',
+			'parent_page_id'=>0
+			));
+		$this->addPageToDatabase ($site);
+		
+		$admin = $this->newPage ();
+		$admin->initFromArray (array (
+			'name'=>'admin',
+			'parent_page_id'=>0
+			));
+		$this->addPageToDatabase ($admin);
 	}
 }

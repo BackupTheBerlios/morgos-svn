@@ -78,11 +78,6 @@ class dbField {
 		} else {
 			$this->_value = $newValue;
 		}
-		
-		if ($this->_value === null) {
-			morgosBacktrace ();
-			die ("Someone nulliefied");
-		}
 	}
 	
 	function getValue () {
@@ -392,7 +387,7 @@ class DBTableObject {
 	function initFromDatabaseID ($ID) {
 		if (! is_numeric ($ID)) {
 			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
-				__FILE__,__LINE__);
+				__FILE__,__LINE__, $ID);
 		}
 		$prefix = $this->_db->getPrefix ();
 		$tableName = $this->getTableName ();

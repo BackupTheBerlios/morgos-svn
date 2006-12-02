@@ -80,11 +80,6 @@ class Page extends DBTableObject {
 				$row = $this->_db->fetchArray ($q);
 				$this->initFromArray ($row);
 				$this->setField ('ID', $row[$this->getIDName ()]);
-				//var_dump ($this->_basicFields['pageID']->getValue ());
-				if (! $this->isInDatabase ()) {
-					print_r ($row);
-				}
-				//var_dump ($row);
 			} else {
 				return new Error ('PAGE_NAME_DOESNT_EXISTS', $name);
 			}
