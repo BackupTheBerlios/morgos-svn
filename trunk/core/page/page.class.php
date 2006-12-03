@@ -197,20 +197,8 @@ class Page extends DBTableObject {
 			$tPage->initFromArray ($tPageArray);
 			return $tPage;
 		}
-		
-		if (strpos ($languageCode, '-')) {
-			$mainCode = substr ($languageCode, 0, strpos ($languageCode, '-'));
-			$mLang = $this->getTranslation ($mainCode);
-			if (! isError ($mLang)) {
-				return $mLang;			
-			} else {
-				if (! $mLang->is ('OBJECT_NOT_FOUND')) {
-					return $mLang;				
-				}
-			}	
-		}
 	
-		return new Error ('OBJECT_NOT_FOUND', $languageCode);
+		return new Error ('PAGE_TRANSLATION_DOESNT_EXIST', $languageCode);
 	}
 	
 	function getAllTranslations () {
@@ -254,7 +242,7 @@ class Page extends DBTableObject {
 		if ($this->translationExists ($translation->getLanguageCode ())) {
 			return $translation->removeFromDatabase ();
 		} else {
-			return new Error ('PAGE_TRANSLATION_DOESNT_EXISTS', 
+			return new Error ('PAGE_TRANSLATION_DOESNT_EXIST', 
 				$translation->getLanguageCode ());
 		}
 	}

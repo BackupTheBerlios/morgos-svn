@@ -48,40 +48,12 @@ class TranslatedPage extends DBTableObject {
 		$translatedContent->canBeNull = true;		
 		$pageID = new dbField ('page_id', DB_TYPE_INT, 11);
 		$pageID->canBeNull = true;
-		$languageCode = new dbField ('language_code', DB_TYPE_STRING, 5);	
+		$languageCode = new dbField ('language_code', DB_TYPE_STRING, 25);	
 		$ID = new dbField ('translated_page_id', DB_TYPE_INT, 11);
 		
 		parent::DBTableObject ($db, array ($ID, $translatedTitle, $translatedNavTitle, $translatedContent,$pageID, 'languageCode'=>$languageCode), 'translatedPages', 'translated_page_id', $parent, $extraFields);
 	}
-	
-	/**
-	 * Initializes the object for a page and translation.
-	 *
-	 * @param $pageID (int)
-	 * @param $languageCode (string)
-	 * @public
-	*/
-	function initFromDatabasePageIDandLanguageCode ($pageID, $languageCode) {
-		if (! is_numeric ($pageID)) {
-			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
-		}
-		$languageCode = $this->_db->escapeString ($languageCode);
-		$fTN = $this->getFullTableName ();
-		$sql = "SELECT * FROM $fTN WHERE page_id='$pageID' AND language_code='$languageCode'";
-		$q = $this->_db->query ($sql);
-		if (! isError ($q)) {
-			if ($this->_db->numRows ($q) == 1) {
-				$row = $this->_db->fetchArray ($q);
-				$this->initFromArray ($row);
-				$this->setField ('ID', $row['translated_page_id']);
-			} else {
-				return new Error ('ERROR_TRANSLATEDPAGE_CANTFIND_PAGE', $pageID, $languageCode);
-			}
-		} else {
-			return $q;
-		}
-	}	
-	
+
 	/**
 	 * Returns the title of the page
 	 * @public
@@ -127,9 +99,10 @@ class TranslatedPage extends DBTableObject {
 	 * @returns (object page)
 	*/
 	function getPage () {
-		$par = $this->getParent ();
-		$page = $par->newTranslatedPage ();
+		$par = $this->getCreator ();
+		$page = $par->newPage ();
 		$page->initFromDatabaseID ($this->getPageID ());
+		return $page;
 	}
 
 }

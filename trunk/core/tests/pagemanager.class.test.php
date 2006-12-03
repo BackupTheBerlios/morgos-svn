@@ -224,5 +224,85 @@ class pageManagerTest extends TestCase {
 		$this->assertEquals ('3535a30b-f026-443a-a22b-e41b9ca05cc5', 
 			$pluginPage->getPluginID ());
 	}
+	
+	function testNewTranslatedPage () {
+		$trPage = $this->pM->newTranslatedPage ();
+		$this->assertEquals ('TranslatedPage', get_class ($trPage));
+	}
+	
+	function testAddTranslationToPage () {
+		$home = $this->pM->newPage ();
+		$home->initFromName ('Home');
+		$trHome = $this->pM->newTranslatedPage ();
+		$trHome->initFromArray (array(
+			'translated_title'=>'Welcome Home',
+			'translated_nav_title'=>'Home',
+			'translated_content'=>'This is the homepage',
+			//'page_id'=>$home->getPageID (),
+			'language_code'=>'English'
+			));
+		$home->addTranslation ($trHome);
+		
+		$trHome = $this->pM->newTranslatedPage ();
+		$trHome->initFromArray (array(
+			'translated_title'=>'Thuis',
+			'translated_content'=>'Dit is het huis',
+			//'page_id'=>$home->getPageID (),
+			'language_code'=>'Nederlands'
+			));
+		$home->addTranslation ($trHome);
+	}
+	
+	function testTranslationExists () {
+		$home = $this->pM->newPage ();
+		$home->initFromName ('Home');
+		$this->assertTrue ($home->translationExists ('English'));
+		$this->assertTrue ($home->translationExists ('Nederlands'));
+		$this->assertFalse ($home->translationExists ('Other'));
+	}
+	
+	function testGetTranslation () {
+		$home = $this->pM->newPage ();
+		$home->initFromName ('Home');
+		$trNed = $home->getTranslation ('Nederlands');
+		$this->assertEquals ('Thuis', $trNed->getTitle ());
+		$this->assertEquals ('Thuis', $trNed->getNavTitle ());
+		$this->assertEquals ('Dit is het huis', $trNed->getContent ());
+		
+		$trEng = $home->getTranslation ('English');
+		$this->assertEquals ('Welcome Home', $trEng->getTitle ());
+		$this->assertEquals ('Home', $trEng->getNavTitle ());
+		$this->assertEquals ('This is the homepage', $trEng->getContent ());
+		$this->assertEquals ($home, $trEng->getPage ());
+		$this->assertEquals ($home->getID (), $trEng->getPageID ());
+		
+		$r = $home->getTranslation ('Other');
+		$this->assertTrue ($r->is ('PAGE_TRANSLATION_DOESNT_EXIST'));
+	}
+	
+	function testGetAllTranslations () {
+		$home = $this->pM->newPage ();
+		$home->initFromName ('Home');
+		$trNed = $home->getTranslation ('Nederlands');
+		$trEng = $home->getTranslation ('English');		
+		
+		$this->assertEquals (array ($trEng, $trNed), 
+			$home->getAllTranslations ());
+			
+		$this->assertEquals (array ('English', 'Nederlands'), 
+			$home->getAllTranslationCodes ());
+	}
+	
+	function testRemoveTranslation () {
+		$home = $this->pM->newPage ();
+		$home->initFromName ('Home');
+		$nedTrans = $home->getTranslation ('Nederlands');
+		
+		$home->removeTranslation ($nedTrans);
+		$this->assertFalse ($home->translationExists ('Nederlands'));
+		
+		$r = $home->removeTranslation ($nedTrans);		
+		$this->assertTrue ($r->is ('PAGE_TRANSLATION_DOESNT_EXIST'));
+	}
 }
 ?>
