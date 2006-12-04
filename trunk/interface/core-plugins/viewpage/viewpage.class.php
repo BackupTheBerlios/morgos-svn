@@ -46,19 +46,18 @@ class viewPageCorePlugin extends InstallablePlugin {
 				array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
-		$em->addEvent (new Event ('viewPage', array ('pageID', 'pageLang')));
+		$em->addEvent (new Event ('viewPage', array ('pageID')));
 		
-		$em->subscribeToEvent ('viewPage', new callback ('setPageVars', array ($this, 'setPageVars'), array ('pageID', 'pageLang')));
+		$em->subscribeToEvent ('viewPage', 
+			new callback ('setPageVars', array ($this, 'setPageVars'), 
+				array ('pageID')));
 	}
 	
-	function onViewPage ($pageID, $pageLang) {
+	function onViewPage ($pageID) {
 		$pMan = &$this->_pluginAPI->getPageManager ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
 		$page = $pMan->newPage ();
-		if ($pageLang == null) {
-			$pageLang = 'en_UK';
-		}		
 		
 		if ($pageID !== null) {			
 			$a = $page->initFromDatabaseID ($pageID);
@@ -68,7 +67,8 @@ class viewPageCorePlugin extends InstallablePlugin {
 					$root->initFromName ('site');
 					$menu = $pMan->getMenu ($root);
 					$page = $menu[0];
-					$a = $em->triggerEvent ('viewPage', array ($page->getID (), $pageLang));
+					$a = $em->triggerEvent ('viewPage', 
+						array ($page->getID (), $pageLang));
 					$sm->display ('404.tpl');
 					return;
 				} else {
@@ -81,15 +81,11 @@ class viewPageCorePlugin extends InstallablePlugin {
 			$menu = $pMan->getMenu ($root);
 			$page = $menu[0];
 		}		
-		
-		if ($pageLang == null) {
-			$pageLang = 'en_UK';
-		}
 
-		$a = $em->triggerEvent ('viewPage', array ($page->getID (), $pageLang));
+		$a = $em->triggerEvent ('viewPage', array ($page->getID ()));
 		foreach ($a as $r) {
 			if ($r == false or isError ($r)) {
-				return;
+				return $r;
 			}
 		}
 		if ($page->getAction ()) {
@@ -103,26 +99,32 @@ class viewPageCorePlugin extends InstallablePlugin {
 	function getMenuArray ($rootPage, $pageLang) {
 		$array = array ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
-		return $this->_pluginAPI->menuToArray ($pageManager->getMenu ($rootPage));
+		return $this->_pluginAPI->menuToArray (
+			$pageManager->getMenu ($rootPage), $pageLang);
 	}	
 	
 	function getHeaderImageLink () {
 		return 'skins/default/images/logo.png';
 	}
 	
-	function setPageVars ($pageID, $pageLang) {
+	function setPageVars ($pageID) {
 		$pM = &$this->_pluginAPI->getPageManager ();
 		$config = &$this->_pluginAPI->getConfigManager ();
-		$root = $pM->newPage ();
-		$root->initFromName ('site');
+		$pageLang = $this->_pluginAPI->getDefaultLanguage ();
+		$root = $pM->getSitePage ();
 		$page = $pM->newPage ();
 		$page->initFromDatabaseID ($pageID);
-		if ($pageLang == null) {
-			$pageLang = 'en_UK';
-		}
 		$tPage = $page->getTranslation ($pageLang);	
 		if (isError ($tPage)) {
-			return $tPage;
+			if ($tPage->is ('PAGE_TRANSLATION_DOESNT_EXISTS')) {
+				if ($pageLang == $this->_pluginAPI->getDefaultLanguage ()) {
+					return new Error ('DEFAULT_PAGE_TRANSLATION_DOESNT_EXISTS');
+				} else {
+					return $this->setPageVars ($pageID, $this->getDefaultLanguage ());
+				}
+			} else {
+				return $tPage;
+			}
 		}
 		
 		$sm = &$this->_pluginAPI->getSmarty ();
@@ -130,7 +132,8 @@ class viewPageCorePlugin extends InstallablePlugin {
 		$sm->assign ('MorgOS_CurrentPage_Content', $tPage->getContent ());		
 		$sm->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
 		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
-		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage (), $pageLang));
+		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage (), 
+			$pageLang));
 		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, $pageLang));
 		$sm->assign ('MorgOS_ExtraSidebar', '');
 		$sm->assign ('MorgOS_ExtraHead', '');

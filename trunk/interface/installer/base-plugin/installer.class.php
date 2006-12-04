@@ -297,34 +297,34 @@ class installerBasePlugin extends plugin {
 			$t = &$this->_pluginAPI->getI18NManager();
 
 			$tHome->initFromArray (array (
-				'language_code'=>'en_UK', 
+				'language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('Home'), 
 				'translated_content'=>$t->translate ('This is the homepage.')));
 			$tAHome->initFromArray (array (
-				'language_code'=>'en_UK', 
+				'language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('Admin'), 
 				'translated_content'=>
 					$t->translate ('This is the admin.'
 						.' Here you can configure the site, add/remove and edit' 
 						.' pages, or ban users.')));
 			$tPMan->initFromArray (array (
-				'language_code'=>'en_UK', 
+				'language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('Page Manager'), 
 				'translated_content'=>$t->translate ('Edit pages here.')));
 			$tRegForm->initFromArray (array (
-				'language_code'=>'en_UK', 
+				'language_code'=>$siteDefaultLanguage, 
 					'translated_title'=>$t->translate ('Registration'), 
 					'translated_content'=>
 						$t->translate ('Give up all your user details in order to'
 							 .' registrate to this site.')));
 			$tPlugMan->initFromArray (array (
-				'language_code'=>'en_UK', 
+				'language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('Plugin Manager'), 
 				'translated_Content'=>$t->translate ('Enable/disable plugins.')));
-			$tALogout->initFromArray (array ('language_code'=>'en_UK', 
+			$tALogout->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('Logout'), 
 				'translated_content'=>$t->translate ('Logout')));
-			$tAdminUser->initFromArray (array ('language_code'=>'en_UK', 
+			$tAdminUser->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('User manager'), 
 				'translated_content'=>
 					$t->translate ('Manage users here, remove/add them from'

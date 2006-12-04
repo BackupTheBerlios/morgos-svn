@@ -216,18 +216,19 @@ class PluginAPI extends ConfigPluginAPI {
 	}
 	
 	function menuToArray ($menu) {
-		$pageLang = 'en_UK';
 		$pageM = &$this->getPageManager ();
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PageManager');
 		$pID = $page->getID ();			
-		
+		$pageLang = $this->getDefaultLanguage ();
 		$array = array ();
 		foreach ($menu as $menuItem) {
-			if (($menuItem->getPluginID () == null) or
-			    (in_array ($menuItem->getPluginID (), $this->_pluginManager->getAllLoadedPluginsID ()))) {
+			if ($menuItem->getPluginID () == null or
+			    in_array ($menuItem->getPluginID (), 
+			    		$this->_pluginManager->getAllLoadedPluginsID ())) {
 				$itemArray = array ();
-				$itemArray['Childs'] = $this->menuToArray ($this->_pageManager->getMenu ($menuItem));
+				$itemArray['Childs'] = 
+					$this->menuToArray ($this->_pageManager->getMenu ($menuItem));
 				$t = $menuItem->getTranslation ($pageLang);
 				if (isError ($t)) {
 					var_dump ($menuItem);
@@ -289,6 +290,22 @@ class PluginAPI extends ConfigPluginAPI {
 		$page = $this->_pageManager->newPage ();
 		$page->initFromName ($action->getPageName ());
 		return $page->getID ();
+	}
+	
+	/**
+	 * Returns the value of a user setting.
+	 *
+	 * @since 0.3
+	 * @public
+	 * @params $name (string) the name of the user setting
+	 * @return (mixed)
+	*/
+	function getUserSetting ($name) {
+		if ($name == 'pageLang') {
+			return $this->getDefaultLanguage ();
+		} else {
+			return new Error ('USER_SETTING_DOESNT_EXIST');
+		}
 	}
 }
 

@@ -109,7 +109,7 @@ class viewPageCoreAdminPlugin extends plugin {
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	
-	function onViewPageManager ($pageID, $pageLang) {
+	function onViewPageManager ($pageID) {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$eventM = &$this->_pluginAPI->getEventManager ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
@@ -123,16 +123,13 @@ class viewPageCoreAdminPlugin extends plugin {
 		}
 		$childPages = $pageManager->getMenu ($parentPage);
 		$sm->assign ('MorgOS_PagesList', $this->_pluginAPI->menuToArray ($childPages));
-		$tparent = $parentPage->getTranslation ('en_UK');
+		$pageLang = $this->_pluginAPI->getDefaultLanguage ();
+		$tparent = $parentPage->getTranslation ($pageLang);
 		if (! isError ($tparent)) {
 			$tparentarray = array ('Title'=>$tparent->getTitle (), 'NavTitle'=>$tparent->getNavTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage (), 'PossibleNewParents'=>array ());
 			$sm->assign ('MorgOS_ParentPage', $tparentarray);
 		} else {
 			$sm->assign ('MorgOS_ParentPage', array ('Title'=>'', 'NavTitle'=>'', 'Content'=>'', 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage ()));
-		}
-		
-		if ($pageLang == null) {
-			$pageLang = 'en_UK';
 		}
 		
 		$page = $pageManager->newPage ();
@@ -193,7 +190,8 @@ class viewPageCoreAdminPlugin extends plugin {
 		
 		$editedPage = $pageManager->newPage ();
 		$editedPage->initFromDatabaseID ($pageID);
-		$tPage = $editedPage->getTranslation ('en_UK');
+		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');
+		$tPage = $editedPage->getTranslation ($pageLang);
 		$pageContent = secureHTMLInput ($pageContent);
 		$tPage->updateFromArray (array ('translated_content'=>$pageContent, 'translated_title'=>$pageTitle, 'translated_nav_title'=>$pageNavTitle));
 		$tPage->updateToDatabase ();
@@ -210,8 +208,9 @@ class viewPageCoreAdminPlugin extends plugin {
 		$newPage->initFromArray ($ap);
 		$pageManager->addPageToDatabase ($newPage);
 		$tNewPage = $pageManager->newTranslatedPage ();
+		$pageLang = $this->_pluginAPI->getDefaultLanguage ();
 		$a = $tNewPage->initFromArray (array ('translated_title'=>$title, 
-			'language_code'=>'en_UK', 'translated_content'=>'Newly created page.'));
+			'language_code'=>$pageLang, 'translated_content'=>'Newly created page.'));
 		$newPage->addTranslation ($tNewPage);
 		$this->_pluginAPI->addRuntimeMessage ($t->translate ('New page created.'), NOTICE);
 		$this->onViewPageManager ($newPage->getID (), null);

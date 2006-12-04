@@ -65,6 +65,11 @@ class adminCorePlugin extends Plugin {
 		$userManager = &$this->_pluginAPI->getUserManager ();
 		$user = $userManager->getCurrentUser ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
+		
+		if ($pageLang === null) {
+			$pageLang = $this->_pluginAPI->getDefaultLanguage ();
+		}		
+		
 		$page = $pageManager->newPage ();
 		$am = &$this->_pluginAPI->getActionManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
@@ -77,11 +82,7 @@ class adminCorePlugin extends Plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$em = &$this->_pluginAPI->getEventManager ();
 		if ($this->_pluginAPI->canUserViewPage ($page->getID ())) {
-			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID));
-			if ($pageLang == null) {
-				$pageLang = 'en_UK';
-			}
-			
+			$em->triggerEvent ('viewAnyAdminPage', array (&$pageID, $pageLang));
 			
 			if ($page->getAction ()) {
 				$am->executeAction ($page->getAction (), array (), false);
@@ -128,6 +129,8 @@ class adminCorePlugin extends Plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();	
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		
+		$pageLang = $this->_pluginAPI->getDefaultLanguage ();	
+		
 		$rootPage = $pageManager->newPage ();
 		$rootPage->initFromName ('admin');
 		$adminNav = $this->_pluginAPI->menuToArray ($pageManager->getMenu ($rootPage));
@@ -137,7 +140,7 @@ class adminCorePlugin extends Plugin {
 		
 		$page = $pageManager->newPage ();
 		$page->initFromDatabaseID ($pageID);
-		$tpage = $page->getTranslation ('en_UK');
+		$tpage = $page->getTranslation ($pageLang);
 		if (isError ($tpage)) {
 			//debug_print_backtrace ();
 			die ('Translation doesnt exists'.$pageID);
