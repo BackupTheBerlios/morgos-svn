@@ -220,9 +220,9 @@ class PluginAPI extends ConfigPluginAPI {
 		$page = $pageM->newPage ();
 		$page->initFromName ('MorgOS_Admin_PageManager');
 		$pID = $page->getID ();			
-		$pageLang = $this->getDefaultLanguage ();
 		$array = array ();
 		foreach ($menu as $menuItem) {
+			$pageLang = $this->getUserSetting ('pageLang');
 			if ($menuItem->getPluginID () == null or
 			    in_array ($menuItem->getPluginID (), 
 			    		$this->_pluginManager->getAllLoadedPluginsID ())) {
@@ -231,7 +231,20 @@ class PluginAPI extends ConfigPluginAPI {
 					$this->menuToArray ($this->_pageManager->getMenu ($menuItem));
 				$t = $menuItem->getTranslation ($pageLang);
 				if (isError ($t)) {
-					var_dump ($menuItem);
+					if ($t->is ('PAGE_TRANSLATION_DOESNT_EXIST')) {
+						if ($pageLang !== $this->getDefaultLanguage ()) {
+							$pageLang = $this->getDefaultLanguage ();
+							$t = $menuItem->getTranslation (
+								$this->getDefaultLanguage ());
+							if (isError ($t)) {
+								return $t;
+							}	
+						} else {
+							return $t;
+						}
+					} else {
+						return $t;
+					}
 				}
 				$itemArray['Title'] = $t->getNavTitle ();
 				$itemArray['Link'] = $menuItem->getLink (); 
@@ -240,8 +253,8 @@ class PluginAPI extends ConfigPluginAPI {
 				$newParents = array ();
 				foreach ($menu as $parent) {
 					if ($parent->getID () !== $menuItem->getID ()) {
-						$tp = $parent->getTranslation ($pageLang);
-						$newParents[$parent->getID ()] = $tp->getNavTitle ();
+					//	$tp = $parent->getTranslation ($pageLang);
+						//$newParents[$parent->getID ()] = $tp->getNavTitle ();
 					}
 				}
 				$itemArray['PossibleNewParents'] = $newParents;
@@ -302,7 +315,11 @@ class PluginAPI extends ConfigPluginAPI {
 	*/
 	function getUserSetting ($name) {
 		if ($name == 'pageLang') {
-			return $this->getDefaultLanguage ();
+			if (array_key_exists ('userPageLang', $_REQUEST)) {
+				return $_REQUEST['userPageLang'];
+			} else {
+				return $this->getDefaultLanguage ();
+			}
 		} else {
 			return new Error ('USER_SETTING_DOESNT_EXIST');
 		}

@@ -67,7 +67,7 @@ class adminCorePlugin extends Plugin {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		
 		if ($pageLang === null) {
-			$pageLang = $this->_pluginAPI->getDefaultLanguage ();
+			$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');
 		}		
 		
 		$page = $pageManager->newPage ();
@@ -129,7 +129,7 @@ class adminCorePlugin extends Plugin {
 		$sm = &$this->_pluginAPI->getSmarty ();	
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		
-		$pageLang = $this->_pluginAPI->getDefaultLanguage ();	
+		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');	
 		
 		$rootPage = $pageManager->newPage ();
 		$rootPage->initFromName ('admin');

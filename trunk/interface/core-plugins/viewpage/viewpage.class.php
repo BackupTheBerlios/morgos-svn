@@ -110,7 +110,7 @@ class viewPageCorePlugin extends InstallablePlugin {
 	function setPageVars ($pageID) {
 		$pM = &$this->_pluginAPI->getPageManager ();
 		$config = &$this->_pluginAPI->getConfigManager ();
-		$pageLang = $this->_pluginAPI->getDefaultLanguage ();
+		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');
 		$root = $pM->getSitePage ();
 		$page = $pM->newPage ();
 		$page->initFromDatabaseID ($pageID);
@@ -120,7 +120,8 @@ class viewPageCorePlugin extends InstallablePlugin {
 				if ($pageLang == $this->_pluginAPI->getDefaultLanguage ()) {
 					return new Error ('DEFAULT_PAGE_TRANSLATION_DOESNT_EXISTS');
 				} else {
-					return $this->setPageVars ($pageID, $this->getDefaultLanguage ());
+					return $this->setPageVars ($pageID, 
+							$this->_pluginAPI->getDefaultLanguage ());
 				}
 			} else {
 				return $tPage;
