@@ -69,7 +69,7 @@ class UserManager extends DBTableManager {
 	 * @param &$db (dbModule object)
 	*/
 	function UserManager (&$db) {
-		parent::DBTableManager (&$db, 'users', 'User', 
+		parent::DBTableManager ($db, 'users', 'User', 
 			'groups', 'UserGroup', 
 			'translatedGroups', 'UserTranslatedGroup', 
 			'groupPermissions', 'GroupPermission');
@@ -216,6 +216,8 @@ class UserManager extends DBTableManager {
 			if ($u->isValidPassword ($_SESSION['userPassword'])) {
 				return $u;
 			} else {
+				unset ($_SESSION['userID']);
+				unset ($_SESSION['userPassword']);
 				return new Error ('SESSION_LOGIN_FAILED_INCORRECT_VALUES');
 			}
 		} else {

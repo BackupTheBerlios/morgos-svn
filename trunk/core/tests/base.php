@@ -8,6 +8,9 @@ if (version_compare (PHP_VERSION, '5', '<=')) {
 	}
 	
 	class TestCase extends PHPUnit_TestCase {
+		function __construct () {
+			parent::PHPUnit_TestCase ();
+		}
 	}
 	
 	class TestResult extends PHPUnit_TestResult {
@@ -44,8 +47,4 @@ include_once ('core/databasemanager.functions.php');
 include_once ('core/sqlwrapper.class.php');
 include_once ('core/user/usermanager.class.php');
 include_once ('core/page/pagemanager.class.php');
-
-/*if ($php == "5") {
-	require_once 'core/tests/testoutput.php';
-}*/
 ?>

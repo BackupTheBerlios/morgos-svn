@@ -27,10 +27,15 @@ include_once ('core/user/usermanager.class.php');
 class userManagerTest extends TestCase {
 	var $uM;
 	
-	function UserManagerTest () {
-		parent::__construct ();
-		global $dbModule;
-		$this->uM = new UserManager ($dbModule);
+	function setUserManager () {
+		if (! $uM) {
+			global $dbModule;
+			$this->uM = new UserManager ($dbModule);
+		}
+	}
+	
+	function setUp () {
+		$this->setUserManager ();
 	}
 	
 	function testInstall () {
@@ -91,8 +96,8 @@ class userManagerTest extends TestCase {
 		$allUsers = $this->uM->getAllUsers ();
 		$this->assertEquals (2, count ($allUsers), 'Wrong number of users');
 		foreach ($allUsers as $i=>$user) {
-			$class = get_class ($user);
-			$this->assertEquals ('User', $class, 'Wrong item: '.$i);
+			$this->assertEquals ('user', 
+				strtolower (get_class ($user)), 'Wrong item: '.$i);
 		}
 	}
 	
@@ -164,8 +169,8 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (4, count ($allGroups));
 		
 		foreach ($allGroups as $i=>$group) {
-			$class = get_class ($group);
-			$this->assertEquals ('UserGroup', $class, 'Wrong item: '.$i);
+			$this->assertEquals ('usergroup', 
+				strtolower (get_class ($group)), 'Wrong item: '.$i);
 			if ($group->getGenericName () == 'Developers') {
 				$this->assertEquals ('A nerdy geeky group',
 					$group->getGenericDescription ());
@@ -178,8 +183,8 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (2, count ($allGroups));
 		
 		foreach ($allGroups as $i=>$group) {
-			$class = get_class ($group);
-			$this->assertEquals ('UserGroup', $class, 'Wrong item: '.$i);
+			$this->assertEquals ('usergroup', 
+				strtolower (get_class ($group)), 'Wrong item: '.$i);
 		}
 	}
 	
@@ -198,8 +203,8 @@ class userManagerTest extends TestCase {
 		$this->assertEquals (2, count ($allGroups));
 		
 		foreach ($allGroups as $i=>$group) {
-			$class = get_class ($group);
-			$this->assertEquals ('UserGroup', $class, 'Wrong item: '.$i);
+			$this->assertEquals ('usergroup', 
+				strtolower (get_class ($group)), 'Wrong item: '.$i);
 		}
 	}
 	
@@ -237,8 +242,8 @@ class userManagerTest extends TestCase {
 		
 		$this->assertEquals (2, count ($allUsers), 'Wrong number of users');
 		foreach ($allUsers as $i=>$user) {
-			$class = get_class ($user);
-			$this->assertEquals ('User', $class, 'Wrong item: '.$i);
+			$this->assertEquals ('user', 
+				strtolower (get_class ($user)), 'Wrong item: '.$i);
 		}
 	}
 	

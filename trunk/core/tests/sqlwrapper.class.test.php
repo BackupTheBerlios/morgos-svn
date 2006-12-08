@@ -77,7 +77,7 @@ class SQLWrapperTest extends TestCase {
 
 	function testCreateObject () {
 		$book = $this->testManager->createObject ('books');
-		$this->assertEquals ('Book', get_class ($book), 'Wrong object returned');
+		$this->assertEquals ('book', strtolower (get_class ($book)), 'Wrong object returned');
 		
 		$false = $this->testManager->createObject ('someNonExistingOne');
 		$this->assertTrue ($false->is ('DONT_MANAGE_THIS_TABLE'));	 

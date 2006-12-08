@@ -1077,7 +1077,7 @@ class DBTableManager {
 	 * @param $newField (object dbField) The new field
 	 * @public
 	*/	
-	function addExtraFieldForTable ($tableName, $newField) {
+	function addExtraFieldForTable ($tableName, &$newField) {
 		if ($this->managesTable ($tableName)) {
 			$curFields = $this->getAllFieldsForTable ($tableName);
 			if (! isError ($curFields)) {

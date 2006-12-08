@@ -45,25 +45,26 @@ class pageManagerTest extends TestCase {
 	
 	function testNewPage () {
 		$page = $this->pM->newPage ();
-		$this->assertEquals ('Page', get_class ($page));
+		$this->assertEquals ('page', strtolower (get_class ($page)));
 	}
 	
 	function testGetAdminAndSite () {
 		$site = $this->pM->getSitePage ();
-		$this->assertEquals ('Page', get_class ($site));
+		$this->assertEquals ('page', strtolower (get_class ($site)));
 		$this->assertTrue ($site->isRootPage ());		
 		
 		$admin = $this->pM->getAdminPage ();
-		$this->assertEquals ('Page', get_class ($admin));
+		$this->assertEquals ('page', strtolower (get_class ($admin)));
 		$this->assertTrue ($admin->isRootPage ()); 
 		$this->assertTrue ($admin->isAdminPage ());
 	}
 	
 	function testAddNewPage () {
 		$newPage = $this->pM->newPage ();
+		$sitePage = $this->pM->getSitePage ();
 		$newPage->initFromArray (array(
 				'name'=>'Home',
-				'parent_page_id'=>$this->pM->getSitePage ()->getID ()
+				'parent_page_id'=>$sitePage->getID ()
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		
@@ -84,23 +85,24 @@ class pageManagerTest extends TestCase {
 		$this->pM->addPageToDatabase ($actionPage);
 		
 		$newPage = $this->pM->newPage ();
+		$adminPage = $this->pM->getAdminPage ();
 		$newPage->initFromArray (array(
 				'name'=>'AdminHome',
-				'parent_page_id'=>$this->pM->getAdminPage ()->getID ()
+				'parent_page_id'=>$adminPage->getID ()
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
 				'name'=>'2NDPage',
-				'parent_page_id'=>$this->pM->getSitePage ()->getID ()
+				'parent_page_id'=>$sitePage->getID ()
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
 				'name'=>'NonVisiblePage',
-				'parent_page_id'=>$this->pM->getSitePage ()->getID (),
+				'parent_page_id'=>$sitePage->getID (),
 				'place_in_menu'=>null
 			));
 		$this->pM->addPageToDatabase ($newPage);
@@ -108,7 +110,7 @@ class pageManagerTest extends TestCase {
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
 				'name'=>'4THPage',
-				'parent_page_id'=>$this->pM->getSitePage ()->getID ()
+				'parent_page_id'=>$sitePage->getID ()
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		$this->assertEquals (3, $newPage->getPlaceInMenu ());	
@@ -116,7 +118,7 @@ class pageManagerTest extends TestCase {
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
 				'name'=>'3THPage',
-				'parent_page_id'=>$this->pM->getSitePage ()->getID (),
+				'parent_page_id'=>$sitePage->getID (),
 				'place_in_menu'=>3
 			));
 		$this->pM->addPageToDatabase ($newPage);
@@ -128,7 +130,7 @@ class pageManagerTest extends TestCase {
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
 				'name'=>'Home',
-				'parent_page_id'=>$this->pM->getSitePage ()->getID ()
+				'parent_page_id'=>$sitePage->getID ()
 			));
 		$r = $this->pM->addPageToDatabase ($newPage);
 		$this->assertTrue ($r->is ('PAGE_EXISTS_ALREADY'));
@@ -227,7 +229,7 @@ class pageManagerTest extends TestCase {
 	
 	function testNewTranslatedPage () {
 		$trPage = $this->pM->newTranslatedPage ();
-		$this->assertEquals ('TranslatedPage', get_class ($trPage));
+		$this->assertEquals ('translatedpage', strtolower (get_class ($trPage)));
 	}
 	
 	function testAddTranslationToPage () {
