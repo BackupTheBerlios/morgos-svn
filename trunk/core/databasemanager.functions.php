@@ -38,7 +38,7 @@ include_once ('core/compatible.functions.php');
  * @return module (class) the newly created class.
 */
 function databaseLoadModule ($module) {
-	if (databaseModuleExists ($module)) {
+	if (databaseModuleExists ($module, true)) {
 		$allModules = databaseGetAllModules ();
 		$dbClass = new $allModules[$module] ();
 		return $dbClass;

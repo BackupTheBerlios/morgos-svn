@@ -19,112 +19,27 @@
  * Suite for the tests
  *
  * @since 0.2
+ * @since 0.3 complete rewrite
  * @author Nathan Samson
 */
-//chdir ('../../');
-include_once ('core/tests/phpunit.class.php');
 
-class MorgOSSuit extends TestSuite {
+if (version_compare (PHP_VERSION, '5', '>=')) {
+	$config = parse_ini_file ('options.ini');
+	$statement = $config['phpUnitPath'] . ' ' . 
+		$config['phpUnitParameters'] . ' MorgOSLoader core/tests/runtests.5.php';
 
-	function MorgOSSuit () {
-		$this->setUp ();
-	}
-
-	function setUp () {
-		global $dbModule;
-		include_once ('core/varia.functions.php');
-		include_once ('core/databasemanager.functions.php');
-		include_once ('core/sqlwrapper.class.php');
-		$testerOptions = parse_ini_file ('core/tests/options.ini');
-		$dbModule = databaseLoadModule ($testerOptions['dbModule']);
-		if (isError ($dbModule)) {
-			die ('Can\'t load database module, check your settings.');
-		}
-		$r = $dbModule->connect ($testerOptions['dbHost'], $testerOptions['dbUser'], $testerOptions['dbPass']);
-		if (isError ($r)) {
-			die ('Can\' connect to database, check your settings.');
-		}
-		$r = $dbModule->selectDatabase ($testerOptions['dbDatabaseName']);
-		if (isError ($r)) {
-			die ('Wrong databasename, check your settings.');
-		}
-		foreach ($dbModule->getAllTables () as $tableName) {
-			$r = $dbModule->query ("DROP TABLE $tableName");
-			if (isError ($r)) {
-				var_dump ($r);
-				exit ();
-			}
-		}
-
-		
-		global $avModules;
-		$availableModulesINI = explode (',', $testerOptions['dbAvailableModules']);
-		foreach ($availableModulesINI as $value) {
-			$value = trim ($value);
-			$avModules[$value] = null;
-		}
+	chdir ('../..');
+	$exec = `$statement`;
+	echo nl2br (htmlentities ($exec));
+} elseif (version_compare (PHP_VERSION, '4', '>=')) {
+	chdir ('../..');
+	include_once ('core/tests/base.php');
+	$suite = new TestSuite ();
+	loadSuite ($suite);
 	
-		include_once ('core/user/usermanager.class.php');
-		include_once ('core/page/pagemanager.class.php');
-		global $u, $p;
-		$u = new userManager ($dbModule);
-		$u->installAllTables ();	
-		
-		$p = new pageManager ($dbModule);
-		$p->installAllTables ();
-	
-		$this->setName ('MorgOS automated Tester: results');
-		global $php;
-		if ($php == "4") {
-			include_once ('core/tests/databasemanager.functions.test.php');
-			include_once ('core/tests/config.class.test.php');
-			include_once ('core/tests/usermanager.class.test.php');
-			include_once ('core/tests/varia.functions.test.php');
-			include_once ('core/tests/compatible.functions.test.php');
-			include_once ('core/tests/pagemanager.class.test.php');
-			//include_once ('core/tests/xmlsql.class.test.php');
-		} elseif ($php == "5") {
-			$this->addTestFile ('core/tests/databasemanager.functions.test.php');
-			$this->addTestFile ('core/tests/sqlwrapper.class.test.php');
-			$this->addTestFile ('core/tests/config.class.test.php');
-			$this->addTestFile ('core/tests/usermanager.class.test.php');
-			$this->addTestFile ('core/tests/varia.functions.test.php');
-			//$this->addTestFile ('core/tests/compatible.functions.test.php');
-			//$this->addTestFile ('core/tests/pagemanager.class.test.php');
-		//	$this->addTestFile ('core/tests/xmlsql.class.test.php');
-		}
-
-		/*$this->result = new TestResult;
-		if ($php == "5") {
-			$this->result->addListener(new SimpleTestListener);
-		}*/
-
-		$this->dbModule = $dbModule;
-	}
-	
-	function tearDown () {
-		$this->dbModule->disconnect ();
-	}
-
-}
-
-
-/*$suite = new MorgOSSuit ();
-if ($php == "4") {
 	require_once ('PHPUnit/GUI/HTML.php');
-	$databasesuite = new TestSuite ('databaseManagerTest');
-	$usersuite = new TestSuite ('userManagerTest');
-	$configsuite = new TestSuite ('configTest');
-	$variasuite = new TestSuite ('variaTest');
-	$compatiblesuite = new TestSuite ('compatibleTests');
-	$pagemanagersuite = new TestSuite ('pageManagerTest');
-	//$pagemanagersuite = new TestSuite ('XMLSQLTest');
-	$GUI = new PHPUnit_GUI_HTML (array ($databasesuite, $variasuite, $compatiblesuite, $configsuite, $usersuite, $pagemanagersuite));
+	$GUI = new PHPUnit_GUI_HTML ($suite->getAllTests ());
 	$GUI->show ();
-} elseif ($php == "5") {
-
-	$suite->run ($suite->result);
-	$suite->tearDown ();
 }
-$suite = null;*/
+
 ?>
