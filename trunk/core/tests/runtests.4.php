@@ -17,7 +17,7 @@ class MorgOSTests extends TestSuite {
 		$config = parse_ini_file ('core/tests/options.ini', true);
 		foreach ($avModules as $module=>$object) {
 			$mod = MorgOSTests::loadModuleFromConfig ($module, $config);
-			if (isError ($a)) {
+			if (isError ($mod)) {
 				echo 'SKIPPED: '.$module;
 				continue;
 			}
@@ -57,20 +57,27 @@ class MorgOSTests extends TestSuite {
 		
 		$diff = array_diff ($newCurrentClasses, $currentClasses);
 		foreach ($diff as $newClass) {
-			if (get_parent_class ($newClass) == 'testcase') {
+			if (get_parent_class ($newClass) == 'testcase'
+				|| get_parent_class ($newClass) == 'dbdrivergenerictest'){
 				$class = new TestSuite ($newClass);
-				//$class->run ('a');
-				$this->tests[] = $class; 
+				$this->tests[] = $class;
 			}
+			 
 		}
 	}
 	
 	function loadModuleFromConfig ($module, $config) {
-		$mod = databaseLoadModule ($module);	
+		$mod = databaseLoadModule ($module);
+		if (isError ($mod)) {
+			return $mod;
+		}
 		$mOpts = $config[$module];
 		$a = $mod->connect ($mOpts['Host'], $mOpts['User'], 
-			$mOpts['Password']);
-		$a = $mod->selectDatabase ($mOpts['DatabaseName']);
+			$mOpts['Password'], $mOpts['DatabaseName']);
+		
+		if (isError ($a)) {
+			return $a;
+		}
 		
 		return $mod;
 	}

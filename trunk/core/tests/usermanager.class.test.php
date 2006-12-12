@@ -28,7 +28,7 @@ class userManagerTest extends TestCase {
 	var $uM;
 	
 	function setUserManager () {
-		if (! $uM) {
+		if (! $this->uM) {
 			global $dbModule;
 			$this->uM = new UserManager ($dbModule);
 		}

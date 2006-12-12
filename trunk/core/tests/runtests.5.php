@@ -23,21 +23,25 @@ class MorgOSTests {
 		$config = parse_ini_file ('core/tests/options.ini', true);
 		foreach ($avModules as $module=>$object) {
 			$mod = MorgOSTests::loadModuleFromConfig ($module, $config);
-			if (isError ($a)) {
-				echo 'SKIPPED: '.$module;
+			if (isError ($mod)) {
+				echo 'SKIPPED: '.$module."\n";
+				var_dump ($mod);
 				continue;
 			}
 			MorgOSTests::removeAllTablesForModule ($mod);
+			$mod->disconnect ();
 		
 			switch ($module) {
 				case 'MySQL':
 					$suite->addTestFile ('core/tests/dbdrivers/mysql.test.driver.class.php');
 					break;
+				case 'MySQLI':
+					$suite->addTestFile ('core/tests/dbdrivers/mysqli.test.driver.class.php');
+					break;
 				case 'PostgreSQL': 
 					$suite->addTestFile ('core/tests/dbdrivers/pgsql.test.driver.class.php');
 					break;
 			}
-			$mod->disconnect ();
 		}
 		global $dbModule;
 		$dbModule = MorgOSTests::loadModuleFromConfig ($config['defaultModule'], $config);
@@ -53,8 +57,10 @@ class MorgOSTests {
 		$mod = databaseLoadModule ($module);	
 		$mOpts = $config[$module];
 		$a = $mod->connect ($mOpts['Host'], $mOpts['User'], 
-			$mOpts['Password']);
-		$a = $mod->selectDatabase ($mOpts['DatabaseName']);
+			$mOpts['Password'], $mOpts['DatabaseName']);
+		if (isError ($a)) {
+			return $a;
+		}
 		
 		return $mod;
 	}

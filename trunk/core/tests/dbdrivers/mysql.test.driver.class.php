@@ -1,8 +1,8 @@
 <?php
 class DBDriverMySQLTest extends DBDriverGenericTest {
 
-	function DBDriverMySQLTest () {
-		parent::DBDriverGenericTest ('MySQL');
+	function setUp () {
+		parent::setUp ('MySQL');
 	}
 
 }

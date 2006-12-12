@@ -15,58 +15,51 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** @file mysql.database.class.php
- * MySQL database module.
+/** @file mysqli.database.class.php
+ * MySQL Improved database module.
  *
  * @ingroup database core
- * @since 0.2
- * @author Sam Heijens
+ * @since 0.3
  * @author Nathan Samson
 */
 
-$allModules['MySQL'] = 'mysqlDatabaseActions';
-if (function_exists ('mysql_connect')) {
-	$availableModules['MySQL'] = 'mysqlDatabaseActions';
+$allModules['MySQLI'] = 'mysqliDatabaseActions';
+if (class_exists ('mysqli')) {
+	$availableModules['MySQLI'] = 'mysqliDatabaseActions';
 }
 
-// for the tests
-$allModules['EXISTINGBUTNOTWORKING'] = 'EMPTY';
-
-if (! class_exists ('mysqlDatabaseActions')) {
+if (! class_exists ('mysqliDatabaseActions')) {
 	isset ($t); // trick documentor
 	
-	class mysqlDatabaseActions extends databaseActions {
-		var $dbName;	
-		var $connection;
-	
-		function mysqlDatabaseActions () {
-			$this->setType ('MySQL');
-			$this->connection = null;
+	class mysqliDatabaseActions extends databaseActions {
+		var $_mysqli;
+		var $_dbName;
+		
+		function mysqliDatabaseActions () {
+			$this->setType ('MySQLI');
+			$this->_mysqli = null;
 		}
-	
-		function connect($host,$userName,$password, $dbName) {
-			$this->connection = @mysql_connect ($host,$userName,$password);
-			if ($this->connection == false) {
-				return new Error ('DBDRIVER_CANT_CONNECT', mysql_error ());
-			}
-			$result = mysql_select_db ($dbName, $this->connection);
-			$this->dbName = $dbName;
-			if ($result == false) {
-				return new Error ('DBDRIVER_CANT_CONNECT', mysql_error ());
+		
+		function connect ($host, $user, $password, $dbName) {
+			$this->_dbName = $dbName;
+			$this->_mysqli = new mysqli ();
+			$res = @$this->_mysqli->connect ($host, $user, $password, $dbName);
+			if (mysqli_connect_errno () != null) {
+				return new Error ("DBDRIVER_CANT_CONNECT", mysqli_connect_error ());
 			}
 		}
 		
 		function disconnect () {
-			if ($this->connection) {
-				mysql_close ($this->connection);
-				$this->connection = null;
+			if ($this->_mysqli) {
+				@$this->_mysqli->close ();
+				$this->_mysqli = null;
 			} else {
 				return new Error ('DBDRIVER_NOT_CONNECTED');
 			}
 		}
 	        
 		function query ($sql) {
-			$result = mysql_query ($sql, $this->connection);
+			$result = $this->_mysqli->query ($sql);
 			if ($result !== false) {
 				return $result;
 			} else {
@@ -75,24 +68,20 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		}
 	        
 		function numRows ($query) {
-			return mysql_num_rows ($query);
+			return $query->num_rows;
 		}
 		
 		function affectedRows ($query) {
-			if (is_bool ($query)) {
-				return mysql_affected_rows ();
-			} else {
-				return mysql_affected_rows ($query);
-			}
+			return $this->_mysqli->affected_rows;
 		}
 	        
 		function fetchArray ($query) {
-			$var = mysql_fetch_array ($query);
+			$var = $query->fetch_array ();
 			return $var;
 		}
 	        
 		function latestInsertID ($q) { 
-			return mysql_insert_id ($this->connection);
+			return $this->_mysqli->insert_id;
 		}
 		
 		function getAllFields ($tableName) {
@@ -100,8 +89,8 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			$q = $this->query ("SHOW COLUMNS FROM $tableName");
 			if (! isError ($q)) {
 				$allFields = array ();
-				if (mysql_num_rows ($q) > 0) {
-					while ($row = mysql_fetch_assoc ($q)) {
+				if ($this->numRows ($q) > 0) {
+					while ($row = $this->fetchArray ($q)) {
 						$type = $row['Type'];
 						if (substr ($type, 0, 3) == 'int') {
 							$maxlength = substr ($type,
@@ -181,11 +170,11 @@ if (! class_exists ('mysqlDatabaseActions')) {
 		}
 		
 		function getAllTables () {
-			$q = $this->query ("SHOW TABLES FROM {$this->dbName}");
+			$q = $this->query ("SHOW TABLES FROM {$this->_dbName}");
 			if (! isError ($q)) {
 				$allTables = array ();
-				while ($row = mysql_fetch_assoc ($q)) {
-					$allTables[] = $row['Tables_in_'.$this->dbName];
+				while ($row = $this->fetchArray ($q)) {
+					$allTables[] = $row['Tables_in_'.$this->_dbName];
 				}
 				return $allTables;
 			} else {
@@ -197,7 +186,7 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			if (get_magic_quotes_gpc ()) {
 				$value = stripslashes ($value);
 			}
-			return mysql_real_escape_string ($value, $this->connection);
+			return $this->_mysqli->escape_string ($value);
 		}
 		
 		function tableExists ($tableName) {
@@ -208,8 +197,6 @@ if (! class_exists ('mysqlDatabaseActions')) {
 				return in_array (strtolower ($this->getPrefix().$tableName), $allTables);
 			}
 		}
-	
 	}
 }
-
 ?>

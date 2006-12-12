@@ -4,25 +4,38 @@ class DBDriverGenericTest extends TestCase {
 	var $_moduleName;
 	var $_module;
 
-	function DBDriverGenericTest ($moduleName) {
-		parent::__construct ();
+	function setUp ($moduleName) {
+		//parent::__construct ();
 		$this->_moduleName = $moduleName;
 		$this->_module = databaseLoadModule ($this->_moduleName);
-		$this->testConnectAndSelectDatabase ();
+		$a = $this->connect ();
+		if ($a === false) {
+			return;
+		}
+	}
+	
+	function tearDown () {
+		// shutting down prevents for working MySQL driver 
+		// (closure of ALL connections?)
+		//$this->_module->disconnect ();
 	}
 
-	function testConnectAndSelectDatabase () {
+	function connect () {
+		$config = parse_ini_file ('core/tests/options.ini', true);
+		$mOpts = $config[$this->_moduleName];
+		$a = $this->_module->connect ($mOpts['Host'], $mOpts['User'], 
+			$mOpts['Password'], $mOpts['DatabaseName']);
+		if (isError ($a)) {
+			return false;
+		}
+	}
+	
+	function testConnect () {
 		$config = parse_ini_file ('core/tests/options.ini', true);
 		$mOpts = $config[$this->_moduleName];
 		$a = $this->_module->connect ($mOpts['Host'], $mOpts['User'].'data', 
-			$mOpts['Password']);
-		//$this->assertTrue (isError ($a));
-
-		$a = $this->_module->connect ($mOpts['Host'], $mOpts['User'], 
-			$mOpts['Password']);
-		$this->assertFalse (isError ($a));
-		$a = $this->_module->selectDatabase ($mOpts['DatabaseName']);
-		$this->assertFalse (isError ($a));
+			$mOpts['Password'], $mOpts['DatabaseName']);
+		$this->assertTrue ($a->is ('DBDRIVER_CANT_CONNECT'));
 	}
 	
 	function testQuery () {
@@ -103,7 +116,7 @@ class DBDriverGenericTest extends TestCase {
 						'Field'=>'atext',
 						'Type'=>'text',
 						'Null'=>true,
-						'MaxLength'=>null,
+						'MaxLength'=>0,
 						'Default'=>null
 						);
 		$this->assertEquals ($expAllFields, $allFields);
