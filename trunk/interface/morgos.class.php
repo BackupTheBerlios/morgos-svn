@@ -551,16 +551,13 @@ class Morgos extends ConfigMorgos {
 		$e = $this->_dbModule->connect (
 			$this->_configManager->getStringItem ('/databases/host'), 
 			$this->_configManager->getStringItem ('/databases/user'), 
-			$this->_configManager->getStringItem ('/databases/password'));
+			$this->_configManager->getStringItem ('/databases/password'),
+			$this->_configManager->getStringItem ('/databases/database'));
 			
 		if (isError ($e)) {
 			$this->error ($e);
 		}		
-		$e = $this->_dbModule->selectDatabase (
-			$this->_configManager->getStringItem ('/databases/database'));
-		if (isError ($e)) {
-			$this->error ($e);
-		}	
+
 		$this->_dbModule->setPrefix (
 			$this->_configManager->getStringItem ('/databases/table_prefix'));	
 

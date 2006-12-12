@@ -191,8 +191,7 @@ class installerBasePlugin extends plugin {
 			$adminLogin, $adminPassword, $adminMail) {
 		$dbModule = databaseLoadModule ($databaseModule);
 		if (! isError ($dbModule)) {
-			$dbModule->connect ($databaseHost, $databaseUser, $databasePassword);
-			$dbModule->selectDatabase ($databaseName);
+			$dbModule->connect ($databaseHost, $databaseUser, $databasePassword, $databaseName);
 			$dbModule->setPrefix ($databasePrefix);
 			$pluginManager = new pluginManager ($this->_pluginAPI);
 			$pluginManager->findAllPlugins ('interface/core-plugins/');			
