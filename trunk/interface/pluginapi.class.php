@@ -222,6 +222,7 @@ class PluginAPI extends ConfigPluginAPI {
 		$pID = $page->getID ();			
 		$array = array ();
 		foreach ($menu as $menuItem) {
+			//var_dump ($menuItem->getPluginID ());
 			$pageLang = $this->getUserSetting ('pageLang');
 			if ($menuItem->getPluginID () == null or
 			    in_array ($menuItem->getPluginID (), 
@@ -237,13 +238,13 @@ class PluginAPI extends ConfigPluginAPI {
 							$t = $menuItem->getTranslation (
 								$this->getDefaultLanguage ());
 							if (isError ($t)) {
-								return $t;
+								continue;
 							}	
 						} else {
-							return $t;
+							continue;
 						}
 					} else {
-						return $t;
+						continue;
 					}
 				}
 				$itemArray['Title'] = $t->getNavTitle ();
@@ -263,8 +264,10 @@ class PluginAPI extends ConfigPluginAPI {
 				
 				$itemArray['AdminLink'] = 'index.php?action=adminPageManager&parentPageID='.$menuItem->getID ();
 				$array[] = $itemArray;
+				//var_dump ($itemArray);
 			}
 		}
+		//print_r ($array);
 		return $array;
 	}
 	
