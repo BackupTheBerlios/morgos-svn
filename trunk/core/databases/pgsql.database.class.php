@@ -42,8 +42,13 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 			$this->_connection = null;
 		}
 	
-		function connect($host,$userName,$password) {
-			$this->_connectionString = "host=$host user=$userName password=$password";
+		function connect($host,$userName,$password,$dbName) {
+			$this->_connection = @pg_connect (
+					"host=$host user=$userName password=$password dbname=$dbName");
+			if ($this->_connection == false) {
+				return new Error ('DBDRIVER_CANT_CONNECT', pg_last_error ());
+			}
+			$this->_dbName = $dbName;
 		}
 		
 		function disconnect () {
@@ -54,16 +59,6 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 			} else {
 				return new Error ('DBDRIVER_NOT_CONNECTED');
 			}
-		}
-	
-		function selectDatabase ($dbName) {
-			$this->_connection = pg_connect (
-					$this->_connectionString." dbname=$dbName");
-			$this->_connectionString == '';
-			if ($this->_connection == false) {
-				return new Error ('DB_DRIVER_CANT_CONNECT', pg_last_error ());
-			}
-			$this->_dbName = $dbName;
 		}
 	        
 		function query ($sql) {

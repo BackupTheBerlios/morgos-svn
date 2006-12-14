@@ -72,7 +72,16 @@ class installerBasePlugin extends plugin {
 						new StringInput ('databasePrefix'), 
 						new StringInput ('adminLogin'), 
 						new PasswordNewInput ('adminPassword'), 
-						new EmailInput ('adminMail')), array ()));	
+						new EmailInput ('adminMail')), array ()));
+						
+		$aM->addAction (
+			new action ('checkDBConnection', 'POST',  
+				array (&$this, 'checkDatabaseConnection'), array (
+						new StringInput ('databaseModule'), 
+						new StringInput ('databaseHost'), 
+						new StringInput ('databaseUser'), 
+						new StringInput ('databasePassword'), 
+						new StringInput ('databaseName')), array ()));	
 		//echo $this->_pluginAPI->_actionManager;
 	}
 	
@@ -182,7 +191,18 @@ class installerBasePlugin extends plugin {
 		$sm->display ('installer/configure.tpl');
 	}
 	
-	function testDatabaseConfig () {
+	function checkDatabaseConnection ($databaseModule, $databaseHost, $databaseUser, 
+			$databasePassword, $databaseName) {
+		$dbModule = databaseLoadModule ($databaseModule);
+		$res = $dbModule->connect ($databaseHost, $databaseUser, $databasePassword);
+		if (isError ($res)) {
+			die ('PROBLEM WHILE CONNECTIONG');
+		}
+		$res = $dbModule->selectDatabase ($databaseName);
+		if (isError ($res)) {
+			die ('PROBLEM WHILE SELECTIONG');
+		}
+		$this->_pluginAPI->executePreviousAction (); 
 	}
 	
 	function installConfigAndDatabase ($siteName, $siteDefaultLanguage,

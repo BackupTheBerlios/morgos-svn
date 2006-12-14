@@ -63,7 +63,7 @@ if (! class_exists ('mysqliDatabaseActions')) {
 			if ($result !== false) {
 				return $result;
 			} else {
-				return new Error ('SQL_QUERY_FAILED', $sql, mysql_error ());
+				return new Error ('SQL_QUERY_FAILED', $sql, $this->_mysqli->error);
 			}
 		}
 	        
@@ -89,39 +89,37 @@ if (! class_exists ('mysqliDatabaseActions')) {
 			$q = $this->query ("SHOW COLUMNS FROM $tableName");
 			if (! isError ($q)) {
 				$allFields = array ();
-				if ($this->numRows ($q) > 0) {
-					while ($row = $this->fetchArray ($q)) {
-						$type = $row['Type'];
-						if (substr ($type, 0, 3) == 'int') {
-							$maxlength = substr ($type,
-											 strpos ($type, '(')+1, 
-											 strpos ($type, ')')-
-											 	strpos ($type, '(')-1);
-							$type = 'int';
-						} elseif (substr ($type, 0, 7) == 'varchar') {
-							$maxlength = substr ($type,
-											 strpos ($type, '(')+1, 
-											 strpos ($type, ')')-
-											 	strpos ($type, '(')-1);
-							$type = 'string';
-						} else {
-							$maxlength = null;
-						}
-						if ($row['Null'] == 'YES') {
-							$row['Null'] = true;
-						} else {
-							$row['Null'] = false;
-						}
-						
-						$field = array (
-								'Field'=>$row['Field'],
-								'Type'=>$type,
-								'Null'=>$row['Null'],
-								'MaxLength'=>(int)$maxlength,
-								'Default'=>$row['Default']
-								);
-						$allFields[] = $field;
+				while ($row = $this->fetchArray ($q)) {
+					$type = $row['Type'];
+					if (substr ($type, 0, 3) == 'int') {
+						$maxlength = substr ($type,
+										 strpos ($type, '(')+1, 
+										 strpos ($type, ')')-
+										 	strpos ($type, '(')-1);
+						$type = 'int';
+					} elseif (substr ($type, 0, 7) == 'varchar') {
+						$maxlength = substr ($type,
+										 strpos ($type, '(')+1, 
+										 strpos ($type, ')')-
+										 	strpos ($type, '(')-1);
+						$type = 'string';
+					} else {
+						$maxlength = null;
 					}
+					if ($row['Null'] == 'YES') {
+						$row['Null'] = true;
+					} else {
+						$row['Null'] = false;
+					}
+					
+					$field = array (
+							'Field'=>$row['Field'],
+							'Type'=>$type,
+							'Null'=>$row['Null'],
+							'MaxLength'=>(int)$maxlength,
+							'Default'=>$row['Default']
+							);
+					$allFields[] = $field;
 				}
 				return $allFields;
 			} else {
@@ -174,7 +172,7 @@ if (! class_exists ('mysqliDatabaseActions')) {
 			if (! isError ($q)) {
 				$allTables = array ();
 				while ($row = $this->fetchArray ($q)) {
-					$allTables[] = $row['Tables_in_'.$this->_dbName];
+					$allTables[] = $row[0];
 				}
 				return $allTables;
 			} else {

@@ -33,6 +33,8 @@
 			<p><label for="databasePassword">{t s="Database password: "}</label>{morgos_input type="password" name="databasePassword" extra="id=\"databasePassword\" "}</p>
 			<p><label for="databaseName">{t s="Database name: "}</label>{morgos_input type="text" name="databaseName" extra="id=\"databaseName\" "}</p>
 			<p><label for="databasePrefix">{t s="Database prefix: "}</label>{morgos_input type="text" name="databasePrefix" extra="id=\"databasePrefix\" "}</p>
+			<!--<input type="submit" name="override_action_checkDBConnection" 
+				  value="{t s="Check database connection"}">-->
 		</fieldset>
 	
 	

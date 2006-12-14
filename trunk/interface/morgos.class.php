@@ -289,14 +289,36 @@ class BaseMorgos extends NoGUIMorgOS {
 	 * @return (string)
 	*/
 	function getActionToExecute ($defaultAction) {
-		if (isset ($_GET['action'])) {
-			$a = $_GET['action'];
-		} elseif (isset ($_POST['action'])) {
-			$a = $_POST['action'];
-		} else {
-			$a = $defaultAction;
+		switch ($_SERVER['REQUEST_METHOD']) {
+			case 'POST':
+				$from = $_POST;
+				break;
+			case 'GET':
+				$from = $_GET;
+				break;
 		}
-		return $a;
+		if ($from) {
+			foreach ($from as $key=>$value) {
+				if (strpos ($key, 'override_action_') !== false) {
+					return substr ($key, strlen ('override_action_'));
+				}
+			}
+		}
+		switch ($_SERVER['REQUEST_METHOD']) {
+			case 'POST':
+				$from = $_POST;
+				break;
+			case 'GET':
+				$from = $_GET;
+				break;
+			default:
+				return $defaultAction;
+		}
+		if (array_key_exists ('action', $from)) {
+			return $from['action'];
+		} else {
+			return $defaultAction;
+		}
 	}
 	
 	/**

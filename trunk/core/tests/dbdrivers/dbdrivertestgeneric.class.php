@@ -17,7 +17,7 @@ class DBDriverGenericTest extends TestCase {
 	function tearDown () {
 		// shutting down prevents for working MySQL driver 
 		// (closure of ALL connections?)
-		//$this->_module->disconnect ();
+		// $this->_module->disconnect ();
 	}
 
 	function connect () {
