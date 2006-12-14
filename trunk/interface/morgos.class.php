@@ -491,6 +491,7 @@ class ConfigMorgos extends BaseMorgos {
 	 * @public
 	*/
 	function run () {
+		$this->loadPluginAPI ();
 		$this->loadSkin ();
 		$this->error (new Error ('DATABASE_NOT_INSTALLED'));
 	}
