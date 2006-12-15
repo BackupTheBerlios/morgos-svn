@@ -42,16 +42,29 @@ class adminCorePlugin extends Plugin {
 		$em = &$this->_pluginAPI->getEventManager ();
 		$am->addAction (
 			new action ('admin', 'GET',  array (&$this, 'onViewAdmin'), 
-				array (), array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));
+				array (), 
+				array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));
+		$am->addAction (
+			new action ('adminHome', 'GET',  array (&$this, 'onAdminHome'), 
+				array (), array (), 'MorgOS_Admin_Home'));
 		$am->addAction (
 			new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), 
-			array (new StringInput ('adminLogin'), new StringInput ('adminPassword')), array ()));
+			array (new StringInput ('adminLogin'), new StringInput ('adminPassword')),
+			array ()));
 		$am->addAction (
-			new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), array ()));
+			new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), 
+			array ()));
+			
+		$am->addAction (
+			new action ('adminChangeSiteSettings', 'POST',  
+				array (&$this, 'onChangeSiteSettings'), 
+				array (new StringInput ('siteTitle'), new BoolInput ('enableUsers')), 
+				array ()));
 			
 		$em->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
 		$em->subscribeToEvent ('viewAnyAdminPage', 
-			new callback ('setAdminVars', array (&$this, 'setAdminVars'), array ('pageID')));
+			new callback ('setAdminVars', array (&$this, 'setAdminVars'), 
+			array ('pageID')));
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {
@@ -90,9 +103,31 @@ class adminCorePlugin extends Plugin {
 				$sm->display ('admin/genericpage.tpl');
 			}
 		} else {
-			$this->_pluginAPI->addRuntimeMessage ($t->translate ('Login as a valid admin user to view this page.'), NOTICE);
+			$this->_pluginAPI->addRuntimeMessage (
+				$t->translate ('Login as a valid admin user to view this page.'), 
+				NOTICE);
 			$sm->display ('admin/login.tpl');
 		}
+	}
+	
+	function onAdminHome () {
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$config = &$this->_pluginAPI->getConfigManager ();
+		$sm->assign ('MorgOS_AdminHome_EnableUsers', 
+			$config->getBoolItem ('/site/enableUsers'));
+		$sm->appendTo ('MorgOS_AdminPage_Content', $sm->fetch ('admin/home.tpl'));
+		$sm->display ('admin/genericpage.tpl');
+	}
+	
+	function onChangeSiteSettings ($siteTitle, $enableUsers) {
+		$config = &$this->_pluginAPI->getConfigManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
+		$a = $config->setItemValue ('/site/title', STRING, $siteTitle);
+		$config->setItemValue ('/site/enableUsers', BOOL, $enableUsers);
+		$this->_pluginAPI->writeConfigFile ($config);
+		$this->_pluginAPI->addMessage (
+			$t->translate ('Configuration is saved.'), NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onLogin ($adminLogin, $adminPassword) {
@@ -102,13 +137,15 @@ class adminCorePlugin extends Plugin {
 		if (isError ($a)) {
 			if ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT')) {
 				$sm = &$this->_pluginAPI->getSmarty ();
-				$this->_pluginAPI->addRuntimeMessage ($t->translate ('Given a wrong password/username.'), ERROR);
+				$this->_pluginAPI->addRuntimeMessage (
+					$t->translate ('Given a wrong password/username.'), ERROR);
 				$sm->display ('admin/login.tpl');
 			} else {
 				return $a;
 			}
 		} else {
-			$this->_pluginAPI->addMessage ($t->translate ('You are now logged in.'), NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('You are now logged in.'), 
+				NOTICE);
 			$this->_pluginAPI->doAction ('admin');
 		}
 	}
@@ -120,7 +157,8 @@ class adminCorePlugin extends Plugin {
 		if (isError ($a)) {
 			return $a;
 		} else {
-			$this->_pluginAPI->addMessage ($t->translate ('You are logged out.'), NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('You are logged out.'), 
+				NOTICE);
 			$this->_pluginAPI->doAction ('admin');
 		}
 	}
@@ -128,6 +166,7 @@ class adminCorePlugin extends Plugin {
 	function setAdminVars ($pageID) {
 		$sm = &$this->_pluginAPI->getSmarty ();	
 		$pageManager = &$this->_pluginAPI->getPageManager ();
+		$config = &$this->_pluginAPI->getConfigManager ();
 		
 		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');	
 		
@@ -147,6 +186,8 @@ class adminCorePlugin extends Plugin {
 		}		
 		$sm->assign ('MorgOS_AdminPage_Title', $tpage->getTitle ());
 		$sm->assign ('MorgOS_AdminPage_Content', $tpage->getContent ());
+		$sm->assign ('MorgOS_SiteTitle', 
+			$config->getStringItem ('/site/title'));
 		$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 		return true;
 	}

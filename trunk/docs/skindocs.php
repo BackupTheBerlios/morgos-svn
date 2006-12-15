@@ -41,6 +41,7 @@
  * - \subpage AdminSaveConfig
  *
  * \subsection c Actual admin content (also mandatory)
+ * - \subpage AdminHome
  * - \subpage AdminPage_PageManager and \subpage AdminPage_Editor
  * - \subpage AdminUser_UserManager
  * - \subpage AdminPlugin_PluginManager and \subpage AdminPlugin_PluginList
@@ -202,6 +203,14 @@
  * Name: user/myaccount.tpl
  * \paragraph
  * This shows a My Account page for logged in users.
+ * \subsection Change account info
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=userChangeAccount
+ *	- newEmail: type text: default value = $MorgOS_User_MyAccount_OldEmail
+ * Additional fields:
+ *	None
  * \subsection Change password form
  * Action: index.php
  * Method: POST
@@ -307,6 +316,24 @@
 /**
  * \page AdminSideelement Admin sideelement
  * Same as \subpage Sideelement but for the admin
+*/
+
+/**
+ * \page AdminHome 
+ * Name: admin/home.tpl 
+ *
+ * \paragraph
+ * This is the content for the homepage. It should show some settings
+ *
+ * \section Form specification
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=adminChangeSiteSettings
+ *	- siteTitle: type text: default value=MorgOS_SiteTitle
+ *	- enableUser: type bool: Y if true, N if false, default $MorgOS_AdminHome_EnableUsers
+ * Additional fields:
+ *	None
 */
 
 /**

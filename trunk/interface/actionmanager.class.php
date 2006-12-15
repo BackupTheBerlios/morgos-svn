@@ -166,10 +166,10 @@ class BoolInput extends EnumInput {
 			} elseif ($fromArray[$this->_name] == 'N') {
 				return false;
 			} else {
-				return null;
+				return false;
 			}
 		} else {
-			return null;
+			return false;
 		}
 	}
 

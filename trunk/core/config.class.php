@@ -422,6 +422,24 @@ class configurator {
 		}
 	}
 	
+	/**
+	 * Changes the value of an item
+	 *
+	 * @since 0.3
+	 * @public
+	 * @param $name (string)
+	 * @param $type (Enum type)
+	 * @param $newValue (mixed) 
+	*/
+	function setItemValue ($name, $type, $newValue) {
+		if ($this->existsItemStrict ($name, $type)) {
+			$fullName = $fullName = '/'.$type.$name;
+			$config = $this->allConfigItems[$fullName];
+			return $config->setValue ($newValue);
+		} else {
+			return new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', $name);
+		}
+	}
 }
 
 ?>

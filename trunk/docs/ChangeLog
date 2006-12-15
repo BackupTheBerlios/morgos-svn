@@ -10,6 +10,9 @@ Version 0.3
 	 	- change email adress
 	 * Added a save config fallback page (both installer/admin)
 	 * Implemented EmailInput
+	 * In the admin: adminHome
+	 	- change site title
+	 	- enable/disable users
 [Changes]
 	 * You can really choose what dbmodule you want.
 	 * Rewrote organisation of tests
@@ -45,6 +48,7 @@ Version 0.3
  * Deleting a page shows a javascript alert "... %p?" but should be "... Home?"
  * GetAllUsers in UserGroup doesn't work
  * Fixed a bug whith executePreviousAction and with 2 tabs open
+ * Fixed a bug in BoolInput (return false for checkboxes didn't work)
 
 Version 0.2 5 November 2006
 ===========

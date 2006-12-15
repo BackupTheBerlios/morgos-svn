@@ -393,6 +393,8 @@ class installerBasePlugin extends plugin {
 			$configContents .= 
 				'$configItems[\'/site/default_language\']=\''.
 				$siteDefaultLanguage.'\';'.PHP_NL;
+			$configContents .= 
+				'$configItems[\'/site/enableUsers\']=true;'.PHP_NL;
 			$configContents .= '?>';
 			$c = @fopen ('config.php', 'w');
 			if ($c !== false) {

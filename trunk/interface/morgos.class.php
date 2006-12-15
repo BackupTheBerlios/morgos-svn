@@ -187,7 +187,8 @@ class NoGUIMorgOS {
 	function setDefaultErrors () {
 		$this->_i18nManager->addError ('EMPTY_INPUT', 'Empty input, please give %1.');
 		$this->_i18nManager->addError ('INVALID_CHOICE','This was an invalid choice.');
-		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 'Passwords didn\'t match.');
+		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 
+			'Passwords didn\'t match.');
 		$this->_i18nManager->addError ('SKINSC_NOT_WRITABLE', 
 			'skins_c/default is not writable by PHP. 
 			 Please make it writable and proceed.');
@@ -620,10 +621,9 @@ class Morgos extends ConfigMorgos {
 	 * @protected
 	*/
 	function loadPlugins () {
-		// hardcore loading of core plugins
-		$a = $this->_pluginManager->setPluginToLoad (MORGOS_VIEWPAGE_PLUGINID);
-		$a = $this->_pluginManager->setPluginToLoad (MORGOS_USER_PLUGINID);
-		$a = $this->_pluginManager->setPluginToLoad (MORGOS_ADMIN_PLUGINID);
+		foreach ($this->getAllEnabledCorePlugins () as $corePluginID) {
+			$this->_pluginManager->setPluginToLoad ($corePluginID);
+		}
 		$a = $this->_pluginManager->loadPlugins ();
 
 		$this->_pluginManager->findAllPlugins ('plugins');
@@ -687,16 +687,31 @@ class Morgos extends ConfigMorgos {
 	
 	/**
 	 * Returns that morgos database is installed
-	 * @public static
+	 * @public
 	 * @return (bool)
 	*/	
 	function isDatabaseInstalled () {
-		$viewP = $this->_pluginManager->getPlugin (MORGOS_VIEWPAGE_PLUGINID);
-		$userP = $this->_pluginManager->getPlugin (MORGOS_USER_PLUGINID);
-		$adminP = $this->_pluginManager->getPlugin (MORGOS_ADMIN_PLUGINID);
-		return $viewP->isInstalled ($this->_pluginAPI) && 
-			$userP->isInstalled ($this->_pluginAPI) && 
-			$adminP->isInstalled ($this->_pluginAPI);
+		foreach ($this->getAllEnabledCorePlugins () as $corePluginID) {
+			$plug = $this->_pluginManager->getPlugin ($corePluginID);
+			if (! $plug->isInstalled ($this->_pluginAPI)) {
+				return false;
+			} 
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns an array of all enabled core pluginsID's
+	 *
+	 * @protected
+	 * @return (string array)
+	*/
+	function getAllEnabledCorePlugins () {
+		$corePlugs = array ( MORGOS_VIEWPAGE_PLUGINID, MORGOS_ADMIN_PLUGINID);
+		if ($this->_configManager->getBoolItem ('/site/enableUsers')) {
+			$corePlugs[] = MORGOS_USER_PLUGINID;
+		}
+		return $corePlugs;
 	}
 }
 
