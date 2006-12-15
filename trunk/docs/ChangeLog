@@ -2,8 +2,12 @@ Version 0.3
 ===========
 [Added]
 	 * PostgreSQL database class backend [PostgreSQL 8.1+ required]
+	 * MySQLI database class backend [MySQL 4.1+ required (php_mysqli dep)]
 	 * Skin documentation
 	 * Default skin
+	 * My Account page
+	 	- change password
+	 * Added a save config fallback page (both installer/admin)
 [Changes]
 	 * You can really choose what dbmodule you want.
 	 * Rewrote organisation of tests

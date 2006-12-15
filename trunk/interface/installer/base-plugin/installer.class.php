@@ -264,6 +264,7 @@ class installerBasePlugin extends plugin {
 			$ahome = $pageM->newPage ();
 			$pman = $pageM->newPage ();
 			$pluman = $pageM->newPage ();
+			$myaccount = $pageM->newPage ();
 			$regform = $pageM->newPage ();
 			$adminLogout = $pageM->newPage ();
 			$adminUser = $pageM->newPage ();
@@ -288,6 +289,10 @@ class installerBasePlugin extends plugin {
 				'name'=>'MorgOS_RegisterForm',  
 				'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 
 				'place_in_menu'=>0));
+			$myaccount->initFromArray (array (
+				'name'=>'MorgOS_User_MyAccount',  
+				'parent_page_id'=>$site->getID (), 'action'=>'userMyAccount', 
+				'place_in_menu'=>0));
 			$adminLogout->initFromArray (array (
 				'name'=>'MorgOS_Admin_Logout', 
 				'parent_page_id'=>$admin->getID (), 
@@ -302,12 +307,14 @@ class installerBasePlugin extends plugin {
 			$pageM->addPageToDatabase ($pman);
 			$pageM->addPageToDatabase ($adminUser);
 			$pageM->addPageToDatabase ($pluman);
+			$pageM->addPageToDatabase ($myaccount);
 			$pageM->addPageToDatabase ($regform);
 			$pageM->addPageToDatabase ($adminLogout);
 			
 			$tHome = $pageM->newTranslatedPage ();
 			$tAHome = $pageM->newTranslatedPage ();
 			$tPMan = $pageM->newTranslatedPage ();
+			$tMyAccount = $pageM->newTranslatedPage ();
 			$tRegForm = $pageM->newTranslatedPage ();
 			$tPlugMan = $pageM->newTranslatedPage ();
 			$tALogout = $pageM->newTranslatedPage ();
@@ -330,6 +337,11 @@ class installerBasePlugin extends plugin {
 				'language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('Page Manager'), 
 				'translated_content'=>$t->translate ('Edit pages here.')));
+			$tMyAccount->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+					'translated_title'=>$t->translate ('My Account'), 
+					'translated_content'=>
+						$t->translate ('This is your account page.')));
 			$tRegForm->initFromArray (array (
 				'language_code'=>$siteDefaultLanguage, 
 					'translated_title'=>$t->translate ('Registration'), 
@@ -388,7 +400,9 @@ class installerBasePlugin extends plugin {
 				fclose ($c);
 				header ('Location: index.php');
 			} else {
-				echo $configContents;
+				$sm = &$this->_pluginAPI->getSmarty ();
+				$sm->assign ('CONFIG_CONTENT', htmlspecialchars ($configContents));
+				$sm->display ('installer/save_config_manual.tpl');
 			}
 		} else {
 			var_dump ($dbModule);

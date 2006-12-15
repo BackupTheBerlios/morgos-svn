@@ -77,10 +77,11 @@ class UserGroup extends DBTableObject {
 	 * Returns that a group (or better the users) has a permission
 	 *
 	 * @param $permissionName (string)
+	 * @param $default (bool) is default false
 	 * @public
 	 * @return (bool)
 	*/
-	function hasPermission ($permissionName) {
+	function hasPermission ($permissionName, $default = false) {
 		$permissionName = $this->_db->escapeString ($permissionName);
 		$prefix = $this->_db->getPrefix ();
 		$ID = $this->getID ();
@@ -95,7 +96,7 @@ class UserGroup extends DBTableObject {
 					return false;
 				}
 			} else {
-				return false;
+				return $default;
 			}
 		} else {
 			return $q;

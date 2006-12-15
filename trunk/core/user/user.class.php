@@ -45,10 +45,11 @@ class User extends DBTableObject {
 		$pass = new dbField ('password', DB_TYPE_STRING, 32); // md5ied always length 32
 		$ID = new dbField ('user_id', DB_TYPE_INT, 11);	
 		
-		$groupJoin = new MultipleToMultipleJoinField ('groups', 'group', 'group_id', $ID, 'groupUsers');
+		$groupJoin = new MultipleToMultipleJoinField ('groups', 'group', 'group_id', $ID,
+			'groupUsers');
 	
-		parent::DBTableObject ($db, array ($login, $email, $pass), 'users', 'user_id', $parent, 
-			$extraFields, array_merge (array ($groupJoin), $extraJoins));
+		parent::DBTableObject ($db, array ($login, $email, $pass), 'users', 'user_id', 
+			$parent, $extraFields, array_merge (array ($groupJoin), $extraJoins));
 	}
 	
 	/*Public initters*/
@@ -141,12 +142,13 @@ class User extends DBTableObject {
 	 * Returns that a user has a permission to do something
 	 *
 	 * @param $permissionName
+	 * @param $default (bool) is default false
 	 * @public
 	 * @return (bool)
 	*/
-	function hasPermission ($permissionName) {
+	function hasPermission ($permissionName, $default = false) {
 		foreach ($this->getAllGroups () as $group) {
-			if ($group->hasPermission ($permissionName)) {
+			if ($group->hasPermission ($permissionName, $default)) {
 				return true;
 			}
 		}
@@ -204,11 +206,23 @@ class User extends DBTableObject {
 			($this->getFieldValue ('password') == md5 ($password)); 
 	}
 	
-	function initFromArray ($a) {
-		if (strlen ($a['password']) != 32) { 
-			// not very safe, but I guess nobody will take a password of 32 chars
-			$a['password'] = md5 ($a['password']);
+	/**
+	 * Change the password for the user
+	 *
+	 * @public
+	 * @param $newPassword (string) plain password
+	 * @since 0.3
+	*/
+	function changePassword ($newPassword) {
+		$this->setField ('password', md5 ($newPassword));
+		return $this->updateToDatabase ();
+	}
+	
+	function initFromArray ($array) {
+		if (strlen ($array['password']) != 32) { 
+			// not always correct, but I guess nobody will take a password of 32 chars
+			$array['password'] = md5 ($array['password']);
 		}
-		parent::initFromArray ($a);
+		parent::initFromArray ($array);
 	}
 }

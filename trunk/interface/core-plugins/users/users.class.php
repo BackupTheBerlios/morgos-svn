@@ -45,16 +45,27 @@ class userCorePlugin extends InstallablePlugin {
 		$am->addAction (new action ('userLogout', 'POST',  array ($this, 'onLogout'), 
 			array (), array ()));
 		$am->addAction (
-			new action ('userRegisterForm', 'POST',  array ($this, 'onRegisterForm'), 
+			new action ('userRegisterForm', 'GET',  array ($this, 'onRegisterForm'), 
 				array (), array (), 'MorgOS_RegisterForm'));
 		$am->addAction (
 			new action ('userRegister', 'POST',  array ($this, 'onRegister'), 
 				array (new StringInput ('login'), new EmailInput ('email'), 
 					new PasswordNewInput ('password')), 
 				array ()));
+				
+		$am->addAction (
+			new action ('userMyAccount', 'GET',  array ($this, 'onMyAccountForm'), 
+				array (), array (), 'MorgOS_User_MyAccount'));
+				
+		$am->addAction (
+			new action ('userChangePassword', 'POST',  array ($this, 'onChangePassword'),
+				array (new StringInput ('oldPassword'), 
+					new PasswordNewInput ('newPassword')), array (), 
+					'MorgOS_User_MyAccount'));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
-		$em->subscribeToEvent ('viewPage', new callback ('userVars', array ($this, 'setUserVars')));
+		$em->subscribeToEvent ('viewPage', new callback ('userVars', 
+			array ($this, 'setUserVars')));
 	}
 	
 	function onLogin ($login, $password) {
@@ -64,7 +75,8 @@ class userCorePlugin extends InstallablePlugin {
 		if (isError ($a)) {
 			if ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT')) {
 				$sm = &$this->_pluginAPI->getSmarty ();
-				$this->_pluginAPI->addRuntimeMessage ('Given a wrong password/username.', ERROR);
+				$this->_pluginAPI->addRuntimeMessage (
+					'Given a wrong password/username.', ERROR);
 				$this->_pluginAPI->executePreviousAction ();
 			} else {
 				return $a;
@@ -95,21 +107,47 @@ class userCorePlugin extends InstallablePlugin {
 	function onRegister ($login, $email, $password) {
 		$uM = &$this->_pluginAPI->getUserManager ();
 		$u = $uM->newUser ();
-		$u->initFromArray (array ('login'=>$login, 'email'=>$email, 'password'=>md5 ($password)));
+		$u->initFromArray (array ('login'=>$login, 'email'=>$email, 
+			'password'=>md5 ($password)));
 		$r = $uM->addUserToDatabase ($u);
 		if (! isError ($r)) {
-			$this->_pluginAPI->addMessage ('Your account was succesfully created', NOTICE);
+			$this->_pluginAPI->addMessage (
+				'Your account was succesfully created', NOTICE);
 		} elseif ($r->is ('USERMANAGER_LOGIN_EXISTS')) {
-			$this->_pluginAPI->addMessage ('This login is already used, try another one.', ERROR);			
+			$this->_pluginAPI->addMessage (
+				'This login is already used, try another one.', ERROR);			
 		} elseif ($r->is ('USERMANAGER_EMAIL_EXISTS')) {
-			$this->_pluginAPI->addMessage ('This email is already used, try another one.', ERROR);
+			$this->_pluginAPI->addMessage (
+				'This email is already used, try another one.', ERROR);
 		} else {
-			$this->_pluginAPI->addMessage ('There was a problem with adding you to the database', ERROR);
+			$this->_pluginAPI->addMessage (
+				'There was a problem with adding you to the database', ERROR);
 		}
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onForgotPassword () {
+	}
+	
+	function onMyAccountForm () {
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$sm->appendTo ('MorgOS_CurrentPage_Content', $sm->fetch ('user/myaccount.tpl'));
+		$sm->display ('genericpage.tpl');
+	}
+	
+	function onChangePassword ($oldPassword, $newPassword) {
+		$userM = &$this->_pluginAPI->getUserManager ();
+		$user = $userM->getCurrentUser ();
+		if ($user->isValidPassword ($oldPassword)) {
+			$user->changePassword ($newPassword);
+			$userM->logout ();
+			$userM->login ($user->getLogin (), $newPassword);
+			$this->_pluginAPI->addMessage ('Your password is changed', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		} else {
+			$this->_pluginAPI->addMessage ('Wrong password', NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
 	}
 	
 	function setUserVars () {

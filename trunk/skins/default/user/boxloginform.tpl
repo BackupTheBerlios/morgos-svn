@@ -4,5 +4,5 @@
 <input type="password" name="password">
 <input type="submit">
 </form>
-<a href="index.php?action=userRegisterForm">{t s="Register"}</a>
-<a href="index.php?action=userForgotPasswordForm">{t s="Forgot Password"}</a>
+<a href="index.php?action=userRegisterForm">{t s="Register"}</a> <br />
+<a href="index.php?action=userForgotPasswordForm">{t s="Forgot Password"}</a> <br />

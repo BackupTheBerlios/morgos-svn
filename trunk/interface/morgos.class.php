@@ -673,7 +673,12 @@ class Morgos extends ConfigMorgos {
 			}
 			$r = $this->_actionManager->executeAction ($a);
 			if (isError ($r)) {
-				$this->error ($r);
+				if ($r->is ('ACTIONMANAGER_INVALID_INPUT')) {
+					$this->_pluginAPI->addMessage ('Invalid input', ERROR);
+					$this->_pluginAPI->executePreviousAction ();
+				} else {
+					$this->error ($r);
+				}
 			}
 		} else {
 			return new Error ('USER_HASNOTPERMISSION_VIEWPAGE');

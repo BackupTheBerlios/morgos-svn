@@ -88,7 +88,8 @@ class localizer {
 			$s = $this->_knownErrors[$error->getError ()];
 			return $this->translate ($s, $error->getParams ());
 		} else {
-			return $this->replaceParams ('Unexpected error.', array ());
+			return $this->replaceParams (
+				'Unexpected error. (%1)', array ($error->getError ()));
 		}
 	}
 	

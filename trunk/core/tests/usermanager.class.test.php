@@ -114,6 +114,8 @@ class userManagerTest extends TestCase {
 		$this->assertNull ($cUser, 'Current user is not null');
 		
 		$r = $this->uM->login ('normalUser', 'NormalPassword');
+		$user = $this->uM->newUser ();
+		$user->initFromDatabaseLogin ('normalUser');
 		$this->assertTrue ($this->uM->isLoggedIn ());
 		$cUser = $this->uM->getCurrentUser ();
 		$this->assertEquals ('normalUser', $cUser->getLogin ());
@@ -136,6 +138,14 @@ class userManagerTest extends TestCase {
 		$cUser = $this->uM->getCurrentUser ();
 		$this->assertTrue (isError ($cUser), 'Should return erorr');
 		$this->assertTrue ($cUser->is ('SESSION_LOGIN_FAILED_INCORRECT_VALUES'));
+	}
+	
+	function testChangeUserPassword () {
+		$user = $this->uM->newUser ();
+		$user->initFromDatabaseEmail ('normal@host.com');
+		$user->changePassword ('PHPRocks');
+		$this->assertTrue ($user->isValidPassword ('PHPRocks'));
+		$this->assertFalse ($user->isValidPassword ('NormalPassword'));
 	}
 	
 	function testNewGroup () {
@@ -228,6 +238,10 @@ class userManagerTest extends TestCase {
 		
 		$group->assignPermission ('do_something_else', false);
 		$this->assertFalse ($user->hasPermission ('do_something_else'));
+		// testing default values
+		$this->assertFalse ($user->hasPermission ('do_something_else', true));
+		$this->assertFalse ($user->hasPermission ('do_something_not_in_db', false));
+		$this->assertTrue ($user->hasPermission ('do_something_not_in_db', true));
 	}
 	
 	function testGroupGetAllUsers () {

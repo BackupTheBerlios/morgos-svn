@@ -22,6 +22,7 @@
  * - \subpage UserRegisterForm
  * - \subpage UserSideboxContent
  * - \subpage Usermessages
+ * - \subpage UserMyAccount
  * - \subpage Sidebox
  * - \subpage Sideelement
  * - \subpage 404
@@ -194,6 +195,23 @@
  * - $MorgOS_Errors: an array of error texts (Failed to login, incorrect username/password)
  * - $MorgOS_Notices: notices (You are logged in)
  * - $MorgOS_Warnings: warnings (This site will be closed for maintenance on blablabla)
+*/
+
+/**
+ * \page UserMyAccount
+ * Name: user/myaccount.tpl
+ * \paragraph
+ * This shows a My Account page for logged in users.
+ * \subsection Change password form
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: type hidden, value=userChangePassword
+ *	- oldPassword: type password: the old pasword
+ *	- newPassword1: type password: the password
+ *	- newPassword2: type password: repeat password (should be same as password1)
+ * Additional fields:
+ *	None
 */
 
 /**

@@ -253,7 +253,7 @@ class MultipleInput extends baseInput {
  * A password input class. This is used when the user inputs a new password 
  *	(that should be repeated)
  * @ingroup interface
- * @since 0.2
+ * @since 0.3
 */
 class PasswordNewInput extends baseInput {
 
