@@ -1,5 +1,20 @@
 <form method="post" action="index.php">
 	<fieldset>
+		<legend>{t s="Account settings"}</legend>
+		
+		<p>
+			<label for="newEmail">{t s="Email: "}</label>
+			<input type="text" name="newEmail" id="newEmail" 
+				  value="{$MorgOS_User_MyAccount_OldEmail}" />
+		</p>
+		
+		<input type="hidden" name="action" value="userChangeAccount" />
+		<input type="submit" value="{t s="Change account"}" />
+	</fieldset>
+</form>
+
+<form method="post" action="index.php">
+	<fieldset>
 		<legend>{t s="Password"}</legend>
 		
 		<p>
@@ -18,6 +33,6 @@
 		</p>
 		
 		<input type="hidden" name="action" value="userChangePassword" />
-		<input type="submit" value="{t s="Change password"}"/>
+		<input type="submit" value="{t s="Change password"}" />
 	</fieldset>
 </form>

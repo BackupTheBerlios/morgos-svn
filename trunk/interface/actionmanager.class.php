@@ -106,8 +106,28 @@ class IntInput extends baseInput {
  * An email input class
  * @ingroup interface
  * @since 0.2
+ * @since 0.3 An email adress is valid if
+ *	- it is something like user@hostName.domain
+ *	- domain is 2 OR 3 chars
 */
 class EmailInput extends StringInput {
+	function checkInput ($from) {
+		$value = $this->getValue ($from);
+		$AtChar = strpos ($value, '@');
+		$host = substr ($value, $AtChar+1);
+		$user = substr ($value, 0, $AtChar);
+		$domain = substr ($host, strpos ($host, '.')+1);
+		$hostName = substr ($host, 0, strpos ($host, '.'));
+		if ( strlen ($user) > 0 &&
+			strlen ($hostName) > 0 &&
+			strlen ($domain) >=2 &&
+			strlen ($domain) <=3 ) {
+			
+			return;
+		} else {
+			return new Error ('INVALID_EMAIL_ADRESS');
+		}
+	}
 }
 
 /**

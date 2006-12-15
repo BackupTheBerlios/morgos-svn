@@ -58,9 +58,16 @@ class userCorePlugin extends InstallablePlugin {
 				array (), array (), 'MorgOS_User_MyAccount'));
 				
 		$am->addAction (
-			new action ('userChangePassword', 'POST',  array ($this, 'onChangePassword'),
+			new action ('userChangePassword', 'POST',  
+				array ($this, 'onChangePassword'),
 				array (new StringInput ('oldPassword'), 
 					new PasswordNewInput ('newPassword')), array (), 
+					'MorgOS_User_MyAccount'));
+					
+		$am->addAction (
+			new action ('userChangeAccount', 'POST',  
+				array ($this, 'onChangeAccount'),
+				array (), array (new EmailInput ('newEmail')), 
 					'MorgOS_User_MyAccount'));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
@@ -131,6 +138,9 @@ class userCorePlugin extends InstallablePlugin {
 	
 	function onMyAccountForm () {
 		$sm = &$this->_pluginAPI->getSmarty ();
+		$userM = &$this->_pluginAPI->getUserManager ();
+		$user = $userM->getCurrentUser ();
+		$sm->assign ('MorgOS_User_MyAccount_OldEmail', $user->getFieldValue ('email'));
 		$sm->appendTo ('MorgOS_CurrentPage_Content', $sm->fetch ('user/myaccount.tpl'));
 		$sm->display ('genericpage.tpl');
 	}
@@ -148,6 +158,15 @@ class userCorePlugin extends InstallablePlugin {
 			$this->_pluginAPI->addMessage ('Wrong password', NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
+	}
+	
+	function onChangeAccount ($newEmail) {
+		$userM = &$this->_pluginAPI->getUserManager ();
+		$user = $userM->getCurrentUser ();
+		$user->updateFromArray (array ('email'=>$newEmail));
+		$user->updateToDatabase ();
+		$this->_pluginAPI->addMessage ('Your account settings are changed.', NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function setUserVars () {
