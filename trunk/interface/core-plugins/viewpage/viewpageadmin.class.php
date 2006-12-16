@@ -22,7 +22,7 @@
  * @author Nathan Samson
 */
 
-class viewPageCoreAdminPlugin extends plugin {
+class viewPageCoreAdminPlugin extends InstallablePlugin {
 
 	function viewPageCoreAdminPlugin ($dir) {
 		parent::plugin ($dir);
@@ -223,6 +223,24 @@ class viewPageCoreAdminPlugin extends plugin {
 		$pageManager->removePageFromDatabase ($page);
 			
 		$a = $this->_pluginAPI->executePreviousAction ();
+	}
+	
+	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
+		$pageM = new pageManager ($dbModule);
+		$t = &$pluginAPI->getI18NManager();	
+		$admin = $pageM->getAdminPage ();
+		$pman = $pageM->newPage ();
+		$pman->initFromArray (array (
+			'name'=>'MorgOS_Admin_PageManager', 
+			'parent_page_id'=>$admin->getID (), 
+			'action'=>'adminPageManager'));
+		$pageM->addPageToDatabase ($pman);	
+		$tPMan = $pageM->newTranslatedPage ();
+		$tPMan->initFromArray (array (
+			'language_code'=>$siteDefaultLanguage, 
+			'translated_title'=>$t->translate ('Page Manager'), 
+			'translated_content'=>$t->translate ('Edit pages here.')));
+		$pman->addTranslation ($tPMan);
 	}
 }
 

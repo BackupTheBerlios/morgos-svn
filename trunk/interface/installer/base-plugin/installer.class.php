@@ -216,9 +216,11 @@ class installerBasePlugin extends plugin {
 			$pluginManager = new pluginManager ($this->_pluginAPI);
 			$pluginManager->findAllPlugins ('interface/core-plugins/');			
 			
-			foreach ($pluginManager->getAllFoundPlugins () as $plugin) {
+			// an hack for viewPage to be first
+			$foundPlugins = array_reverse ($pluginManager->getAllFoundPlugins ());
+			foreach ($foundPlugins as $plugin) {
 				if (is_a ($plugin, 'InstallablePlugin')) {
-					$a = $plugin->install ($dbModule);
+					$a = $plugin->install ($this->_pluginAPI, $dbModule, $siteDefaultLanguage);
 					if (isError ($a)) {
 						var_dump ($a);
 						die ('Something went wrong');
@@ -256,120 +258,7 @@ class installerBasePlugin extends plugin {
 				'generic_description'=>'Not logged in'));
 			$userM->addGroupToDatabase ($group);
 			$group->assignPermission ('edit_admin', false);
-			
-			$pageM = new pageManager ($dbModule);
-			$site = $pageM->getSitePage ();
-			$admin = $pageM->getAdminPage ();
-			$home = $pageM->newPage ();
-			$ahome = $pageM->newPage ();
-			$pman = $pageM->newPage ();
-			$pluman = $pageM->newPage ();
-			$myaccount = $pageM->newPage ();
-			$regform = $pageM->newPage ();
-			$adminLogout = $pageM->newPage ();
-			$adminUser = $pageM->newPage ();
-			
-			$pageM->addPageToDatabase ($site);
-			$pageM->addPageToDatabase ($admin);
-			$home->initFromArray (array (
-				'name'=>'MorgOS_Home', 
-				'parent_page_id'=>$site->getID ()));
-			$ahome->initFromArray (array (
-				'name'=>'MorgOS_Admin_Home', 
-				'parent_page_id'=>$admin->getID ()));
-			$pman->initFromArray (array (
-				'name'=>'MorgOS_Admin_PageManager', 
-				'parent_page_id'=>$admin->getID (), 
-				'action'=>'adminPageManager'));
-			$pluman->initFromArray (array (
-				'name'=>'MorgOS_Admin_PluginManager', 
-				'parent_page_id'=>$admin->getID (), 
-				'action'=>'adminPluginManager'));
-			$regform->initFromArray (array (
-				'name'=>'MorgOS_RegisterForm',  
-				'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 
-				'place_in_menu'=>0));
-			$myaccount->initFromArray (array (
-				'name'=>'MorgOS_User_MyAccount',  
-				'parent_page_id'=>$site->getID (), 'action'=>'userMyAccount', 
-				'place_in_menu'=>0));
-			$adminLogout->initFromArray (array (
-				'name'=>'MorgOS_Admin_Logout', 
-				'parent_page_id'=>$admin->getID (), 
-				'action'=>'adminLogout'));
-			$adminUser->initFromArray (array (
-				'name'=>'MorgOS_Admin_UserManager', 
-				'parent_page_id'=>$admin->getID (), 
-				'action'=>'adminUserManager'));
 
-			$pageM->addPageToDatabase ($home);
-			$pageM->addPageToDatabase ($ahome);
-			$pageM->addPageToDatabase ($pman);
-			$pageM->addPageToDatabase ($adminUser);
-			$pageM->addPageToDatabase ($pluman);
-			$pageM->addPageToDatabase ($myaccount);
-			$pageM->addPageToDatabase ($regform);
-			$pageM->addPageToDatabase ($adminLogout);
-			
-			$tHome = $pageM->newTranslatedPage ();
-			$tAHome = $pageM->newTranslatedPage ();
-			$tPMan = $pageM->newTranslatedPage ();
-			$tMyAccount = $pageM->newTranslatedPage ();
-			$tRegForm = $pageM->newTranslatedPage ();
-			$tPlugMan = $pageM->newTranslatedPage ();
-			$tALogout = $pageM->newTranslatedPage ();
-			$tAdminUser = $pageM->newTranslatedPage ();
-
-			$t = &$this->_pluginAPI->getI18NManager();
-
-			$tHome->initFromArray (array (
-				'language_code'=>$siteDefaultLanguage, 
-				'translated_title'=>$t->translate ('Home'), 
-				'translated_content'=>$t->translate ('This is the homepage.')));
-			$tAHome->initFromArray (array (
-				'language_code'=>$siteDefaultLanguage, 
-				'translated_title'=>$t->translate ('Admin'), 
-				'translated_content'=>
-					$t->translate ('This is the admin.'
-						.' Here you can configure the site, add/remove and edit' 
-						.' pages, or ban users.')));
-			$tPMan->initFromArray (array (
-				'language_code'=>$siteDefaultLanguage, 
-				'translated_title'=>$t->translate ('Page Manager'), 
-				'translated_content'=>$t->translate ('Edit pages here.')));
-			$tMyAccount->initFromArray (array (
-				'language_code'=>$siteDefaultLanguage, 
-					'translated_title'=>$t->translate ('My Account'), 
-					'translated_content'=>
-						$t->translate ('This is your account page.')));
-			$tRegForm->initFromArray (array (
-				'language_code'=>$siteDefaultLanguage, 
-					'translated_title'=>$t->translate ('Registration'), 
-					'translated_content'=>
-						$t->translate ('Give up all your user details in order to'
-							 .' registrate to this site.')));
-			$tPlugMan->initFromArray (array (
-				'language_code'=>$siteDefaultLanguage, 
-				'translated_title'=>$t->translate ('Plugin Manager'), 
-				'translated_Content'=>$t->translate ('Enable/disable plugins.')));
-			$tALogout->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
-				'translated_title'=>$t->translate ('Logout'), 
-				'translated_content'=>$t->translate ('Logout')));
-			$tAdminUser->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
-				'translated_title'=>$t->translate ('User manager'), 
-				'translated_content'=>
-					$t->translate ('Manage users here, remove/add them from'
-						.' administrators list.')));
-			
-			$home->addTranslation ($tHome);
-			$ahome->addTranslation ($tAHome);
-			$pman->addTranslation ($tPMan);
-			$regform->addTranslation ($tRegForm);
-			$pluman->addTranslation ($tPlugMan);
-			$adminLogout->addTranslation ($tALogout);
-			$adminUser->addTranslation ($tAdminUser);
-					
-			
 			$configContents = '<?php'.PHP_NL.PHP_NL;
 			
 			$configContents .= 

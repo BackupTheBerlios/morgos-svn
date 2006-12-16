@@ -1,4 +1,4 @@
-{include file="installer/header.tpl" step="3"}
+{include file="installer/header.tpl" step="4"}
 <h2>{t s="Installation was succesfull"}</h2>
 <p>{t s="We couldn't write to config.php so your website will not run. Please save the following text in config.php"}<p>
 <pre>{$CONFIG_CONTENT}</pre>

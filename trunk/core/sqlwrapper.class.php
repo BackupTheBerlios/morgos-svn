@@ -553,7 +553,7 @@ class DBTableObject {
 					$sql.= "'$value',";
 				}
 			}
-			$sql[strlen ($sql)-1] = ')'; // remove latest , with )	
+			$sql[strlen ($sql)-1] = ')'; // remove latest , with )
 			$q = $this->_db->query ($sql);			
 			if (! isError ($q)) {
 				$ID = $this->_db->latestInsertID ($q);

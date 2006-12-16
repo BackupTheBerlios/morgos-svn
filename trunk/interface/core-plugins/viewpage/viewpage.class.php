@@ -32,12 +32,11 @@ class viewPageCorePlugin extends InstallablePlugin {
 		$this->_minMorgOSVersion = MORGOS_VERSION;
 		$this->_maxMorgOSVersion = MORGOS_VERSION;
 		$this->_version = MORGOS_VERSION;
+		$this->_adminPlugin = new viewPageCoreAdminPlugin ($this->_loadedDir);
 	}
 	
 	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);
-
-		$this->_adminPlugin = new viewPageCoreAdminPlugin ($this->_loadedDir);
 		$this->_adminPlugin->load ($pluginAPI);
 		
 		$am = &$this->_pluginAPI->getActionManager ();
@@ -145,9 +144,26 @@ class viewPageCorePlugin extends InstallablePlugin {
 	
 	function isCorePlugin () {return true;}
 	
-	function install (&$db) {
-		$PM = new PageManager ($db);
-		return $PM->installAllTables ();
+	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
+		$pageM = new PageManager ($dbModule);
+		$pageM->installAllTables ();
+		$site = $pageM->getSitePage ();
+		$t = &$pluginAPI->getI18NManager();
+
+		$home = $pageM->newPage ();
+		$home->initFromArray (array (
+				'name'=>'MorgOS_Home', 
+				'parent_page_id'=>$site->getID ()));	
+		$pageM->addPageToDatabase ($home);
+		$tHome = $pageM->newTranslatedPage ();
+		
+		$tHome->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+				'translated_title'=>$t->translate ('Home'), 
+				'translated_content'=>$t->translate ('This is the homepage.')));
+		$home->addTranslation ($tHome);	
+		
+		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
 	}
 	
 	function isInstalled (&$pluginAPI) {

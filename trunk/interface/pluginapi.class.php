@@ -291,7 +291,7 @@ class PluginAPI extends ConfigPluginAPI {
 			$page = $pm->newPage ();
 			$page->initFromName ('MorgOS_Admin_SaveConfig');
 			
-			$a = $em->triggerEvent ('viewAnyAdminPage', array ($page->getID (), 'en_UK'));
+			$a = $em->triggerEvent ('viewAnyAdminPage', array ($page->getID ()));
 			$sm->assign ('MorgOS_ConfigContent', htmlspecialchars ($out));
 			$sm->assign ('MorgOS_ConfigProceedLink', $am->getPreviousActionLinkString ());
 			$sm->appendTo ('MorgOS_AdminPage_Content', 

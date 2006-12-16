@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class adminCorePluginAdminPlugin extends plugin {
+class adminCorePluginAdminPlugin extends InstallablePlugin {
 	
 	function adminCorePluginAdminPlugin ($dir) {
 		parent::plugin ($dir);
@@ -157,5 +157,27 @@ class adminCorePluginAdminPlugin extends plugin {
 		}
 		
 		$this->_pluginAPI->executePreviousAction ();
+	}
+	
+	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
+		$pageM = new pageManager (&$dbModule);
+		$t = &$pluginAPI->getI18NManager();
+		$pluman = $pageM->newPage ();
+		$admin = $pageM->getAdminPage ();
+		
+		$pluman->initFromArray (array (
+				'name'=>'MorgOS_Admin_PluginManager', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminPluginManager'));
+		$pageM->addPageToDatabase ($pluman);
+		
+		$tPlugMan = $pageM->newTranslatedPage ();
+		
+		$tPlugMan->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+				'translated_title'=>$t->translate ('Plugin Manager'), 
+				'translated_Content'=>$t->translate ('Enable/disable plugins.')));
+				
+		$pluman->addTranslation ($tPlugMan);
 	}
 }

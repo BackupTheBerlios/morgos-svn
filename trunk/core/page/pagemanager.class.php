@@ -96,7 +96,10 @@ class PageManager extends DBTableManager {
 				return $q;
 			}
 		}
-		return $page->addToDatabase ();
+		$r= $page->addToDatabase ();
+		if (isError ($r)) {
+			return $r;
+		}
 	}
 	
 	/**

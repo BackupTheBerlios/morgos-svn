@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class adminCorePlugin extends Plugin {
+class adminCorePlugin extends InstallablePlugin {
 	var $_pluginAdmin;
 	
 	function adminCorePlugin ($dir) {
@@ -31,12 +31,12 @@ class adminCorePlugin extends Plugin {
 		$this->_minMorgOSVersion = MORGOS_VERSION;
 		$this->_maxMorgOSVersion = MORGOS_VERSION;
 		$this->_version = MORGOS_VERSION;
+		include_once ($this->_loadedDir.'/adminpluginplugin.class.php');
+		$this->_pluginAdmin = new adminCorePluginAdminPlugin ($this->_loadedDir);
 	}
 	
 	function load (&$pluginAPI) {
-		parent::load ($pluginAPI);
-		include_once ($this->_loadedDir.'/adminpluginplugin.class.php');
-		$this->_pluginAdmin = new adminCorePluginAdminPlugin ($this->_loadedDir);
+		parent::load ($pluginAPI);				
 		$this->_pluginAdmin->load ($pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
@@ -191,6 +191,56 @@ class adminCorePlugin extends Plugin {
 		$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 		return true;
 	}
+	
+	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
+		$pageM = new pageManager ($dbModule);
+		$t = &$pluginAPI->getI18NManager();
+		$admin = $pageM->getAdminPage ();
+		$ahome = $pageM->newPage ();
+		$ahome->initFromArray (array (
+				'name'=>'MorgOS_Admin_Home', 
+				'parent_page_id'=>$admin->getID (),
+				'action'=>'adminHome'));
+		$pageM->addPageToDatabase ($ahome);
+		$tAHome = $pageM->newTranslatedPage ();	
+		$tAHome->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+				'translated_title'=>$t->translate ('Admin'), 
+				'translated_content'=>
+					$t->translate ('This is the admin.'
+						.' Here you can configure the site, add/remove and edit' 
+						.' pages, or ban users.')));
+		$ahome->addTranslation ($tAHome);
+		
+		$adminSaveConfig = $pageM->newPage ();
+		$adminSaveConfig->initFromArray (array (
+				'name'=>'MorgOS_Admin_SaveConfig', 
+				'parent_page_id'=>$admin->getID (),
+				'place_in_menu'=>0));
+		$pageM->addPageToDatabase ($adminSaveConfig);	
+		
+		$tASaveConfig = $pageM->newTranslatedPage ();
+		$tASaveConfig->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
+				'translated_title'=>$t->translate ('Save config'), 
+				'translated_content'=>$t->translate ('')));
+		$adminSaveConfig->addTranslation ($tASaveConfig);
+		$this->_pluginAdmin->install ($pluginAPI, &$dbModule, $siteDefaultLanguage);
+		
+		$adminLogout = $pageM->newPage ();
+		$adminLogout->initFromArray (array (
+				'name'=>'MorgOS_Admin_Logout', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminLogout'));
+		$pageM->addPageToDatabase ($adminLogout);	
+		
+		$tALogout = $pageM->newTranslatedPage ();
+		$tALogout->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
+				'translated_title'=>$t->translate ('Logout'), 
+				'translated_content'=>$t->translate ('Logout')));
+		$adminLogout->addTranslation ($tALogout);
+	}
+	
+	function isInstalled (&$pluginAPI) {return true;}
 	
 	function isCorePlugin () {return true;}
 }

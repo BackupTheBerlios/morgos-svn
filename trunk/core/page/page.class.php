@@ -47,7 +47,7 @@ class Page extends DBTableObject {
 		$placeInMenu->canBeNull = true;
 		$action = new dbField ('action', DB_TYPE_STRING, 255);
 		$action->canBeNull = true;
-		$pluginID = new dbField ('plugin_id', DB_TYPE_STRING, 36);
+		$pluginID = new dbField ('plugin_id', DB_TYPE_STRING, 38);
 		$pluginID->canBeNull = true;
 		$ID = new dbField ('page_id', DB_TYPE_INT, 11);
 		

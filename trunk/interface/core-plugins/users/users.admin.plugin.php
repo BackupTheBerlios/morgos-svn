@@ -21,7 +21,7 @@
  * @since 0.2
  * @author Nathan Samson
 */
-class adminCoreUserAdminPlugin extends plugin {
+class adminCoreUserAdminPlugin extends InstallablePlugin {
 	
 	function adminCoreUserAdminPlugin ($dir) {
 		parent::plugin ($dir);
@@ -140,5 +140,27 @@ class adminCoreUserAdminPlugin extends plugin {
 			}
 		}
 		return $users;
+	}
+	
+	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
+		$pageM = new pageManager ($dbModule);
+		$t = &$pluginAPI->getI18NManager();
+		$admin = $pageM->getAdminPage ();
+		$adminUser = $pageM->newPage ();
+
+		$adminUser->initFromArray (array (
+				'name'=>'MorgOS_Admin_UserManager', 
+				'parent_page_id'=>$admin->getID (), 
+				'action'=>'adminUserManager',
+				'plugin_id'=>MORGOS_USER_PLUGINID));
+		$pageM->addPageToDatabase ($adminUser);
+		
+		$tAdminUser = $pageM->newTranslatedPage ();
+		$tAdminUser->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
+				'translated_title'=>$t->translate ('User manager'), 
+				'translated_content'=>
+					$t->translate ('Manage users here, remove/add them from'
+						.' administrators list.')));
+		$adminUser->addTranslation ($tAdminUser);
 	}
 }

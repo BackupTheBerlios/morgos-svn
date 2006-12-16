@@ -31,13 +31,12 @@ class userCorePlugin extends InstallablePlugin {
 		$this->_ID = '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}';
 		$this->_minMorgOSVersion = MORGOS_VERSION;
 		$this->_maxMorgOSVersion = MORGOS_VERSION;
-		$this->_adminPlugin = null;
+		include ($this->getLoadedDir ().'/users.admin.plugin.php');
+		$this->_adminPlugin = new adminCoreUserAdminPlugin ($this->getLoadedDir ());
 	}
 	
 	function load (&$pluginAPI) {
-		parent::load ($pluginAPI);
-		include ($this->getLoadedDir ().'/users.admin.plugin.php');
-		$this->_adminPlugin = new adminCoreUserAdminPlugin ($this->getLoadedDir ());
+		parent::load ($pluginAPI);		
 		$this->_adminPlugin->load ($this->_pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
 		$am->addAction (new action ('userLogin', 'POST',  array ($this, 'onLogin'), 
@@ -187,9 +186,45 @@ class userCorePlugin extends InstallablePlugin {
 
 	function isCorePlugin () {return true;}
 	
-	function install (&$db) {
-		$uM = new UserManager ($db);
-		return $uM->installAllTables ();
+	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
+		$uM = new UserManager ($dbModule);
+		$uM->installAllTables ();
+		
+		$pageM = new pageManager ($dbModule);
+		$t = &$pluginAPI->getI18NManager();
+		$site = $pageM->getSitePage ();
+		$myaccount = $pageM->newPage ();
+		$regform = $pageM->newPage ();
+		
+		$regform->initFromArray (array (
+				'name'=>'MorgOS_RegisterForm',  
+				'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 
+				'place_in_menu'=>0, 'plugin_id'=>MORGOS_USER_PLUGINID));
+		$myaccount->initFromArray (array (
+				'name'=>'MorgOS_User_MyAccount',  
+				'parent_page_id'=>$site->getID (), 'action'=>'userMyAccount', 
+				'place_in_menu'=>0, 'plugin_id'=>MORGOS_USER_PLUGINID));
+		
+		$pageM->addPageToDatabase ($regform);
+		$pageM->addPageToDatabase ($myaccount);		
+		
+		$tMyAccount = $pageM->newTranslatedPage ();
+		$tRegForm = $pageM->newTranslatedPage ();
+		
+		$tMyAccount->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+					'translated_title'=>$t->translate ('My Account'), 
+					'translated_content'=>
+						$t->translate ('This is your account page.')));
+		$tRegForm->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+					'translated_title'=>$t->translate ('Registration'), 
+					'translated_content'=>
+						$t->translate ('Give up all your user details in order to'
+							 .' registrate to this site.')));
+		$regform->addTranslation ($tRegForm);
+		$myaccount->addTranslation ($tMyAccount);
+		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
 	}
 	
 	function isInstalled (&$pluginAPI) {
