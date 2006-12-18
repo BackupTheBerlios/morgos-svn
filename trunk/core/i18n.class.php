@@ -47,7 +47,7 @@ class localizer {
 	
 	function loadLanguage ($language, $rootDir) {
 		$this->_lang = $language;
-		$this->loadTranslation ($rootDir);
+		return $this->loadTranslation ($rootDir);
 	}
 	
 	function loadTranslation ($dir) {
@@ -58,7 +58,7 @@ class localizer {
 			include ($file);
 			$this->_strings = array_merge ($this->_strings, $strings);
 		} else {
-			//die ();
+			return new Error ('LANGUAGE_FILE_NOT_FOUND',$file);
 		}
 	}
 

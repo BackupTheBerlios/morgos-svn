@@ -73,6 +73,7 @@ function loadSuite (&$suite) {
 	$suite->addTestFile ('core/tests/compatible.functions.test.php');
 	$suite->addTestFile ('core/tests/varia.functions.test.php');
 	$suite->addTestFile ('core/tests/config.class.test.php');
+	$suite->addTestFile ('core/tests/i18n.class.test.php');
 	global $avModules;		
 	
 	$suite->addTestFile ('core/tests/databasemanager.functions.test.php');
