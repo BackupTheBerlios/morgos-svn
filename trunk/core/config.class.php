@@ -225,12 +225,20 @@ class configItem {
 class configurator {
 	/**
 	 * All config items that this manager stores.
+	 * it excludes user settings
 	 * @private
 	*/
 	var $allConfigItems;
+	/**
+	 * All user settings
+	 * @private
+	 * @since 0.3
+	*/
+	var $allUserItems;
 
 	function configurator () {
 		$this->allConfigItems = array ();
+		$this->allUserItems = array ();
 	}
 	
 	/**
@@ -391,7 +399,11 @@ class configurator {
 	function getItem ($name, $type) {
 		if ($this->existsItemStrict ($name, $type)) {
 			$fullName = $fullName = '/'.$type.$name;
-			return $this->allConfigItems[$fullName];
+			if (array_key_exists ($fullName, $this->allConfigItems)) {
+				return $this->allConfigItems[$fullName];
+			} else {
+				return $this->allUserItems[$fullName];
+			}
 		} else {
 			return new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', $name);
 		}
@@ -414,14 +426,50 @@ class configurator {
 		}
 	}
 	
+	/**
+	 * Returns if the item exists with a specified type
+	 *
+	 * @private
+	 * @param $name (string)
+	 * @param $type (EnumType)
+	 * @return bool
+	*/
 	function existsItemStrict ($name, $type) {
-		if (array_key_exists ('/'.$type.$name, $this->allConfigItems)) {
+		if (array_key_exists ('/'.$type.$name, $this->allConfigItems) or
+			array_key_exists ('/'.$type.$name, $this->allUserItems)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
+	/**
+	 * Adds a user setting to the configmanager.
+	 * A user setting is defined a setting that can be changed
+	 *  from GET, COOKIE or a default value
+	 *
+	 *
+	 * @public
+	 * @return (string) The initial value
+	 * @since 0.3
+	*/
+	function addUserSetting ($name, $type, $defaultValue = null) {
+		$fullname = '/user/'.$name;
+		if ($this->existsItem ($fullname)) {
+			return new Error ('CONFIGURATOR_OPTION_EXISTS', $name);
+		}
+		
+		$setting = new configItem ($fullname, $type);
+		$setting->setDefaultValue ($defaultValue);
+		if (array_key_exists ($name, $_GET)) {
+			$setting->setValue ($_GET[$name]);
+		} elseif (array_key_exists ($name, $_COOKIE)) {
+			$setting->setValue ($_COOKIE[$name]);
+		}
+		$this->allUserItems['/'.$type.$fullname] = $setting;
+		return $setting->getCurrentValue ();
+	}
+
 	/**
 	 * Changes the value of an item
 	 *

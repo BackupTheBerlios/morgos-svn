@@ -144,11 +144,11 @@ class configTest extends TestCase {
 		
 		$newOption = new configItem ('/newItem', STRING);
 		$r = $this->configurator->addOption ($newOption);
-		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r, "Wrong error 1");
+		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r);
 		
 		$newOption = new configItem ('/newItem', BOOL);
 		$r = $this->configurator->addOption ($newOption);
-		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r, "Wrong error 2");
+		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_EXISTS', '/newItem'), $r);
 	}
 	
 	function testRemoveOption () {
@@ -160,31 +160,32 @@ class configTest extends TestCase {
 		$this->assertFalse (isError ($r), 'Unexpected error 2');		
 		
 		$r = $this->configurator->removeOption ($newOption);
-		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_DOESNT_EXISTS', '/newItem'), $r, "Wrong error 2");
+		$this->assertEquals (new Error ('CONFIGURATOR_OPTION_DOESNT_EXISTS', '/newItem'), $r);
 	}
 	
 	function testGetItem () {
 		$string =  new configItem ('/aString', STRING);
 		$string->setValue ('string');
 		$this->configurator->addOption ($string);
-		$this->assertEquals ('string', $this->configurator->getStringItem ('/aString'), 'Wrong value');
+		$this->assertEquals ('string', $this->configurator->getStringItem ('/aString'));
 		
 		$bool = new configItem ('/aBool', BOOL);
 		$bool->setValue (false);
 		$r = $this->configurator->addOption ($bool);
-		$this->assertEquals (false, $this->configurator->getBoolItem ('/aBool'), 'Wrong value');
+		$this->assertEquals (false, $this->configurator->getBoolItem ('/aBool'));
 		
 		$numeric =  new configItem ('/aNumeric', NUMERIC);
 		$numeric->setValue (7);
 		$this->configurator->addOption ($numeric);
-		$this->assertEquals (7, $this->configurator->getNumericItem ('/aNumeric'), 'Wrong value');
+		$this->assertEquals (7, $this->configurator->getNumericItem ('/aNumeric'));
 		
 		$real =  new configItem ('/aReal', REAL);
 		$real->setValue (3.22);
 		$this->configurator->addOption ($real);
-		$this->assertEquals (3.22, $this->configurator->getRealItem ('/aReal'), 'Wrong value');
+		$this->assertEquals (3.22, $this->configurator->getRealItem ('/aReal'));
 		
-		$this->assertEquals (new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', '/aReal'), $this->configurator->getBoolItem ('/aReal'), "Wrong error");
+		$this->assertEquals (new Error ('CONFIGURATOR_ITEM_DOESNT_EXISTS', '/aReal'), 
+			$this->configurator->getBoolItem ('/aReal'), "Wrong error");
 	}
 	
 	function testGetArrayItem () {
@@ -241,6 +242,31 @@ class configTest extends TestCase {
 		$this->assertEquals ('false', $bool->getStringValue ());
 		$bool->setValue (true);
 		$this->assertEquals ('true', $bool->getStringValue ());
+	}
+	
+	function testUserOptions () {
+		$r = $this->configurator->addUserSetting ('stringOption', STRING, 'zero');
+		$this->assertEquals ('zero', $r);
+		
+		$r = $this->configurator->addUserSetting ('intOption', NUMERIC, 3);
+		$this->assertEquals (3, $r);
+		
+		$_GET['floatOption'] = 7.1;
+		$r = $this->configurator->addUserSetting ('floatOption', REAL, 3.2);
+		$this->assertEquals (7.1, $r);
+		
+		$_COOKIE['boolOption'] = true;
+		$r = $this->configurator->addUserSetting ('boolOption', BOOL, false);
+		$this->assertEquals (true, $r);
+		
+		$_GET['anotherString'] = 'getval';
+		$_COOKIE['anotherString'] = 'cookieval';
+		$r = $this->configurator->addUserSetting ('anotherString', STRING, 
+			'defaultVal');
+		$this->assertEquals ('getval', $r);
+		
+		$this->assertEquals (7.1, 
+			$this->configurator->getRealItem ('/user/floatOption'));
 	}
 }
 ?>

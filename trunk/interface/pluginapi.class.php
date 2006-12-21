@@ -145,6 +145,19 @@ class ConfigPluginAPI extends BasePluginAPI {
 	function getDefaultLanguage () {
 		return $this->_configManager->getStringItem ('/site/default_language');
 	}
+	
+	/**
+	 * Adds a user setting to the configmanager.
+	 * A user setting is defined a setting that can be changed
+	 *  from GET, COOKIE or a default value
+	 *
+	 *
+	 * @public
+	 * @return (string) The initial value
+	*/
+	function addUserSetting ($name, $defaultValue) {
+		return $this->_configManager->addUserSetting ($name, $defaultValue);
+	}
 } 
 
 
@@ -254,8 +267,11 @@ class PluginAPI extends ConfigPluginAPI {
 				$newParents = array ();
 				foreach ($menu as $parent) {
 					if ($parent->getID () !== $menuItem->getID ()) {
-					//	$tp = $parent->getTranslation ($pageLang);
-						//$newParents[$parent->getID ()] = $tp->getNavTitle ();
+						$tp = $parent->getTranslation ($pageLang);
+						if (isError ($tp)) {
+							continue;
+						}
+						$newParents[$parent->getID ()] = $tp->getNavTitle ();
 					}
 				}
 				$itemArray['PossibleNewParents'] = $newParents;
