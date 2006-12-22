@@ -159,8 +159,7 @@ class adminCoreUserAdminPlugin extends InstallablePlugin {
 		$tAdminUser->initFromArray (array ('language_code'=>$siteDefaultLanguage, 
 				'translated_title'=>$t->translate ('User manager'), 
 				'translated_content'=>
-					$t->translate ('Manage users here, remove/add them from'
-						.' administrators list.')));
+					$t->translate ('Manage users here, remove/add them from administrators list.')));
 		$adminUser->addTranslation ($tAdminUser);
 	}
 }

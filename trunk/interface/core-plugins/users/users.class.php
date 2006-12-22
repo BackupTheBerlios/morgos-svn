@@ -220,8 +220,7 @@ class userCorePlugin extends InstallablePlugin {
 				'language_code'=>$siteDefaultLanguage, 
 					'translated_title'=>$t->translate ('Registration'), 
 					'translated_content'=>
-						$t->translate ('Give up all your user details in order to'
-							 .' registrate to this site.')));
+						$t->translate ('Give up all your user details in order to registrate to this site.')));
 		$regform->addTranslation ($tRegForm);
 		$myaccount->addTranslation ($tMyAccount);
 		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);

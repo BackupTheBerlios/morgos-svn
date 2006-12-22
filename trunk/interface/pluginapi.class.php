@@ -220,10 +220,12 @@ class PluginAPI extends ConfigPluginAPI {
 		$page->initFromName ($pageName);		
 		
 		if ($page->isAdminPage ()) {
-			$this->addRuntimeMessage ($t->translate ('Please login as an administrator.'), ERROR);
+			$this->addRuntimeMessage (
+				$t->translate ('Please login as an administrator.'), ERROR);
 			$sm->display ('admin/login.tpl');
 		} else {
-			$this->addMessage ($t->translate ('You don\'t have the permission to view this page.'));
+			$this->addMessage (
+				$t->translate ("You don't have the permission to view this page."));
 			$this->executePreviousAction ();
 		}
 	}

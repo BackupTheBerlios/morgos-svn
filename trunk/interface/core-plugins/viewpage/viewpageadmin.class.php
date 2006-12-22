@@ -164,7 +164,7 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 			$this->_pluginAPI->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
 			$i18nM = &$this->_pluginAPI->getI18NManager ();
-			$this->_pluginAPI->error ($i18nM->translate ('Page doesn\'t exists'), true);
+			$this->_pluginAPI->error ($i18nM->translate ("Page doesn't exists"), true);
 		} else {
 			$this->_pluginAPI->error ('Onverwachte fout');
 		}
@@ -178,7 +178,7 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 			$this->_pluginAPI->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
 			$i18nM = &$this->_pluginAPI->getI18NManager ();
-			$this->_pluginAPI->error ($i18nM->translate ('Page doesn\'t exists'), true);
+			$this->_pluginAPI->error ($i18nM->translate ("Page doesn't exists"), true);
 		} else {
 			$this->_pluginAPI->error ('Onverwachte fout', true);
 		}

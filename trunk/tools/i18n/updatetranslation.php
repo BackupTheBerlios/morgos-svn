@@ -1,16 +1,6 @@
 <?php
 
 if (!function_exists ('scandir')) {
-	gettype ($_POST); // this is here only to trick Doxygen
-    /**
-	 * List files and directories inside the specified path
-	 * @warning this is not fully compatible with the one defined in PHP 5 (missing context param)
-	 * @warning sorting doesn't happen with natural sorting order, you need to do this manually
-	 *
-	 * @param $directory (string)
-	 * @param $sortingOrder (int) 1 if descending, otherwise ascending
-	 * @return (array | false)
-    */
 	function scandir ($directory, $sortingOrder = 0) {
 		if (! file_exists ($directory)) {
 			return false;
@@ -53,7 +43,8 @@ function getFiles ($i, $pref) {
 		if (is_dir ($f)) {
 			$base = basename ($f);
 			if ($base{0} !== '.') {
-				if (($base !== 'tests') and ($base !== 'smarty') and ($base !== 'tinymce')) {
+				if (($base !== 'tests') and ($base !== 'smarty') 
+					and ($base !== 'tinymce') and ($base !== 'smarty-plugins')) {
 					$output = array_merge ($output, getFiles (scandir ($f), $f));
 				}
 			}
@@ -82,34 +73,44 @@ if (count ($argv) >= 4) {
 	// create an array of all inputfiles
 	$input_files_and_dirs = array_slice ($argv, 3);
 	$input_files = getFiles ($input_files_and_dirs, '.');
+	//$input_files = array ('test.php');
 	
 	foreach ($input_files as $file) {
 		$input = file_get_contents ($file);
-		//$input = 'translate ("")';
-		switch (getFileExtension ($file)) {
+		if ($file == './../../core/i18n.class.php') continue;
+		echo $file . "\n\n";
+		switch (getFileExtension ($file)) {			
 			case 'php':
-				preg_match_all ("/translate \(['|\"]([\w|\s|.|(|)|%|:|'|,]*)['|\"]\)/", $input, $matches);
-				foreach ($matches[0] as $k=>$match) {
-					$string = $matches[1][$k];
+				$pos = strpos ($input, 'translate (');
+				while ($pos !== false) {
+					$opener = $input[$pos+strlen ('translate (\'')-1] ;
+					$pos += strlen ('translate (\'');
+					$cB = trim (substr ($input, $pos));
+					$codeBlock = substr ($cB, 0, strpos ($cB, $opener)); 
+					$input = strstr (substr ($input, $pos), 'translate (');
+					$pos = strpos ($input, 'translate (');
+					$string = $codeBlock;					
+					echo $string."\n";
 					if (! array_key_exists ($string, $currentStrings)) {
 						$currentStrings[$string] = '';
 					}
-				}				
+				}			
 				
 				break;
 			case 'tpl':
-				preg_match_all ("/\{t s=[\"|']([\w|\s|.|(|)|%|:|>|<]*)[\"|']\}/", $input, $matches);
+				preg_match_all ("/\{t s=[\"|']([\w|\s|.|(|)|%|:|>|<]*)[\"|']\}/", 
+					$input, $matches);
 				foreach ($matches[0] as $k=>$match) {
 					$string = $matches[1][$k];
 					if (! array_key_exists ($string, $currentStrings)) {
-						$currentStrings[$string] = '';
+					//	$currentStrings[$string] = '';
 					}
 				}
 				break;
 		}
 	}
-	
-	$h = fopen ($outputFile, "w");
+	//print_r ($currentStrings);
+	/*$h = fopen ($outputFile, "w");
 	
 	$output = "<?php \n";
 	foreach ($currentStrings as $k=>$string) {
@@ -118,13 +119,12 @@ if (count ($argv) >= 4) {
 	}
 	$output .= "?>";
 	fwrite ($h, $output);
-	fclose ($h);
+	fclose ($h);*/
 	
 } else {
 	echo "HOWTO Use:\n";
 	echo "php updatetranslation.php langCode outputdir input...\n";
 	echo "input is automatically recursive\n";
 }
-
 
 ?>
