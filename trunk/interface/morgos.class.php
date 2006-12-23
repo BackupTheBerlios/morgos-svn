@@ -534,8 +534,6 @@ class ConfigMorgos extends BaseMorgos {
 	function loadSkin () {
 		$this->_skinManager->findAllSkins ('skins/');
 		$this->_skinManager->loadSkin (MORGOS_DEFAULTSKIN_ID);
-		//$this->_skinManager->loadSkin ('{0abf1469-d312-40b9-ad3a-3cb28b4c204e}');
-		//$this->_skinManager->loadSkin ('{c11681a8-5889-41cd-8fe1-d6fba2978804}');
 	}
 }
 
@@ -589,6 +587,7 @@ class Morgos extends ConfigMorgos {
 		$this->_userManager = new UserManager ($this->_dbModule);
 		$this->_pluginManager->findAllPlugins ('interface/core-plugins');
 		$this->loadPluginAPI ();
+		$this->loadUserSettings ();
 	}
 	
 	/**
@@ -712,6 +711,26 @@ class Morgos extends ConfigMorgos {
 			$corePlugs[] = MORGOS_USER_PLUGINID;
 		}
 		return $corePlugs;
+	}
+	
+	/**
+	 * Loads the (basic)user settings
+	 *
+	 * @protected
+	 * @since 0.3
+	*/
+	function loadUserSettings () {
+		$r = $this->_pluginAPI->addUserSetting ('skin', MORGOS_DEFAULTSKIN_ID, 'skin');
+		$this->_pluginAPI->addUserSetting ('UILang', 
+			$this->_pluginAPI->getDefaultLanguage ());
+		$this->_pluginAPI->addUserSetting ('contentLang', 
+			$this->_pluginAPI->getDefaultLanguage (), 'contentLang');
+	}
+	
+	function loadSkin () {
+		$this->_skinManager->findAllSkins ('skins/');
+		$this->_skinManager->loadSkin (
+			$this->_configManager->getStringItem ('/user/skin'));
 	}
 }
 

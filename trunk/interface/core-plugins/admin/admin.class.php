@@ -78,9 +78,10 @@ class adminCorePlugin extends InstallablePlugin {
 		$userManager = &$this->_pluginAPI->getUserManager ();
 		$user = $userManager->getCurrentUser ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
+		$configManager = &$this->_pluginAPI->getConfigManager ();
 		
 		if ($pageLang === null) {
-			$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');
+			$pageLang = $configManager->getStringItem ('/user/contentLang');
 		}		
 		
 		$page = $pageManager->newPage ();
@@ -168,7 +169,7 @@ class adminCorePlugin extends InstallablePlugin {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$config = &$this->_pluginAPI->getConfigManager ();
 		
-		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');	
+		$pageLang = $config->getStringItem ('/user/contentLang');
 		
 		$rootPage = $pageManager->newPage ();
 		$rootPage->initFromName ('admin');

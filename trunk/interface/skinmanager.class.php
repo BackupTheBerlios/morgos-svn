@@ -72,6 +72,7 @@ class skin {
 	}
 	
 	function getID () {return $this->_ID;}
+	function getName () {return $this->_name;}
 }
 
 class skinManager {
@@ -113,6 +114,14 @@ class skinManager {
 		} else {
 			return new Error ('SKINMANAGER_SKIN_NOT_FOUND');
 		}
+	}
+	
+	function getFoundSkinsArray () {
+		$skins = array ();
+		foreach ($this->_allFoundSkins as $skin) {
+			$skins[] = array ('ID'=>$skin->getID (), 'Name'=>$skin->getName ());
+		}
+		return $skins;
 	}
 	
 	function existsSkin ($skinID) {

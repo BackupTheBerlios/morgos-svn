@@ -238,7 +238,7 @@ class PluginAPI extends ConfigPluginAPI {
 		$array = array ();
 		foreach ($menu as $menuItem) {
 			//var_dump ($menuItem->getPluginID ());
-			$pageLang = $this->getUserSetting ('pageLang');
+			$pageLang = $this->_configManager->getStringItem ('/user/contentLang');
 			if ($menuItem->getPluginID () == null or
 			    in_array ($menuItem->getPluginID (), 
 			    		$this->_pluginManager->getAllLoadedPluginsID ())) {
@@ -336,14 +336,31 @@ class PluginAPI extends ConfigPluginAPI {
 	*/
 	function getUserSetting ($name) {
 		if ($name == 'pageLang') {
-			if (array_key_exists ('userPageLang', $_REQUEST)) {
-				return $_REQUEST['userPageLang'];
-			} else {
-				return $this->getDefaultLanguage ();
-			}
+			morgosBacktrace ();
+			die ();
 		} else {
 			return new Error ('USER_SETTING_DOESNT_EXIST');
 		}
+	}
+	
+	/**
+	 * Adds a user setting to the configmanager.
+	 * A user setting is defined a setting that can be changed
+	 *  from GET, COOKIE, a db field or a default value
+	 *
+	 *
+	 * @public
+	 * @return (string) The initial value
+	*/
+	function addUserSetting ($name, $defaultValue, $dbField = null) {
+		if ($dbField) {
+			$currentUser = $this->_userManager->getCurrentUser ();
+			$userValue = $currentUser->getFieldValue ($dbField);
+			if ($userValue != null) {
+				$defaultValue = $userValue;
+			}
+		}
+		return $this->_configManager->addUserSetting ($name, STRING, $defaultValue);
 	}
 }
 

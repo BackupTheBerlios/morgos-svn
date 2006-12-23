@@ -66,8 +66,10 @@ class userCorePlugin extends InstallablePlugin {
 		$am->addAction (
 			new action ('userChangeAccount', 'POST',  
 				array ($this, 'onChangeAccount'),
-				array (), array (new EmailInput ('newEmail')), 
-					'MorgOS_User_MyAccount'));
+				array (), array (new EmailInput ('newEmail'), 
+					new StringInput ('newSkin'), 
+					new StringInput ('newContentLanguage')), 
+				'MorgOS_User_MyAccount'));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
 		$em->subscribeToEvent ('viewPage', new callback ('userVars', 
@@ -138,8 +140,20 @@ class userCorePlugin extends InstallablePlugin {
 	function onMyAccountForm () {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$userM = &$this->_pluginAPI->getUserManager ();
+		$config = &$this->_pluginAPI->getConfigManager (); 
 		$user = $userM->getCurrentUser ();
-		$sm->assign ('MorgOS_User_MyAccount_OldEmail', $user->getFieldValue ('email'));
+		$sm->assign ('MorgOS_User_MyAccount_OldEmail', $user->getEmail ());
+		
+		$skinM = &$this->_pluginAPI->getSkinManager ();
+		$sm->assign ('MorgOS_User_MyAccount_AvailableSkins', $skinM->getFoundSkinsArray ());
+		$sm->assign ('MorgOS_User_MyAccount_CurrentSkin', 
+			$config->getStringItem ('/user/skin'));
+			
+		$sm->assign ('MorgOS_User_MyAccount_AvailableLanguages', 
+			array ($this->_pluginAPI->getDefaultLanguage ()));
+		$sm->assign ('MorgOS_User_MyAccount_CurrentContentLanguage', 
+			$config->getStringItem ('/user/contentLang'));
+
 		$sm->appendTo ('MorgOS_CurrentPage_Content', $sm->fetch ('user/myaccount.tpl'));
 		$sm->display ('genericpage.tpl');
 	}
@@ -159,10 +173,12 @@ class userCorePlugin extends InstallablePlugin {
 		}
 	}
 	
-	function onChangeAccount ($newEmail) {
+	function onChangeAccount ($newEmail, $newSkin, $newContentLang) {
 		$userM = &$this->_pluginAPI->getUserManager ();
 		$user = $userM->getCurrentUser ();
-		$user->updateFromArray (array ('email'=>$newEmail));
+		$user->updateFromArray (array ('email'=>$newEmail, 
+			'skin'=>$newSkin, 
+			'contentLanguage'=>$newContentLang));
 		$user->updateToDatabase ();
 		$this->_pluginAPI->addMessage ('Your account settings are changed.', NOTICE);
 		$this->_pluginAPI->executePreviousAction ();
@@ -220,10 +236,17 @@ class userCorePlugin extends InstallablePlugin {
 				'language_code'=>$siteDefaultLanguage, 
 					'translated_title'=>$t->translate ('Registration'), 
 					'translated_content'=>
-						$t->translate ('Give up all your user details in order to registrate to this site.')));
+			$t->translate (
+			'Give up all your user details in order to registrate to this site.')));
 		$regform->addTranslation ($tRegForm);
 		$myaccount->addTranslation ($tMyAccount);
 		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
+		
+		// install 2 morgos -> user extensions
+		$skinTable = new dbField ('skin', DB_TYPE_STRING, 40);
+		$langTable = new dbField ('contentLanguage', DB_TYPE_STRING, 100);
+		$uM->addExtraFieldForTable ('users', $skinTable);
+		$uM->addExtraFieldForTable ('users', $langTable);
 	}
 	
 	function isInstalled (&$pluginAPI) {

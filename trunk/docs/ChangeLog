@@ -8,6 +8,7 @@ Version 0.3
 	 * My Account page
 	 	- change password
 	 	- change email adress
+	 	- change skin/content language
 	 * Added a save config fallback page (both installer/admin)
 	 * Implemented EmailInput
 	 * In the admin: adminHome
@@ -17,6 +18,7 @@ Version 0.3
 	 * You can really choose what dbmodule you want.
 	 * Rewrote organisation of tests
 	 * Rewrote all user tests
+	 * Rewrote all pages tests
 	 * Splitted the view of enabled/disabled plugins
 	[API]
 	 * Added DBTableManager

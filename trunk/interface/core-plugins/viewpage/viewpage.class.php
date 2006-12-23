@@ -109,7 +109,7 @@ class viewPageCorePlugin extends InstallablePlugin {
 	function setPageVars ($pageID) {
 		$pM = &$this->_pluginAPI->getPageManager ();
 		$config = &$this->_pluginAPI->getConfigManager ();
-		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');
+		$pageLang = $config->getStringItem ('/user/contentLang');
 		$root = $pM->getSitePage ();
 		$page = $pM->newPage ();
 		$page->initFromDatabaseID ($pageID);
