@@ -73,6 +73,12 @@ class skin {
 	
 	function getID () {return $this->_ID;}
 	function getName () {return $this->_name;}
+	
+	function createCompileDir () {
+		if (! file_exists ($this->getCompileDir ())) {
+			@mkdir ($this->getCompileDir ());
+		}
+	}
 }
 
 class skinManager {
@@ -93,6 +99,11 @@ class skinManager {
 					$skin = new skin ($dir.$dirName.'/skin.php', $dir, $dirName);
 					if (! isError ($skin->canRun ())) {
 						$this->_allFoundSkins[$skin->getID ()] = $skin;
+					} else {
+						$skin->createCompileDir ();
+						if (! isError ($skin->canRun ())) {
+							$this->_allFoundSkins[$skin->getID ()] = $skin;
+						}
 					}
 				}
 			}
@@ -112,6 +123,7 @@ class skinManager {
 			}
 			$this->_loadedSkin[] = $skin;
 		} else {
+			var_dump ($this->_allFoundSkins);
 			return new Error ('SKINMANAGER_SKIN_NOT_FOUND');
 		}
 	}

@@ -190,7 +190,7 @@ class NoGUIMorgOS {
 		$this->_i18nManager->addError ('PASSWORDS_NOT_EQUAL', 
 			'Passwords didn\'t match.');
 		$this->_i18nManager->addError ('SKINSC_NOT_WRITABLE', 
-			'skins_c/default is not writable by PHP. 
+			'skins_c/ is not writable by PHP. 
 			 Please make it writable and proceed.');
 		$this->_i18nManager->addError ('DATABASE_NOT_INSTALLED', 
 			'It seems that the installation is not complete. Reinstall the database.');
@@ -450,9 +450,9 @@ class BaseMorgos extends NoGUIMorgOS {
 	 * @return (bool)
 	*/
 	function checkSmartyDirs () {
-		if (file_exists ('skins_c/default')) {
-			if (is_dir ('skins_c/default')) {
-				if (is_writable ('skins_c/default')) {
+		if (file_exists ('skins_c/')) {
+			if (is_dir ('skins_c/')) {
+				if (is_writable ('skins_c/')) {
 					return true;
 				}
 			}
