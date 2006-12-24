@@ -233,7 +233,8 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$pman->initFromArray (array (
 			'name'=>'MorgOS_Admin_PageManager', 
 			'parent_page_id'=>$admin->getID (), 
-			'action'=>'adminPageManager'));
+			'action'=>'adminPageManager',
+			'place_in_menu'=>1));
 		$pageM->addPageToDatabase ($pman);	
 		$tPMan = $pageM->newTranslatedPage ();
 		$tPMan->initFromArray (array (

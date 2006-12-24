@@ -724,7 +724,7 @@ class Morgos extends ConfigMorgos {
 		$this->_pluginAPI->addUserSetting ('UILang', 
 			$this->_pluginAPI->getDefaultLanguage ());
 		$this->_pluginAPI->addUserSetting ('contentLang', 
-			$this->_pluginAPI->getDefaultLanguage (), 'contentLang');
+			$this->_pluginAPI->getDefaultLanguage (), 'contentLanguage');
 	}
 	
 	function loadSkin () {

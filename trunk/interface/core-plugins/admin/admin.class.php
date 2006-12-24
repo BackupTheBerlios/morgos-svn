@@ -201,7 +201,8 @@ class adminCorePlugin extends InstallablePlugin {
 		$ahome->initFromArray (array (
 				'name'=>'MorgOS_Admin_Home', 
 				'parent_page_id'=>$admin->getID (),
-				'action'=>'adminHome'));
+				'action'=>'adminHome',
+				'place_in_menu'=>MORGOS_MENU_FIRST));
 		$pageM->addPageToDatabase ($ahome);
 		$tAHome = $pageM->newTranslatedPage ();	
 		$tAHome->initFromArray (array (
@@ -217,7 +218,7 @@ class adminCorePlugin extends InstallablePlugin {
 		$adminSaveConfig->initFromArray (array (
 				'name'=>'MorgOS_Admin_SaveConfig', 
 				'parent_page_id'=>$admin->getID (),
-				'place_in_menu'=>0));
+				'place_in_menu'=>MORGOS_MENU_INVISIBLE));
 		$pageM->addPageToDatabase ($adminSaveConfig);	
 		
 		$tASaveConfig = $pageM->newTranslatedPage ();
@@ -231,7 +232,8 @@ class adminCorePlugin extends InstallablePlugin {
 		$adminLogout->initFromArray (array (
 				'name'=>'MorgOS_Admin_Logout', 
 				'parent_page_id'=>$admin->getID (), 
-				'action'=>'adminLogout'));
+				'action'=>'adminLogout',
+				'place_in_menu'=>MORGOS_MENU_LAST));
 		$pageM->addPageToDatabase ($adminLogout);	
 		
 		$tALogout = $pageM->newTranslatedPage ();

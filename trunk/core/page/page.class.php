@@ -269,7 +269,8 @@ class Page extends DBTableObject {
 	
 	function getMaxPlaceInMenu () {
 		$sql = "SELECT MAX(place_in_menu) AS maxplace FROM ".$this->getFullTableName ()." 
-				WHERE parent_page_id='". $this->getID ()."'";
+				WHERE parent_page_id='". $this->getID ()."'
+				AND place_in_menu<".MORGOS_MENU_LAST;
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);

@@ -152,7 +152,8 @@ class adminCoreUserAdminPlugin extends InstallablePlugin {
 				'name'=>'MorgOS_Admin_UserManager', 
 				'parent_page_id'=>$admin->getID (), 
 				'action'=>'adminUserManager',
-				'plugin_id'=>MORGOS_USER_PLUGINID));
+				'plugin_id'=>MORGOS_USER_PLUGINID,
+				'place_in_menu'=> 2));
 		$pageM->addPageToDatabase ($adminUser);
 		
 		$tAdminUser = $pageM->newTranslatedPage ();

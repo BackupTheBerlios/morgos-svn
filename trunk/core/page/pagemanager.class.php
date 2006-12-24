@@ -32,6 +32,11 @@
 include_once ('core/page/page.class.php');
 include_once ('core/page/translatedpage.class.php');
 
+define ('MORGOS_MENU_FIRST', 0);
+define ('MORGOS_MENU_LAST', 254);
+define ('MORGOS_MENU_INVISIBLE', 255);
+define ('MORGOS_MENU_APPEND', -1);
+
 /**
  * A class that manages all pages.
  *
@@ -47,13 +52,12 @@ class PageManager extends DBTableManager {
 	 * @param $db (obejct dbModule)
 	*/
 	function PageManager ($db) {
-		parent::DBTableManager ($db, 'pages', 'Page', 'translatedPages', 'TranslatedPage');
+		parent::DBTableManager 
+			($db, 'pages', 'Page', 'translatedPages', 'TranslatedPage');
 	}
 	
 	/**
 	 * Add a page to the database. If needed it reoders the menu items.
-	 *  When a page is inserted, all pages with the same, or a higher place in the menu are placed upwards.
-	 *  If it has no placeInMenu value (if it is null) it is placed after all other menu items. If 0 its not visible in the menu.
 	 * 
 	 * @param $page (object page)
 	 * @public 
@@ -67,12 +71,15 @@ class PageManager extends DBTableManager {
 	
 		$parentPageID = $page->getParentPageID ();
 		if (! is_numeric ($parentPageID)) {
-			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
+				__FILE__, __LINE__);
 		}	
 	
-		if ($page->getPlaceInMenu () === 0) {
+		if ($page->getPlaceInMenu () === MORGOS_MENU_INVISIBLE
+			or $page->getPlaceInMenu () === MORGOS_MENU_FIRST
+			or $page->getPlaceInMenu () === MORGOS_MENU_LAST) {
 			// do nothing, everything should be OK
-		} elseif ($page->getPlaceInMenu () === -1) {
+		} elseif ($page->getPlaceInMenu () === MORGOS_MENU_APPEND) {
 			if (! $page->isRootPage ()) {
 				$parentPage = $page->getParentPage ();
 				$pInMen = $parentPage->getMaxPlaceInMenu ();
@@ -87,10 +94,15 @@ class PageManager extends DBTableManager {
 		} else {
 			$place = $page->getPlaceInMenu ();
 			if (! is_numeric ($place)) {
-				return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
+				return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
+					__FILE__, __LINE__);
 			}
 			$pagesTableName = $this->_db->getPrefix ().'pages';
-			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 WHERE place_in_menu>=$place AND parent_page_id='$parentPageID'";
+			$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 
+				WHERE place_in_menu>=$place 
+				AND place_in_menu!=".MORGOS_MENU_INVISIBLE 
+				." AND place_in_menu!=".MORGOS_MENU_LAST 
+				." AND parent_page_id='$parentPageID'";
 			$q = $this->_db->query ($sql);
 			if (isError ($q)) {
 				return $q;
@@ -111,14 +123,23 @@ class PageManager extends DBTableManager {
 	function movePageUp ($page) {
 		$pagesTableName = $this->_db->getPrefix ().'pages';
 		$placeInMenu = $page->getPlaceInMenu ();
+		if ($placeInMenu == 1) {
+			return;
+		}
 		$ppID = $page->getParentPageID ();
-		$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 WHERE place_in_menu=($placeInMenu)-1 AND place_in_menu>0 AND parent_page_id='$ppID'";
+		$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)+1 
+			WHERE place_in_menu=($placeInMenu)-1 AND place_in_menu!=".MORGOS_MENU_FIRST 
+			." AND place_in_menu!=".MORGOS_MENU_LAST 
+			." AND place_in_menu!=".MORGOS_MENU_INVISIBLE." AND parent_page_id='$ppID'";
 		$a = $this->_db->query ($sql);
 		if (isError ($a)) {
 			return $a;
 		}
 		
-		$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)-1 WHERE page_id=\''.$page->getID ().'\' AND place_in_menu>1';
+		$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)-1 
+			WHERE page_id=\''.$page->getID ().'\' AND place_in_menu!='.MORGOS_MENU_FIRST
+			." AND place_in_menu!=".MORGOS_MENU_LAST
+			." AND place_in_menu!=".MORGOS_MENU_INVISIBLE;
 		$a = $this->_db->query ($sql);
 		if (isError ($a)) {
 			return $a;
@@ -134,14 +155,24 @@ class PageManager extends DBTableManager {
 	function movePageDown ($page) {
 		$pagesTableName = $this->_db->getPrefix ().'pages';
 		$placeInMenu = $page->getPlaceInMenu ();
+		$parentPage = $page->getParentPage ();
+		if ($placeInMenu == $parentPage->getMaxPlaceInMenu ()-1) {
+			return;
+		}
 		$ppID = $page->getParentPageID ();
-		$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)-1 WHERE place_in_menu=($placeInMenu)+1 AND parent_page_id='$ppID'";
+		$sql = "UPDATE $pagesTableName SET place_in_menu=(place_in_menu)-1 
+			WHERE place_in_menu=($placeInMenu)+1 AND place_in_menu!=".MORGOS_MENU_FIRST 
+			." AND place_in_menu!=".MORGOS_MENU_LAST 
+			." AND place_in_menu!=".MORGOS_MENU_INVISIBLE." AND parent_page_id='$ppID'";
 		$a = $this->_db->query ($sql);
 		if (isError ($a)) {
 			return $a;
 		}
 		
-		$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)+1 WHERE page_id=\''.$page->getID ().'\'';
+		$sql = 'UPDATE '.$pagesTableName.' SET place_in_menu=(place_in_menu)+1 
+			WHERE page_id=\''.$page->getID ().'\' AND place_in_menu!='.MORGOS_MENU_FIRST
+			." AND place_in_menu!=".MORGOS_MENU_LAST
+			." AND place_in_menu!=".MORGOS_MENU_INVISIBLE;
 		$a = $this->_db->query ($sql);
 		if (isError ($a)) {
 			return $a;
@@ -165,12 +196,16 @@ class PageManager extends DBTableManager {
 		$pagesDatabaseName = $this->_db->getPrefix ().'pages';
 		$parentPageID = $page->getParentPageID ();
 		if (! is_numeric ($placeInMenu)) {
-			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
+				__FILE__, __LINE__);
 		}
 		if (! is_numeric ($parentPageID)) {
-			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
+				__FILE__, __LINE__);
 		}
-		$sql = "UPDATE $pagesDatabaseName SET place_in_menu=(place_in_menu-1) WHERE place_in_menu>=$placeInMenu AND parent_page_id='$parentPageID'";
+		$sql = "UPDATE $pagesDatabaseName SET place_in_menu=(place_in_menu-1) 
+			WHERE place_in_menu>=$placeInMenu 
+			AND place_in_menu<".MORGOS_MENU_LAST." AND parent_page_id='$parentPageID'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			return $page->removeFromDatabase ();
@@ -199,7 +234,8 @@ class PageManager extends DBTableManager {
 	function pageExists ($pageName) {
 		$fullPagesTableName = $this->_db->getPrefix ().'pages';
 		$pageName = $this->_db->escapeString ($pageName);
-		$sql = "SELECT COUNT(page_id) as pages FROM $fullPagesTableName WHERE name='$pageName'";
+		$sql = "SELECT COUNT(page_id) as pages FROM $fullPagesTableName 
+			WHERE name='$pageName'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$row = $this->_db->fetchArray ($q);
@@ -214,7 +250,8 @@ class PageManager extends DBTableManager {
 	}
 	
 	/**
-	 * Returns an array with all menu items. The first item in the array is the first menu item (duh)
+	 * Returns an array with all menu items. 
+	 * The first item in the array is the first menu item (duh)
 	 * 
 	 * @param $rootPage (object page) The root page.
 	 * @public
@@ -224,9 +261,11 @@ class PageManager extends DBTableManager {
 		$tableName = $this->_db->getPrefix ().'pages';
 		$parentPageID = $rootPage->getID ();
 		if (! is_numeric ($parentPageID)) {
-			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', __FILE__, __LINE__);
+			return new Error ('DATABASEOBJECT_SQL_INJECTION_ATTACK_FAILED', 
+			__FILE__, __LINE__);
 		}
-		$sql = "SELECT page_id FROM $tableName WHERE parent_page_id='$parentPageID' AND place_in_menu>0 ORDER BY place_in_menu ASC";
+		$sql = "SELECT page_id FROM $tableName WHERE parent_page_id='$parentPageID' 
+			AND place_in_menu!=".MORGOS_MENU_INVISIBLE." ORDER BY place_in_menu ASC";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
 			$allPages = array ();

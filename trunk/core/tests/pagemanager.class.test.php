@@ -64,7 +64,8 @@ class pageManagerTest extends TestCase {
 		$sitePage = $this->pM->getSitePage ();
 		$newPage->initFromArray (array(
 				'name'=>'Home',
-				'parent_page_id'=>$sitePage->getID ()
+				'parent_page_id'=>$sitePage->getID (),
+				'place_in_menu'=>MORGOS_MENU_FIRST
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		
@@ -88,7 +89,8 @@ class pageManagerTest extends TestCase {
 		$adminPage = $this->pM->getAdminPage ();
 		$newPage->initFromArray (array(
 				'name'=>'AdminHome',
-				'parent_page_id'=>$adminPage->getID ()
+				'parent_page_id'=>$adminPage->getID (),
+				'place_in_menu'=>MORGOS_MENU_FIRST
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		
@@ -103,7 +105,7 @@ class pageManagerTest extends TestCase {
 		$newPage->initFromArray (array(
 				'name'=>'NonVisiblePage',
 				'parent_page_id'=>$sitePage->getID (),
-				'place_in_menu'=>null
+				'place_in_menu'=>MORGOS_MENU_INVISIBLE
 			));
 		$this->pM->addPageToDatabase ($newPage);
 		
@@ -113,19 +115,27 @@ class pageManagerTest extends TestCase {
 				'parent_page_id'=>$sitePage->getID ()
 			));
 		$this->pM->addPageToDatabase ($newPage);
-		$this->assertEquals (3, $newPage->getPlaceInMenu ());	
+		$this->assertEquals (2, $newPage->getPlaceInMenu ());	
 		
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
 				'name'=>'3THPage',
 				'parent_page_id'=>$sitePage->getID (),
-				'place_in_menu'=>3
+				'place_in_menu'=>2
 			));
 		$this->pM->addPageToDatabase ($newPage);
-		$this->assertEquals (3, $newPage->getPlaceInMenu ());
+		$this->assertEquals (2, $newPage->getPlaceInMenu ());
 		$page4th = $this->pM->newPage ();
 		$page4th->initFromName ('4THPage');
-		$this->assertEquals (4, $page4th->getPlaceInMenu ());
+		$this->assertEquals (3, $page4th->getPlaceInMenu ());
+		
+		$newPage = $this->pM->newPage ();
+		$newPage->initFromArray (array(
+				'name'=>'LastPage',
+				'parent_page_id'=>$sitePage->getID (),
+				'place_in_menu'=>MORGOS_MENU_LAST
+			));
+		$this->pM->addPageToDatabase ($newPage);		
 		
 		$newPage = $this->pM->newPage ();
 		$newPage->initFromArray (array(
@@ -145,22 +155,36 @@ class pageManagerTest extends TestCase {
 		$page3th->initFromName ('3THPage');
 		$page4th = $this->pM->newPage ();
 		$page4th->initFromName ('4THPage');
+		$last = $this->pM->newPage ();
+		$last->initFromName ('LastPage');
 		
-		$this->assertEquals (array ($home, $page2nd, $page3th, $page4th), 
+		
+		$this->assertEquals (array ($home, $page2nd, $page3th, $page4th, $last), 
 			$this->pM->getMenu ($this->pM->getSitePage ()));
-		
+			
 		$a = $this->pM->movePageUp ($page2nd);
 		$this->assertFalse (isError ($a));
-		$home->initFromName ('Home');
-		$page2nd->initFromName ('2NDPage');	
-		
-		$this->assertEquals (array ($page2nd, $home, $page3th, $page4th), 
+		$page2nd->initFromName ('2NDPage');
+		$this->assertEquals (array ($home, $page2nd, $page3th, $page4th, $last), 
 			$this->pM->getMenu ($this->pM->getSitePage ()));
+		
 		$r = $this->pM->movePageDown ($page2nd);
 		$this->assertFalse (isError ($r));
-		$home->initFromName ('Home');
 		$page2nd->initFromName ('2NDPage');
-		$this->assertEquals (array ($home, $page2nd, $page3th, $page4th), 
+		$page3th->initFromName ('3THPage');	
+		$this->assertEquals (array ($home, $page3th, $page2nd, $page4th, $last), 
+			$this->pM->getMenu ($this->pM->getSitePage ()));
+
+	
+		$r = $this->pM->movePageUp ($page2nd);
+		$this->assertFalse (isError ($r));
+		$page2nd->initFromName ('2NDPage');
+		$page3th->initFromName ('3THPage');
+		$this->assertEquals (array ($home, $page2nd, $page3th, $page4th, $last), 
+			$this->pM->getMenu ($this->pM->getSitePage ()));
+			
+		$r = $this->pM->movePageDown ($page4th);
+		$this->assertEquals (array ($home, $page2nd, $page3th, $page4th, $last), 
 			$this->pM->getMenu ($this->pM->getSitePage ()));
 	}
 	
@@ -172,7 +196,10 @@ class pageManagerTest extends TestCase {
 		$this->assertFalse ($page3th->isInDatabase ());
 		$page4th = $this->pM->newPage ();
 		$page4th->initFromName ('4THPage');
-		$this->assertEquals (3, $page4th->getPlaceInMenu ());
+		$this->assertEquals (2, $page4th->getPlaceInMenu ());
+		$last = $this->pM->newPage ();
+		$last->initFromName ('LastPage');
+		$this->assertEquals (MORGOS_MENU_LAST, $last->getPlaceInMenu ());
 		
 		$r = $this->pM->removePageFromDatabase ($page3th);
 		$this->assertTrue ($r->is ('PAGE_NOT_FOUND'));

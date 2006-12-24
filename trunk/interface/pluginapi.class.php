@@ -355,9 +355,11 @@ class PluginAPI extends ConfigPluginAPI {
 	function addUserSetting ($name, $defaultValue, $dbField = null) {
 		if ($dbField) {
 			$currentUser = $this->_userManager->getCurrentUser ();
-			$userValue = $currentUser->getFieldValue ($dbField);
-			if ($userValue != null) {
-				$defaultValue = $userValue;
+			if ($currentUser) {
+				$userValue = $currentUser->getFieldValue ($dbField);
+				if ($userValue != null and !isError ($userValue)) {
+					$defaultValue = $userValue;
+				}
 			}
 		}
 		return $this->_configManager->addUserSetting ($name, STRING, $defaultValue);

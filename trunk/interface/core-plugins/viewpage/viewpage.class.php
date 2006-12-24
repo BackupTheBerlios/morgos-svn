@@ -153,7 +153,8 @@ class viewPageCorePlugin extends InstallablePlugin {
 		$home = $pageM->newPage ();
 		$home->initFromArray (array (
 				'name'=>'MorgOS_Home', 
-				'parent_page_id'=>$site->getID ()));	
+				'parent_page_id'=>$site->getID (),
+				'place_in_menu'=>MORGOS_MENU_FIRST));	
 		$pageM->addPageToDatabase ($home);
 		$tHome = $pageM->newTranslatedPage ();
 		

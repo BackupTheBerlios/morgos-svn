@@ -215,11 +215,13 @@ class userCorePlugin extends InstallablePlugin {
 		$regform->initFromArray (array (
 				'name'=>'MorgOS_RegisterForm',  
 				'parent_page_id'=>$site->getID (), 'action'=>'userRegisterForm', 
-				'place_in_menu'=>0, 'plugin_id'=>MORGOS_USER_PLUGINID));
+				'place_in_menu'=>MORGOS_MENU_INVISIBLE, 
+				'plugin_id'=>MORGOS_USER_PLUGINID));
 		$myaccount->initFromArray (array (
 				'name'=>'MorgOS_User_MyAccount',  
 				'parent_page_id'=>$site->getID (), 'action'=>'userMyAccount', 
-				'place_in_menu'=>0, 'plugin_id'=>MORGOS_USER_PLUGINID));
+				'place_in_menu'=>MORGOS_MENU_INVISIBLE, 
+				'plugin_id'=>MORGOS_USER_PLUGINID));
 		
 		$pageM->addPageToDatabase ($regform);
 		$pageM->addPageToDatabase ($myaccount);		
