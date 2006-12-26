@@ -304,22 +304,11 @@ class BaseMorgos extends NoGUIMorgOS {
 					return substr ($key, strlen ('override_action_'));
 				}
 			}
-		}
-		switch ($_SERVER['REQUEST_METHOD']) {
-			case 'POST':
-				$from = $_POST;
-				break;
-			case 'GET':
-				$from = $_GET;
-				break;
-			default:
-				return $defaultAction;
-		}
-		if (array_key_exists ('action', $from)) {
+		} elseif (array_key_exists ('action', $from)) {
 			return $from['action'];
 		} else {
 			return $defaultAction;
-		}
+		}	
 	}
 	
 	/**

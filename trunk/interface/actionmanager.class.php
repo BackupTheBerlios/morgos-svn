@@ -73,6 +73,7 @@ class baseInput {
 	}
 	
 	function getFromArray ($from) {
+		if (is_array ($from)) return $from;
 		switch ($from) {
 			case 'POST':
 				return $_POST;
@@ -100,6 +101,9 @@ class StringInput extends baseInput {
  * @since 0.2
 */
 class IntInput extends baseInput {
+	function getValue ($from) {
+		return (int) parent::getValue ($from);
+	}
 }
 
 /**
@@ -112,6 +116,8 @@ class IntInput extends baseInput {
 */
 class EmailInput extends StringInput {
 	function checkInput ($from) {
+		$r = parent::checkInput ($from);
+		if (isError ($r)) return $r;
 		$value = $this->getValue ($from);
 		$AtChar = strpos ($value, '@');
 		$host = substr ($value, $AtChar+1);
@@ -125,7 +131,7 @@ class EmailInput extends StringInput {
 			
 			return;
 		} else {
-			return new Error ('INVALID_EMAIL_ADRESS');
+			return new Error ('INVALID_EMAIL');
 		}
 	}
 }
@@ -180,25 +186,16 @@ class BoolInput extends EnumInput {
  * @ingroup interface
  * @since 0.2
 */
-class IDInput extends baseInput {
+class IDInput extends IntInput {
 	function checkInput ($from) {
-		if ($this->isGiven ($from)) {
-			if (is_int ($this->getValue ($from))) {
-				return $this->getValue ($from) >= 0;
-			} else {
-				return false;
-			}
+		$r = parent::checkInput ($from);
+		if (isError ($r)) return $r;
+		if (is_int ($this->getValue ($from)) && $this->getValue ($from) > 0) {
+			return;
+		} else {
+			return new Error ('INVALID_ID');
 		}
 	}
-	
-/*	function getValue ($from) {
-		if ($this->isGiven ($from)) {
-			$fromArray = $this->getFromArray ($from);
-			return (int) $fromArray[$this->_name];
-		} else {
-			return null;
-		}
-	}*/
 }
 
 /**
@@ -263,7 +260,7 @@ class MultipleInput extends baseInput {
 	
 	function getValue ($from) {
 		/*should be overriden*/
-		return new Error ('MULTIPLE_INPUT_HANDLER_GET_VALUE_NOT_IMPLEMENTED');
+		return new Error ('MULTIPLE_INPUT_HANDLER_GET_VALUE_NYI');
 	}
 
 	function getName () {return $this->_prefix;}
@@ -275,55 +272,30 @@ class MultipleInput extends baseInput {
  * @ingroup interface
  * @since 0.3
 */
-class PasswordNewInput extends baseInput {
+class PasswordNewInput extends MultipleInput {
+	function PasswordNewInput ($name) {
+		parent::MultipleInput ($name, array ('1'=>'StringInput', '2'=>'StringInput'));
+	}
 
 	function checkInput ($from) {
-		if ($this->isGiven ($from)) {
-			$vals = $this->getValues ($from);
-			if ($vals[0] == $vals[1]) {
+		$r = parent::checkInput ($from);
+		if (! isError ($r)) {
+			if ($this->getChildValue ($from, '1') == $this->getChildValue ($from, '2')) {
 				return null;
 			} else {
 				return new Error ('PASSWORDS_NOT_EQUAL');
 			}
 		} else {
-			return new Error ('EMPTY_INPUT', $this->_name);
-		}
-	}
-	
-	function isGiven ($from)  {
-		$fromArray = $this->getFromArray ($from);
-		$a = (array_key_exists ($this->_name.'1', $fromArray) and 
-			array_key_exists ($this->_name.'2', $fromArray));
-		if ($a) {
-			return ($fromArray[$this->_name.'1'] != null) 
-				and ($fromArray[$this->_name.'2'] != null);
-		} else {
-			return false;
+			return $r;
 		}
 	}
 	
 	function getValue ($from) {
 		if ($this->isGiven ($from)) {
-			$fromArray = $this->getFromArray ($from);
-			return $fromArray[$this->_name.'1'];
+			return $this->getChildValue ($from, '1');
 		} else {
 			return null;
 		}
-	}
-	
-	function getValue2 ($from) {
-		if ($this->isGiven ($from)) {
-			$fromArray = $this->getFromArray ($from);
-			return $fromArray[$this->_name.'2'];
-		} else {
-			return null;
-		}
-	}
-
-	function getValues ($from) {
-		$array = $this->getFromArray ($from);
-		$values = array ($this->getValue ($from), $this->getValue2 ($from));
-		return $values;
 	}
 }
 

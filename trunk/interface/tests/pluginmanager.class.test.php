@@ -15,20 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file pluginmanager.class.test.php
- * File that take care of testing pluginmanager class.
- *
- * @since 0.2
- * @author Nathan Samson
-*/
 define ('MORGOS_VERSION', '0.2');
 include_once ('core/varia.functions.php');
 include_once ('interface/pluginmanager.class.php');
 
-class pluginAPI {
+class MockPluginAPI {
 	var $_value;
 	
-	function pluginAPI () {
+	function MockPuginAPI () {
 		$this->_value = 0;
 	}
 
@@ -47,7 +41,7 @@ class pluginManagerTest extends TestCase {
 	var $_pluginAPI;
 
 	function setUp () {
-		$this->_pluginAPI = new pluginAPI ();
+		$this->_pluginAPI = new MockPluginAPI ();
 		$this->_pluginManager = new pluginManager ($this->_pluginAPI);
 		$this->_pluginManager->findAllPlugins ('interface/tests/plugins');
 		
@@ -70,9 +64,16 @@ class pluginManagerTest extends TestCase {
 	function testLoadPlugin () {
 		$r = $this->_pluginManager->setPluginToLoad ($this->_dataTesterPlugin->getID ());
 		$this->assertFalse (isError ($r), 'Unexpected error');
+		$r = $this->_pluginManager->setPluginToLoad ('{some-invalid-id}');
+		$this->assertTrue ($r->is ('PLUGINID_DOESNT_EXISTS'));
 		$this->_pluginManager->loadPlugins ();
 		$this->_dataTesterPlugin->load ($this->_pluginAPI);
 		$this->assertEquals (array ($this->_dataTesterPlugin->getID ()=>$this->_dataTesterPlugin), $this->_pluginManager->getAllLoadedPlugins (), 'Wrong result returned');
+		
+		$this->assertEquals (array ($this->_dataTesterPlugin->getID ()), 
+			$this->_pluginManager->getAllLoadedPluginsID ());
+			
+		
 	}
 	
 	function testDoNotLoadTwice () {
@@ -106,6 +107,38 @@ class pluginManagerTest extends TestCase {
 		$this->assertEquals (2, $this->_pluginAPI->_value);
 	}
 	
+	function testGetPlugin () {
+		$this->assertEquals ($this->_dataTesterPlugin, 
+			$this->_pluginManager->getPlugin ($this->_dataTesterPlugin->getID ()));
+		$e = $this->_pluginManager->getPlugin ('{some-id}');
+		$this->assertTrue ($e->is ('PLUGINID_DOESNT_EXISTS'));
+	}
+	
+	function testGetLoadedPlugin () {
+		$e = $this->_pluginManager->getLoadedPlugin ('{some-id}');
+		$this->assertTrue ($e->is ('PLUGINID_DOESNT_EXISTS'));
+	}
+	
+	function testUnload () {
+		global $loadDataTester;
+		$loadDataTester = 0;
+		
+		$this->_pluginManager->setPluginToLoad ($this->_dataTesterPlugin->getID ());
+		$this->_pluginManager->loadPlugins ();
+		$this->assertEquals (1, $loadDataTester);
+		$this->_pluginManager->shutdown ();
+		$this->assertEquals (0, $loadDataTester);
+	}
+	
+	function testBasicPluginFunctions () {
+		// data tester plugins
+		$p = $this->_pluginManager->getPlugin ('{3d8c7836-2b7a-4b04-bfab-a46e20846675}');
+		$this->assertFalse ($p->isLoaded ());
+		$this->assertEquals ('Data tester plugin', $p->getName ());
+		$this->assertEquals ('1.0', $p->getVersion ());
+		$this->assertFalse ($p->isCorePlugin ());
+		//$this->assert
+	}
 	
 	function testIsCompatible () {
 		$r = $this->_pluginManager->setPluginToLoad ($this->_notCompatible->getID ());

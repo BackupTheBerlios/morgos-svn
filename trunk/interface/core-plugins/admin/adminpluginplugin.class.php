@@ -62,22 +62,22 @@ class adminCorePluginAdminPlugin extends InstallablePlugin {
 		$disabledPlugins = array ();
 		foreach ($plugM->getAllFoundPlugins () as $plugin) {
 			if ($plugin->isCorePlugin () === false) {
-				if ($plugin->isCompatible ()) {
-					$cMessage = '';
+				$c = false;
+				if (! $plugin->isPHPCompatible ()) {
+					$cMessage = $t->translate ('Your version of PHP (%1) is not compatible with this plugin.', array (PHP_VERSION));
+				} elseif (! $plugin->isMinVersionReached ()) {
+					$cMessage = $t->translate ('Your version of MorgOS is too old.');
+				} elseif ($plugin->isMaxVersionExceeded ()) {
+					$cMessage = $t->translate ('Your version of MorgOS is too new.');
 				} else {
-					if (! $plugin->isPHPCompatible ()) {
-						$cMessage = $t->translate ('Your version of PHP (%1) is not compatible with this plugin.', array (PHP_VERSION));
-					} elseif (! $plugin->isMinVersionReached ()) {
-						$cMessage = $t->translate ('Your version of MorgOS is too old.');
-					} elseif ($plugin->isMaxVersionExceeded ()) {
-						$cMessage = $t->translate ('Your version of MorgOS is too new.');
-					}
+					$c = true;
+					$cMessage = '';
 				}
 				$pInfo = array (
 					'Name'=>$plugin->getName (), 'Version'=>$plugin->getVersion (), 'Enabled'=>$plugin->isLoaded (), 
 					'EnableLink'=>'index.php?action=adminEnablePlugin&pluginID='.$plugin->getID (),
 					'DisableLink'=>'index.php?action=adminDisablePlugin&pluginID='.$plugin->getID (),
-					'Compatible'=>$plugin->isCompatible (), 'CompatibleMessage'=>$cMessage,
+					'Compatible'=>$c, 'CompatibleMessage'=>$cMessage,
 					'Installable'=> is_a ($plugin, 'InstallablePlugin'),
 					'Installed'=>$plugin->isInstalled ($this->_pluginAPI), 
 					'InstallLink'=>'index.php?action=adminInstallPlugin&pluginID='.$plugin->getID (),

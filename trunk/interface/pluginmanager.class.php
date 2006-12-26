@@ -134,15 +134,6 @@ class Plugin {
 	function getVersion () {return $this->_version;}
 	
 	/**
-	 * Returns that it is compatible or not
-	 * @public
-	 * @return (bool)
-	*/
-	function isCompatible () {
-		return ($this->isPHPCompatible () && $this->isMorgOSCompatible ());
-	}
-	
-	/**
 	 * Returns that it is  with PHP
 	 * @public
 	 * @return (bool)
@@ -150,19 +141,6 @@ class Plugin {
 	function isPHPCompatible () {
 		return true; // plugin should override it of not true
 	}	
-	
-	/**
-	 * Returns that it is compatible with MorgOS
-	 * @public
-	 * @return (bool)
-	*/
-	function isMorgOSCompatible () {
-		if ($this->isMinVersionReached () and !$this->isMaxVersionExceeded ()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
 	/**
 	 * Returns that the minimal version is reachhed
@@ -190,7 +168,7 @@ class Plugin {
 	*/
 	function isCorePlugin () {return false;}
 	
-	function getPluginID () {
+	function getSkinID () {
 		$skinM = &$this->_pluginAPI->getSkinManager ();
 		$plugSkinM = new skinManager ($this->_pluginAPI);
 		$plugSkinM->findAllSkins ($this->getLoadedDir ().'/skins/');
@@ -305,7 +283,7 @@ class pluginManager {
 		if ($this->existsPluginID ($pluginID)) {
 			if ($this->_foundPlugins[$pluginID]->isMinVersionReached ()) {
 				if (! $this->_foundPlugins[$pluginID]->isMaxVersionExceeded ()) {
-					if ($this->_foundPlugins[$pluginID]->isCompatible ()) {
+					if ($this->_foundPlugins[$pluginID]->isPHPCompatible ()) {
 						$this->_pluginsToLoad[$pluginID] = $this->_foundPlugins[$pluginID];
 					} else {
 						return new Error ('PLUGINMANAGER_NOT_COMPATIBLE');
@@ -317,7 +295,7 @@ class pluginManager {
 				return new Error ('PLUGINMANAGER_MINIMALVERSION_NOT_REACHED', $this->_foundPlugins[$pluginID]->_minMorgOSVersion);
 			}
 		} else {
-			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $pluginID);
+			return new Error ('PLUGINID_DOESNT_EXISTS', $pluginID);
 		}
 	}
 	
@@ -330,9 +308,7 @@ class pluginManager {
 		foreach ($this->_pluginsToLoad as $IDKey => $plugin) {
 			if ($plugin->isInstalled ($this->_pluginAPI)) {		
 				$result = $plugin->load ($this->_pluginAPI);
-				if (! isError ($result)) {
-					$sm = &$this->_pluginAPI->getSmarty ();
-//					$sm->template_dir[] = 
+				if (! isError ($result)) { 
 					$this->_loadedPlugins[$IDKey] = $plugin;
 					$this->_foundPlugins[$IDKey] = $plugin;
 					// done for PHP 4, otherwise the updated plugin isn't saved to loadedPlguins
@@ -340,7 +316,7 @@ class pluginManager {
 					if (file_exists ($plugin->getLoadedDir ().'/skins/')) {
 						$skinM = &$this->_pluginAPI->getSkinManager ();
 						$skinM->findAllSkins ($plugin->getLoadedDir ().'/skins/');
-						$skinM->loadSkin ($plugin->getPluginID ());
+						$skinM->loadSkin ($plugin->getSkinID ());
 					}
 				} else {
 					return $result;
@@ -417,7 +393,7 @@ class pluginManager {
 		if ($this->existsLoadedPluginID ($ID)) {
 			return $this->_loadedPlugins[$ID];
 		} else {
-			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $ID);
+			return new Error ('PLUGINID_DOESNT_EXISTS', $ID);
 		}
 	}
 	
@@ -432,7 +408,7 @@ class pluginManager {
 		if ($this->existsPluginID ($ID)) {
 			return $this->_foundPlugins[$ID];
 		} else {
-			return new Error ('PLUGINMANAGER_PLUGIN_NOT_FOUND', $ID);
+			return new Error ('PLUGINID_DOESNT_EXISTS', $ID);
 		}
 	}
 		

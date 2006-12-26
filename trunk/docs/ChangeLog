@@ -20,6 +20,7 @@ Version 0.3
 	 * Rewrote all user tests
 	 * Rewrote all pages tests
 	 * Splitted the view of enabled/disabled plugins
+	 * Updated interface tests
 	[API]
 	 * Added DBTableManager
 	 * Added joins
@@ -33,6 +34,8 @@ Version 0.3
 	 	When deleting a user 'his' group is deleted too
 	 * UserManager:
 	 	Added a function getAllNonUserGroups ();
+	 * Plugin:
+	 	Rename getPluginID->getSkinID 
 	[Installer]
 	 * (Core-)Plugins are responsible for installing their DB tables
 	[Skins]

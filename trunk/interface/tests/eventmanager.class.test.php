@@ -15,12 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file eventmanager.class.test.php
- * File that take care of testing eventmanager class.
- *
- * @since 0.2
- * @author Nathan Samson
-*/
 
 include_once ('core/varia.functions.php');
 include_once ('interface/eventmanager.class.php');
@@ -64,12 +58,12 @@ class eventManagerTest extends TestCase {
 		$this->_eventManager->addEvent ($this->_runEvent);
 		$this->assertTrue ($this->_eventManager->existsEvent ('run'));
 		$r = $this->_eventManager->addEvent ($this->_runEvent);
-		$this->assertEquals (new Error ('EVENTMANAGER_EVENT_EXISTS', 'run'), $r);
+		$this->assertEquals (new Error ('EVENT_EXISTS', 'run'), $r);
 	}
 	
 	function testRemoveEvent () {
 		$r = $this->_eventManager->removeEvent ($this->_runEvent->getName ());
-		$this->assertEquals (new Error ('EVENTMANAGER_EVENT_DOESNT_EXISTS', 'run'), $r);
+		$this->assertEquals (new Error ('EVENT_DOESNT_EXISTS', 'run'), $r);
 		
 		$this->_eventManager->addEvent ($this->_runEvent);
 		$r = $this->_eventManager->removeEvent ($this->_runEvent->getName ());
@@ -84,16 +78,16 @@ class eventManagerTest extends TestCase {
 		$runEvent = $this->_eventManager->getEvent ('run');
 		$this->assertTrue ($runEvent->existsCallback ($this->_onRunCallback->getName ()) , 'Not added');
 		$r = $this->_eventManager->subscribeToEvent ('run', $this->_onRunCallback);
-		$this->assertEquals (new Error ('EVENT_CALLBACK_EXISTS', 'onRun'), $r, 'Wrong error returned');
+		$this->assertEquals (new Error ('CALLBACK_EXISTS', 'onRun'), $r, 'Wrong error returned');
 	}
 	
 	function testRemoveCallback () {
 		$this->_eventManager->addEvent ($this->_runEvent);
-		$r = $this->_eventManager->unSubscribeFromEvent ('run', $this->_onRunCallback);
-		$this->assertEquals (new Error ('EVENT_CALLBACK_DOESNT_EXISTS', 'onRun'), $r, 'Wrong error');
+		$r = $this->_eventManager->unSubscribeFromEvent ('run', 'onRun');
+		$this->assertEquals (new Error ('CALLBACK_DOESNT_EXISTS', 'onRun'), $r, 'Wrong error');
 		
 		$r = $this->_eventManager->subscribeToEvent ('run', $this->_onRunCallback);
-		$r = $this->_eventManager->unSubscribeFromEvent ('run', $this->_onRunCallback);
+		$r = $this->_eventManager->unSubscribeFromEvent ('run', 'onRun');
 		$this->assertFalse (isError ($r), 'Unexpected error');
 		$runEvent = $this->_eventManager->getEvent ('run');
 		$this->assertFalse ($runEvent->existsCallback ('onRun'), 'Not removed');
@@ -158,11 +152,45 @@ class eventManagerTest extends TestCase {
 		$a = $this->remoteTrigger ();
 		$this->assertEquals (array ('someCallback'=> true), $a);
 	}
+
+	function testTriggerWithForgottenParam () {
+		$tEvent = new Event ('someWrongParamEvent', array ('param1', 'param2'));
+		$this->_eventManager->addEvent ($tEvent);
+		$tCallback = new callback ('someCallback', array ($this, 'callbackWithWrongParam'),
+			array ('param2'));
+		$this->_eventManager->subscribeToEvent ('someWrongParamEvent', $tCallback);
+		$a = $this->_eventManager->triggerEvent ('someWrongParamEvent', array ('1'));
+		$this->assertTrue ($a['someCallback']->is ('PARAM2_IS_NULL'));
+	}
 	
+	function testErrorReturning () {
+		$e = $this->_eventManager->getEvent ('someEvent'); 
+		$this->assertTrue ($e->is ('EVENT_DOESNT_EXISTS'));
+		$e = $this->_eventManager->triggerEvent ('someEvent');
+		$this->assertTrue ($e->is ('EVENT_DOESNT_EXISTS'));
+		$e = $this->_eventManager->subscribeToEvent ('someEvent', null);
+		$this->assertTrue ($e->is ('EVENT_DOESNT_EXISTS'));
+		$e = $this->_eventManager->unsubscribeFromEvent ('someEvent', null);
+		$this->assertTrue ($e->is ('EVENT_DOESNT_EXISTS'));
+		$tEvent = new Event ('someEvent', array ('param1', 'param2'));
+		$this->_eventManager->addEvent ($tEvent);
+		$e = $this->_eventManager->unsubscribeFromEvent ('someEvent', 'someCallback');
+		$this->assertTrue ($e->is ('CALLBACK_DOESNT_EXISTS'));
+	}
+
+	// some trigger functions
 	function remoteTrigger () {
 		$a = 7;
 		$b = 8;
 		return $this->_eventManager->triggerEvent ('someEvent', array ('1', '2'));
+	}
+	
+	function callbackWithWrongParam ($p2) {
+		if (empty ($p2)) {
+			return new Error ('PARAM2_IS_NULL');
+		} else {
+			return true;
+		}
 	}
 	
 	function remoteEvent ($intParam1, $a, $intParam2, $b) {

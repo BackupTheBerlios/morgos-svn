@@ -15,42 +15,38 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** \file interface/tests/index.php
- * Suite for the interface tests
- *
- * @since 0.2
- * @author Nathan Samson
-*/
 
-chdir ('../..');
-include_once ('core/tests/base.php');
+if (version_compare (PHP_VERSION, '5', '>=')) {
+	$config = parse_ini_file ('options.ini');
+	
+	//var_dump ($config['phpUnitCC']);
+	if ($config['phpUnitCC'] == true) {
+		$config['phpUnitParameters'] .= ' --report ' . $config['phpUnitCCOutputPath'];
+	}	
+	
+	$statement = $config['phpUnitPath'] . ' ' . 
+		$config['phpUnitParameters'] . ' MorgOSInterface interface/tests/runtests.5.php';
 
-class MorgOSInterfaceSuite extends TestSuite {
-	function MorgOSInterfaceSuite () {
-		$this->setName ('MorgOS interface tester');
+	chdir ('../..');
+	
+	ob_start ();
+	system ($statement, $returnVar);
+	$exec = ob_get_contents ();
+	ob_end_clean ();
+	
+	if (! $returnVar) {
+		if ($config['phpUnitCC'] ) {
+			echo ('<a href="../../'.$config['phpUnitCCOutputPath'].'">Visit output</a><br /><br />');
+		}
 	}
-
-}
-
-if ($php == "4") {
-	include_once ('interface/tests/eventmanager.class.test.php');
-	include_once ('interface/tests/actionmanager.class.test.php');
-	include_once ('interface/tests/pluginmanager.class.test.php');
+	echo nl2br ($exec);
+} elseif (version_compare (PHP_VERSION, '4', '>=')) {
+	chdir ('../..');
+	include_once ('interface/tests/base.php');
+	$suite = new TestSuite ();
+	loadSuite ($suite);
+	
 	require_once ('PHPUnit/GUI/HTML.php');
-	$eventsuite = new TestSuite ('eventManagerTest');
-	$pluginsuite = new TestSuite ('pluginManagerTest');
-	$actionsuite = new TestSuite ('actionManagerTest');
-	$GUI = new PHPUnit_GUI_HTML (array ($eventsuite, $pluginsuite, $actionsuite));
+	$GUI = new PHPUnit_GUI_HTML ($suite->getAllTests ());
 	$GUI->show ();
-} elseif ($php == "5") {
-	$suite = new MorgOSInterfaceSuite ();
-	//$eventTest = new PHPUnit2_Framework_TestSuite('eventManagerTest');
-	$suite->addTestFile ('interface/tests/eventmanager.class.test.php');
-	$suite->addTestFile ('interface/tests/actionmanager.class.test.php');
-	$suite->addTestFile ('interface/tests/pluginmanager.class.test.php');
-	$result = new TestResult;
-	$result->addListener(new SimpleTestListener);
-	$suite->run ($result);
-	$suite = null;
 }
-?>
