@@ -70,6 +70,19 @@ class userCorePlugin extends InstallablePlugin {
 					new StringInput ('newSkin'), 
 					new StringInput ('newContentLanguage')), 
 				'MorgOS_User_MyAccount'));
+				
+		$am->addAction (
+			new action ('userForgotPasswordForm', 'GET',  
+				array ($this, 'onForgotPasswordForm'),
+				array (), array (), 
+				'MorgOS_User_ForgotPasswordForm', true));
+		
+		$am->addAction (
+			new action ('userForgotPassword', 'POST',  
+				array ($this, 'onForgotPassword'),
+				array (), array (new StringInput ('userAccount'),
+					new EmailInput ('accountEmail')), 
+				'MorgOS_User_ForgotPasswordForm', false));
 		
 		$em = &$this->_pluginAPI->getEventManager ();
 		$em->subscribeToEvent ('viewPage', new callback ('userVars', 
@@ -134,9 +147,6 @@ class userCorePlugin extends InstallablePlugin {
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	
-	function onForgotPassword () {
-	}
-	
 	function onMyAccountForm () {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$userM = &$this->_pluginAPI->getUserManager ();
@@ -184,6 +194,48 @@ class userCorePlugin extends InstallablePlugin {
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	
+	function onForgotPasswordForm () {
+		$sm = &$this->_pluginAPI->getSmarty ();
+		$sm->appendTo ('MorgOS_CurrentPage_Content', 
+			$sm->fetch ('user/forgotpasswordform.tpl'));
+		$sm->display ('genericpage.tpl');
+	}
+	
+	function onForgotPassword ($userAccount, $accountEmail) {
+		$userM = &$this->_pluginAPI->getUserManager ();
+		$user = $userM->newUser ();
+		
+		if ($userAccount != null && $accountEmail != null)
+			$r = new Error ('USER_FILLIN_EMAIL_OR_LOGIN');
+		elseif ($userAccount != null) {
+			$r = $user->initFromDatabaseLogin ($userAccount);
+		} elseif ($accountEmail != null) {
+			$r = $user->initFromDatabaseEmail ($accountEmail);
+		} else {
+			$r = new Error ('USER_FILLIN_EMAIL_OR_LOGIN');
+		}
+		if (isError ($r)) {
+			return $r;
+		}
+		$newPassword = $user->resetPassword ();
+		$t = &$this->_pluginAPI->getI18NManager ();
+		$sm = &$this->_pluginAPI->getSmarty ();
+		
+		$sm->assign ('MorgOS_UserName', $user->getLogin ());
+		$sm->assign ('MorgOS_Login', $user->getLogin ());
+		$sm->assign ('MorgOS_NewPassword', $newPassword);
+		
+		$this->sendUserMail ($user->getEmail (), 
+			$t->translate ('New password notification'),
+			$sm->fetch ('user/forgotpasswordmail.tpl'));
+		$this->_pluginAPI->addMessage ('A new password is mailed', NOTICE);
+		$this->_pluginAPI->executePreviousAction ();
+	}
+	
+	function sendUserMail ($to, $subject, $content) {
+		mail ($to, $subject, $content, "From: some@some.com\r\n");
+	}
+	
 	function setUserVars () {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$um = &$this->_pluginAPI->getUserManager ();
@@ -211,6 +263,7 @@ class userCorePlugin extends InstallablePlugin {
 		$site = $pageM->getSitePage ();
 		$myaccount = $pageM->newPage ();
 		$regform = $pageM->newPage ();
+		$lostpass = $pageM->newPage ();
 		
 		$regform->initFromArray (array (
 				'name'=>'MorgOS_RegisterForm',  
@@ -222,12 +275,20 @@ class userCorePlugin extends InstallablePlugin {
 				'parent_page_id'=>$site->getID (), 'action'=>'userMyAccount', 
 				'place_in_menu'=>MORGOS_MENU_INVISIBLE, 
 				'plugin_id'=>MORGOS_USER_PLUGINID));
+		$lostpass->initFromArray (array (
+				'name'=>'MorgOS_User_ForgotPasswordForm',  
+				'parent_page_id'=>$site->getID (), 'action'=>'userForgotPasswordForm',
+				'place_in_menu'=>MORGOS_MENU_INVISIBLE, 
+				'plugin_id'=>MORGOS_USER_PLUGINID));	
+		
 		
 		$pageM->addPageToDatabase ($regform);
-		$pageM->addPageToDatabase ($myaccount);		
+		$pageM->addPageToDatabase ($myaccount);
+		$pageM->addPageToDatabase ($lostpass);		
 		
 		$tMyAccount = $pageM->newTranslatedPage ();
 		$tRegForm = $pageM->newTranslatedPage ();
+		$tLostPass = $pageM->newTranslatedPage ();
 		
 		$tMyAccount->initFromArray (array (
 				'language_code'=>$siteDefaultLanguage, 
@@ -240,8 +301,16 @@ class userCorePlugin extends InstallablePlugin {
 					'translated_content'=>
 			$t->translate (
 			'Give up all your user details in order to registrate to this site.')));
+		$tLostPass->initFromArray (array (
+				'language_code'=>$siteDefaultLanguage, 
+					'translated_title'=>$t->translate ('Recover Passwrd'), 
+					'translated_content'=>
+			$t->translate (
+			'Fill in your password OR your email. Your new password will be sent to you.')));
 		$regform->addTranslation ($tRegForm);
 		$myaccount->addTranslation ($tMyAccount);
+		$lostpass->addTranslation ($tLostPass);
+		
 		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
 		
 		// install 2 morgos -> user extensions

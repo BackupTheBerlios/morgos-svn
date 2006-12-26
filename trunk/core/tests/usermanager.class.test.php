@@ -148,6 +148,21 @@ class userManagerTest extends TestCase {
 		$this->assertFalse ($user->isValidPassword ('NormalPassword'));
 	}
 	
+	function testResetPassword () {
+		$user = $this->uM->newUser ();
+		$r = $user->resetPassword ();
+		$this->assertTrue ($r->is ('USER_NOT_IN_DATABASE'));
+		$user->initFromDatabaseLogin ('normalUser');
+		$newP = $user->resetPassword ();
+		$this->assertFalse ($user->isValidPassword ('PHPRocks'));
+		$this->assertTrue ($user->isValidPassword ($newP));
+		
+		$newP2 = $user->resetPassword (10);
+		$this->assertEquals (10, strlen ($newP2));
+		$this->assertFalse ($user->isValidPassword ($newP));
+		$this->assertTrue ($user->isValidPassword ($newP2));
+	}
+	
 	function testNewGroup () {
 		$group = $this->uM->newGroup ();
 		$group->initFromArray (array (

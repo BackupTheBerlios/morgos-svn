@@ -14,6 +14,7 @@ Version 0.3
 	 * In the admin: adminHome
 	 	- change site title
 	 	- enable/disable users
+	 * You can request a new password if you forgot your old
 [Changes]
 	 * You can really choose what dbmodule you want.
 	 * Rewrote organisation of tests

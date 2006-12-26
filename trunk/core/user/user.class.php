@@ -218,6 +218,31 @@ class User extends DBTableObject {
 		return $this->updateToDatabase ();
 	}
 	
+	/**
+	 * Resets the user password, and returns a new one.
+	 *
+	 * @public
+	 * @since 0.3
+	 * @param $length (int) the length of the password default = 6
+	 * @return (string) the new password
+	*/
+	function resetPassword ($length = 6) {
+		if ($this->isInDatabase ()) {
+			$new = '';
+			while (strlen ($new) < $length) {
+				// mt_srand is not required since 4.2.0
+				$char = chr (mt_rand (48, 122));
+				if (eregi ('[a-z|0-9]', $char)) {
+					$new .= $char;
+				}
+			}
+			$this->changePassword ($new);
+			return $new;
+		} else {
+			return new Error ('USER_NOT_IN_DATABASE');
+		}
+	}
+	
 	function initFromArray ($array) {
 		if (strlen ($array['password']) != 32) { 
 			// not always correct, but I guess nobody will take a password of 32 chars

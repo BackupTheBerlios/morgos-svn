@@ -304,11 +304,11 @@ class BaseMorgos extends NoGUIMorgOS {
 					return substr ($key, strlen ('override_action_'));
 				}
 			}
-		} elseif (array_key_exists ('action', $from)) {
-			return $from['action'];
-		} else {
-			return $defaultAction;
-		}	
+			if (array_key_exists ('action', $from)) {
+				return $from['action'];
+			}
+		}
+		return $defaultAction;	
 	}
 	
 	/**
