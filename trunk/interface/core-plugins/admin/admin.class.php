@@ -226,7 +226,7 @@ class adminCorePlugin extends InstallablePlugin {
 				'translated_title'=>$t->translate ('Save config'), 
 				'translated_content'=>$t->translate ('')));
 		$adminSaveConfig->addTranslation ($tASaveConfig);
-		$this->_pluginAdmin->install ($pluginAPI, &$dbModule, $siteDefaultLanguage);
+		$this->_pluginAdmin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
 		
 		$adminLogout = $pageM->newPage ();
 		$adminLogout->initFromArray (array (

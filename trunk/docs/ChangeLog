@@ -1,7 +1,7 @@
 Version 0.3
 ===========
 [Added]
-	 * PostgreSQL database class backend [PostgreSQL 8.1+ required]
+	 * PostgreSQL database class backend [PostgreSQL 8.1+ required (some prop sql)]
 	 * MySQLI database class backend [MySQL 4.1+ required (php_mysqli dep)]
 	 * Skin documentation
 	 * Default skin

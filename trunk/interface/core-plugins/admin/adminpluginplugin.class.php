@@ -160,7 +160,7 @@ class adminCorePluginAdminPlugin extends InstallablePlugin {
 	}
 	
 	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
-		$pageM = new pageManager (&$dbModule);
+		$pageM = new pageManager ($dbModule);
 		$t = &$pluginAPI->getI18NManager();
 		$pluman = $pageM->newPage ();
 		$admin = $pageM->getAdminPage ();

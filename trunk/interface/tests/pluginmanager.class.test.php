@@ -22,7 +22,7 @@ include_once ('interface/pluginmanager.class.php');
 class MockPluginAPI {
 	var $_value;
 	
-	function MockPuginAPI () {
+	function MockPluginAPI () {
 		$this->_value = 0;
 	}
 

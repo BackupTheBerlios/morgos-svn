@@ -14,7 +14,7 @@ class dataTesterPlugin extends plugin {
 		$this->_maxMorgOSVersion = '0.2';
 	}
 	
-	function load ($pluginAPI) {
+	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);
 		global $loadDataTester;
 		$loadDataTester++;

@@ -118,7 +118,7 @@ class inputTest extends TestCase {
 	
 	function testMultipleInput () {
 		$inp = new MultipleInput ('aDate', array ('year'=>'IntInput',
-			'month'=>'IntInput','day'=>IntInput));
+			'month'=>'IntInput','day'=>'IntInput'));
 		$from = array ('aDateyear'=>'2006');
 		$r = $inp->isGiven ($from);
 		$this->assertFalse ($r);
