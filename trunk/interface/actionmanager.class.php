@@ -30,7 +30,7 @@
  * @ingroup interface
  * @author Nathan Samson
 */
-class baseInput {
+class BaseInput {
 	var $_name;
 	
 	/**
@@ -38,13 +38,13 @@ class baseInput {
 	 *
 	 * @param $name (string)
 	*/
-	function baseInput ($name) {
+	function BaseInput ($name) {
 		$this->_name = $name;
 	}
 	
 	function checkInput ($from) {
 		if ($this->isGiven ($from)) {
-			return null;
+			return true;
 		} else {
 			return new Error ('EMPTY_INPUT', $this->_name);
 		}
@@ -68,7 +68,7 @@ class baseInput {
 			$fromArray = $this->getFromArray ($from);
 			return $fromArray[$this->_name];
 		} else {
-			return null;
+			return $this->checkInput ($from);
 		}
 	}
 	
@@ -92,7 +92,7 @@ class baseInput {
  * @ingroup interface
  * @since 0.2
 */
-class StringInput extends baseInput {
+class StringInput extends BaseInput {
 }
 
 /**
@@ -100,7 +100,7 @@ class StringInput extends baseInput {
  * @ingroup interface
  * @since 0.2
 */
-class IntInput extends baseInput {
+class IntInput extends BaseInput {
 	function getValue ($from) {
 		return (int) parent::getValue ($from);
 	}
@@ -129,7 +129,7 @@ class EmailInput extends StringInput {
 			strlen ($domain) >=2 &&
 			strlen ($domain) <=3 ) {
 			
-			return;
+			return true;
 		} else {
 			return new Error ('INVALID_EMAIL');
 		}
@@ -141,11 +141,11 @@ class EmailInput extends StringInput {
  * @ingroup interface
  * @since 0.2
 */
-class EnumInput extends baseInput {
+class EnumInput extends BaseInput {
 	var $_poss;
 
 	function EnumInput ($name, $possibilities) {
-		parent::baseInput ($name);
+		parent::BaseInput ($name);
 		$this->_poss = $possibilities;
 	}
 	
@@ -153,7 +153,7 @@ class EnumInput extends baseInput {
 		if (! in_array ($this->getValue ($from), $this->_poss)) {
 			return new Error ('INVALID_CHOICE', $this->getValue ($from), $this->_name);
 		} else {
-			return null;
+			return true;
 		}
 	}
 }
@@ -191,7 +191,7 @@ class IDInput extends IntInput {
 		$r = parent::checkInput ($from);
 		if (isError ($r)) return $r;
 		if (is_int ($this->getValue ($from)) && $this->getValue ($from) > 0) {
-			return;
+			return true;
 		} else {
 			return new Error ('INVALID_ID');
 		}
@@ -203,7 +203,7 @@ class IDInput extends IntInput {
  * @ingroup interface
  * @since 0.2
 */
-class LocaleInput extends baseInput {
+class LocaleInput extends BaseInput {
 }
 
 /**
@@ -211,7 +211,7 @@ class LocaleInput extends baseInput {
  * @ingroup interface
  * @since 0.3
 */
-class MultipleInput extends baseInput {
+class MultipleInput extends BaseInput {
 	var $_prefix;
 	var $_childs;
 
@@ -222,7 +222,7 @@ class MultipleInput extends baseInput {
 			if (is_array ($class)) {
 				/*$classN = $class[0];
 				$childs[] = new $classN ($prefix.$name, );*/
-				die ('Not yet implemented'.__FILE__.'@'.__LINE__);
+				//die ('Not yet implemented'.__FILE__.'@'.__LINE__);
 			} else {
 				$this->_childs[$name] = new $class ($prefix.$name);
 			}
@@ -306,7 +306,7 @@ class PasswordNewInput extends MultipleInput {
  * @since 0.2
  * @author Nathan Samson
 */
-class action {
+class Action {
 	/**
 	 * The name of the event.
 	 * @protected
@@ -355,7 +355,7 @@ class action {
 	 * @param $autoTrigger (bool) default true (only important if pageName)
 	 * @since 0.3 parameter $pageName and $autoTrigger
 	*/
-	function action ($name, $method, $executor, $requiredOptions, 
+	function Action ($name, $method, $executor, $requiredOptions, 
 			$notRequiredOptions = array (), $pageName = null, $autoTrigger = true) {
 		$this->_name = $name;
 		$this->_method = $method;
@@ -374,7 +374,7 @@ class action {
 	 * @public
 	 * @return (mixed)
 	*/
-	function execute ($params) {
+	function execute ($params = array ()) {
 		$vals = $this->getParameters ($params);
 		if (! isError ($vals)) {
 			return call_user_func_array ($this->_executor, $vals);
@@ -398,40 +398,23 @@ class action {
 		$vals = array ();
 		$errors = array ();
 		foreach ($this->_requiredOptions as $option) {
-			if (is_string ($option)) {
-				if (array_key_exists ($option, $a)) {
-					$vals[$option] = $a[$option];
-				} else {
-					$errors[] = 
-						new Error ('ACTIONMANAGER_REQUIRED_OPTION_NOT_FOUND', $option);
-				}
+			$cI = $option->checkInput ($this->_method);
+			if (! isError ($cI)) {
+				$vals[$option->getName ()] = $option->getValue ($this->_method);
 			} else {
-				$cI = $option->checkInput ($this->_method);
-				if (! isError ($cI)) {
-					$vals[$option->getName ()] = $option->getValue ($this->_method);
-				} else {
-					$errors[] = $cI;
-				}
+				$errors[] = $cI;
 			}
 		}
 
 		
 		foreach ($this->_notRequiredOptions as $option) {
-			if (is_string ($option)) {
-				if (array_key_exists ($option, $a)) {
-					$vals[$option] = $a[$option];
-				} else {
-					$vals[$option] = null;
-				}
+			$cI = $option->checkInput ($this->_method);
+			if (! isError ($cI)) {
+				$vals[$option->getName ()] = $option->getValue ($this->_method);
+			} elseif ($cI->is ('EMPTY_INPUT')) {
+				$vals[$option->getName ()] = null;
 			} else {
-				$cI = $option->checkInput ($this->_method);
-				if (! isError ($cI)) {
-					$vals[$option->getName ()] = $option->getValue ($this->_method);
-				} elseif ($cI->is ('EMPTY_INPUT')) {
-					$vals[$option->getName ()] = null;
-				} else {
-					$errors[] = $cI;
-				}
+				$errors[] = $cI;
 			}
 		}
 
@@ -488,7 +471,7 @@ class action {
 	function getPageName () {return $this->_pageName;}
 	
 	function autoTrigger () {return $this->getPageName () && $this->_autoTrigger;}
-	function setAutoTrigger ($bool) {$this->_autoTrigger = $bool;}
+	//function setAutoTrigger ($bool) {$this->_autoTrigger = $bool;}
 }
 
 /**
@@ -498,7 +481,7 @@ class action {
  * @since 0.2
  * @author Nathan Samson
 */
-class actionManager {
+class ActionManager {
 	/**
 	 * The list of all action The key is the name of the action.
 	 * @private
@@ -528,7 +511,7 @@ class actionManager {
 	/**
 	 * Constructor
 	*/
-	function actionManager () {
+	function ActionManager () {
 		$this->_actionsList = array ();
 		$this->_lastActionName = '';
 		$this->_lastActionParameters = array ();

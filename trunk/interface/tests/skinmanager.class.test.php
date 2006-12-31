@@ -17,8 +17,70 @@
 */
 include_once ('interface/skinmanager.class.php');
 
-class skinManagerTest extends TestCase {
-	function testTest () {
+class MockSmartyObject {
+	var $compiler_dir;
+	var $cache_dir;
+	var $template_dir = array ();
+	
+	function assign ($name, $value) {
+	}
+}
+
+class MockPluginAPISkin {
+	var $smarty;
+	function MockPluginAPISkin () {
+		$this->smarty = new MockSmartyObject ();
+	}	
+	
+	function &getSmarty () {
+		return $this->smarty;
+	}
+}
+
+class SkinManagerTest extends TestCase {
+	var $_skinM;	
+	
+	function setUp () {
+		global $skinM;
+		global $pAPI;
+		if (! $skinM) {
+			$pAPI = new MockPluginAPISkin ();
+			$skinM = new SkinManager ($pAPI);
+			@rmdir ('skins_c/working');	
+		}
+		$this->_skinM = $skinM;
+		$this->_pAPI = $pAPI;
+	}
+	
+	function testFindAllSkins () {
+		$r = $this->_skinM->findAllSkins ('heywhatADirectory');
+		$this->assertTrue ($r->is ('DIRECTORY_NOT_FOUND'));
+		
+		$r = $this->_skinM->findAllSkins ('interface/tests/skins');
+		$this->assertFalse (isError ($r));
+	}
+	
+	function testSkinExists () {
+		$this->assertFalse ($this->_skinM->existsSkin ('{wrong-id}'));
+		$this->assertTrue (
+			$this->_skinM->existsSkin ('{331d1a7c-bf6d-4527-8b1a-b0ee08077a76}'));
+	}
+	
+	function testGetFoundSkinsArray () {
+		$expArray = array (
+			array ('ID'=>'{331d1a7c-bf6d-4527-8b1a-b0ee08077a76}',
+				'Name'=>'MorgOS Test theme'));
+		$this->assertEquals ($expArray, $this->_skinM->getFoundSkinsArray ());
+	}
+	
+	function testLoadSkin () {
+		$r = $this->_skinM->loadSkin ('{what-an-id}');
+		$this->assertTrue($r->is ('SKINID_NOT_FOUND'));
+
+		$r = $this->_skinM->loadSkin ('{331d1a7c-bf6d-4527-8b1a-b0ee08077a76}');
+		$this->assertFalse (isError ($r));
+		$this->assertEquals ('skins_c/working', 
+			$this->_pAPI->smarty->compile_dir);
 	}
 }
 ?>

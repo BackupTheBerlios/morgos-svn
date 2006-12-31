@@ -19,18 +19,27 @@
 include_once ('core/varia.functions.php');
 include_once ('interface/actionmanager.class.php');
 
-class inputTest extends TestCase {
+class InputTest extends TestCase {
 	function testStringInput () {
 		$inp = new StringInput ('aString');
 		$from = array ();
 		$r = $inp->checkInput ($from);
 		$this->assertTrue ($r->is ('EMPTY_INPUT'));
+		$r = $inp->getValue ($from);
+		$this->assertTrue ($r->is ('EMPTY_INPUT'));
+		$this->assertEquals ('aString', $inp->getName ());
 		$from = array ('aString'=>'');
 		$r = $inp->checkInput ($from);
 		$this->assertTrue ($r->is ('EMPTY_INPUT'));
 		$from = array ('aString'=>'testInput');
+		$this->assertTrue ($inp->isGiven ($from));
 		$r = $inp->getValue ($from);
 		$this->assertEquals ('testInput', $r);
+		
+		$_POST = array ('aString'=>'aValue');
+		$this->assertEquals ('aValue', $inp->getValue ('POST'));
+		$_GET = array ('aString'=>'aValue');
+		$this->assertEquals ('aValue', $inp->getValue ('GET'));
 	}
 	
 	function testIntInput () {
@@ -132,7 +141,7 @@ class inputTest extends TestCase {
 		$r = $inp->isGiven ($from);
 		$this->assertTrue ($r);
 		$r = $inp->checkInput ($from);
-		$this->assertFalse (isError ($r));
+		$this->assertTrue ($r);
 		$r = $inp->getValue ($from);
 		$this->assertTrue ($r->is ('MULTIPLE_INPUT_HANDLER_GET_VALUE_NYI'));
 		$this->assertEquals ('aDate', $inp->getName ());
@@ -160,10 +169,74 @@ class inputTest extends TestCase {
 	}
 }
 
-class actionManagerTest extends TestCase {
+class ActionManagerTest extends TestCase {
+	var $_actionM;
+	var $_anAction;
+	var $_aPageAction;
+	var $_autoTriggerAction;
+	var $_lastExecuted = 'none';
+	var $_lastParams = array ();
 
-	function testMockup () {
-		//$this->assertFalse (true, 'Not yet implemented');
+	function setUp () {
+		global $actionM;
+		if (! $actionM) {
+			$actionM = new ActionManager ();	
+		}
+		$this->_actionM = $actionM;
+		$this->_anAction = new Action ('noPageAction', 'GET', 
+			array ($this, 'executeNoPageAction'), array (new StringInput ('reqOp')),
+			array (new IDInput ('nonReqOp')));
+			
+		$this->_aPageAction = new Action ('pageAction', 'GET', 
+			array ($this, 'executePageAction'), array (new StringInput ('reqOp')),
+			array (new IDInput ('nonReqOp')), 'MorgOS_PageName', false);
+		$this->_autoTriggerAction = new Action ('autoTriggerAction', 'POST', 
+			array ($this, 'executeAutoTriggerAction'), array (new StringInput ('reqOp')),
+			array (new IDInput ('nonReqOp')), 'MorgOS_PageName', true);
+	}
+
+	function testBareAction () {
+		$this->assertEquals ('noPageAction', $this->_anAction->getName ());
+		$this->assertEquals ('pageAction', $this->_aPageAction->getName ());
+		$this->assertEquals ('autoTriggerAction', $this->_autoTriggerAction->getName ());
+		$this->assertEquals (null, $this->_anAction->getPageName ());
+		$this->assertEquals ('MorgOS_PageName', $this->_aPageAction->getPageName ());
+		$this->assertEquals ('MorgOS_PageName', 
+			$this->_autoTriggerAction->getPageName ());
+		$this->assertFalse ($this->_anAction->autoTrigger ());
+		$this->assertFalse ($this->_aPageAction->autoTrigger ());
+		$this->assertTrue ($this->_autoTriggerAction->autoTrigger ());
+	}
+	
+	function testBareActionExecute () {
+		$this->assertEquals ('none', $this->_lastExecuted);
+		$this->assertEquals (array (), $this->_lastParams);
+		$_GET = array ('reqOp'=>'aString', 'nonReqOp'=>'');
+		$this->_anAction->execute ();
+		$this->assertEquals ('anAction', $this->_lastExecuted);
+		$this->assertEquals ($_GET, $this->_lastParams);
+		$this->_aPageAction->execute ();
+		$this->assertEquals ('aPageAction', $this->_lastExecuted);
+		$this->assertEquals ($_GET, $this->_lastParams);
+		$_POST = array ('reqOp'=>'aString', 'nonReqOp'=>'');
+		$this->_autoTriggerAction->execute ();
+		$this->assertEquals ('autoTriggerAction', $this->_lastExecuted);
+		$this->assertEquals ($_POST, $this->_lastParams);
+	}
+	
+	function executeNoPageAction ($reqOp, $nonReqOp) {
+		$this->_lastExecuted = 'anAction';
+		$this->_lastParams = array ('reqOp'=>$reqOp, 'nonReqOp'=>$nonReqOp);
+	}
+	
+	function executePageAction ($reqOp, $nonReqOp) {
+		$this->_lastExecuted = 'aPageAction';
+		$this->_lastParams = array ('reqOp'=>$reqOp, 'nonReqOp'=>$nonReqOp);
+	}
+	
+	function executeAutoTriggerAction ($reqOp, $nonReqOp) {
+		$this->_lastExecuted = 'autoTriggerAction';
+		$this->_lastParams = array ('reqOp'=>$reqOp, 'nonReqOp'=>$nonReqOp);
 	}
 }
 

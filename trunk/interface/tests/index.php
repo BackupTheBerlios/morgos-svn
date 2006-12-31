@@ -19,8 +19,15 @@
 if (version_compare (PHP_VERSION, '5', '>=')) {
 	$config = parse_ini_file ('options.ini');
 	
-	//var_dump ($config['phpUnitCC']);
+	$cc = false;
 	if ($config['phpUnitCC'] == true) {
+		if (array_key_exists ('cc', $_GET)) {
+			if ($_GET['cc'] == 'Y') {
+				$cc = true;
+			}
+		}
+	}
+	if ($cc == true) {
 		$config['phpUnitParameters'] .= ' --report ' . $config['phpUnitCCOutputPath'];
 	}	
 	
@@ -35,11 +42,18 @@ if (version_compare (PHP_VERSION, '5', '>=')) {
 	ob_end_clean ();
 	
 	if (! $returnVar) {
-		if ($config['phpUnitCC'] ) {
-			echo ('<a href="../../'.$config['phpUnitCCOutputPath'].'">Visit output</a><br /><br />');
+		if ($cc) {
+			echo ('<a href="../../'.$config['phpUnitCCOutputPath'].'">Visit code coverage output</a> &nbsp; &nbsp; &nbsp;');
+			echo ('<a href="./index.php?cc=Y">Rerun</a><br /><br />');
+			echo ('<a href="./index.php">Rerun without code coverage</a><br /><br />');			
+		} else {
+			if ($config['phpUnitCC'] == true) {
+				echo ('<a href="./index.php?cc=Y">Rerun with code coverage</a><br /><br />');
+				echo ('<a href="./index.php">Rerun</a><br /><br />');
+			}
 		}
 	}
-	echo nl2br ($exec);
+	echo nl2br (htmlentities ($exec));
 } elseif (version_compare (PHP_VERSION, '4', '>=')) {
 	chdir ('../..');
 	include_once ('interface/tests/base.php');

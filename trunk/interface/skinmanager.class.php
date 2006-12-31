@@ -23,7 +23,7 @@
  * @author Nathan Samson
 */
 
-class skin {
+class Skin {
 	var $_ID;
 	var $_name;
 	var $_version;
@@ -67,9 +67,9 @@ class skin {
 		return 'cache/'. $this->_baseSkinDir;
 	}
 	
-	function getConfigDir () {
+/*	function getConfigDir () {
 		return 'config/'. $this->_baseSkinDir;
-	}
+	}*/
 	
 	function getID () {return $this->_ID;}
 	function getName () {return $this->_name;}
@@ -81,22 +81,25 @@ class skin {
 	}
 }
 
-class skinManager {
+class SkinManager {
 	var $_allFoundSkins;
 	var $_loadedSkin;
 	var $_pluginAPI;
 	
-	function skinManager (&$pluginAPI) {
+	function SkinManager (&$pluginAPI) {
 		$this->_pluginAPI = &$pluginAPI;
 		$this->_loadedSkin = array ();
 		$this->_allFoundSkins = array ();
 	}
 	
 	function findAllSkins ($dir) {
+		if (! file_exists ($dir) && !is_dir ($dir)) {
+			return new Error ('DIRECTORY_NOT_FOUND');
+		}
 		foreach (scandir ($dir) as $dirName) {
-			if (is_dir ($dir.$dirName)) {
-				if (file_exists ($dir.$dirName.'/skin.php')) {
-					$skin = new skin ($dir.$dirName.'/skin.php', $dir, $dirName);
+			if (is_dir ($dir.'/'.$dirName)) {
+				if (file_exists ($dir.'/'.$dirName.'/skin.php')) {
+					$skin = new Skin ($dir.'/'.$dirName.'/skin.php', $dir, $dirName);
 					if (! isError ($skin->canRun ())) {
 						$this->_allFoundSkins[$skin->getID ()] = $skin;
 					} else {
@@ -123,8 +126,7 @@ class skinManager {
 			}
 			$this->_loadedSkin[] = $skin;
 		} else {
-			var_dump ($this->_allFoundSkins);
-			return new Error ('SKINMANAGER_SKIN_NOT_FOUND');
+			return new Error ('SKINID_NOT_FOUND');
 		}
 	}
 	
