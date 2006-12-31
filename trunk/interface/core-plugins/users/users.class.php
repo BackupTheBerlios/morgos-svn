@@ -203,6 +203,7 @@ class userCorePlugin extends InstallablePlugin {
 	
 	function onForgotPassword ($userAccount, $accountEmail) {
 		$userM = &$this->_pluginAPI->getUserManager ();
+		$config = &$this->_pluginAPI->getConfigManager ();
 		$user = $userM->newUser ();
 		
 		if ($userAccount != null && $accountEmail != null)
@@ -224,6 +225,9 @@ class userCorePlugin extends InstallablePlugin {
 		$sm->assign ('MorgOS_UserName', $user->getLogin ());
 		$sm->assign ('MorgOS_Login', $user->getLogin ());
 		$sm->assign ('MorgOS_NewPassword', $newPassword);
+		$sm->assign ('MorgOS_SiteTitle', 
+			$config->getStringItem ('/site/title'));
+		$sm->assign ('MorgOS_SiteTeam', 'The '.$config->getStringItem ('/site/title').' Team');
 		
 		$this->sendUserMail ($user->getEmail (), 
 			$t->translate ('New password notification'),

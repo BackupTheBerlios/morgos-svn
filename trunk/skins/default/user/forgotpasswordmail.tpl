@@ -1,9 +1,12 @@
-{t s="Dear %1" 1=$MorgOS_UserName}
+{t s="Dear %1, " 1=$MorgOS_UserName}
 
-You requested a new password on a site.
+{t s="You requested a new password on %1." 1=$MorgOS_SiteTitle}
 
-Your login is: {$MorgOS_Login}
-Your new password is: {$MorgOS_NewPassword}
+{t s="Your login is: %1" 1=$MorgOS_Login}
+{t s="Your new password is: %1" 1=$MorgOS_NewPassword}
 
 
-PS. Please do not reply on this mail. Your answer will not be read.
+{t s="Regards,
+%1" 1=$MorgOS_SiteTeam}
+
+{t s="PS. Please do not reply on this mail. Your answer will not be read."}

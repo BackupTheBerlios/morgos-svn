@@ -646,7 +646,7 @@ class Morgos extends ConfigMorgos {
 			if (! $user->hasPermission ($perm)) {
 				$this->error ('USER_HASNOTPERMISSION_VIEWPAGE');
 			}
-		}	
+		}
 		if ($this->canUserViewPage ($action)) {
 			if ($action->getPageName ()) {
 				$page = $this->_pageManager->newPage ();
