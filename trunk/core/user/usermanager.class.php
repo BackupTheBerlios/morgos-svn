@@ -201,7 +201,13 @@ class UserManager extends DBTableManager {
 	 * @public
 	*/
 	function getAllUsers () {
-		return $this->getAllRowsFromTable ('users');
+		$allUsers = $this->getAllRowsFromTable ('users');
+		foreach ($allUsers as $key=>$user) {
+			if ($user->getLogin () == 'HI_I_AM_THE_ANONYMOUS_USER') {
+				unset ($allUsers[$key]);
+				return $allUsers;
+			}
+		}
 	}
 	
 	/**
@@ -346,7 +352,13 @@ class UserManager extends DBTableManager {
 	 * @public
 	*/
 	function getAllGroups () {
-		return $this->getAllRowsFromTable ('groups');
+		$allGroups = $this->getAllRowsFromTable ('groups');
+		foreach ($allGroups as $key=>$group) {
+			if ($group->getGenericName () == 'HI_I_AM_THE_ANONYMOUS_USER') {
+				unset ($allGroups[$key]);
+				return $allGroups;
+			}
+		}
 	}
 	
 	/**
@@ -374,5 +386,30 @@ class UserManager extends DBTableManager {
 	*/
 	function newTranslatedGroup () {
 		return $this->createObject ('translatedGroups');
+	}
+	
+	/**
+	 * Returns the anonymous user
+	 *
+	 * @public
+	 * @since 0.3
+	 * @return (object user)
+	*/
+	function getAnonymousUser () {
+		$anon = $this->newUser ();
+		$anon->initFromDatabaseLogin ('HI_I_AM_THE_ANONYMOUS_USER');
+		return $anon;
+	}
+	
+	function installAllTables () {
+		parent::installAllTables ();
+		$anon = $this->newUser ();
+		$anon->initFromArray (
+			array('login'=>'HI_I_AM_THE_ANONYMOUS_USER',
+				'email'=>'AnonymousMail',
+				'password'=>md5 ('WHAT_DO_I_FILL_IN_HERE')
+			));
+		$this->addUserToDatabase ($anon);
+		$anon->resetPassword (24); // to prevent stupid hackers
 	}
 }

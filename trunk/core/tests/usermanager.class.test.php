@@ -304,6 +304,13 @@ class userManagerTest extends TestCase {
 		$this->assertTrue ($r->is ('OBJECT_NOT_IN_DATABASE'));
 	}	
 	
+	function testGetUserGroup () {
+		$user = $this->uM->newUser ();
+		$user->initFromDatabaseLogin ('normalUser');
+		$group = $user->getUserGroup ();
+		$this->assertEquals ('normalUser', $group->getGenericName ());
+	}	
+	
 	function testRemoveUserFromDatabase () {
 		$user = $this->uM->newUser ();
 		$user->initFromDatabaseLogin ('normalUser');

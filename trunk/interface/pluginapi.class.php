@@ -206,7 +206,8 @@ class PluginAPI extends ConfigPluginAPI {
 			if ($page->isAdminPage ()) {
 				return false;
 			} else {
-				return true;
+				$user = $userM->getAnonymousUser ();
+				return $user->hasPermission ('view_page_'.$pageID, true);
 			}
 		}
 	}
@@ -348,6 +349,9 @@ class PluginAPI extends ConfigPluginAPI {
 	 * A user setting is defined a setting that can be changed
 	 *  from GET, COOKIE, a db field or a default value
 	 *
+	 * @param $name (string)
+	 * @param $defaultValue (string)
+	 * @param $dbField (string) default = null
 	 *
 	 * @public
 	 * @return (string) The initial value

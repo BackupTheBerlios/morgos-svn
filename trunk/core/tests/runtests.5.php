@@ -1,4 +1,5 @@
 <?php
+ob_start ();
 require_once ('core/tests/base.php');
 
 class MorgOSLoader {
@@ -12,6 +13,4 @@ class MorgOSLoader {
 		return $suite;
 	}
 }
-
-
 ?>

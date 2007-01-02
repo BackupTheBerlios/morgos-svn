@@ -359,7 +359,7 @@ class BaseMorgos extends NoGUIMorgOS {
 		$this->assignErrors ();
 		$a = $this->getActionToExecute ($defaultAction);
 		$action = $this->getActionFromName ($a);
-		
+
 		if ($this->canUserViewPage ($action)) {
 			$r = $this->_actionManager->executeAction ($a);
 			if (isError ($r)) {

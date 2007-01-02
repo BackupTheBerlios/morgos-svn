@@ -322,6 +322,10 @@ class userCorePlugin extends InstallablePlugin {
 		$langTable = new dbField ('contentLanguage', DB_TYPE_STRING, 100);
 		$uM->addExtraFieldForTable ('users', $skinTable);
 		$uM->addExtraFieldForTable ('users', $langTable);
+		
+		$anonUser = $uM->getAnonymousUser ();
+		$anonGroup = $anonUser->getUserGroup ();
+		$anonGroup->assignPermission ('view_page_'.$myaccount->getID (), false);
 	}
 	
 	function isInstalled (&$pluginAPI) {

@@ -243,6 +243,19 @@ class User extends DBTableObject {
 		}
 	}
 	
+	/**
+	 * Returns the user group
+	 *
+	 * @since 0.3
+	 * @public
+	 * @return (object UserGroup)
+	*/
+	function getUserGroup () {
+		$group = $this->_creator->newGroup ();
+		$group->initFromDatabaseGenericName ($this->getLogin ());
+		return $group;
+	}
+	
 	function initFromArray ($array) {
 		if (strlen ($array['password']) != 32) { 
 			// not always correct, but I guess nobody will take a password of 32 chars

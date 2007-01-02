@@ -463,6 +463,7 @@ class Configurator {
 		$setting->setDefaultValue ($defaultValue);
 		if (array_key_exists ($name, $_GET)) {
 			$setting->setValue ($_GET[$name]);
+			setcookie ($name, $_GET[$name]);
 		} elseif (array_key_exists ($name, $_COOKIE)) {
 			$setting->setValue ($_COOKIE[$name]);
 		}

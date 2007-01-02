@@ -79,6 +79,7 @@ if (version_compare (PHP_VERSION, '5', '>=')) {
 		chdir ('../..');
 		
 		ob_start ();
+		echo "output";
 		system ($statement, $returnVar);
 		$exec = ob_get_contents ();
 		ob_end_clean ();
