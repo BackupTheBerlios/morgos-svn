@@ -292,6 +292,9 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$pageM = &$this->_pluginAPI->getPageManager ();
 		$config = &$this->_pluginAPI->getConfigManager ();
 		$language = $config->getStringItem ('/user/pageEditContentLanguage');
+		if ($language == NULL) {
+			$language = $config->getStringItem ('/user/contentLang');
+		}
 		$contentLanguage = $config->getStringItem ('/user/contentLang');
 		$defaultLanguage = $this->_pluginAPI->getDefaultLanguage ();
 		$items = array ();
