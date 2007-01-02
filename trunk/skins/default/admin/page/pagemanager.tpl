@@ -1,6 +1,26 @@
 	<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
 		<p>{$MorgOS_CurrentAdminPage.Content}</p>
 		
+		<p>
+			<form action="index.php" method="get">
+				<label>
+					{t s="Select your language: "}
+				</label>
+				<select name="editContentLanguage">
+					{foreach from=$MorgOS_AvailableContentLanguages item='language'}
+						{if $language!=$MorgOS_CurrentEditContentLanguage}
+							<option>{$language}</option>
+						{else}
+							<option selected="selected">{$language}</option>
+						{/if}
+					{/foreach}
+				</select>
+				<input type="hidden" name="action" 
+					value="adminPageChangeEditLanguage" />
+				<input type="submit" value="{t s="Change language"}"/>
+			</form>
+		</p>		
+		
 		<p>{foreach from=$MorgOS_PageLevel item='Level' name='level'}
 			<a href="{$Level.Link|xhtml}">{$Level.Name}</a>
 			{if ! $smarty.foreach.level.last}
@@ -22,6 +42,7 @@
 				<td><a href="index.php?action=adminPageManager&amp;parentPageID={$childPage.ID}">{$childPage.Title}</a></td>
 				<td>
 					{$childPage.PlaceInMenu}
+					{if $childPage.PlaceInMenu != 0 and $childPage.PlaceInMenu != 254}
 					{if $smarty.foreach.pageslist.first and $smarty.foreach.pageslist.last}
 						<!-- Cant move -->
 					{elseif $smarty.foreach.pageslist.first}
@@ -40,12 +61,13 @@
 							<img src="{$SkinPath}/images/icons/up.png" alt="{t s='Up'}"/>
 						</a>
 					{/if}
+					{/if}
 				</td>
 				<td>
-					<a href="{$childPage.Link|xhtml}"><img src="{$SkinPath}/images/icons/view.png" alt="{t s='View'}"/></a>
+					<a href="{$childPage.ViewLink|xhtml}"><img src="{$SkinPath}/images/icons/view.png" alt="{t s='View'}"/></a>
 				</td>
 				<td>
-					<a href="index.php?action=adminDeletePage&amp;pageID={$childPage.ID}" onclick="return confirm ('{t s="Are you sure you wan to delete %p" p=$childPage.Title}')">
+					<a href="index.php?action=adminDeletePage&amp;pageID={$childPage.ID}" onclick="return confirm ('{t s="Are you sure you wan to delete %1" 1=$childPage.Title}')">
 						<img src="{$SkinPath}/images/icons/delete.png" alt="{t s='Delete'}"/>
 					</a>
 				</td>
@@ -58,7 +80,7 @@
 					</form>
 				</td>
 				<td>
-					{if $childPage.canMoveUp}
+					{if $childPage.CanMoveUp}
 					<a href="index.php?action=adminMovePageLevelUp&amp;pageID={$childPage.ID}"><img src="{$SkinPath}/images/icons/nivup.png" alt="{t s="Change up"}" /></a>
 					{/if}
 				</td>

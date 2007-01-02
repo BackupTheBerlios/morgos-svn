@@ -41,11 +41,11 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		// page edit action
 		$am->addAction (
 			new action ('adminMovePageDown', 'GET',  
-				array (&$this, 'onMovePageDown'), new IDInput ('pageID'), array (), 'MorgOS_Admin_PageManager', false));
+				array (&$this, 'onMovePageDown'), array (new IDInput ('pageID')), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminMovePageUp', 'GET',  
-				array (&$this, 'onMovePageUp'), new IDInput ('pageID'), array (), 'MorgOS_Admin_PageManager', false));
+				array (&$this, 'onMovePageUp'), array (new IDInput ('pageID')), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminSavePage', 'POST',  
@@ -55,7 +55,7 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 				
 		$am->addAction (
 			new action ('adminNewPage', 'GET',  
-				array (&$this, 'onNewPage'), array (new IDInput ('parentPageID'), 'pageTitle'), 
+				array (&$this, 'onNewPage'), array (new IDInput ('parentPageID'), new StringInput ('pageTitle')), 
 					array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
@@ -80,8 +80,28 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		
 		$am->addAction (
 			new action ('adminMovePageLevelUp', 'GET',  
-				array (&$this, 'onMovePageLevelUp'), array ('pageID'), 
+				array (&$this, 'onMovePageLevelUp'), array (new IDInput ('pageID')), 
 				array (), 'MorgOS_Admin_PageManager', false));
+				
+		$am->addAction (
+			new action ('adminPageChangeEditLanguage', 'GET',  
+				array (&$this, 'onChangeEditLanguage'), array (
+				new StringInput ('editContentLanguage')), array (), 
+				'MorgOS_Admin_PageManager', false));
+		$config = &$this->_pluginAPI->getConfigManager ();
+		$editConfigLanguage = new ConfigItem ('/user/pageEditContentLanguage',
+			STRING);
+		$editConfigLanguage->setDefaultValue (
+			$config->getStringItem ('/user/contentLanguage'));
+		if (array_key_exists ('pageEditContentLanguage', $_SESSION)) {
+			$editConfigLanguage->setValue ($_SESSION['pageEditContentLanguage']);
+		}
+		$config->addOption ($editConfigLanguage);
+	}
+	
+	function onChangeEditLanguage ($language) {
+		$_SESSION['pageEditContentLanguage'] = $language;
+		$this->_pluginAPI->executePreviousAction ();
 	}
 	
 	function onMovePageLevelUp ($pageID) {
@@ -113,6 +133,7 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$eventM = &$this->_pluginAPI->getEventManager ();
 		$pageManager = &$this->_pluginAPI->getPageManager ();
+		$config = &$this->_pluginAPI->getConfigManager ();
 		if ($pageID === NULL) {
 			$pageID = 1; /*The ID of /site */
 		}
@@ -122,9 +143,15 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 			return $a;
 		}
 		$childPages = $pageManager->getMenu ($parentPage);
-		$sm->assign ('MorgOS_PagesList', $this->_pluginAPI->menuToArray ($childPages));
-		$pageLang = $this->_pluginAPI->getDefaultLanguage ();
-		$tparent = $parentPage->getTranslation ($pageLang);
+		$sm->assign ('MorgOS_PagesList', $this->menuToAdminArray ($childPages));
+		$pageLang = $config->getStringItem ('/user/pageEditContentLanguage');
+		if ($parentPage->translationExists ($pageLang)) {
+			$tparent = $parentPage->getTranslation ($pageLang);
+		} else {
+			$tparent = $parentPage->getTranslation (
+				$this->_pluginAPI->getDefaultLanguage ());
+		}
+
 		if (! isError ($tparent)) {
 			$tparentarray = array ('Title'=>$tparent->getTitle (), 'NavTitle'=>$tparent->getNavTitle (), 'Content'=>$tparent->getContent (), 'ID'=>$parentPage->getID (), 'RootPage'=>$parentPage->isRootPage (), 'PossibleNewParents'=>array ());
 			$sm->assign ('MorgOS_ParentPage', $tparentarray);
@@ -140,7 +167,12 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$level = array ();
 		while ($curPage !== null) {
 			if ($curPage->isRootPage () == false) {
-				$t = $curPage->getTranslation ($pageLang);
+				if ($curPage->translationExists ($pageLang)) {
+					$t = $curPage->getTranslation ($pageLang);
+				} else {
+					$t = $curPage->getTranslation (
+							$this->_pluginAPI->getDefaultLanguage ());
+				}			
 				$level[] = array ('Link'=>'index.php?action=admin&pageID='.$pID.'&parentPageID='.$curPage->getID (), 'Name'=>$t->getNavTitle ());
 			} else {
 				$level[] = array ('Link'=>'index.php?action=admin&pageID='.$pID.'&parentPageID='.$curPage->getID (), 'Name'=>'Menu');
@@ -150,6 +182,9 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$level = array_reverse ($level);
 		$sm->assign ('MorgOS_PageLevel', $level);
 		$eventM->triggerEvent ('viewAnyAdminPage', array (&$pID));
+		$sm->assign ('MorgOS_AvailableContentLanguages', array ('Nederlands', 'English'));
+		$sm->assign ('MorgOS_CurrentEditContentLanguage',	
+			$config->getStringItem ('/user/pageEditContentLanguage'));
 		$sm->appendTo ('MorgOS_AdminPage_Content', 
 			$sm->fetch ('admin/page/pagemanager.tpl'));
 		$sm->display ('admin/genericpage.tpl'); 
@@ -157,9 +192,9 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 	
 	function onMovePageDown ($pageID) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
-		$sm = &$this->_pluginAPI->getSmarty ();
-		
-		$r = $pageManager->movePageDown ($pageID);
+		$page = $pageManager->newPage ();
+		$page->initFromDatabaseID ($pageID);
+		$r = $pageManager->movePageDown ($page);
 		if (! isError ($r)) {
 			$this->_pluginAPI->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
@@ -172,8 +207,9 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 	
 	function onMovePageUp ($pageID) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
-		
-		$r = $pageManager->movePageUp ($pageID);
+		$page = $pageManager->newPage ();
+		$page->initFromDatabaseID ($pageID);
+		$r = $pageManager->movePageUp ($page);
 		if (! isError ($r)) {
 			$this->_pluginAPI->executePreviousAction ();
 		} elseif ($r->is ("PAGEMANAGER_PAGE_DOESNT_EXISTS")) {
@@ -187,15 +223,31 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 	function onSavePage ($pageID, $pageTitle, $pageNavTitle, $pageContent) {
 		$pageManager = &$this->_pluginAPI->getPageManager ();
 		$t = &$this->_pluginAPI->getI18NManager ();
+		$config = &$this->_pluginAPI->getConfigManager ();
 		
 		$editedPage = $pageManager->newPage ();
 		$editedPage->initFromDatabaseID ($pageID);
-		$pageLang = $this->_pluginAPI->getUserSetting ('pageLang');
-		$tPage = $editedPage->getTranslation ($pageLang);
-		$pageContent = secureHTMLInput ($pageContent);
-		$tPage->updateFromArray (array ('translated_content'=>$pageContent, 'translated_title'=>$pageTitle, 'translated_nav_title'=>$pageNavTitle));
-		$tPage->updateToDatabase ();
-		$this->_pluginAPI->addMessage ($t->translate ('Page saved'), NOTICE);
+		$pageLang = $config->getStringItem ('/user/pageEditContentLanguage');
+		if ($editedPage->translationExists ($pageLang)) {
+			$tPage = $editedPage->getTranslation ($pageLang);
+			$pageContent = secureHTMLInput ($pageContent);
+			$tPage->updateFromArray (array ('translated_content'=>$pageContent, 'translated_title'=>$pageTitle, 'translated_nav_title'=>$pageNavTitle));
+			$r = $tPage->updateToDatabase ();
+		} else {
+			$tPage = $pageManager->newTranslatedPage ();
+			$tPage->initFromArray (array (
+				'translated_content'=>$pageContent,
+				'translated_title'=>$pageTitle, 
+				'translated_nav_title'=>$pageNavTitle,
+				'language_code'=>$pageLang
+			));
+			$r = $editedPage->addTranslation ($tPage);
+		}
+		if (! isError ($r)) {
+			$this->_pluginAPI->addMessage ($t->translate ('Page saved'), NOTICE);
+		} else {
+			die ("A PROBLEM occured");
+		}
 		$a = $this->_pluginAPI->executePreviousAction ();
 	}
 	
@@ -223,6 +275,44 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$pageManager->removePageFromDatabase ($page);
 			
 		$a = $this->_pluginAPI->executePreviousAction ();
+	}
+	
+	function menuToAdminArray ($menu) {
+		if (count ($menu) == 0) { // no childs
+			return array ();
+		}
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$config = &$this->_pluginAPI->getConfigManager ();
+		$language = $config->getStringItem ('/user/pageEditContentLanguage');
+		$contentLanguage = $config->getStringItem ('/user/contentLang');
+		$defaultLanguage = $this->_pluginAPI->getDefaultLanguage ();
+		$items = array ();
+		$allPossibleNewParents = array ();
+		foreach ($menu as $newParent) {
+			if ($newParent->translationExists ($language)) {
+				$t = $newParent->getTranslation ($language);
+			} elseif ($newParent->translationExists ($contentLanguage)) {
+				$t = $newParent->getTranslation ($contentLanguage);
+			} else {
+				$t = $newParent->getTranslation ($defaultLanguage);
+			}
+			$allPossibleNewParents[$newParent->getID ()] = $t->getTitle ();
+		}
+		$parent = $menu[0]->getParentPage (); // they all heve the same parent
+		foreach ($menu as $item) {
+			$itemArray = array ();
+			$itemArray['PlaceInMenu'] = $item->getPlaceInMenu ();
+			$itemArray['ID'] = $item->getID ();
+			$itemArray['ViewLink'] = $item->getLink ();
+			$itemArray['CanMoveUp'] = !$parent->isRootPage ();
+			$itemArray['Title'] = $allPossibleNewParents[$item->getID ()];
+			
+			$copyNewParents = $allPossibleNewParents;
+			unset ($copyNewParents[$item->getID ()]);
+			$itemArray['PossibleNewParents'] = $copyNewParents;
+			$items[] = $itemArray;
+		}
+		return $items;
 	}
 	
 	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {

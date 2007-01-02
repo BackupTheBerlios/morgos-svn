@@ -85,7 +85,7 @@ function guessType ($value) {
  * @since 0.2
  * @author Nathan Samson
 */
-class configItem {
+class ConfigItem {
 	/**
 	 * The name of the item.
 	 * @private
@@ -117,7 +117,7 @@ class configItem {
 	 * @param $name (string)
 	 * @param $type (const type)
 	*/
-	function configItem ($name, $type) {
+	function ConfigItem ($name, $type) {
 		$this->name = $name;
 		$this->type = $type;
 		$this->initialValue = null;
@@ -222,7 +222,7 @@ class configItem {
  * @since 0.2
  * @author Nathan Samson
 */
-class configurator {
+class Configurator {
 	/**
 	 * All config items that this manager stores.
 	 * it excludes user settings
@@ -236,7 +236,7 @@ class configurator {
 	*/
 	var $allUserItems;
 
-	function configurator () {
+	function Configurator () {
 		$this->allConfigItems = array ();
 		$this->allUserItems = array ();
 	}

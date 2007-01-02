@@ -398,6 +398,10 @@ class Action {
 		$vals = array ();
 		$errors = array ();
 		foreach ($this->_requiredOptions as $option) {
+			if (is_string ($option)) {
+				morgosBacktrace ();
+				die ("Old actionmanager API used");
+			}
 			$cI = $option->checkInput ($this->_method);
 			if (! isError ($cI)) {
 				$vals[$option->getName ()] = $option->getValue ($this->_method);

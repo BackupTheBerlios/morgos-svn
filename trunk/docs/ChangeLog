@@ -15,6 +15,7 @@ Version 0.3
 	 	- change site title
 	 	- enable/disable users
 	 * You can request a new password if you forgot your old
+	 * You can change translations of pages
 [Changes]
 	 * You can really choose what dbmodule you want.
 	 * Rewrote organisation of tests
