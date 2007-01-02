@@ -1,11 +1,11 @@
-{foreach from=$MorgOS_Admin_Errors item='error'}
+{foreach from=$MorgOS_Errors item='error'}
 	{$error}
 {/foreach}
 
-{foreach from=$MorgOS_Admin_Warnings item='warning'}
+{foreach from=$MorgOS_Warnings item='warning'}
 	{$warning}
 {/foreach}
 	
-{foreach from=$MorgOS_Admin_Notices item='notice'}
+{foreach from=$MorgOS_Notices item='notice'}
 	{$notice}
 {/foreach}

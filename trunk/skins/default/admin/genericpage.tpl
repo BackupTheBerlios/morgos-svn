@@ -3,7 +3,6 @@
 {include file='admin/navigation.tpl'}
 
 
-
 <div>
 
 <div id="content">

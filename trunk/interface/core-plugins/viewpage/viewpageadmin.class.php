@@ -145,9 +145,17 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$childPages = $pageManager->getMenu ($parentPage);
 		$sm->assign ('MorgOS_PagesList', $this->menuToAdminArray ($childPages));
 		$pageLang = $config->getStringItem ('/user/pageEditContentLanguage');
+
+		if ($pageLang == NULL) {
+			$pageLang = $this->_pluginAPI->getDefaultLanguage ();
+		}
+
 		if ($parentPage->translationExists ($pageLang)) {
 			$tparent = $parentPage->getTranslation ($pageLang);
 		} else {
+			if (! $parentPage->isRootPage ()) {
+				$this->_pluginAPI->addRuntimeMessage ("This page can't be displayed in your language. The default language is showed instead.", WARNING);
+			}
 			$tparent = $parentPage->getTranslation (
 				$this->_pluginAPI->getDefaultLanguage ());
 		}
@@ -288,12 +296,16 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$defaultLanguage = $this->_pluginAPI->getDefaultLanguage ();
 		$items = array ();
 		$allPossibleNewParents = array ();
+		$langInfo = array ();
 		foreach ($menu as $newParent) {
 			if ($newParent->translationExists ($language)) {
+				$langInfo[$newParent->getID ()] = $language;
 				$t = $newParent->getTranslation ($language);
 			} elseif ($newParent->translationExists ($contentLanguage)) {
+				$langInfo[$newParent->getID ()] = $contentLanguage;
 				$t = $newParent->getTranslation ($contentLanguage);
 			} else {
+				$langInfo[$newParent->getID ()] = $defaultLanguage;
 				$t = $newParent->getTranslation ($defaultLanguage);
 			}
 			$allPossibleNewParents[$newParent->getID ()] = $t->getTitle ();
@@ -306,7 +318,9 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 			$itemArray['ViewLink'] = $item->getLink ();
 			$itemArray['CanMoveUp'] = !$parent->isRootPage ();
 			$itemArray['Title'] = $allPossibleNewParents[$item->getID ()];
-			
+			if ($langInfo[$item->getID ()] != $language) {
+				$itemArray['OtherLanguage'] = $langInfo[$item->getID ()]; 
+			}
 			$copyNewParents = $allPossibleNewParents;
 			unset ($copyNewParents[$item->getID ()]);
 			$itemArray['PossibleNewParents'] = $copyNewParents;

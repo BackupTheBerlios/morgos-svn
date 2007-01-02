@@ -333,5 +333,17 @@ class pageManagerTest extends TestCase {
 		$r = $home->removeTranslation ($nedTrans);		
 		$this->assertTrue ($r->is ('PAGE_TRANSLATION_DOESNT_EXIST'));
 	}
+	
+	function testRemoveTranslationsWithPage () {
+		$home = $this->pM->newPage ();
+		$home->initFromName ('Home');
+		$pID = $home->getID ();
+		$this->pM->removePageFromDatabase ($home);
+		global $dbModule;		
+		$prefix = $dbModule->getPrefix ();
+		$sql = "SELECT language_code FROM {$prefix}translatedPages WHERE page_id=$pID";
+		$q = $dbModule->query ($sql);
+		$this->assertEquals (0, $dbModule->numRows ($q));
+	}
 }
 ?>

@@ -55,4 +55,60 @@ if (version_compare (PHP_VERSION, '5', '<=')) {
 } else {
 	die ('Unsupported PHP version');
 }
+
+
+if (version_compare (PHP_VERSION, '5', '>=')) {
+	function runTest ($class, $file, $p4) {
+		$config = parse_ini_file ('options.ini');
+		
+		$cc = false;
+		if ($config['phpUnitCC'] == true) {
+			if (array_key_exists ('cc', $_GET)) {
+				if ($_GET['cc'] == 'Y') {
+					$cc = true;
+				}
+			}
+		}
+		if ($cc == true) {
+			$config['phpUnitParameters'] .= ' --report ' . $config['phpUnitCCOutputPath'];
+		}	
+		
+		$statement = $config['phpUnitPath'] . ' ' . 
+			$config['phpUnitParameters'] . ' '.$class.' '.$file;
+				
+		chdir ('../..');
+		
+		ob_start ();
+		system ($statement, $returnVar);
+		$exec = ob_get_contents ();
+		ob_end_clean ();
+		
+		if (! $returnVar) {
+			if ($cc) {
+				echo ('<a href="../../'.$config['phpUnitCCOutputPath'].'">Visit code coverage output</a> &nbsp; &nbsp; &nbsp;');
+				echo ('<a href="./index.php?cc=Y">Rerun</a><br /><br />');
+				echo ('<a href="./index.php">Rerun without code coverage</a><br /><br />');			
+			} else {
+				if ($config['phpUnitCC'] == true) {
+					echo ('<a href="./index.php?cc=Y">Rerun with code coverage</a><br /><br />');
+					echo ('<a href="./index.php">Rerun</a><br /><br />');
+				}
+			}
+		}
+		echo nl2br (htmlentities ($exec));
+	}
+} elseif (version_compare (PHP_VERSION, '4', '>=')) {
+	function runTest ($p5a, $p5b, $file) {
+		chdir ('../..');
+		include_once ($file);
+		$suite = new TestSuite ();
+		loadSuite ($suite);
+	
+		require_once ('PHPUnit/GUI/HTML.php');
+		$GUI = new PHPUnit_GUI_HTML ($suite->getAllTests ());
+		$GUI->show ();
+	}
+}
+
+
 ?>

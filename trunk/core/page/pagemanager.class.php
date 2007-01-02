@@ -208,6 +208,12 @@ class PageManager extends DBTableManager {
 			AND place_in_menu<".MORGOS_MENU_LAST." AND parent_page_id='$parentPageID'";
 		$q = $this->_db->query ($sql);
 		if (! isError ($q)) {
+			// remove all translations
+			$allTranslations = $page->getAllTranslations ();
+			foreach ($allTranslations as $trans) {
+				$trans->removeFromDatabase ();
+			}	
+		
 			return $page->removeFromDatabase ();
 		} else {
 			return $q;

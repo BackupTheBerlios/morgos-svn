@@ -23,39 +23,6 @@
  * @author Nathan Samson
 */
 
-if (version_compare (PHP_VERSION, '5', '>=')) {
-	$config = parse_ini_file ('options.ini');
-	
-	//var_dump ($config['phpUnitCC']);
-	if ($config['phpUnitCC'] == true) {
-		$config['phpUnitParameters'] .= ' --report ' . $config['phpUnitCCOutputPath'];
-	}	
-	
-	$statement = $config['phpUnitPath'] . ' ' . 
-		$config['phpUnitParameters'] . ' MorgOSLoader core/tests/runtests.5.php';
-
-	chdir ('../..');
-	
-	ob_start ();
-	system ($statement, $returnVar);
-	$exec = ob_get_contents ();
-	ob_end_clean ();
-	
-	if (! $returnVar) {
-		if ($config['phpUnitCC'] ) {
-			echo ('<a href="../../'.$config['phpUnitCCOutputPath'].'">Visit output</a><br /><br />');
-		}
-	}
-	echo nl2br (htmlentities ($exec));
-} elseif (version_compare (PHP_VERSION, '4', '>=')) {
-	chdir ('../..');
-	include_once ('core/tests/base.php');
-	$suite = new TestSuite ();
-	loadSuite ($suite);
-	
-	require_once ('PHPUnit/GUI/HTML.php');
-	$GUI = new PHPUnit_GUI_HTML ($suite->getAllTests ());
-	$GUI->show ();
-}
-
+include_once ('compwrapper.class.php');
+runTest ('MorgOSLoader', 'core/tests/runtests.5.php', 'core/tests/base.php');
 ?>

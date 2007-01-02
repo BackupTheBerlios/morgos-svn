@@ -70,7 +70,7 @@ if (! class_exists ('mysqlDatabaseActions')) {
 			if ($result !== false) {
 				return $result;
 			} else {
-				return new Error ('SQL_QUERY_FAILED', $sql, mysql_error ());
+				return new Error ('SQL_QUERY_FAILED', $sql, mysql_error ($this->connection));
 			}
 		}
 	        

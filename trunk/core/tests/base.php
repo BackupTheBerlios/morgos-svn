@@ -71,7 +71,7 @@ class MorgOSTests {
 		if (isError ($a)) {
 			return $a;
 		}
-		
+		$mod->setPrefix ($mOpts['Prefix']);
 		return $mod;
 	}
 	

@@ -2,11 +2,18 @@
 		<p>{$MorgOS_CurrentAdminPage.Content}</p>
 		
 		<p>
-			<form action="index.php" method="get">
+			<script language="javascript">
+				{literal}
+				function changeLanguage () {
+					document.languageChooser.submit ();
+				}
+				{/literal}
+			</script>
+			<form action="index.php" method="get" name="languageChooser">
 				<label>
 					{t s="Select your language: "}
 				</label>
-				<select name="editContentLanguage">
+				<select name="editContentLanguage" onChange="changeLanguage ()">
 					{foreach from=$MorgOS_AvailableContentLanguages item='language'}
 						{if $language!=$MorgOS_CurrentEditContentLanguage}
 							<option>{$language}</option>
@@ -39,7 +46,13 @@
 			</tr>
 		{foreach from=$MorgOS_PagesList item='childPage' name='pageslist'}
 			<tr>
-				<td><a href="index.php?action=adminPageManager&amp;parentPageID={$childPage.ID}">{$childPage.Title}</a></td>
+				<td>
+					{if !$childPage.OtherLanguage}
+						<a href="index.php?action=adminPageManager&amp;parentPageID={$childPage.ID}">{$childPage.Title}</a>
+					{else}
+						<a href="index.php?action=adminPageManager&amp;parentPageID={$childPage.ID}">{$childPage.Title} ({$childPage.OtherLanguage})</a>
+					{/if}
+				</td>
 				<td>
 					{$childPage.PlaceInMenu}
 					{if $childPage.PlaceInMenu != 0 and $childPage.PlaceInMenu != 254}
