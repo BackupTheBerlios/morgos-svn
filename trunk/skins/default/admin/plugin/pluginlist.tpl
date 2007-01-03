@@ -19,10 +19,12 @@
 				{/if}
 			</td>
 			<td>
+				{if $plugin.Installable}
 				{if $plugin.Installed}
 					<a href="{$plugin.UnInstallLink|xhtml}">{t s="Uninstall plugin"}</a>
 				{else}
 					<a href="{$plugin.InstallLink|xhtml}">{t s="Install plugin"}</a>
+				{/if}
 				{/if}
 			</td>
 		</tr>			
