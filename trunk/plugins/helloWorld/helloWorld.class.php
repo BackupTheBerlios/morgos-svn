@@ -34,10 +34,11 @@ class helloWorldPlugin extends Plugin {
 	
 	function load ($pluginAPI) {
 		parent::load ($pluginAPI);
-		
+		return new Error ("LOADING_ERROR");
 		$eventM = &$this->_pluginAPI->getEventManager ();
 		$a = $eventM->subscribeToEvent ('viewPage', 
 			new Callback ('onViewHelloWorld', array ($this, 'onViewPage')));
+		
 	}
 	
 	function onViewPage () {

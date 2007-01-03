@@ -17,4 +17,4 @@
 */
 include_once ('../../core/tests/compwrapper.class.php');
 
-runTest ('MorgOSInterface', 'interface/tests/runtests5.php', 'interface/tests/base.php');
+runTest ('MorgOSInterface', 'interface/tests/runtests.5.php', 'interface/tests/base.php');

@@ -237,6 +237,11 @@ class pluginManager {
 	 * @private
 	*/
 	var $_pluginAPI;
+	/**
+	 * An array of all load errors.
+	 * @private
+	*/
+	var $_loadErrors;
 	
 	/**
 	 * Constructor
@@ -246,6 +251,7 @@ class pluginManager {
 		$this->_foundPlugins = array ();
 		$this->_loadedPlugins = array ();
 		$this->_pluginsToLoad = array ();
+		$this->_loadErrors = array ();
 		$this->_pluginAPI = &$pluginAPI;
 	}
 	
@@ -319,7 +325,7 @@ class pluginManager {
 						$skinM->loadSkin ($plugin->getSkinID ());
 					}
 				} else {
-					return $result;
+					$this->_loadErrors[] = new Error ("PLUGIN_LOADING_FAILED", $result, $plugin->getName ());
 				}
 			}
 		}
@@ -423,6 +429,14 @@ class pluginManager {
 	function existsLoadedPluginID ($ID) {
 		return array_key_exists ($ID, $this->_loadedPlugins);
 	}
+	
+	/**
+	 * Returns all load errors
+	 *
+	 * @public
+	 * @return (error arrat)
+	*/
+	function getAllLoadErrors () {return $this->_loadErrors;}
 }
 
 

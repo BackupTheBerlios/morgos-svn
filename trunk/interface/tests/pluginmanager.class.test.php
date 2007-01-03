@@ -49,12 +49,14 @@ class pluginManagerTest extends TestCase {
 		$this->_notCompatible = new notCompatible ('interface/tests/plugins/versiontolow');
 		$this->_notCompatible2 = new notCompatible2 ('interface/tests/plugins/versiontohigh');
 		$this->_notCompatibleWithPHP = new notCompatibleWithPHP ('interface/tests/plugins/incompatiblewithphp');
+		$this->_errorOnLoadPlugin = new errorOnLoad ('interface/tests/plugins/erroronload');
 	}
 	
 	function testGetAllFoundPlugins () {		
 		$this->assertEquals (
 			array (
 				$this->_dataTesterPlugin->getID ()=>$this->_dataTesterPlugin, 
+				$this->_errorOnLoadPlugin->getID ()=>$this->_errorOnLoadPlugin,
 				$this->_notCompatible->getID ()=>$this->_notCompatible,
 				$this->_notCompatible2->getID ()=>$this->_notCompatible2,
 				$this->_notCompatibleWithPHP->getID ()=>$this->_notCompatibleWithPHP), 
@@ -62,8 +64,11 @@ class pluginManagerTest extends TestCase {
 	}
 
 	function testLoadPlugin () {
+		$r = $this->_pluginManager->setPluginToLoad ($this->_errorOnLoadPlugin->getID ());
+		$this->assertFalse (isError ($r), 'Unexpected error');
 		$r = $this->_pluginManager->setPluginToLoad ($this->_dataTesterPlugin->getID ());
 		$this->assertFalse (isError ($r), 'Unexpected error');
+
 		$r = $this->_pluginManager->setPluginToLoad ('{some-invalid-id}');
 		$this->assertTrue ($r->is ('PLUGINID_DOESNT_EXISTS'));
 		$this->_pluginManager->loadPlugins ();
@@ -73,7 +78,8 @@ class pluginManagerTest extends TestCase {
 		$this->assertEquals (array ($this->_dataTesterPlugin->getID ()), 
 			$this->_pluginManager->getAllLoadedPluginsID ());
 			
-		
+		$expectedErrors = array (new Error ("PLUGIN_LOADING_FAILED", new Error ("I_AM_STUCK"), "Error on load"));
+		$this->assertEquals ($expectedErrors, $this->_pluginManager->getAllLoadErrors ());
 	}
 	
 	function testDoNotLoadTwice () {

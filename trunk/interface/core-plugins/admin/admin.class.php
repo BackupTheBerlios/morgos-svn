@@ -37,7 +37,6 @@ class adminCorePlugin extends InstallablePlugin {
 	
 	function load (&$pluginAPI) {
 		parent::load ($pluginAPI);				
-		$this->_pluginAdmin->load ($pluginAPI);
 		$am = &$this->_pluginAPI->getActionManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
 		$am->addAction (
@@ -65,6 +64,7 @@ class adminCorePlugin extends InstallablePlugin {
 		$em->subscribeToEvent ('viewAnyAdminPage', 
 			new callback ('setAdminVars', array (&$this, 'setAdminVars'), 
 			array ('pageID')));
+		$this->_pluginAdmin->load ($pluginAPI);
 	}
 	
 	function onViewAdmin ($pageID, $pageLang) {

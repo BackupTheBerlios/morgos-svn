@@ -50,6 +50,9 @@ class adminCorePluginAdminPlugin extends InstallablePlugin {
 		$am->addAction (new action (
 			'adminUnInstallPlugin', 'GET', array ($this, 'onUnInstallPlugin'), 
 				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager', false));
+		$a = $em->subscribeToEvent ('viewAnyAdminPage', 
+			new callback ('setPluginError', array (&$this, 'setPluginErrors'), 
+			array ('pageID')));
 	}
 	
 	function onViewPluginManager () {
@@ -157,6 +160,19 @@ class adminCorePluginAdminPlugin extends InstallablePlugin {
 		}
 		
 		$this->_pluginAPI->executePreviousAction ();
+	}
+	
+	function setPluginErrors ($pageID) {
+		$pluginM = &$this->_pluginAPI->getPluginManager ();
+		$pageM = &$this->_pluginAPI->getPageManager ();
+		$pluginMPage = $pageM->newPage ();
+		$pluginMPage->initFromName ('MorgOS_Admin_PluginManager');
+		$errors = $pluginM->getAllLoadErrors ();
+		if (count ($errors) > 0 and $pluginMPage->getID () == $pageID) {
+			foreach ($errors as $error) {
+				$this->_pluginAPI->addRuntimeMessage ("Failed loading plugin: ".$error->getParam (2), ERROR);
+			}
+		}
 	}
 	
 	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
