@@ -48,8 +48,8 @@ class SkinManagerTest extends TestCase {
 			$skinM = new SkinManager ($pAPI);
 			@rmdir ('skins_c/working');	
 		}
-		$this->_skinM = $skinM;
-		$this->_pAPI = $pAPI;
+		$this->_skinM = &$skinM;
+		$this->_pAPI = &$pAPI;
 	}
 	
 	function testFindAllSkins () {
