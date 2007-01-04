@@ -40,41 +40,41 @@ class adminCorePlugin extends InstallablePlugin {
 		$am = &$this->_pluginAPI->getActionManager ();
 		$em = &$this->_pluginAPI->getEventManager ();
 		$am->addAction (
-			new action ('admin', 'GET',  array (&$this, 'onViewAdmin'), 
+			new action ('admin', 'GET',  array ($this, 'onViewAdmin'), 
 				array (), 
 				array (new IDInput ('pageID'), new LocaleInput ('pageLang'))));
 		$am->addAction (
-			new action ('adminHome', 'GET',  array (&$this, 'onAdminHome'), 
+			new action ('adminHome', 'GET',  array ($this, 'onAdminHome'), 
 				array (), array (), 'MorgOS_Admin_Home'));
 		$am->addAction (
-			new action ('adminLogin', 'POST',  array (&$this, 'onLogin'), 
+			new action ('adminLogin', 'POST',  array ($this, 'onLogin'), 
 			array (new StringInput ('adminLogin'), new StringInput ('adminPassword')),
 			array ()));
 		$am->addAction (
-			new action ('adminLogout', 'GET',  array (&$this, 'onLogout'), array (), 
+			new action ('adminLogout', 'GET',  array ($this, 'onLogout'), array (), 
 			array ()));
 			
 		$am->addAction (
 			new action ('adminChangeSiteSettings', 'POST',  
-				array (&$this, 'onChangeSiteSettings'), 
+				array ($this, 'onChangeSiteSettings'), 
 				array (new StringInput ('siteTitle'), new BoolInput ('enableUsers')), 
 				array ()));
 				
 		$am->addAction (
 			new action ('adminInstallLanguage', 'POST',  
-				array (&$this, 'onInstallLanguage'), 
+				array ($this, 'onInstallLanguage'), 
 				array (new StringInput ('languageName')), 
 				array (), 'MorgOS_Admin_Home', false));
 		
 		$am->addAction (
 			new action ('adminDeleteLanguage', 'GET',  
-				array (&$this, 'onDeleteLanguage'), 
+				array ($this, 'onDeleteLanguage'), 
 				array (new StringInput ('languageName')), 
 				array (), 'MorgOS_Admin_Home', false));
 			
 		$em->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
 		$em->subscribeToEvent ('viewAnyAdminPage', 
-			new callback ('setAdminVars', array (&$this, 'setAdminVars'), 
+			new callback ('setAdminVars', array ($this, 'setAdminVars'), 
 			array ('pageID')));
 		$this->_pluginAdmin->load ($pluginAPI);
 	}

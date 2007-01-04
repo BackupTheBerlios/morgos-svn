@@ -51,7 +51,7 @@ class adminCorePluginAdminPlugin extends InstallablePlugin {
 			'adminUnInstallPlugin', 'GET', array ($this, 'onUnInstallPlugin'), 
 				array (new StringInput ('pluginID')), array (), 'MorgOS_Admin_PluginManager', false));
 		$a = $em->subscribeToEvent ('viewAnyAdminPage', 
-			new callback ('setPluginError', array (&$this, 'setPluginErrors'), 
+			new callback ('setPluginError', array ($this, 'setPluginErrors'), 
 			array ('pageID')));
 	}
 	

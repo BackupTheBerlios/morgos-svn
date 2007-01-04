@@ -35,57 +35,57 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$em = &$this->_pluginAPI->getEventManager ();
 		
 		$am->addAction (
-			new action ('adminPageManager', 'GET',  array (&$this, 'onViewPageManager'), 
+			new action ('adminPageManager', 'GET',  array ($this, 'onViewPageManager'), 
 			array (), array (new IDInput ('parentPageID'), new LocaleInput ('pageLang')), 'MorgOS_Admin_PageManager'));		
 		
 		// page edit action
 		$am->addAction (
 			new action ('adminMovePageDown', 'GET',  
-				array (&$this, 'onMovePageDown'), array (new IDInput ('pageID')), array (), 'MorgOS_Admin_PageManager', false));
+				array ($this, 'onMovePageDown'), array (new IDInput ('pageID')), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminMovePageUp', 'GET',  
-				array (&$this, 'onMovePageUp'), array (new IDInput ('pageID')), array (), 'MorgOS_Admin_PageManager', false));
+				array ($this, 'onMovePageUp'), array (new IDInput ('pageID')), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminSavePage', 'POST',  
-				array (&$this, 'onSavePage'), array (new IDInput ('pageID'), 
+				array ($this, 'onSavePage'), array (new IDInput ('pageID'), 
 					new StringInput ('pageTitle'), new StringInput ('pageNavTitle'), 
 					new StringInput ('pageContent')), array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminNewPage', 'GET',  
-				array (&$this, 'onNewPage'), array (new IDInput ('parentPageID'), new StringInput ('pageTitle')), 
+				array ($this, 'onNewPage'), array (new IDInput ('parentPageID'), new StringInput ('pageTitle')), 
 					array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminDeletePage', 'GET',  
-				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), 
+				array ($this, 'onDeletePage'), array (new IDInput ('pageID')), 
 				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminAddPageToMenu', 'GET',  
-				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), 
+				array ($this, 'onDeletePage'), array (new IDInput ('pageID')), 
 				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminRemovePageFromMenu', 'GET',  
-				array (&$this, 'onDeletePage'), array (new IDInput ('pageID')), 
+				array ($this, 'onDeletePage'), array (new IDInput ('pageID')), 
 				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminMovePageLevelDown', 'GET',  
-				array (&$this, 'onMovePageLevelDown'), array (new IDInput ('pageID'), new IDInput ('newParentPageID')), 
+				array ($this, 'onMovePageLevelDown'), array (new IDInput ('pageID'), new IDInput ('newParentPageID')), 
 				array (), 'MorgOS_Admin_PageManager', false));
 		
 		$am->addAction (
 			new action ('adminMovePageLevelUp', 'GET',  
-				array (&$this, 'onMovePageLevelUp'), array (new IDInput ('pageID')), 
+				array ($this, 'onMovePageLevelUp'), array (new IDInput ('pageID')), 
 				array (), 'MorgOS_Admin_PageManager', false));
 				
 		$am->addAction (
 			new action ('adminPageChangeEditLanguage', 'GET',  
-				array (&$this, 'onChangeEditLanguage'), array (
+				array ($this, 'onChangeEditLanguage'), array (
 				new StringInput ('editContentLanguage')), array (), 
 				'MorgOS_Admin_PageManager', false));
 		$config = &$this->_pluginAPI->getConfigManager ();
