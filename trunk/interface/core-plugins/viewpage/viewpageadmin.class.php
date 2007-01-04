@@ -190,7 +190,7 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$level = array_reverse ($level);
 		$sm->assign ('MorgOS_PageLevel', $level);
 		$eventM->triggerEvent ('viewAnyAdminPage', array (&$pID));
-		$sm->assign ('MorgOS_AvailableContentLanguages', array ('Nederlands', 'English'));
+		$sm->assign ('MorgOS_AvailableContentLanguages', $this->_pluginAPI->getInstalledContentLanguages ());
 		$sm->assign ('MorgOS_CurrentEditContentLanguage',	
 			$config->getStringItem ('/user/pageEditContentLanguage'));
 		$sm->appendTo ('MorgOS_AdminPage_Content', 

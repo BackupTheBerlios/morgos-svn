@@ -22,7 +22,7 @@
 		<p>
 			<label for="newLanguage">{t s="Language: "}</label>
 			<select name="newContentLanguage" id="newLanguage">
-				{foreach from=$MorgOS_User_MyAccount_AvailableLanguages item='Lang'}
+				{foreach from=$MorgOS_User_MyAccount_AvailableContentLanguages item='Lang'}
 					{if $MorgOS_User_MyAccount_CurrentContentLanguage == $Lang}
 						<option selected="selected">{$Lang}</option>
 					{else}

@@ -354,6 +354,7 @@ class PluginAPI extends ConfigPluginAPI {
 	 * @param $dbField (string) default = null
 	 *
 	 * @public
+	 * @since 0.3
 	 * @return (string) The initial value
 	*/
 	function addUserSetting ($name, $defaultValue, $dbField = null) {
@@ -367,6 +368,22 @@ class PluginAPI extends ConfigPluginAPI {
 			}
 		}
 		return $this->_configManager->addUserSetting ($name, STRING, $defaultValue);
+	}
+	
+	/**
+	 * Returns all available content languages
+	 *
+	 * @public
+	 * @since 0.3
+	 * @return (string array)
+	*/
+	function getInstalledContentLanguages () {
+		$languages = $this->_configManager->getArrayItem ('/languages');
+		$langsArray = array ();
+		foreach ($languages as $cItem) {
+			$langsArray[] = $cItem->getCurrentValue ();
+		}
+		return $langsArray;
 	}
 }
 

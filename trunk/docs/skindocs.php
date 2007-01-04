@@ -325,7 +325,7 @@
  * \paragraph
  * This is the content for the homepage. It should show some settings
  *
- * \section Form specification
+ * \section general_form General Form specification
  * Action: index.php
  * Method: POST
  * Required fields:
@@ -334,6 +334,19 @@
  *	- enableUser: type bool: Y if true, N if false, default $MorgOS_AdminHome_EnableUsers
  * Additional fields:
  *	None
+ *
+ * \section language Language configuration (delete language)
+ * Action: index.php
+ * Method: GET
+ * Required fields:
+ *	- action: hidden, value=adminDeleteLanguage
+ *	- languageName: text
+ * \section language Language configuration (add language)
+ * Action: index.php
+ * Method: POST
+ * Required fields:
+ *	- action: hidden, value=adminInstallLanguage
+ *	- languageName: text
 */
 
 /**

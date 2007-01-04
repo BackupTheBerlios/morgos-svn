@@ -59,6 +59,18 @@ class adminCorePlugin extends InstallablePlugin {
 				array (&$this, 'onChangeSiteSettings'), 
 				array (new StringInput ('siteTitle'), new BoolInput ('enableUsers')), 
 				array ()));
+				
+		$am->addAction (
+			new action ('adminInstallLanguage', 'POST',  
+				array (&$this, 'onInstallLanguage'), 
+				array (new StringInput ('languageName')), 
+				array (), 'MorgOS_Admin_Home', false));
+		
+		$am->addAction (
+			new action ('adminDeleteLanguage', 'GET',  
+				array (&$this, 'onDeleteLanguage'), 
+				array (new StringInput ('languageName')), 
+				array (), 'MorgOS_Admin_Home', false));
 			
 		$em->addEvent (new event ('viewAnyAdminPage', array ('pageID')));
 		$em->subscribeToEvent ('viewAnyAdminPage', 
@@ -189,8 +201,52 @@ class adminCorePlugin extends InstallablePlugin {
 		$sm->assign ('MorgOS_AdminPage_Content', $tpage->getContent ());
 		$sm->assign ('MorgOS_SiteTitle', 
 			$config->getStringItem ('/site/title'));
+		$sm->assign ('MorgOS_AvailableContentLanguages', $this->_pluginAPI->getInstalledContentLanguages ());
 		$sm->assign_by_ref ('MorgOS_CurrentAdminPage', $tpagearray);
 		return true;
+	}
+	
+	function onInstallLanguage ($language) {
+		$configM = &$this->_pluginAPI->getConfigManager ();
+		$t = $this->_pluginAPI->getI18NManager ();
+		$cItem = new ConfigItem ('/languages/'.$language, STRING);
+		$cItem->setValue ($language);
+		$ret = $configM->addOption ($cItem);
+		if (isError ($ret)) {
+			if ($ret->is ('CONFIGURATOR_OPTION_EXISTS')) {
+				$this->_pluginAPI->addMessage (
+					$t->translate ('This language already exists'), ERROR);
+				$this->_pluginAPI->executePreviousAction ();
+			} else {
+				return $ret;
+			}
+		} else {
+			$this->_pluginAPI->writeConfigFile ($configM);
+			$this->_pluginAPI->addMessage (
+				$t->translate ('New language added'), NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
+	}
+	
+	function onDeleteLanguage ($language) {
+		$configM = &$this->_pluginAPI->getConfigManager ();
+		$t = $this->_pluginAPI->getI18NManager ();
+		$cItem = $configM->getItem ('/languages/'.$language, STRING);
+		$ret = $configM->removeOption ($cItem);
+		if (isError ($ret)) {
+			if ($ret->is ('CONFIGURATOR_ITEM_DOESNT_EXISTS')) {
+				$this->_pluginAPI->addMessage (
+					$t->translate ("This language doesn't exists"), ERROR);
+				$this->_pluginAPI->executePreviousAction ();
+			} else {
+				return $ret;
+			}
+		} else {
+			$this->_pluginAPI->writeConfigFile ($configM);
+			$this->_pluginAPI->addMessage (
+				$t->translate ('Language removed'), NOTICE);
+			$this->_pluginAPI->executePreviousAction ();
+		}
 	}
 	
 	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {

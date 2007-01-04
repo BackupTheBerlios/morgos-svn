@@ -159,8 +159,8 @@ class userCorePlugin extends InstallablePlugin {
 		$sm->assign ('MorgOS_User_MyAccount_CurrentSkin', 
 			$config->getStringItem ('/user/skin'));
 			
-		$sm->assign ('MorgOS_User_MyAccount_AvailableLanguages', 
-			array ($this->_pluginAPI->getDefaultLanguage ()));
+		$sm->assign ('MorgOS_User_MyAccount_AvailableContentLanguages', 
+			$this->_pluginAPI->getInstalledContentLanguages ());
 		$sm->assign ('MorgOS_User_MyAccount_CurrentContentLanguage', 
 			$config->getStringItem ('/user/contentLang'));
 
