@@ -92,36 +92,39 @@ class userCorePlugin extends InstallablePlugin {
 	function onLogin ($login, $password) {
 		$userManager = &$this->_pluginAPI->getUserManager ();
 		$am = &$this->_pluginAPI->getActionManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		$a = $userManager->login ($login, $password);
 		if (isError ($a)) {
-			if ($a->is ('USERMANAGER_LOGIN_FAILED_INCORRECT_INPUT')) {
+			if ($a->is ('LOGIN_FAILED_INCORRECT_VALUES')) {
 				$sm = &$this->_pluginAPI->getSmarty ();
-				$this->_pluginAPI->addRuntimeMessage (
-					'Given a wrong password/username.', ERROR);
+				$this->_pluginAPI->addMessage (
+					$t->translate ('You may have mistyped your login credentials. Please try logging in again.'), ERROR);
 				$this->_pluginAPI->executePreviousAction ();
 			} else {
 				return $a;
 			}
 		} else {
-			$this->_pluginAPI->addMessage ('You are now logged in.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate 
+				('You have been logged in.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
 	
 	function onLogout () {
 		$userManager = &$this->_pluginAPI->getUserManager ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		$a = $userManager->logout ();
 		if (isError ($a)) {
 			return $a;
 		} else {
-			$this->_pluginAPI->addMessage ('You are logged out.', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('You have been logged out.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
 	
 	function onRegisterForm () {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->appendTo ('MorgOS_CurrentPage_Content', $sm->fetch ('user/register.tpl'));
+		$sm->appendTo ('MorgOS_CurrentPage_Content', $sm->fetch ('user/registerform.tpl'));
 		$sm->display ('genericpage.tpl');
 	}	
 	
@@ -130,19 +133,20 @@ class userCorePlugin extends InstallablePlugin {
 		$u = $uM->newUser ();
 		$u->initFromArray (array ('login'=>$login, 'email'=>$email, 
 			'password'=>md5 ($password)));
+		$t = &$this->_pluginAPI->getI18NManager ();
 		$r = $uM->addUserToDatabase ($u);
 		if (! isError ($r)) {
 			$this->_pluginAPI->addMessage (
-				'Your account was succesfully created', NOTICE);
-		} elseif ($r->is ('USERMANAGER_LOGIN_EXISTS')) {
+				$t->translate ('Your account was succesfully created'), NOTICE);
+		} elseif ($r->is ('LOGIN_ALREADY_REGISTERED')) {
 			$this->_pluginAPI->addMessage (
-				'This login is already used, try another one.', ERROR);			
-		} elseif ($r->is ('USERMANAGER_EMAIL_EXISTS')) {
+				$t->translate ('This login is already used, try another one.'), ERROR);			
+		} elseif ($r->is ('EMAIL_ALREADY_REGISTERED')) {
 			$this->_pluginAPI->addMessage (
-				'This email is already used, try another one.', ERROR);
+				$t->translate ('This email is already used, try another one.'), ERROR);
 		} else {
 			$this->_pluginAPI->addMessage (
-				'There was a problem with adding you to the database', ERROR);
+				$t->translate ('There was a problem with adding you to the database'), ERROR);
 		}
 		$this->_pluginAPI->executePreviousAction ();
 	}
@@ -171,14 +175,15 @@ class userCorePlugin extends InstallablePlugin {
 	function onChangePassword ($oldPassword, $newPassword) {
 		$userM = &$this->_pluginAPI->getUserManager ();
 		$user = $userM->getCurrentUser ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		if ($user->isValidPassword ($oldPassword)) {
 			$user->changePassword ($newPassword);
 			$userM->logout ();
 			$userM->login ($user->getLogin (), $newPassword);
-			$this->_pluginAPI->addMessage ('Your password is changed', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Your password is changed'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		} else {
-			$this->_pluginAPI->addMessage ('Wrong password', NOTICE);
+			$this->_pluginAPI->addMessage ($t->translate ('Wrong old password.'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}
@@ -186,11 +191,12 @@ class userCorePlugin extends InstallablePlugin {
 	function onChangeAccount ($newEmail, $newSkin, $newContentLang) {
 		$userM = &$this->_pluginAPI->getUserManager ();
 		$user = $userM->getCurrentUser ();
+		$t = &$this->_pluginAPI->getI18NManager ();
 		$user->updateFromArray (array ('email'=>$newEmail, 
 			'skin'=>$newSkin, 
 			'contentLanguage'=>$newContentLang));
 		$user->updateToDatabase ();
-		$this->_pluginAPI->addMessage ('Your account settings are changed.', NOTICE);
+		$this->_pluginAPI->addMessage ($t->translate ('Your account settings are changed.'), NOTICE);
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	
@@ -232,7 +238,7 @@ class userCorePlugin extends InstallablePlugin {
 		$this->sendUserMail ($user->getEmail (), 
 			$t->translate ('New password notification'),
 			$sm->fetch ('user/forgotpasswordmail.tpl'));
-		$this->_pluginAPI->addMessage ('A new password is mailed', NOTICE);
+		$this->_pluginAPI->addMessage ('A new password is mailed to you.', NOTICE);
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	

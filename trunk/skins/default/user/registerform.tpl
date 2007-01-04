@@ -1,7 +1,7 @@
 <form action="index.php" method="post">
 	<p>
-		<label for="login">{t s="Login: "}</label>
-		<input type="text" name="login" id="login" />
+		<label for="loginBox">{t s="Login: "}</label>
+		<input type="text" name="login" id="loginBox" />
 	</p>
 	
 	<p>
