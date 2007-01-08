@@ -126,8 +126,7 @@ class EmailInput extends StringInput {
 		$hostName = substr ($host, 0, strpos ($host, '.'));
 		if ( strlen ($user) > 0 &&
 			strlen ($hostName) > 0 &&
-			strlen ($domain) >=2 &&
-			strlen ($domain) <=3 ) {
+			strlen ($domain) >=2) {
 			
 			return true;
 		} else {

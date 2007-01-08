@@ -23,6 +23,7 @@ Version 0.3
 	 * Rewrote all pages tests
 	 * Splitted the view of enabled/disabled plugins
 	 * Updated interface tests
+	 * The admins see now a userfriendly link to the admin
 	[API]
 	 * Added DBTableManager
 	 * Added joins
@@ -56,6 +57,7 @@ Version 0.3
  * GetAllUsers in UserGroup doesn't work
  * Fixed a bug whith executePreviousAction and with 2 tabs open
  * Fixed a bug in BoolInput (return false for checkboxes didn't work)
+ * Some fixed error/notice reporting to the user (i18n,...)
 
 Version 0.2 5 November 2006
 ===========
