@@ -76,6 +76,9 @@ class adminCorePlugin extends InstallablePlugin {
 		$em->subscribeToEvent ('viewAnyAdminPage', 
 			new callback ('setAdminVars', array ($this, 'setAdminVars'), 
 			array ('pageID')));
+		$em->subscribeToEvent ('viewPage',
+			new callback ('setAdminBox', array ($this, 'setAdminBox'),
+			array ()));
 		$this->_pluginAdmin->load ($pluginAPI);
 	}
 	
@@ -247,6 +250,21 @@ class adminCorePlugin extends InstallablePlugin {
 				$t->translate ('Language removed'), NOTICE);
 			$this->_pluginAPI->executePreviousAction ();
 		}
+	}
+	
+	function setAdminBox () {
+		$userM = &$this->_pluginAPI->getUserManager ();
+		$user = $userM->getCurrentUser ();
+		if ($user == null) {
+			// this is obiously not an admin
+			return true;
+		}
+		if ($user->isInGroup ('administrator')) {
+			$sm = &$this->_pluginAPI->getSmarty ();
+			$sm->appendTo ('MorgOS_Sidebar_Content', 
+				$sm->fetch ('user/adminbox.tpl'));
+		}
+		return true;
 	}
 	
 	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
