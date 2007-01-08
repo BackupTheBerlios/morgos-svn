@@ -170,7 +170,7 @@ class adminCorePluginAdminPlugin extends InstallablePlugin {
 		$errors = $pluginM->getAllLoadErrors ();
 		if (count ($errors) > 0 and $pluginMPage->getID () == $pageID) {
 			foreach ($errors as $error) {
-				$this->_pluginAPI->addRuntimeMessage ("Failed loading plugin: ".$error->getParam (2), ERROR);
+				$this->_pluginAPI->addRuntimeMessage ($t->translate ("Failed loading plugin: %1", array ($error->getParam (2))), ERROR);
 			}
 		}
 	}

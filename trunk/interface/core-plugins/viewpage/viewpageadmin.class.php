@@ -266,7 +266,15 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 		$newPage = $pageManager->newPage ();
 		$ap = array ('name'=>$title, 'parent_page_id'=>$parentPageID);
 		$newPage->initFromArray ($ap);
-		$pageManager->addPageToDatabase ($newPage);
+		$r = $pageManager->addPageToDatabase ($newPage);
+		if (isError ($r)) {
+			if ($r->is ('PAGE_EXISTS_ALREADY')) {
+				$this->_pluginAPI->addMessage ($t->translate ('Failed to create page. (page already exist)'), ERROR);
+			} else {
+				$this->_pluginAPI->addMessage ($t->translate ('Failed to create page.'), ERROR);
+			}
+			$this->_pluginAPI->executePreviousAction ();
+		}
 		$tNewPage = $pageManager->newTranslatedPage ();
 		$pageLang = $this->_pluginAPI->getDefaultLanguage ();
 		$a = $tNewPage->initFromArray (array ('translated_title'=>$title, 

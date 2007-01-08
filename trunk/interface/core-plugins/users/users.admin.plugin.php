@@ -77,8 +77,12 @@ class adminCoreUserAdminPlugin extends InstallablePlugin {
 		$user->initFromDatabaseID ($userID);
 		$adminGroup = $userM->newGroup ();
 		$adminGroup->initFromDatabaseGenericName ('administrator');
-		$user->removeFromGroup ($adminGroup);
+		$r = $user->removeFromGroup ($adminGroup);
 		
+		if (isError ($r)) {
+			$this->_pluginAPI->addMessage ($t->translate ('User could not be removed from admin list.'), ERROR);
+			$this->_pluginAPI->executePreviousAction ();
+		}
 		$this->_pluginAPI->addMessage ($t->translate ('User is again a normal user'), NOTICE);
 		$this->_pluginAPI->executePreviousAction ();
 	}
@@ -89,9 +93,12 @@ class adminCoreUserAdminPlugin extends InstallablePlugin {
 		
 		$user = $userM->newUser ();
 		$user->initFromDatabaseID ($userID);
-		$userM->removeUserFromDatabase ($user);
-			
-		$this->_pluginAPI->addMessage ('User is deleted', NOTICE);
+		$r = $userM->removeUserFromDatabase ($user);
+		if (isError ($r)) {
+			$this->_pluginAPI->addMessage ($t->translate ('User could not be deleted'), ERROR);
+			$this->_pluginAPI->executePreviousAction ();
+		}
+		$this->_pluginAPI->addMessage ($t->translate ('User is deleted'), NOTICE);
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	

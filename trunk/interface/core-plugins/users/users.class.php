@@ -238,7 +238,7 @@ class userCorePlugin extends InstallablePlugin {
 		$this->sendUserMail ($user->getEmail (), 
 			$t->translate ('New password notification'),
 			$sm->fetch ('user/forgotpasswordmail.tpl'));
-		$this->_pluginAPI->addMessage ('A new password is mailed to you.', NOTICE);
+		$this->_pluginAPI->addMessage ($t->translate ('A new password is mailed to you.'), NOTICE);
 		$this->_pluginAPI->executePreviousAction ();
 	}
 	
