@@ -69,7 +69,7 @@ class InputTest extends TestCase {
 		
 		$from = array ('anEmail'=>'anemail@domain.combe');
 		$r = $inp->checkInput ($from);
-		$this->assertFalse (isError ($r)));
+		$this->assertFalse (isError ($r));
 		
 		$from = array ('anEmail'=>'anemail@domaincom');
 		$r = $inp->checkInput ($from);
