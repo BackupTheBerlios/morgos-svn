@@ -89,14 +89,7 @@ class viewPageCoreAdminPlugin extends InstallablePlugin {
 				new StringInput ('editContentLanguage')), array (), 
 				'MorgOS_Admin_PageManager', false));
 		$config = &$this->_pluginAPI->getConfigManager ();
-		$editConfigLanguage = new ConfigItem ('/user/pageEditContentLanguage',
-			STRING);
-		$editConfigLanguage->setDefaultValue (
-			$config->getStringItem ('/user/contentLanguage'));
-		if (array_key_exists ('pageEditContentLanguage', $_SESSION)) {
-			$editConfigLanguage->setValue ($_SESSION['pageEditContentLanguage']);
-		}
-		$config->addOption ($editConfigLanguage);
+		$this->_pluginAPI->addUserSetting ('pageEditContentLanguage', $config->getStringItem ('/user/contentLang'));
 	}
 	
 	function onChangeEditLanguage ($language) {
