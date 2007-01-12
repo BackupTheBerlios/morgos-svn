@@ -61,8 +61,12 @@ class Author extends DBTableObject {
 class SQLWrapperTest extends TestCase {
 
 	function setUp () {
-		global $dbModule;
-		$this->testManager = new BookManager ($dbModule);
+		global $bookM;
+		if (! $bookM) { 
+			global $dbModule;
+			$bookM = new BookManager ($dbModule);
+		}
+		$this->testManager = $bookM;
 	}
 	
 	function testIsInstalledNo () {
@@ -100,7 +104,7 @@ class SQLWrapperTest extends TestCase {
 			$this->testManager->getExtraJoinFieldsForTable ('books'));
 			
 		$this->testManager->addExtraFieldForTable ('books', $newField);
-								
+
 		$this->assertEquals (array ($newField), 
 			$this->testManager->getExtraFieldsForTable ('books'));
 	}

@@ -27,10 +27,12 @@ class pageManagerTest extends TestCase {
 	var $pM;
 
 	function setPageManager () {
-		if (! $this->pM) {
+		global $pageM;
+		if (! $pageM) {
 			global $dbModule;
-			$this->pM = new PageManager ($dbModule);
+			$pageM = new PageManager ($dbModule);
 		}
+		$this->pM = $pageM;
 	}
 
 	function setUp () {

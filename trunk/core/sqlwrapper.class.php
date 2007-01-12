@@ -60,16 +60,16 @@ class dbField {
 	}	
 	
 	function setValue ($newValue) {
-	
-		if ($this->getMaxLength () != 0) {
-			if (strlen ($newValue) > $this->getMaxLength ()) {
+		// use $this->_maxLength for time boost
+		if ($this->_maxLength != 0) {
+			if (strlen ($newValue) > $this->_maxLength) {
 				return new Error ('MAX_LENGTH_EXCEEDED', $this->getName (),
 					$this->getMaxLength (), $newValue);
 			}
 		}	
 	
 		if ($newValue === null) {
-			$this->setValue (''); 			
+			$this->_value = '';		
 		} elseif ($this->getType () == DB_TYPE_STRING or 
 				$this->getType () == DB_TYPE_TEXT){
 			$this->_value = strval ($newValue);
@@ -882,6 +882,17 @@ class DBTableManager {
 	 * @protected
 	*/
 	var $_db;
+	/**
+	 * Cached all fields (one array item for every table)
+	 * @protected
+	*/
+	var $_allFieldsForTable;
+	/**
+	 * Cached extra fields (one array item for every table)
+	 * @protected
+	*/
+	var $_extraFieldsForTable;
+	
 
 	/**
 	 * The constructor
@@ -895,11 +906,15 @@ class DBTableManager {
 		$this->_db = &$db;
 		$this->_tableList = array ();
 		$this->_extraJoinList = array ();
+		$this->_allFieldsForTable = array ();
+		$this->_extraFieldsForTable = array ();
 		for ($i = 1; $i<func_num_args (); $i=$i+2) {
 			$table = func_get_arg ($i);
 			$object = func_get_arg ($i+1);
 			$this->_tableList[$table] = $object;
 			$this->_extraJoinList[$table] = array ();
+			$tis->_allFieldsForTable[$table] = null;
+			$tis->_extraFieldsForTable[$table] = null;
 		}
 	}
 
@@ -1092,8 +1107,10 @@ class DBTableManager {
 					}
         				$r = $this->_db->query ($sql);
 					if (isError ($r)) {
+						var_dump ($r);
 						return $r;
 					}
+					$this->_extraFieldsForTable[$tableName][] = $newField;
 				} else {
 					return new Error ('TABLEMANAGER_OPTION_FORPAGE_EXISTS', 
 						$tableName, $newOption->getName ());
@@ -1116,16 +1133,21 @@ class DBTableManager {
 	*/
 	function getExtraFieldsForTable ($tableName) {
 		if ($this->managesTable ($tableName)) {
-			$oName = $this->_tableList[$tableName];
-			$o = new $oName ($this->_db, $this);
+			// ===, can be array ()
+			if ($this->_extraFieldsForTable[$tableName] === null) {;
+				$oName = $this->_tableList[$tableName];
+				$o = new $oName ($this->_db, $this);
 
-			$filter = array ();
-			foreach ($o->getBasicFields () as $fI) {
-				$filter[] = $fI->getName ();
+				$filter = array ();
+				foreach ($o->getBasicFields () as $fI) {
+					$filter[] = $fI->getName ();
+				}
+
+				$this->_extraFieldsForTable[$tableName] =
+					$this->_db->getAlldbFields (
+						$this->_db->getPrefix ().$tableName, $filter);
 			}
-			//var_dump ($filter);
-			return $this->_db->getAlldbFields (
-					$this->_db->getPrefix ().$tableName, $filter);		
+			return $this->_extraFieldsForTable[$tableName];		
 		} else {
 			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
 		}
@@ -1141,11 +1163,16 @@ class DBTableManager {
 	*/
 	function getAllFieldsForTable ($tableName) {
 		if ($this->managesTable ($tableName)) {
-			$oName = $this->_tableList[$tableName];
-			$o = new $oName ($this->_db, $this);
+			
+			if ($this->_allFieldsForTable[$tableName] == null) {
+				$oName = $this->_tableList[$tableName];
+				$o = new $oName ($this->_db, $this);
 
-			return $this->_db->getAlldbFields (
-					$this->_db->getPrefix ().$tableName);		
+				$this->_allFieldsForTable[$tableName] = 
+					$this->_db->getAlldbFields (
+						$this->_db->getPrefix ().$tableName);
+			}
+			return $this->_allFieldsForTable[$tableName];		
 		} else {
 			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
 		}
