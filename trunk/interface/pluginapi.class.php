@@ -332,7 +332,7 @@ class PluginAPI extends ConfigPluginAPI {
 	 *
 	 * @since 0.3
 	 * @public
-	 * @params $name (string) the name of the user setting
+	 * @param $name (string) the name of the user setting
 	 * @return (mixed)
 	*/
 	function getUserSetting ($name) {

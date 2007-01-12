@@ -59,6 +59,7 @@ function unregister_GLOBALS () {
    }
 }
 
+error_reporting (E_ALL);
 unregister_GLOBALS ();
 startMorgOS ();
 

@@ -913,8 +913,8 @@ class DBTableManager {
 			$object = func_get_arg ($i+1);
 			$this->_tableList[$table] = $object;
 			$this->_extraJoinList[$table] = array ();
-			$tis->_allFieldsForTable[$table] = null;
-			$tis->_extraFieldsForTable[$table] = null;
+			$this->_allFieldsForTable[$table] = null;
+			$this->_extraFieldsForTable[$table] = null;
 		}
 	}
 
@@ -1107,7 +1107,6 @@ class DBTableManager {
 					}
         				$r = $this->_db->query ($sql);
 					if (isError ($r)) {
-						var_dump ($r);
 						return $r;
 					}
 					$this->_extraFieldsForTable[$tableName][] = $newField;

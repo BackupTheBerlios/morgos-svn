@@ -51,7 +51,7 @@ class PageManager extends DBTableManager {
 	 *
 	 * @param $db (obejct dbModule)
 	*/
-	function PageManager ($db) {
+	function PageManager (&$db) {
 		parent::DBTableManager 
 			($db, 'pages', 'Page', 'translatedPages', 'TranslatedPage');
 	}
