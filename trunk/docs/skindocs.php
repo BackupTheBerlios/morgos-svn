@@ -2,7 +2,6 @@
 
 /**
  * \page Skins Creating a skin
- *
  * \section Introduction
  * A skin is made up from some templates.
  * This templates are processed, and the actual content will be added.
@@ -21,11 +20,11 @@
  * - \subpage BoxUserForm
  * - \subpage UserRegisterForm
  * - \subpage UserSideboxContent
- * - \subpage Usermessages
+ * - \subpage Usermessages 
  * - \subpage UserMyAccount
  * - \subpage Sidebox
  * - \subpage Sideelement
- * - \subpage 404
+ * - \subpage FourOFour
  * - \subpage error
  *
  * \subsection b Mandatory admin templates
@@ -74,24 +73,35 @@
 /**
  * \page Genericpage
  * This template has the name genericpage.tpl
- * \paragraph
+ * 
  * This is the template that shows a normal page, 
  *  it should include the \subpage Header, \subpage Footer, \subpage Navigation, 
  *  \subpage Sidebar, and shows the content of a page. 
  * (it is possible that header includes Navigation for example)
  *
- * \subsection Possible variables
+ * \section Possible variables
  * - $MorgOS_CurrentPage_Title: The title of the page.
  * - $MorgOS_CurrentPage_Content: The content of the page.
 */
 
 /**
+ * \page FourOFour
+ * A warning when the page is not found
+*/
+
+/**
+ * \page error
+ * A page showing a global error
+*/
+
+
+/**
  * \page Navigation
  * This template should have the name navigation.tpl.
- * \paragraph
+ * 
  * This shows the root navigation. If desired it can also the subpages 
  * (or the current subpages)
- * \subsection Intresting variables
+ * \section Intresting variables
  * - $MorgOS_RootMenu: It is an array of menu items. A menu item is also an array.
  *   The elements of a menu item:
  *		- Title: The title of the menu
@@ -103,7 +113,7 @@
 /**
  * \page Sidebar
  * Name: sidebar.tpl
- * \paragraph
+ * 
  * Here do plugins add their side content (login box, poll, latest messages, ...)
  * It is possible you add here another navigation menu.
  * It should have the var $MorgOS_Sidebar_Content.
@@ -112,26 +122,26 @@
 /**
  * \page Footer
  * Name: footer.tpl
- * \paragraph
+ * 
  * The footer of the file.
- * \subsection Variables
+ * \section Variables
  *  $MorgOS_Copyright: The copyrigt message for MorgOS.
 */
 
 /**
  * \page Header
  * Name: header.tpl
- * \paragraph
+ *
  * The header of the file.
- * \subsection Variables
- * - $MorgOS_ExtraHead: Extra content that should be appended at the end of <head>
+ * \section Variables
+ * - $MorgOS_ExtraHead: Extra content that should be appended at the end of &lt;head&gt;
  * - $MorgOS_SiteTitle: The title of the site.
 */
 
 /**
  * \page BoxLoginForm
  * Name: user/boxloginform.tpl
- * \paragraph
+ * 
  * This is the content of a sidebox when the user isn't logged in.
  * It should contain a login form. It should also contain links for 
  * registring and "Forgot password"
@@ -151,7 +161,7 @@
 /**
  * \page BoxUserForm
  * Name: user/boxuserform.tpl
- * \paragraph
+ * 
  * This is the content of a sidebox when the user is logged in.
  * It should show some links:
  * - index.php?action=userLogout: Logout link
@@ -160,7 +170,7 @@
 /**
  * \page UserSideboxContent
  * Name: user/sideboxcontent.tpl
- * \paragraph
+ * 
  * This should include the BoxUserForm or BoxLoginForm
  * You should do it with:
  * {morgos_side_box EvalBoxTitle="Title"
@@ -172,7 +182,7 @@
 /**
  * \page UserRegisterForm
  * Name: user\register.tpl
- * \paragraph
+ * 
  * This is the content of a register form page.
  * \section Form Definition
  * Action: index.php
@@ -190,9 +200,9 @@
 /**
  * \page Usermessages
  * Name: usermessages.tpl
- * \paragraph
+ * 
  * This shows the notices intended for the user.
- * \subsection The different messages
+ * \section The different messages
  * - $MorgOS_Errors: an array of error texts (Failed to login, incorrect username/password)
  * - $MorgOS_Notices: notices (You are logged in)
  * - $MorgOS_Warnings: warnings (This site will be closed for maintenance on blablabla)
@@ -201,9 +211,9 @@
 /**
  * \page UserMyAccount
  * Name: user/myaccount.tpl
- * \paragraph
+ * 
  * This shows a My Account page for logged in users.
- * \subsection Change account info
+ * \section Change account info
  * Action: index.php
  * Method: POST
  * Required fields:
@@ -211,7 +221,7 @@
  *	- newEmail: type text: default value = $MorgOS_User_MyAccount_OldEmail
  * Additional fields:
  *	None
- * \subsection Change password form
+ * \section Change password form
  * Action: index.php
  * Method: POST
  * Required fields:
@@ -226,7 +236,7 @@
 /**
  * \page Sidebox
  * Name sidebox.tpl
- * \paragraph
+ * 
  * This is an element in the sidebar (eg. the user functions). It does only have this vars
  * $BoxTitle: The title of the box (is always text/image) and
  * $BoxContent: the content of the box (can be text/list/image/form/...)
@@ -235,10 +245,10 @@
 /**
  * \page Sideelement
  * Name: sideelement.tpl
- * \paragraph
+ * 
  * This is an element in the sidebar. It is the same as \subpage Sidebox, 
  * but doesn't have a title.
- * \paragraph 
+ * 
  * It does have only one var:
  * $ElementContent: The content of the element (can be everything)
 */
@@ -246,7 +256,7 @@
 /**
  * \page AdminLogin Admin login
  * Name admin/login.tpl
- * \paragraph
+ * 
  * This is the page that users see when they access the admin but they aren't logged in.
  * This page should offer a login form
  * 
@@ -265,7 +275,7 @@
  * \page AdminGenricpage Admin Genericpage
  * Name: admin/genricpage.tpl
  *
- * \paragraph
+ *
  * This is a genericpage for an admin page.
  * It should include the admin header, footer, navigation and the sidebar
  * Userfull vars
@@ -276,7 +286,7 @@
 /**
  * \page AdminHeader Admin header
  * The Header of a page
- * In the <html><head> part on the end you should have
+ * In the &lt;html&gt;&lt;head&gt; part on the end you should have
  * $MorgOS_ExtraAdminHead:
  * Other usefull vars:
  * - $MorgOS_AdminTitle: The admin title
@@ -322,7 +332,7 @@
  * \page AdminHome 
  * Name: admin/home.tpl 
  *
- * \paragraph
+ *
  * This is the content for the homepage. It should show some settings
  *
  * \section general_form General Form specification
@@ -353,11 +363,11 @@
  * \page AdminPage_PageManager Admin pagemanager
  * Name: admin/page/pagemanager.tpl
  *
- * \paragraph
+ * 
  * This should show the pages that are part of the user selected menu.
  * It should also show some Forms (creating a new page, editing current page)
  * 
- * \pragraph Usefull vars
+ * \section Usefull vars
  * - $MorgOS_PageLevel: An array of level items.
  * 		a level item is an array with 2 values: Link, and Name
  *		The level items are the parent in the menus.
@@ -379,7 +389,7 @@
  *	* Content: current content
  *	* Title: current title
  *	* NavTitle: current menu title
- * \paragraph Editing page Form Specification:
+ * \section Editing page Form Specification:
  * Action: index.php
  * Method: POST
  * Required fields:
@@ -390,7 +400,7 @@
  *	- pageContent: type textarea: new/updated content
  * Additional fields:
  *	None
- * \paragraph Add a new page Form Specification:
+ * \section Add a new page Form Specification:
  * Action: index.php
  * Method: POST
  * Required fields:
@@ -418,5 +428,20 @@
  * - $MorgOS_ConfigContent is the content
  * - $MorgOS_ConfigProceedLink is the link to proceed
 */ 
+
+/**
+ * \page AdminGenericpage Generic admin page
+ *
+*/
+
+/**
+ * \page AdminPlugin_PluginManager Plugin manager page
+ *
+*/
+
+/**
+ * \page AdminPlugin_PluginList Plugin list
+ *
+*/
 
 ?>
