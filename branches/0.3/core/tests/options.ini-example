@@ -1,0 +1,22 @@
+defaultModule = MySQL
+dbAvailableModules = MySQL, PostgreSQL
+#On Windows something like C:\path\to\pear\bin\phpunit.bat
+phpUnitPath = phpunit
+phpUnitParameters = --verbose
+phpUnitCC = true
+#relative to .
+phpUnitCCOutputPath = core_tests/ 
+
+[MySQL]
+Host = localhost
+User = nathan
+Password = MySQLPASS
+DatabaseName = morgos_test
+Prefix = morgos_
+
+[PostgreSQL]
+Host = localhost
+User = nathan
+Password = PGSQL_PASS
+DatabaseName = morgos_test
+Prefix = morgos_

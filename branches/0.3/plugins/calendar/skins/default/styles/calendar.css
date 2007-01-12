@@ -1,0 +1,59 @@
+.minicalendar td.day ul.events {
+	display: none;
+}
+
+.minicalendar td.day:hover ul.events {
+	display: block;
+	position: absolute;
+	border: solid 1px red;
+	background: white;
+	opacity: 0.8;
+	margin-top: -15px;
+	margin-left: +25px;
+	
+}
+
+.monthcalendar {
+	width: 100%;
+}
+
+.monthcalendar td {
+	text-align: center;
+	vertical-align: top;
+}
+
+.weekend {
+	background-color: green;
+}
+
+.othermonth {
+	color: blue;
+}
+
+.othermonth_weekend {
+	background-color: green;
+	color: blue;
+}
+
+.current {
+	background-color: red;
+}
+
+.monthcalendar td p {
+	margin: 0;
+	margin-bottom: 0.4em;
+}
+
+.monthcalendar td ul.events {
+	text-align: left;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+ol.calendarLegend {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	max-width: 8em;
+}

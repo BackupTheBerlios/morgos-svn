@@ -1,0 +1,121 @@
+table.kalender {
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	background-color: #e9e9e9;
+	border: 1px solid #eaeaea; 
+	padding: 0px;
+}
+
+table.kalender td.maand {
+	font-size: 2em;
+	text-align: center;
+}
+
+table.kalender tr {
+	font-weight: bold;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0px;
+	border: solid 1px black;
+}
+
+table.kalender td.vrij {
+	text-align: center;
+}
+
+table.kalender td.we{
+	text-align: center;
+}
+
+table.kalender td.ouder {
+	text-align: center;
+}
+
+table.kalender td.act {
+	text-align: center;
+}
+
+table.kalender td.exe {
+	text-align: center;
+}
+
+table.kalender td.normaal {
+	text-align: center;
+}
+
+table.kalender td.rapport {
+	text-align: center;
+}
+
+table.kalender td.gwp {
+	text-align: center;
+}
+table.kalender td.schorg {
+	text-align: center;
+}
+
+.dagen {
+	font-size: 1.1em;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.legende {
+	float: right;
+}
+
+.vrij {
+	background-color: #ff6699;
+}
+
+.we {
+	background-color: #FFFFCC;
+}
+
+.ouder {
+	background-color: #00CCFF;
+}
+
+.rapport {
+	background-color: #ff6600;
+}
+
+.act {
+	background-color: #00FF99;
+}
+
+.exe {
+	background-color: #CCFF99;
+}
+.schorg {
+	background-color: yellow;
+}
+table.kalender input {
+	display: block;
+	border: 1px solid black;
+	text-align: center;
+	font-weight: bold;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.kalender textarea.txt {
+	display: block;
+	border: solid black 1px;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 1.3em;
+	width: 80%;
+	height: 13em;
+}
+
+ul.legende {
+	list-style: none;
+	margin-left: 5%;
+}
+
+ul.legende li {
+	margin: 2px;
+}

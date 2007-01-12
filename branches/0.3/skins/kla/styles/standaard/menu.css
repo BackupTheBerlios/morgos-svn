@@ -1,0 +1,131 @@
+/*BUGS:
+Correct: Konqueror 3.5.5, FF 2.0
+
+IE 7/6/55: 2de li is komt onder eerste li (kan niet aanklikken) (FIXED with JS)
+
+IE 55: padding ol li is 25px
+IE 5: alles is naast mekaar, niets klapt uit
+Opera (9): submenus komen te laag, en te veel naar rechts 
+ */
+
+#nav {
+	padding-bottom: 3px;
+	font-size: 17px;
+	border-top: solid #E2E2E2 5px;
+	/*border-right: solid #E2E2E2 5px;
+	/*-moz-border-radius-topright: 15px;*/
+	color: #000000;
+	/*height: 1em;*/
+	margin-top: 130px;
+	position: relative;
+	/*text-align: center;*/
+}
+
+#nav ol {
+	padding: 0;
+	margin: 0;
+	/*z-index: 200;*/
+	/*position: relative;*/
+	z-index: 10;
+}
+
+
+#nav li { /* all list items */
+	/*float: left;*/
+	position: relative;
+	list-style: none;
+	display: inline;
+	/*width: 10em;*/
+
+	/*padding-left: 25px;*/
+	/*padding-right: 25px;*/
+	text-align: center;
+
+	/*Mozilla only, css3??*/
+	/*-moz-opacity: .9;*/
+/*	margin-left: 25px;*/
+	margin: 0;
+	padding: 0;
+	margin-right: 25px;
+}
+
+#nav ol ol  {
+	z-index: 60;
+}
+
+#nav ol li ol { /* second-level lists */
+	display: none;
+	/*float: left;*/
+	position: absolute;
+	top: 1em; /*problematisch voor opera, nodig voor ffx, anders ff te laag*/
+	padding: 0; /* nodig voor ao FFx 1.0 */
+	/*padding-right: 25px;*/
+	border: solid #A4a4A4 1px;
+	background-color: #E5E3E3;
+	/*width: 12em;*/
+	text-align: left;
+}
+
+#nav li li {
+	border: 0;
+	/*border-top: solid #A4a4A4 1px;*/
+	text-align: cznter;
+	padding: 0;
+	margin: 0;
+	/*padding: 20px;*/
+	/*margin-left: 20px;
+	margin-right: 20px;*/
+	/*border: solid 1px red;*/
+	list-style: none;
+	/*left: -1em;*/
+}
+
+
+#nav li ol.ie {
+	top: 1em;
+}
+
+#nav li>ol { /* to override top and left in browsers other than IE, which will position to the top right of the containing li, rather than bottom left */
+	top: auto;
+	left: auto;
+}
+
+#nav li:hover ol { /* lists nested under hovered list items */
+	display: block;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#nav li:hover ol li { /* list items nested under hovered list items */
+	display: block;
+}
+
+#nav li.over ol {
+	display: block;
+	left: 0;
+	margin: 0;
+	margin-top: 3px;
+	padding:0;
+}
+
+#nav li.over ol li {
+	display: block;
+}
+
+
+
+/* Werkt niet in IE 6*/
+#nav li ol li:first-child {
+	border-top: 0;
+}
+
+#nav a {
+	text-decoration: none;
+	z-index: 0;
+}
+
+/*#nav ol li ol li {
+	padding: 50px;
+}*/
+
