@@ -1,12 +1,8 @@
 {include file="admin/header.tpl"}
 	
 	
-		<h1>{$MorgOS_CurrentAdminPage.Title}</h1>
-		
-		{include file="admin/messages.tpl"}
+		<h1>{$MorgOS_AdminPage_Title}</h1>
 
-		{$MorgOS_CurrentAdminPage.Content}
-		
-
+		{$MorgOS_AdminPage_Content}
 	
 {include file="admin/footer.tpl"}

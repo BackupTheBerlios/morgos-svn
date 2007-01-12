@@ -2,7 +2,7 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
-		<title>{$MorgOS_CurrentAdminPage.Title}</title>
+		<title>{$MorgOS_AdminPage_Title}</title>
 		
 		<!-- CSS FILES -->
 		<link rel="stylesheet" type="text/css" href="{$SkinPath}/styles/default.css" />
