@@ -149,8 +149,8 @@ class adminCoreUserAdminPlugin extends InstallablePlugin {
 		return $users;
 	}
 	
-	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
-		$pageM = new pageManager ($dbModule);
+	function install (&$pluginAPI, &$dbDriver, $siteDefaultLanguage) {
+		$pageM = new pageManager ($dbDriver);
 		$t = &$pluginAPI->getI18NManager();
 		$admin = $pageM->getAdminPage ();
 		$adminUser = $pageM->newPage ();

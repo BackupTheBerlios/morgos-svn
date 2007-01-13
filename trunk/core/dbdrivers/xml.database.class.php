@@ -1,5 +1,5 @@
 <?php
-
+return;// do not attempt to load
 /*$allModules['XML'] = 'XMLDatabase';
 $availableModules['XML'] = 'XMLDatabase';*/
 

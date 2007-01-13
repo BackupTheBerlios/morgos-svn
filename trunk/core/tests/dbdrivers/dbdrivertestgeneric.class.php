@@ -7,7 +7,7 @@ class DBDriverGenericTest extends TestCase {
 	function setUp ($moduleName) {
 		//parent::__construct ();
 		$this->_moduleName = $moduleName;
-		$this->_module = databaseLoadModule ($this->_moduleName);
+		$this->_module = DatabaseDriverManager::loadDriver ($this->_moduleName);
 		$a = $this->connect ();
 		if ($a === false) {
 			return;

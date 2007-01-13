@@ -21,10 +21,10 @@
 		
 		<fieldset>
 			<legend>{t s="Database information"}</legend>
-			<p><label for="databaseModule">{t s="Database type: "}</label>
-				<select id="databaseModule" name="databaseModule">
-					{foreach from=$dbModules item='dbModule' key='dbName'}
-						<option value="{$dbName}">{$dbName}</option>
+			<p><label for="databaseDriver">{t s="Database driver: "}</label>
+				<select id="databaseDriver" name="databaseDriver">
+					{foreach from=$dbDrivers item='dbDriver'}
+						<option value="{$dbDriver}">{$dbDriver}</option>
 					{/foreach}
 				</select>
 			</p>

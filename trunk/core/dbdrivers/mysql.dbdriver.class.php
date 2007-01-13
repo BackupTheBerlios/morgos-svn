@@ -15,73 +15,77 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/** @file mysqli.database.class.php
- * MySQL Improved database module.
+/** @file mysql.dbdriver.class.php
+ * MySQL database module.
  *
  * @ingroup database core
- * @since 0.3
+ * @since 0.2
+ * @since 0.4 adapted to the new driver API
+ * @author Sam Heijens
  * @author Nathan Samson
 */
 
-$allModules['MySQLI'] = 'mysqliDatabaseActions';
-if (class_exists ('mysqli')) {
-	$availableModules['MySQLI'] = 'mysqliDatabaseActions';
-}
-
-if (! class_exists ('mysqliDatabaseActions')) {
+if (! class_exists ('MySQLDatabaseDriver')) {
 	isset ($t); // trick documentor
 	
-	class mysqliDatabaseActions extends databaseActions {
-		var $_mysqli;
-		var $_dbName;
-		
-		function mysqliDatabaseActions () {
-			$this->setType ('MySQLI');
-			$this->_mysqli = null;
+	class MySQLDatabaseDriver extends DatabaseDriver {
+		var $dbName;	
+		var $connection;
+	
+		function MySQLDatabaseDriver () {
+			$this->setType ('MySQL');
+			$this->connection = null;
 		}
-		
-		function connect ($host, $user, $password, $dbName) {
-			$this->_dbName = $dbName;
-			$this->_mysqli = new mysqli ();
-			$res = @$this->_mysqli->connect ($host, $user, $password, $dbName);
-			if (mysqli_connect_errno () != null) {
-				return new Error ("DBDRIVER_CANT_CONNECT", mysqli_connect_error ());
+	
+		function connect ($host,$userName,$password, $dbName) {
+			$this->connection = @mysql_connect ($host,$userName,$password);
+			if ($this->connection == false) {
+				return new Error ('DBDRIVER_CANT_CONNECT', mysql_error ());
+			}
+			$result = mysql_select_db ($dbName, $this->connection);
+			$this->dbName = $dbName;
+			if ($result == false) {
+				return new Error ('DBDRIVER_CANT_CONNECT', mysql_error ());
 			}
 		}
 		
 		function disconnect () {
-			if ($this->_mysqli) {
-				@$this->_mysqli->close ();
-				$this->_mysqli = null;
+			if ($this->connection) {
+				mysql_close ($this->connection);
+				$this->connection = null;
 			} else {
 				return new Error ('DBDRIVER_NOT_CONNECTED');
 			}
 		}
 	        
 		function query ($sql) {
-			$result = $this->_mysqli->query ($sql);
+			$result = mysql_query ($sql, $this->connection);
 			if ($result !== false) {
 				return $result;
 			} else {
-				return new Error ('SQL_QUERY_FAILED', $sql, $this->_mysqli->error);
+				return new Error ('SQL_QUERY_FAILED', $sql, mysql_error ($this->connection));
 			}
 		}
 	        
 		function numRows ($query) {
-			return $query->num_rows;
+			return mysql_num_rows ($query);
 		}
 		
 		function affectedRows ($query) {
-			return $this->_mysqli->affected_rows;
+			if (is_bool ($query)) {
+				return mysql_affected_rows ();
+			} else {
+				return mysql_affected_rows ($query);
+			}
 		}
 	        
 		function fetchArray ($query) {
-			$var = $query->fetch_array ();
+			$var = mysql_fetch_array ($query);
 			return $var;
 		}
 	        
 		function latestInsertID ($q) { 
-			return $this->_mysqli->insert_id;
+			return mysql_insert_id ($this->connection);
 		}
 		
 		function getAllFields ($tableName) {
@@ -89,37 +93,39 @@ if (! class_exists ('mysqliDatabaseActions')) {
 			$q = $this->query ("SHOW COLUMNS FROM $tableName");
 			if (! isError ($q)) {
 				$allFields = array ();
-				while ($row = $this->fetchArray ($q)) {
-					$type = $row['Type'];
-					if (substr ($type, 0, 3) == 'int') {
-						$maxlength = substr ($type,
-										 strpos ($type, '(')+1, 
-										 strpos ($type, ')')-
-										 	strpos ($type, '(')-1);
-						$type = 'int';
-					} elseif (substr ($type, 0, 7) == 'varchar') {
-						$maxlength = substr ($type,
-										 strpos ($type, '(')+1, 
-										 strpos ($type, ')')-
-										 	strpos ($type, '(')-1);
-						$type = 'string';
-					} else {
-						$maxlength = null;
+				if (mysql_num_rows ($q) > 0) {
+					while ($row = mysql_fetch_assoc ($q)) {
+						$type = $row['Type'];
+						if (substr ($type, 0, 3) == 'int') {
+							$maxlength = substr ($type,
+											 strpos ($type, '(')+1, 
+											 strpos ($type, ')')-
+											 	strpos ($type, '(')-1);
+							$type = 'int';
+						} elseif (substr ($type, 0, 7) == 'varchar') {
+							$maxlength = substr ($type,
+											 strpos ($type, '(')+1, 
+											 strpos ($type, ')')-
+											 	strpos ($type, '(')-1);
+							$type = 'string';
+						} else {
+							$maxlength = null;
+						}
+						if ($row['Null'] == 'YES') {
+							$row['Null'] = true;
+						} else {
+							$row['Null'] = false;
+						}
+						
+						$field = array (
+								'Field'=>$row['Field'],
+								'Type'=>$type,
+								'Null'=>$row['Null'],
+								'MaxLength'=>(int)$maxlength,
+								'Default'=>$row['Default']
+								);
+						$allFields[] = $field;
 					}
-					if ($row['Null'] == 'YES') {
-						$row['Null'] = true;
-					} else {
-						$row['Null'] = false;
-					}
-					
-					$field = array (
-							'Field'=>$row['Field'],
-							'Type'=>$type,
-							'Null'=>$row['Null'],
-							'MaxLength'=>(int)$maxlength,
-							'Default'=>$row['Default']
-							);
-					$allFields[] = $field;
 				}
 				return $allFields;
 			} else {
@@ -168,11 +174,11 @@ if (! class_exists ('mysqliDatabaseActions')) {
 		}
 		
 		function getAllTables () {
-			$q = $this->query ("SHOW TABLES FROM {$this->_dbName}");
+			$q = $this->query ("SHOW TABLES FROM {$this->dbName}");
 			if (! isError ($q)) {
 				$allTables = array ();
-				while ($row = $this->fetchArray ($q)) {
-					$allTables[] = $row[0];
+				while ($row = mysql_fetch_assoc ($q)) {
+					$allTables[] = $row['Tables_in_'.$this->dbName];
 				}
 				return $allTables;
 			} else {
@@ -184,7 +190,7 @@ if (! class_exists ('mysqliDatabaseActions')) {
 			if (get_magic_quotes_gpc ()) {
 				$value = stripslashes ($value);
 			}
-			return $this->_mysqli->escape_string ($value);
+			return mysql_real_escape_string ($value, $this->connection);
 		}
 		
 		function tableExists ($tableName) {
@@ -195,6 +201,9 @@ if (! class_exists ('mysqliDatabaseActions')) {
 				return in_array (strtolower ($this->getPrefix().$tableName), $allTables);
 			}
 		}
+	
 	}
 }
+DatabaseDriverManager::AddDriver ('MySQL', 'MySQLDatabaseDriver', 
+							function_exists ('mysql_connect'));
 ?>

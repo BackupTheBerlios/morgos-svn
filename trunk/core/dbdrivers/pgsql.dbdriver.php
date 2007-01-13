@@ -20,18 +20,14 @@
  *
  * @ingroup database core
  * @since 0.3
+ * @since 0.4 adapted to the new driver API
  * @author Nathan Samson
 */
 
-$allModules['PostgreSQL'] = 'pgsqlDatabaseActions';
-if (function_exists ('pg_connect')) {
-	$availableModules['PostgreSQL'] = 'pgsqlDatabaseActions';
-}
-
-if (! class_exists ('pgsqlDatabaseActions')) {
+if (! class_exists ('PgSQLDatabaseDriver')) {
 	isset ($t); // trick documentor
 	
-	class pgsqlDatabaseActions extends databaseActions {
+	class PgSQLDatabaseDriver extends DatabaseDriver {
 		var $_dbName;
 		var $_connection;
 		var $_connectionString;	
@@ -213,5 +209,8 @@ if (! class_exists ('pgsqlDatabaseActions')) {
 	
 	}
 }
+
+DatabaseDriverManager::addDriver ('PostgreSQL', 'PgSQLDatabaseDriver',
+							function_exists ('pg_connect'));
 
 ?>

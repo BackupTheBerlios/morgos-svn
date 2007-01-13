@@ -144,8 +144,8 @@ class viewPageCorePlugin extends InstallablePlugin {
 	
 	function isCorePlugin () {return true;}
 	
-	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
-		$pageM = new PageManager ($dbModule);
+	function install (&$pluginAPI, &$dbDriver, $siteDefaultLanguage) {
+		$pageM = new PageManager ($dbDriver);
 		$pageM->installAllTables ();
 		$site = $pageM->getSitePage ();
 		$t = &$pluginAPI->getI18NManager();
@@ -164,11 +164,11 @@ class viewPageCorePlugin extends InstallablePlugin {
 				'translated_content'=>$t->translate ('This is the homepage.')));
 		$home->addTranslation ($tHome);	
 		
-		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
+		$this->_adminPlugin->install ($pluginAPI, $dbDriver, $siteDefaultLanguage);
 	}
 	
 	function isInstalled (&$pluginAPI) {
-		$db = &$pluginAPI->getDBModule ();
+		$db = &$pluginAPI->getDBDriver ();
 		return $db->tableExists ('pages') && $db->tableExists ('translatedPages');
 	}
 }

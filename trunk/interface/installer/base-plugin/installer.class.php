@@ -64,7 +64,7 @@ class installerBasePlugin extends plugin {
 				array (&$this, 'installConfigAndDatabase'), array (
 						new StringInput ('siteName'), 
 						new StringInput ('siteDefaultLanguage'),
-						new StringInput ('databaseModule'), 
+						new StringInput ('databaseDriver'), 
 						new StringInput ('databaseHost'), 
 						new StringInput ('databaseUser'), 
 						new StringInput ('databasePassword'), 
@@ -77,7 +77,7 @@ class installerBasePlugin extends plugin {
 		$aM->addAction (
 			new action ('checkDBConnection', 'POST',  
 				array (&$this, 'checkDatabaseConnection'), array (
-						new StringInput ('databaseModule'), 
+						new StringInput ('databaseDriver'), 
 						new StringInput ('databaseHost'), 
 						new StringInput ('databaseUser'), 
 						new StringInput ('databasePassword'), 
@@ -121,23 +121,23 @@ class installerBasePlugin extends plugin {
 				$sm->assign ('canRun', false);
 			}
 			
-			$aMods = databaseGetAllModules (true);
-			if (count ($aMods) >= 1) {
+			$installedDrivers = DatabaseDriverManager::getAllInstalledDrivers ();
+			if (count ($installedDrivers) >= 1) {
 				$sm->assign ('dbMError', false);
 				$sm->assign ('dbMMessage', 
-					$t->translate ('You have at least installed 1 database module.'));
+					$t->translate ('You have at least installed 1 database driver.'));
 			} else {
 				$sm->assign ('canRun', false);
 				$sm->assign ('dbMError', true);
 				$s = '';
-				foreach (databaseGetAllModules (false) as $a=> $mod) {
+				foreach ( DatabaseDriverManager::getAllFoundDrivers () as $driver) {
 					if (! empty ($s)) {
 						$s .= ', ';
 					}
-					$s .= $a;
+					$s .= $driver;
 				}
 				$sm->assign ('dbMMessage', 
-					$t->translate ('You need to install one supported databasemodule. Supported databases by MorgOS are: %1.',
+					$t->translate ('You need to install one supported databasedrivers. Supported databases by MorgOS are: %1.',
 					array ($s)));
 			}
 			
@@ -182,18 +182,19 @@ class installerBasePlugin extends plugin {
 	
 	function askConfig ($canRun) {
 		$sm = &$this->_pluginAPI->getSmarty ();
-		$sm->assign ('dbModules', databaseGetAllModules (true));
+		$sm->assign ('dbDrivers', databaseGetAllModules (true));
 		$sm->display ('installer/configure.tpl');
 	}
 	
-	function checkDatabaseConnection ($databaseModule, $databaseHost, $databaseUser, 
+	function checkDatabaseConnection ($dbDriverName, $databaseHost, $databaseUser, 
 			$databasePassword, $databaseName) {
-		$dbModule = databaseLoadModule ($databaseModule);
-		$res = $dbModule->connect ($databaseHost, $databaseUser, $databasePassword);
+		DatabaseDriverManager::findAllDriversInDirectory ('core/dbdrivers');
+		$dbDriver = DatabaseDriverManager::loadDriver ($dbDriverName);
+		$res = $dbDriver->connect ($databaseHost, $databaseUser, $databasePassword);
 		if (isError ($res)) {
 			die ('PROBLEM WHILE CONNECTIONG');
 		}
-		$res = $dbModule->selectDatabase ($databaseName);
+		$res = $dbDriver->selectDatabase ($databaseName);
 		if (isError ($res)) {
 			die ('PROBLEM WHILE SELECTIONG');
 		}
@@ -201,13 +202,14 @@ class installerBasePlugin extends plugin {
 	}
 	
 	function installConfigAndDatabase ($siteName, $siteDefaultLanguage,
-			$databaseModule, $databaseHost, $databaseUser, $databasePassword, 
+			$dbDriverName, $databaseHost, $databaseUser, $databasePassword, 
 			$databaseName, $databasePrefix, 
 			$adminLogin, $adminPassword, $adminMail) {
-		$dbModule = databaseLoadModule ($databaseModule);
-		if (! isError ($dbModule)) {
-			$dbModule->connect ($databaseHost, $databaseUser, $databasePassword, $databaseName);
-			$dbModule->setPrefix ($databasePrefix);
+		DatabaseDriverManager::findAllDriversInDirectory ('core/dbdrivers');
+		$dbDriver = DatabaseDriverManager::loadDriver ($dbDriverName);
+		if (! isError ($dbDriver)) {
+			$dbDriver->connect ($databaseHost, $databaseUser, $databasePassword, $databaseName);
+			$dbDriver->setPrefix ($databasePrefix);
 			$pluginManager = new pluginManager ($this->_pluginAPI);
 			$pluginManager->findAllPlugins ('interface/core-plugins/');			
 			
@@ -215,7 +217,7 @@ class installerBasePlugin extends plugin {
 			$foundPlugins = array_reverse ($pluginManager->getAllFoundPlugins ());
 			foreach ($foundPlugins as $plugin) {
 				if (is_a ($plugin, 'InstallablePlugin')) {
-					$a = $plugin->install ($this->_pluginAPI, $dbModule, $siteDefaultLanguage);
+					$a = $plugin->install ($this->_pluginAPI, $dbDriver, $siteDefaultLanguage);
 					if (isError ($a)) {
 						var_dump ($a);
 						die ('Something went wrong');
@@ -223,7 +225,7 @@ class installerBasePlugin extends plugin {
 				}
 			}
 			
-			$userM = new userManager ($dbModule);
+			$userM = new userManager ($dbDriver);
 			$admin = $userM->newUser ();
 			$a = $admin->initFromArray (array (
 				'login'=>$adminLogin, 
@@ -257,7 +259,7 @@ class installerBasePlugin extends plugin {
 			$configContents = '<?php'.PHP_NL.PHP_NL;
 			
 			$configContents .= 
-				'$configItems[\'/databases/module\']=\''.$databaseModule.'\';'.PHP_NL;
+				'$configItems[\'/databases/driver\']=\''.$dbDriverName.'\';'.PHP_NL;
 			$configContents .= 
 				'$configItems[\'/databases/host\']=\''.$databaseHost.'\';'.PHP_NL;
 			$configContents .= 

@@ -170,13 +170,13 @@ class ConfigPluginAPI extends BasePluginAPI {
  * @author Nathan Samson
 */
 class PluginAPI extends ConfigPluginAPI {
-	var $_dbModule;
+	var $_dbDriver;
 	var $_userManager;
 	var $_pageManager;
 	var $_messages;
 
-	function setDBModule (&$dbModule) {$this->_dbModule = &$dbModule;}
-	function &getDBModule () {return $this->_dbModule;}
+	function setDBDriver (&$dbModule) {$this->_dbModule = &$dbModule;}
+	function &getDBDriver () {return $this->_dbModule;}
 	
 	function setUserManager (&$userManager) {$this->_userManager = &$userManager;}
 	function &getUserManager () {return $this->_userManager;}

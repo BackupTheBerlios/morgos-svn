@@ -34,7 +34,7 @@ define ('MORGOS_DEFAULT_LANGUAGE', 'en_UK');
 include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
 include_once ('core/varia.functions.php');
-include_once ('core/databasemanager.functions.php');
+include_once ('core/dbdrivermanager.class.php');
 include_once ('core/sqlwrapper.class.php');
 include_once ('core/i18n.class.php');
 include_once ('core/user/usermanager.class.php');
@@ -535,10 +535,10 @@ class ConfigMorgos extends BaseMorgos {
 */
 class Morgos extends ConfigMorgos {	
 	/**
-	 * The database module
+	 * The database driver
 	 * @protected
 	*/
-	var $_dbModule;
+	var $_dbDriver;
 	/**
 	 * The page manager
 	 * @protected
@@ -557,9 +557,10 @@ class Morgos extends ConfigMorgos {
 	function init () {
 		parent::init ();
 		$this->_pluginAPI = new PluginAPI ($this);
-		$this->_dbModule = databaseLoadModule (
-			$this->_configManager->getStringItem ('/databases/module'));
-		$e = $this->_dbModule->connect (
+		DatabaseDriverManager::findAllDriversInDirectory ('core/dbdrivers');
+		$this->_dbDriver = DatabaseDriverManager::loadDriver (
+			$this->_configManager->getStringItem ('/databases/driver'));
+		$e = $this->_dbDriver->connect (
 			$this->_configManager->getStringItem ('/databases/host'), 
 			$this->_configManager->getStringItem ('/databases/user'), 
 			$this->_configManager->getStringItem ('/databases/password'),
@@ -569,11 +570,11 @@ class Morgos extends ConfigMorgos {
 			$this->error ($e);
 		}		
 
-		$this->_dbModule->setPrefix (
+		$this->_dbDriver->setPrefix (
 			$this->_configManager->getStringItem ('/databases/table_prefix'));	
 
-		$this->_pageManager = new PageManager ($this->_dbModule);
-		$this->_userManager = new UserManager ($this->_dbModule);
+		$this->_pageManager = new PageManager ($this->_dbDriver);
+		$this->_userManager = new UserManager ($this->_dbDriver);
 		$this->_pluginManager->findAllPlugins ('interface/core-plugins');
 		$this->loadPluginAPI ();
 		$this->loadUserSettings ();
@@ -586,7 +587,7 @@ class Morgos extends ConfigMorgos {
 	*/
 	function loadPluginAPI () {
 		parent::loadPluginAPI ();
-		$this->_pluginAPI->setDBModule ($this->_dbModule);
+		$this->_pluginAPI->setDBDriver ($this->_dbDriver);
 		$this->_pluginAPI->setPageManager ($this->_pageManager);
 		$this->_pluginAPI->setUserManager ($this->_userManager);	
 	}
@@ -596,8 +597,8 @@ class Morgos extends ConfigMorgos {
 	 * @public
 	*/
 	function shutdown () {
-		$this->_dbModule->disconnect ();
-		$this->_dbModule = null;
+		$this->_dbDriver->disconnect ();
+		$this->_dbDriver = null;
 		$this->_pageManager = null;
 		$this->_userManager = null;
 		parent::shutdown ();

@@ -3,15 +3,17 @@ include_once ('core/tests/compwrapper.class.php');
 
 $testerOptions = parse_ini_file ('core/tests/options.ini');
 
-global $avModules;
+global $installedDrivers;
 $availableModulesINI = explode (',', $testerOptions['dbAvailableModules']);
 foreach ($availableModulesINI as $value) {
 	$value = trim ($value);
-	$avModules[$value] = null;
+	$installedDrivers[] = $value;
 }
 
 include_once ('core/varia.functions.php');
-include_once ('core/databasemanager.functions.php');
+//include_once ('core/databasemanager.functions.php');
+include_once ('core/dbdrivermanager.class.php');
+DatabaseDriverManager::findAllDriversInDirectory ('core/dbdrivers');
 
 include_once ('core/sqlwrapper.class.php');
 include_once ('core/user/usermanager.class.php');
@@ -23,20 +25,21 @@ function loadSuite (&$suite) {
 	$suite->addTestFile ('core/tests/varia.functions.test.php');
 	$suite->addTestFile ('core/tests/config.class.test.php');
 	$suite->addTestFile ('core/tests/i18n.class.test.php');
-	global $avModules;		
+	global $installedDrivers;		
 	
-	$suite->addTestFile ('core/tests/databasemanager.functions.test.php');
+	//$suite->addTestFile ('core/tests/databasemanager.functions.test.php');
+	$suite->addTestFile ('core/tests/databasedrivermanager.class.test.php');
 
 	$config = parse_ini_file ('core/tests/options.ini', true);
-	foreach ($avModules as $module=>$object) {
-		$mod = MorgOSTests::loadModuleFromConfig ($module, $config);
+	foreach ($installedDrivers as $driverName) {
+		$driver = MorgOSTests::loadModuleFromConfig ($driverName, $config);
 		if (isError ($mod)) {
 			continue;
 		}
-		MorgOSTests::removeAllTablesForModule ($mod);
-		$mod->disconnect ();
+		MorgOSTests::removeAllTablesForModule ($driver);
+		$driver->disconnect ();
 	
-		switch ($module) {
+		/*switch ($driverName) {
 			case 'MySQL':
 				$suite->addTestFile ('core/tests/dbdrivers/mysql.test.driver.class.php');
 				break;
@@ -46,7 +49,7 @@ function loadSuite (&$suite) {
 			case 'PostgreSQL': 
 				$suite->addTestFile ('core/tests/dbdrivers/pgsql.test.driver.class.php');
 				break;
-		}
+		}*/
 	}
 	global $dbModule;
 	$dbModule = MorgOSTests::loadModuleFromConfig ($config['defaultModule'], $config);
@@ -59,7 +62,7 @@ function loadSuite (&$suite) {
 
 class MorgOSTests {	
 	function loadModuleFromConfig ($module, $config) {
-		$mod = databaseLoadModule ($module);
+		$mod = DatabaseDriverManager::loadDriver ($module);
 		
 		if (isError ($mod)) {
 			return $mod;

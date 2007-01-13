@@ -267,8 +267,8 @@ class adminCorePlugin extends InstallablePlugin {
 		return true;
 	}
 	
-	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
-		$pageM = new pageManager ($dbModule);
+	function install (&$pluginAPI, &$dbDriver, $siteDefaultLanguage) {
+		$pageM = new pageManager ($dbDriver);
 		$t = &$pluginAPI->getI18NManager();
 		$admin = $pageM->getAdminPage ();
 		$ahome = $pageM->newPage ();
@@ -300,7 +300,7 @@ class adminCorePlugin extends InstallablePlugin {
 				'translated_title'=>$t->translate ('Save config'), 
 				'translated_content'=>$t->translate ('')));
 		$adminSaveConfig->addTranslation ($tASaveConfig);
-		$this->_pluginAdmin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
+		$this->_pluginAdmin->install ($pluginAPI, $dbDriver, $siteDefaultLanguage);
 		
 		$adminLogout = $pageM->newPage ();
 		$adminLogout->initFromArray (array (

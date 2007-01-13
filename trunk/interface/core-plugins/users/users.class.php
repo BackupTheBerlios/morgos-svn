@@ -264,11 +264,11 @@ class userCorePlugin extends InstallablePlugin {
 
 	function isCorePlugin () {return true;}
 	
-	function install (&$pluginAPI, &$dbModule, $siteDefaultLanguage) {
-		$uM = new UserManager ($dbModule);
+	function install (&$pluginAPI, &$dbDriver, $siteDefaultLanguage) {
+		$uM = new UserManager ($dbDriver);
 		$uM->installAllTables ();
 		
-		$pageM = new pageManager ($dbModule);
+		$pageM = new pageManager ($dbDriver);
 		$t = &$pluginAPI->getI18NManager();
 		$site = $pageM->getSitePage ();
 		$myaccount = $pageM->newPage ();
@@ -321,7 +321,7 @@ class userCorePlugin extends InstallablePlugin {
 		$myaccount->addTranslation ($tMyAccount);
 		$lostpass->addTranslation ($tLostPass);
 		
-		$this->_adminPlugin->install ($pluginAPI, $dbModule, $siteDefaultLanguage);
+		$this->_adminPlugin->install ($pluginAPI, $dbDriver, $siteDefaultLanguage);
 		
 		// install 2 morgos -> user extensions
 		$skinTable = new dbField ('skin', DB_TYPE_STRING, 40);
@@ -335,7 +335,7 @@ class userCorePlugin extends InstallablePlugin {
 	}
 	
 	function isInstalled (&$pluginAPI) {
-		$db = &$pluginAPI->getDBModule ();
+		$db = &$pluginAPI->getDBDriver ();
 		return $db->tableExists ('groupPermissions') && 
 			$db->tableExists ('groups') && $db->tableExists ('translatedGroups') && 
 			$db->tableExists ('groupUsers') && $db->tableExists ('users');

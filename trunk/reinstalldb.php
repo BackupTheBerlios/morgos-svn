@@ -14,7 +14,7 @@ if (file_exists ('config.php')) {
 	$_POST['action'] = 'installerInstall';
 	$_POST['siteName'] = $c->getStringItem ('/site/title');
 	$_POST['siteDefaultLanguage'] = $c->getStringItem ('/site/default_language');
-	$_POST['databaseModule'] = $c->getStringItem ('/databases/module');
+	$_POST['databaseDriver'] = $c->getStringItem ('/databases/driver');
 	$_POST['databaseHost'] = $c->getStringItem ('/databases/host');
 	$_POST['databaseUser'] = $c->getStringItem ('/databases/user');
 	$_POST['databasePassword'] = $c->getStringItem ('/databases/password');
@@ -27,7 +27,8 @@ if (file_exists ('config.php')) {
 	// lets hack some more
 	$_SERVER['REQUEST_METHOD'] = 'POST';
 	
-	$dbDriver = databaseLoadModule ($_POST['databaseModule']);
+	DatabaseDriverManager::findAllDriversInDirectory ('core/dbdrivers');
+	$dbDriver = DatabaseDriverManager::loadDriver ($_POST['databaseDriver']);
 	$dbDriver->connect ($_POST['databaseHost'], 
 		$_POST['databaseUser'], $_POST['databasePassword'], $_POST['databaseName']);
 		
