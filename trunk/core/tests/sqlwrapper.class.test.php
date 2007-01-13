@@ -32,7 +32,7 @@ class BookManager extends DBTableManager {
 }
 
 class Book extends DBTableObject {
-	function Book (&$db, $creator) {
+	function Book (&$db, &$creator) {
 		$title = new dbField ('title', DB_TYPE_STRING, 255);
 		$author = new dbField ('author', DB_TYPE_INT);
 		$backText = new dbField ('backtext', DB_TYPE_TEXT);
@@ -46,7 +46,7 @@ class Book extends DBTableObject {
 }
 
 class Author extends DBTableObject {
-	function Author (&$db, $creator) {
+	function Author (&$db, &$creator) {
 		$firstName = new dbField ('firstname', DB_TYPE_STRING, 70);
 		$lastName = new dbField ('lastname', DB_TYPE_STRING, 70);
 		$ID = new dbField ('authorid', DB_TYPE_INT, 11);

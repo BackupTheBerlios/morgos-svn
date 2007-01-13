@@ -36,11 +36,22 @@ class DatabaseDriverManagerTest extends TestCase {
 			DatabaseDriverManager::getAllInstalledDrivers ());
 	}
 	
-	function testIsDriverInstalled () {
-		$this->assertTrue (DatabaseDriverManager::canDriverRun ('MySQL'));
-		$this->assertTrue (DatabaseDriverManager::canDriverRun ('MySQLI'));
-		$this->assertTrue (DatabaseDriverManager::canDriverRun ('PostgreSQL'));
+	function canDriverRun () {
+		global $installedDrivers;
+		foreach ($installedDriver as $driver) {
+			$this->assertTrue (DatabaseDriverManager::canDriverRun ($driver));
+		}
+		
 		$this->assertFalse (DatabaseDriverManager::canDriverRun ('NotInstalled'));
+	}
+	
+	function testIsDriverInstalled () {
+		global $installedDrivers;
+		
+		$this->assertTrue (DatabaseDriverManager::isDriverInstalled ('MySQL'));
+		$this->assertTrue (DatabaseDriverManager::isDriverInstalled ('MySQLI'));
+		$this->assertTrue (DatabaseDriverManager::isDriverInstalled ('PostgreSQL'));
+		$this->assertFalse (DatabaseDriverManager::isDriverInstalled ('NotInstalled'));
 	}
 	
 	function testAddDriver () {

@@ -40,7 +40,7 @@ class Page extends DBTableObject {
 	 * @param $allEFields (dbField array) all extra fields
 	 * @param $allEJoins (dbGenericJoin array) all extra joins
 	*/	
-	function Page ($db, &$parent, $allEFields = array (), $allEJoins = array ()) {
+	function Page (&$db, &$parent, $allEFields = array (), $allEJoins = array ()) {
 		$name = new dbField ('name', DB_TYPE_STRING, 255);
 		$parentPageID = new dbField ('parent_page_id', DB_TYPE_INT, 11);
 		$placeInMenu = new dbField ('place_in_menu', DB_TYPE_INT, 4);
@@ -192,7 +192,7 @@ class Page extends DBTableObject {
 				array (new WhereClause ('language_code', $languageCode, '=')));
 		if ((count ($trans) >= 1) and (! isError ($trans))) {
 			$tPageArray = $trans[0]; /*Normally I should get only one*/
-			$creator = $this->getCreator ();
+			$creator = &$this->getCreator ();
 			$tPage = $creator->newTranslatedPage ();
 			$tPage->initFromArray ($tPageArray);
 			return $tPage;
