@@ -40,7 +40,7 @@ class TranslatedPage extends DBTableObject {
 	 * @param $extraFields (object dbField array)
 	 * @param $extraJoins (object dbGenericJoinField array)
 	*/
-	function TranslatedPage ($db, &$parent, $extraFields = array (), $extraJoins = array ()) {
+	function TranslatedPage (&$db, &$parent, $extraFields = array (), $extraJoins = array ()) {
 		$translatedTitle = new dbField ('translated_title', DB_TYPE_STRING, 255);
 		$translatedNavTitle = new dbField ('translated_nav_title', DB_TYPE_STRING, 255);
 		$translatedNavTitle->canBeNull = true;

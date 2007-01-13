@@ -361,7 +361,7 @@ class DBTableObject {
 	 * @param $extraFields (object option array) default array ()
 	 * @param $joins (object genericJoind array) default array ()
 	*/
-	function DBTableObject (&$db, $basicFields, $tableName, $IDName, $creator = null, 
+	function DBTableObject (&$db, $basicFields, $tableName, $IDName, &$creator, 
 			$extraFields = array (), $joins = array ()) {
 		$this->_db = &$db;
 		
@@ -755,7 +755,7 @@ class DBTableObject {
 	 * @protected
 	 * @return (object)
 	*/
-	function getCreator () {return $this->_creator; }
+	function &getCreator () {return $this->_creator; }
 	
 	/**
 	 * Set all extra fields that should be stored in the db.
@@ -1038,6 +1038,7 @@ class DBTableManager {
 	function createObject ($tableName) {
 		if ($this->managesTable ($tableName)) {
 			$oName = $this->_tableList[$tableName];
+			
 			return new $oName ($this->_db, $this,
 				$this->getExtraFieldsForTable ($tableName));
 		} else {
@@ -1146,7 +1147,7 @@ class DBTableManager {
 					$this->_db->getAlldbFields (
 						$this->_db->getPrefix ().$tableName, $filter);
 			}
-			return $this->_extraFieldsForTable[$tableName];		
+			return $this->_extraFieldsForTable[$tableName];	
 		} else {
 			return new Error ('DONT_MANAGE_THIS_TABLE', $tableName);
 		}
