@@ -52,6 +52,7 @@ class eventManagerTest extends TestCase {
 		$this->_eventManager = new eventManager ();
 		$this->_runEvent = new event ('run');
 		$this->_onRunCallback = new callback ('onRun', 'onRun');
+		$this->_internalCallback = new callback ('thisCallback', array (&$this, 'internCallback'));
 	}
 	
 	function testAddEvent () {
@@ -163,6 +164,14 @@ class eventManagerTest extends TestCase {
 		$this->assertTrue ($a['someCallback']->is ('PARAM2_IS_NULL'));
 	}
 	
+	function testTriggerThisCallback () {
+		$tEvent = new Event ('thisEvent', array ());
+		$this->_eventManager->addEvent ($tEvent);
+		$this->_eventManager->subscribeToEvent ('thisEvent', $this->_internalCallback);
+		$a = $this->_eventManager->triggerEvent ('thisEvent', array ('1'));
+		$this->assertTrue ($a['thisCallback']);
+	} 
+	
 	function testErrorReturning () {
 		$e = $this->_eventManager->getEvent ('someEvent'); 
 		$this->assertTrue ($e->is ('EVENT_DOESNT_EXISTS'));
@@ -199,6 +208,10 @@ class eventManagerTest extends TestCase {
 		} else {
 			return false;
 		}
+	}
+	
+	function internCallback () {
+		return true;
 	}
 }
 ?>

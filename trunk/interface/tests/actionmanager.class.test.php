@@ -184,14 +184,14 @@ class ActionManagerTest extends TestCase {
 		}
 		$this->_actionM = $actionM;
 		$this->_anAction = new Action ('noPageAction', 'GET', 
-			array ($this, 'executeNoPageAction'), array (new StringInput ('reqOp')),
+			array (&$this, 'executeNoPageAction'), array (new StringInput ('reqOp')),
 			array (new IDInput ('nonReqOp')));
 			
 		$this->_aPageAction = new Action ('pageAction', 'GET', 
-			array ($this, 'executePageAction'), array (new StringInput ('reqOp')),
+			array (&$this, 'executePageAction'), array (new StringInput ('reqOp')),
 			array (new IDInput ('nonReqOp')), 'MorgOS_PageName', false);
 		$this->_autoTriggerAction = new Action ('autoTriggerAction', 'POST', 
-			array ($this, 'executeAutoTriggerAction'), array (new StringInput ('reqOp')),
+			array (&$this, 'executeAutoTriggerAction'), array (new StringInput ('reqOp')),
 			array (new IDInput ('nonReqOp')), 'MorgOS_PageName', true);
 	}
 
@@ -211,14 +211,14 @@ class ActionManagerTest extends TestCase {
 	function testBareActionExecute () {
 		$this->assertEquals ('none', $this->_lastExecuted);
 		$this->assertEquals (array (), $this->_lastParams);
-		$_GET = array ('reqOp'=>'aString', 'nonReqOp'=>'');
+		$_GET = array ('reqOp'=>'aString', 'nonReqOp'=>null);
 		$this->_anAction->execute ();
 		$this->assertEquals ('anAction', $this->_lastExecuted);
 		$this->assertEquals ($_GET, $this->_lastParams);
 		$this->_aPageAction->execute ();
 		$this->assertEquals ('aPageAction', $this->_lastExecuted);
 		$this->assertEquals ($_GET, $this->_lastParams);
-		$_POST = array ('reqOp'=>'aString', 'nonReqOp'=>'');
+		$_POST = array ('reqOp'=>'aString', 'nonReqOp'=>null);
 		$this->_autoTriggerAction->execute ();
 		$this->assertEquals ('autoTriggerAction', $this->_lastExecuted);
 		$this->assertEquals ($_POST, $this->_lastParams);
