@@ -31,7 +31,6 @@ define ('MORGOS_ADMIN_PLUGINID', '{b8731582-9309-4629-a3d9-647f26a5a345}');
 define ('MORGOS_DEFAULTSKIN_ID', '{33327ddc-9342-4f1a-9454-06e5a4adeef8}');
 define ('MORGOS_DEFAULT_LANGUAGE', 'en_UK');
 
-include_once ('interface/smarty/libs/Smarty.class.php');
 include_once ('core/config.class.php');
 include_once ('core/varia.functions.php');
 include_once ('core/dbdrivermanager.class.php');
@@ -44,50 +43,12 @@ include_once ('interface/pluginmanager.class.php');
 include_once ('interface/eventmanager.class.php');
 include_once ('interface/pluginapi.class.php');
 include_once ('interface/skinmanager.class.php');
+include_once ('interface/extendedsmarty.class.php');
 
 /**
  * This is the front-end for MorgOS.
  * @defgroup interface Interface
 */
-
-/**
- * A class that extends the functionality for smarty.
- *
- * @ingroup interface
- * @since 0.2
- * @author Nathan Samson
-*/
-class ExtendedSmarty extends Smarty {
-	/**
-	 * The constructor.
-	*/
-	function ExtendedSmarty () {
-		parent::Smarty ();
-		$this->template_dir = array ();
-	}	
-	
-	/**
-	 * Adds something to a value, put it after current value.
-	 *
-	 * @param $varName (string)
-	 * @param $extraValue (mixed)
-	 * @public
-	*/
-	function appendTo ($varName, $extraValue) {
-		$this->assign ($varName, $this->get_template_vars ($varName).$extraValue);
-	}
-	
-	/**
-	 * Prepends something to a value, put it before current value.
-	 *
-	 * @param $varName (string)
-	 * @param $extraValue (mixed)
-	 * @public
-	*/
-	function prependTo ($varName, $extraValue) {
-		$this->assign ($varName, $extraValue.$this->get_template_vars ($varName));
-	}
-}
 
 /**
  * Loads the correct MorgOS class and returns it.

@@ -7,6 +7,7 @@ function loadSuite (&$suite) {
 	$suite->addTestFile ('interface/tests/actionmanager.class.test.php');
 	$suite->addTestFile ('interface/tests/pluginapi.class.test.php');
 	$suite->addTestFile ('interface/tests/skinmanager.class.test.php');
+	$suite->addTestFile ('interface/tests/extendedsmarty.class.test.php');
 }
 
 ?>
