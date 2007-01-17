@@ -25,6 +25,7 @@ class SmartyTable {
 	var $_data;
 	var $_orderHeader;
 	var $_orderDirection;
+	var $_customData;
 
 	/**
 	 * The constructor.
@@ -35,6 +36,7 @@ class SmartyTable {
 	 * @param &$smarty (smarty)
 	*/
 	function SmartyTable ($name, $headers, $data, &$smarty) {
+		$this->_customData = array ();
 		$this->_headers = array ();
 		foreach ($headers as $header) {
 			$this->_headers[$header] = $header;
@@ -74,8 +76,18 @@ class SmartyTable {
 			$row = $config['dataRow'];
 			$data = '';
 			foreach ($this->_headers as $key=>$v) {
+				if (array_key_exists ($key, $this->_customData)) {
+					$dataVal = $this->_customData[$key]['content'];
+					$item = $this->_customData[$key]['item'];					
+					preg_match_all ('/\$'.$item.'.([\w]+)}/', $dataVal, $matches);
+					foreach ($matches[1] as $key=>$vkey) {
+						$dataVal = str_replace ('$'.$item.'.'.$vkey.'}', $value[$vkey], $dataVal);
+					}
+				} else {
+					$dataVal = $value[$key];
+				}
 				$data .= $config['dataElement'];
-				$data = str_replace ('VALUE', $value[$key],$data); 
+				$data = str_replace ('VALUE', $dataVal,$data); 
 			}
 			$row = str_replace ('DATA', $data, $row);
 			$out .= $row;
@@ -106,6 +118,17 @@ class SmartyTable {
 	}
 	
 	/**
+	 * Sets a custom data value
+	 *
+	 * @param $header (string)
+	 * @param $item (string)
+	 * @param $content (string)
+	*/
+	function setCustomData ($header, $item, $content) {
+		$this->_customData[$header] = array ('item'=>$item, 'content'=>$content);
+	}
+	
+	/**
 	 * Returns the name
 	 * @return (string)
 	*/
@@ -126,9 +149,6 @@ class SmartyTable {
 			}
 		}
 		$headerName = $this->_orderHeader;
-		//die ($$headerName);
-		/*echo count ($this->_data);
-		echo count ($$headerName);*/
 		array_multisort ($$headerName, $this->_orderDirection, $this->_data); 
 	}
 }
@@ -150,6 +170,8 @@ class ExtendedSmarty extends Smarty {
 		$this->register_block ('table', array (&$this, 'table'));
 		$this->register_block ('table_custom_header', 
 				array (&$this, 'table_custom_header'));
+		$this->register_block ('table_data_element', 
+				array (&$this, 'table_data_element'));
 	}	
 	
 	/**
@@ -160,7 +182,8 @@ class ExtendedSmarty extends Smarty {
 	 * @public
 	*/
 	function appendTo ($varName, $extraValue) {
-		$this->assign ($varName, $this->get_template_vars ($varName).$extraValue);
+		$this->assign ($varName, 
+			$this->get_template_vars ($varName).$extraValue);
 	}
 	
 	/**
@@ -171,7 +194,8 @@ class ExtendedSmarty extends Smarty {
 	 * @public
 	*/
 	function prependTo ($varName, $extraValue) {
-		$this->assign ($varName, $extraValue.$this->get_template_vars ($varName));
+		$this->assign ($varName, 
+			$extraValue.$this->get_template_vars ($varName));
 	}
 	
 	/**
@@ -209,7 +233,7 @@ class ExtendedSmarty extends Smarty {
 	}
 	
 	/**
-	 * Defines a custom header for the current
+	 * Defines a custom header for the current table
 	 *
 	 * @param $params (string array)
 	 * @param $content
@@ -218,10 +242,30 @@ class ExtendedSmarty extends Smarty {
 	*/
 	function table_custom_header ($params, $content, &$smarty, &$repeat) {
 		if (! $this->_currentTable) {	
-			$smarty->trigger_error ('Error: table_custom_header should be placed inside a table');
+			$smarty->trigger_error 
+				('Error: table_custom_header should be placed inside a table');
 		}
 		if (! $repeat) {
 			$this->_currentTable->setCustomHeader ($params['header'], $content);
+		}
+	}
+	
+	/**
+	 * Defines a custom column data for the current table
+	 *
+	 * @param $params (string array)
+	 * @param $content
+	 * @param &$smarty
+	 * @param &$repeat 
+	*/
+	function table_data_element ($params, $content, &$smarty, &$repeat) {
+		if (! $this->_currentTable) {	
+			$smarty->trigger_error 
+				('Error: table_data_element should be placed inside a table');
+		}
+		if (! $repeat) {
+			$this->_currentTable->setCustomData ($params['header'], 
+				$params['item'], $content);
 		}
 	}
 }

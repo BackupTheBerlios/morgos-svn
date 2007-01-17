@@ -78,6 +78,17 @@ class TestSmarty extends TestCase {
 		$exp = file_get_contents ('interface/tests/smarty/table_custom_header_exp.tpl');	
 		$this->assertEquals ($exp, $result);
 	}
+	
+	function testCustomData () {
+		$users = array ();
+		$users[] = array ('ID'=>1, 'Name'=>'User1', 'LastMessageID'=>1, 'LastMessageText'=>1);
+		$users[] = array ('ID'=>3, 'Name'=>'XYZ', 'LastMessageID'=>0, 'LastMessageText'=>0);
+		$users[] = array ('ID'=>2, 'Name'=>'Another User', 'LastMessageID'=>8, 'LastMessageText'=>8);
+		$this->smarty->assign ('UserData', $users);
+		$result = $this->smarty->fetch ('table_data.tpl');
+		$exp = file_get_contents ('interface/tests/smarty/table_data_exp.tpl');	
+		$this->assertEquals ($exp, $result);
+	}
 }
 
 ?>
