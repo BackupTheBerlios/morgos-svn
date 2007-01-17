@@ -38,6 +38,46 @@ class TestSmarty extends TestCase {
 		$this->assertEquals ($exp, $result);
 	}
 
+	function testTableOrderedDesc () {
+		$users = array ();
+		$users[] = array ('ID'=>1, 'Name'=>'User1', 'Comment'=>'First Comment.');
+		$users[] = array ('ID'=>3, 'Name'=>'XYZ', 'Comment'=>'GHI Comment.');
+		$users[] = array ('ID'=>2, 'Name'=>'Another User', 'Comment'=>'Last Comment.');
+		$this->smarty->assign ('UserData', $users);
+		global $_GET;
+		$_GET['orderTable_testTable_orderDir'] = 'DESC';
+		$_GET['orderTable_testTable_orderColumn'] = 'ID';
+		$result = $this->smarty->fetch ('table.tpl');
+		$exp = file_get_contents ('interface/tests/smarty/table_desc_expected.tpl');	
+		$this->assertEquals ($exp, $result);
+	}
+	
+	function testTableOrderedAscName () {
+		$users = array ();
+		$users[] = array ('ID'=>1, 'Name'=>'User1', 'Comment'=>'First Comment.');
+		$users[] = array ('ID'=>3, 'Name'=>'XYZ', 'Comment'=>'GHI Comment.');
+		$users[] = array ('ID'=>2, 'Name'=>'Another User', 'Comment'=>'Last Comment.');
+		$this->smarty->assign ('UserData', $users);
+		global $_GET;
+		$_GET['orderTable_testTable_orderDir'] = 'ASC';
+		$_GET['orderTable_testTable_orderColumn'] = 'Name';
+		$result = $this->smarty->fetch ('table.tpl');
+		$exp = file_get_contents ('interface/tests/smarty/table_asc_name_expected.tpl');	
+		$this->assertEquals ($exp, $result);
+		global $_GET;
+		$_GET = array ();
+	}
+	
+	function testCustomHeader () {
+		$users = array ();
+		$users[] = array ('ID'=>1, 'Name'=>'User1', 'Comment'=>'First Comment.');
+		$users[] = array ('ID'=>3, 'Name'=>'XYZ', 'Comment'=>'GHI Comment.');
+		$users[] = array ('ID'=>2, 'Name'=>'Another User', 'Comment'=>'Last Comment.');
+		$this->smarty->assign ('UserData', $users);
+		$result = $this->smarty->fetch ('table_custom_headers.tpl');
+		$exp = file_get_contents ('interface/tests/smarty/table_custom_header_exp.tpl');	
+		$this->assertEquals ($exp, $result);
+	}
 }
 
 ?>

@@ -148,6 +148,8 @@ class ExtendedSmarty extends Smarty {
 		parent::Smarty ();
 		$this->template_dir = array ();
 		$this->register_block ('table', array (&$this, 'table'));
+		$this->register_block ('table_custom_header', 
+				array (&$this, 'table_custom_header'));
 	}	
 	
 	/**
@@ -183,11 +185,23 @@ class ExtendedSmarty extends Smarty {
 			$headers = explode (';', $params['headers']);
 			$table = new SmartyTable ($params['name'], $headers, 
 				$params['data'], $this);
+			$orderDirKey = 'orderTable_'.$table->getName ().'_orderDir';
+			$orderColKey = 'orderTable_'.$table->getName ().'_orderColumn';
+			if (array_key_exists ($orderColKey, $_GET)) {
+				$orderCol = $_GET[$orderColKey];
+				$orderDir = SORT_ASC;
+				if (array_key_exists ($orderDirKey, $_GET)) {
+					if ($_GET[$orderDirKey] == 'DESC') {
+						$orderDir = SORT_DESC;
+					} else {
+						$orderDir = SORT_ASC;
+					}
+				}
+				$table->setSortOrder ($orderCol, $orderDir);
+			}
+		
 			$this->_currentTable = $table;
-			$this->register_block ('table_custom_header', 
-				array (&$this, 'table_custom_header'));
 		} else {
-			$this->unregister_block ('table_custom_header');
 			$out = $this->_currentTable->generateOutput ();
 			$this->_currentTable = null;
 			return $out;
@@ -203,6 +217,9 @@ class ExtendedSmarty extends Smarty {
 	 * @param &$repeat 
 	*/
 	function table_custom_header ($params, $content, &$smarty, &$repeat) {
+		if (! $this->_currentTable) {	
+			$smarty->trigger_error ('Error: table_custom_header should be placed inside a table');
+		}
 		if (! $repeat) {
 			$this->_currentTable->setCustomHeader ($params['header'], $content);
 		}
