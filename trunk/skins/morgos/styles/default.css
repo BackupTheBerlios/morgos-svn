@@ -4,6 +4,11 @@
   clear: both;
 }
 
+#affilates img {
+	margin: 5px;
+	margin-bottom: 0;
+}
+
 div#mess {
 margin-bottom: 45px;
 color: white;
