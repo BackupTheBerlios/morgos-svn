@@ -44,7 +44,7 @@ class TranslatedPage extends DBTableObject {
 		$translatedTitle = new dbField ('translated_title', DB_TYPE_STRING, 255);
 		$translatedNavTitle = new dbField ('translated_nav_title', DB_TYPE_STRING, 255);
 		$translatedNavTitle->canBeNull = true;
-		$translatedContent = new dbField ('translated_content', DB_TYPE_STRING, 255);
+		$translatedContent = new dbField ('translated_content', DB_TYPE_TEXT);
 		$translatedContent->canBeNull = true;		
 		$pageID = new dbField ('page_id', DB_TYPE_INT, 11);
 		$pageID->canBeNull = true;
