@@ -1,6 +1,6 @@
 <?php
 /* MorgOS is a Content Management System written in PHP
- * Copyright (C) 2005-2006 MorgOS
+ * Copyright (C) 2005-2007 MorgOS
  * This program is free software; you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -131,7 +131,7 @@ class viewPageCorePlugin extends InstallablePlugin {
 		$sm->assign ('MorgOS_CurrentPage_Title', $tPage->getTitle ());
 		$sm->assign ('MorgOS_CurrentPage_Content', $tPage->getContent ());		
 		$sm->assign ('MorgOS_Site_HeaderImage', $this->getHeaderImageLink ());
-		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2006');
+		$sm->assign ('MorgOS_Copyright', 'Powered by MorgOS &copy; 2005-2007');
 		$sm->assign ('MorgOS_Menu', $this->getMenuArray ($page->getParentPage (), 
 			$pageLang));
 		$sm->assign ('MorgOS_RootMenu', $this->getMenuArray ($root, $pageLang));
