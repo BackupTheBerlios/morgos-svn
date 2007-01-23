@@ -194,6 +194,8 @@ class NoGUIMorgOS {
 			 Please make it writable and proceed.');
 		$this->_i18nManager->addError ('DATABASE_NOT_INSTALLED', 
 			'It seems that the installation is not complete. Reinstall the database.');
+		$this->_i18nManager->addError ('DBDRIVER_CANT_CONNECT', 
+			"I can't connect with the database. Please try again later, or warn the system administrator. ");
 	}
 }
 
@@ -380,8 +382,6 @@ class BaseMorgos extends NoGUIMorgOS {
 		$this->loadSkin ();
 		if (array_key_exists ('HTTP_REFERER', $_SERVER)) {
 			$this->_smarty->assign ('MorgOS_PreviousLink', $_SERVER['HTTP_REFERER']);
-		} else {
-			//$this->_smarty->assign ('MorgOS_PreviousLink', 'http://google.com');
 		}
 		$this->_smarty->assign ('MorgOS_Error', 
 			$this->_i18nManager->translateError ($error));
@@ -566,6 +566,10 @@ class Morgos extends ConfigMorgos {
 			$this->_configManager->getStringItem ('/databases/database'));
 			
 		if (isError ($e)) {
+			$this->_pageManager = new PageManager ($this->_dbDriver);
+			$this->_userManager = new UserManager ($this->_dbDriver);
+			$this->loadPluginAPI ();
+			$this->loadUserSettings ();
 			$this->error ($e);
 		}		
 
