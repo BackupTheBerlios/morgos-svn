@@ -37,22 +37,64 @@ class BasePluginAPI {
 	var $_actionManager;
 	var $_smarty;
 	var $_skinManager;
+	var $_systemMessagesQueue;
 	
 	function BasePluginAPI (&$morgos) {
 		$this->_morgos = &$morgos;
-		$this->_messages = array (ERROR=>array(), WARNING=>array (), NOTICE=>array ());
+		$this->_systemMessagesQueue = array ();
+		foreach ($_COOKIE as $key=>$type) {
+			if (strpos ($key, 'system_message_type_')) {
+				$sys_mes_name = substr ($key, 0, 
+					strlen ('system_message_type_'));				
+				$short = $_COOKIE['system_message_short_'.$sys_mes_name];
+				$long = $_COOKIE['system_message_long_'.$sys_mes_name];
+				
+				$this->_systemMessagesQueue[$type][] = array (
+							'Short' => $short,
+							'Long'  => $long);
+							
+				// empty cookies
+				addcookie ('system_message_short_'.$sys_mes_name);
+				addcookie ('system_message_long_'.$sys_mes_name);
+				addcookie ('system_message_type_'.$sys_mes_name);
+			}
+		}
+	}
+	
+	/**
+	 * Shuts the pluginAPI down
+	 *
+	 * @public
+	 * @since 0.4
+	*/
+	function shutdown () {
+		$i = 0;
+		foreach ($this->_systemMessagesQueue as $type => $sysMessages) {
+			foreach ($sysMessages as $m) {
+				addcookie ('system_message_type_'.$i, $type);
+				addcookie ('system_message_short_'.$i, $m[0]);
+				addcookie ('system_message_long_'.$i, $m[1]);
+				$i++;
+			}
+		}
 	}
 
 	function setI18NManager (&$i18nManager) {$this->_i18nManager = &$i18nManager;}
 	function &getI18NManager () {return $this->_i18nManager;}	
 	
-	function setPluginManager (&$pluginManager) {$this->_pluginManager = &$pluginManager;}
+	function setPluginManager (&$pluginManager) {
+		$this->_pluginManager = &$pluginManager;
+	}
 	function &getPluginManager () {return $this->_pluginManager;}
 	
-	function setEventManager (&$eventManager) {$this->_eventManager = &$eventManager;}
+	function setEventManager (&$eventManager) {
+		$this->_eventManager = &$eventManager;
+	}
 	function &getEventManager () {return $this->_eventManager;}
 	
-	function setActionManager (&$actionManager) {$this->_actionManager = &$actionManager;}
+	function setActionManager (&$actionManager) {
+		$this->_actionManager = &$actionManager;
+	}
 	function &getActionManager () {return $this->_actionManager;}
 	
 	function setSmarty (&$smarty) {$this->_smarty = &$smarty;}
@@ -64,7 +106,9 @@ class BasePluginAPI {
 	/**
 	 * Adds a message to the queue.
 	 *
-	 * @param $tMessage (string) the message, this is the exact message that will be shown.
+	 * @depreacted since 0.4
+	 * @param $tMessage (string) the message, 
+	 * 	this is the exact message that will be shown.
 	 *  it should be translated already.
 	 * @param $type (ERROR|WARNING|NOTICE)
 	 * @public
@@ -73,6 +117,66 @@ class BasePluginAPI {
 		$newKey = 'message_'.$type.'_'.count ($this->_messages[$type]);
 		$this->_messages[$type][] = $tMessage;
 		setcookie ($newKey, $tMessage);
+	}
+	
+	/**
+	 * Adds a system message to the queue.
+	 *
+	 * @public
+	 * @since 0.4
+	 * @$param $type (Message type) ERROR|WARNING|NOTICE
+	 * @param $long (array string) the first item is the long message, 
+	 * 		other items are parameters for the translation
+	 * @param $short (string) the untranslated short message, defaults
+	 *	Notice, Warning and Error for Notice, Warning, and error
+	*/
+	function systemMessage ($type, $long, $short = null) {
+		if ($short == null) {
+			switch ($type) {
+				case NOTICE:
+					$short = 'Notice';
+					break;
+				case WARNING:
+					$short = 'Warning';
+					break;
+				case ERROR:
+					$short = 'Error';
+			}
+		}
+		$tShort = $this->_i18NManager->translate ($short);
+		$tLong = $this->_i18NManager->translate ($long);
+		$this->_systemMessageQueue[] = array ($tShort, $tLong, $type);
+	}
+	
+	/**
+	 * Returns all system messages from the queue, and removes them
+	 *
+	 * @public
+	 * @since 0.4
+	 * @returns (array string array) with keys 'Short', 'Long'
+	*/
+	function getAllSystemMessage () {
+		$sMessagesError = array ();
+		$sMessagesWarning = array ();
+		$sMessagesNotice = array ();
+		while ($m = array_shift ($this->_systeMessageQueue)) {
+			if ($m[2] == ERROR) {
+				$sMessagesError[] = array (
+									'Short' => $m[0],
+									'Long'  => $m[1]);
+			} elseif ($m[2] == WARNING) {
+				$sMessagesWarning[] = array (
+									'Short' => $m[0],
+									'Long'  => $m[1]);
+			} else {
+				$sMessagesNotice[] = array (
+									'Short' => $m[0],
+									'Long'  => $m[1]);
+			}
+		}
+		return array ( ERROR     => $sMessagerError,
+					WARNINING => $sMessagesWarning,
+					NOTICE    => $sMessagesNotice);
 	}
 	
 	/**
@@ -92,6 +196,9 @@ class BasePluginAPI {
 		return $messages;
 	}
 	
+	/*	 
+	 * @depreacted since 0.4
+	*/
 	function addRuntimeMessage ($tMessage, $type) {
 		$sm = &$this->getSmarty ();
 		switch ($type) {
@@ -108,7 +215,8 @@ class BasePluginAPI {
 	}
 	
 	/**
-	 * Make the plugin do an action (and stops the current action). Only available for actions over GET
+	 * Make the plugin do an action (and stops the current action). 
+	 * Only available for actions over GET
 	 * 
 	 * @param $action (string)
 	 * @param $params (string array) The params that shopuld be given.
@@ -132,7 +240,9 @@ class BasePluginAPI {
 class ConfigPluginAPI extends BasePluginAPI {
 	var $_configManager;
 
-	function setConfigManager (&$configManager) {$this->_configManager = &$configManager;}
+	function setConfigManager (&$configManager) {
+		$this->_configManager = &$configManager;
+	}
 	function &getConfigManager () {return $this->_configManager;}
 	
 	/**
@@ -226,7 +336,8 @@ class PluginAPI extends ConfigPluginAPI {
 			$sm->display ('admin/login.tpl');
 		} else {
 			$this->addMessage (
-				$t->translate ("You don't have the permission to view this page."));
+				$t->translate ("You don't have the permission"
+					." to view this page."));
 			$this->executePreviousAction ();
 		}
 	}
@@ -239,13 +350,15 @@ class PluginAPI extends ConfigPluginAPI {
 		$array = array ();
 		foreach ($menu as $menuItem) {
 			//var_dump ($menuItem->getPluginID ());
-			$pageLang = $this->_configManager->getStringItem ('/user/contentLang');
+			$pageLang = $this->_configManager->getStringItem (
+				'/user/contentLang');
 			if ($menuItem->getPluginID () == null or
 			    in_array ($menuItem->getPluginID (), 
 			    		$this->_pluginManager->getAllLoadedPluginsID ())) {
 				$itemArray = array ();
 				$itemArray['Childs'] = 
-					$this->menuToArray ($this->_pageManager->getMenu ($menuItem));
+					$this->menuToArray ($this->_pageManager->getMenu (
+						$menuItem));
 				$t = $menuItem->getTranslation ($pageLang);
 				if (isError ($t)) {
 					if ($t->is ('PAGE_TRANSLATION_DOESNT_EXIST')) {
@@ -279,9 +392,10 @@ class PluginAPI extends ConfigPluginAPI {
 				}
 				$itemArray['PossibleNewParents'] = $newParents;
 				$parent = $menuItem->getParentPage ();
-				$itemArray['canMoveUp'] = !$parent->isRootPage ();					
+				$itemArray['canMoveUp'] = !$parent->isRootPage ();
 				
-				$itemArray['AdminLink'] = 'index.php?action=adminPageManager&parentPageID='.$menuItem->getID ();
+				$itemArray['AdminLink'] = 'index.php?action='
+					.'adminPageManager&parentPageID='.$menuItem->getID ();
 				$array[] = $itemArray;
 				//var_dump ($itemArray);
 			}
@@ -294,7 +408,8 @@ class PluginAPI extends ConfigPluginAPI {
 		$out = '<?php'.PHP_NL;
 		$out .= '/*This file is autogenerated by MorgOS, do not edit*/'.PHP_NL;
 		foreach ($config->getArrayItem ('') as $item) {
-			$out .= '$configItems[\''.$item->getName ().'\'] = '.$item->getStringValue ().';'.PHP_NL;
+			$out .= '$configItems[\''.$item->getName ().'\'] = ';
+			$out .= $item->getStringValue ().';'.PHP_NL;
 		}
 		$out .= '?>';
 		
@@ -310,9 +425,11 @@ class PluginAPI extends ConfigPluginAPI {
 			$page = $pm->newPage ();
 			$page->initFromName ('MorgOS_Admin_SaveConfig');
 			
-			$a = $em->triggerEvent ('viewAnyAdminPage', array ($page->getID ()));
+			$a = $em->triggerEvent ('viewAnyAdminPage', 
+				array ($page->getID ()));
 			$sm->assign ('MorgOS_ConfigContent', htmlspecialchars ($out));
-			$sm->assign ('MorgOS_ConfigProceedLink', $am->getPreviousActionLinkString ());
+			$sm->assign ('MorgOS_ConfigProceedLink', 
+				$am->getPreviousActionLinkString ());
 			$sm->appendTo ('MorgOS_AdminPage_Content', 
 				$sm->fetch ('admin/saveconfig.tpl'));
 			$sm->display ('admin/genericpage.tpl');
@@ -367,7 +484,8 @@ class PluginAPI extends ConfigPluginAPI {
 				}
 			}
 		}
-		return $this->_configManager->addUserSetting ($name, STRING, $defaultValue);
+		return $this->_configManager->addUserSetting ($name, STRING, 
+				$defaultValue);
 	}
 	
 	/**

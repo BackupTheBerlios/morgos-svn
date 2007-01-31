@@ -1,3 +1,14 @@
+Version 0.4 ??/??/2007
+===========
+[Added]
+	[Skins]
+		* An extension on smarty to create fast tables
+	[API for DBModules]
+		* Changed the method to register a driver
+		* dbmodules => dbdrivers
+		* Changed the methods to see the drivers/load drivers/...
+	
+
 Version 0.3
 ===========
 [Added]

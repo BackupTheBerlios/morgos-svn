@@ -22,8 +22,9 @@
  * @since 0.2
  * @since 0.3 File is completely reorganized
  * @author Nathan Samson
+ja
 */
-define ('MORGOS_VERSION', '0.3.0');
+define ('MORGOS_VERSION', '0.4.0');
 define ('MORGOS_VIEWPAGE_PLUGINID', '{529e4a98-02a7-46bb-be2a-671a7dfc852f}');
 define ('MORGOS_USER_PLUGINID', '{5df79e7c-2c14-4ad2-b13e-5c420d33182a}');
 define ('MORGOS_ADMIN_PLUGINID', '{b8731582-9309-4629-a3d9-647f26a5a345}');
@@ -376,6 +377,7 @@ class BaseMorgos extends NoGUIMorgOS {
 		$this->_actionManager->shutdown ();
 		$this->_actionManager = null;
 		$this->_eventManager = null;
+		$this->_pluginAPI->shutdown ();
 		$this->_pluginAPI = null;
 		$this->_smarty = null;
 		parent::shutdown ();
