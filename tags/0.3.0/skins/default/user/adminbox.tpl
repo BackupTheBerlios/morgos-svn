@@ -1,0 +1,1 @@
+<a href="index.php?action=admin">{t s="Admin site"}</a>

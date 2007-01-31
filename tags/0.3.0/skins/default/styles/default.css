@@ -1,0 +1,174 @@
+body {
+color: white;
+background-color: #a1f4b2;
+}
+
+.header {
+background-color: #ffffff;
+color: black;
+border: 2px solid #22600c;
+height: 15%;
+margin-bottom: 5px;
+text-align: center;
+}
+
+.header img {
+height: 100px;
+}
+
+.linkbar {
+
+background-color: #ffffff;
+color: black;
+border: 2px solid #22600c;
+border-right: 0px;
+text-align: right;
+}
+
+input {
+background-color: white;
+border: 2px solid #22600c;
+}
+
+select {
+border: 2px solid #22600c;
+}
+
+table{
+  border-collapse: collapse;
+  border: 0;
+}
+
+td{
+  border: 2px #22600c solid;
+  padding-left: 10px; 
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+
+img {
+border: 0;
+}
+
+a img {
+border: 0;
+}
+
+a {
+color:black;
+text-decoration: none;
+}
+
+#footer {
+color: black;
+clear: both;
+padding-top:10px;
+text-align: center;
+}
+
+ul.menu li ul {
+
+display: none;
+}
+
+ul.menu li {
+position: relative;
+}
+
+
+ul.menu li:hover ul {
+display: block;
+}
+
+ul.menu li ul li {
+display: block;
+}
+
+ul.menu ul {
+position: absolute;
+text-align: left;
+left: 0;
+
+background-color: white;
+border: 2px solid #22600c;
+}
+
+ul.menu li ul li:hover {
+background-color:#22600c;
+color:white;
+}
+ul.menu li ul li {
+border-top: 1px solid #22600c;
+padding:3px;
+padding-right:1px;
+margin-top:5px;
+}
+
+div.linkbar ul li {
+display: inline;
+}
+
+div.linkbar ul {
+padding: 0;
+margin: 0;
+}
+
+.green {
+background-color: #a1f4b2;
+border: 3px solid #a1f4b2;
+}
+
+.greenbegin {
+background-color: #a1f4b2;
+border-left: 2px solid #22600c;
+margin-right: -4px;
+}
+
+.link{
+background-color: #ffffff;
+color: black;
+border: 2px solid #22600c;
+margin-left: -6px;
+}
+
+
+#content {
+padding:5px;
+margin-top: 5px;
+float: right;
+min-height: 200px;
+height: 75%;
+width: 75%;
+background-color: #ffffff;
+color: black;
+border: 2px solid #22600c;
+
+}
+
+#login {
+padding: 35px;
+text-align: center;
+align: center;
+min-height: 20px;
+height: 75%;
+
+background-color: #ffffff;
+color: black;
+border: 2px solid #22600c;
+
+}
+
+.sidebaritem {
+overflow: hidden;
+margin-top: 5px;
+
+width: 22%;
+background-color: #ffffff;
+border: 2px solid #22600c;
+}
+
+#sidebar {
+color: black;
+}

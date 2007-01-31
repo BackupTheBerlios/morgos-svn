@@ -1,0 +1,1 @@
+{morgos_side_box EvalBoxTitle="t s='Welcome Admin'" BoxContentFile="user/adminbox.tpl"}

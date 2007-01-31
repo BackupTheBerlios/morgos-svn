@@ -1,0 +1,67 @@
+Version 0.3
+===========
+[Added]
+	 * PostgreSQL database class backend [PostgreSQL 8.1+ required (some prop sql)]
+	 * MySQLI database class backend [MySQL 4.1+ required (php_mysqli dep)]
+	 * Skin documentation
+	 * Default skin
+	 * My Account page
+	 	- change password
+	 	- change email adress
+	 	- change skin/content language
+	 * Added a save config fallback page (both installer/admin)
+	 * Implemented EmailInput
+	 * In the admin: adminHome
+	 	- change site title
+	 	- enable/disable users
+	 * You can request a new password if you forgot your old
+	 * You can change translations of pages
+[Changes]
+	 * You can really choose what dbmodule you want.
+	 * Rewrote organisation of tests
+	 * Rewrote all user tests
+	 * Rewrote all pages tests
+	 * Splitted the view of enabled/disabled plugins
+	 * Updated interface tests
+	 * The admins see now a userfriendly link to the admin
+	[API]
+	 * Added DBTableManager
+	 * Added joins
+	 * Changed dbFields API
+	 * [Splitted up in MorgOS class, where some are less advanced 
+	 	(no db, no config, no smarty)]
+	 * Lowercased all fields (to be compatible with pgSQL)
+	 * Splitted pluginAPI up
+	 * UserManager:
+	 	When adding a user to the database a group with the same name is created
+	 	When deleting a user 'his' group is deleted too
+	 * UserManager:
+	 	Added a function getAllNonUserGroups ();
+	 * Plugin:
+	 	Rename getPluginID->getSkinID 
+	[Installer]
+	 * (Core-)Plugins are responsible for installing their DB tables
+	[Skins]
+	 * $MorgOS_AvailablePlugins.plugin is extended with an option Installable
+	  If true you should show the Install/Uninstall link, otherwise it is not required
+	[Plugins]
+	 * Plugins that should install themselves should inherit from InstallablePlugin
+	 * Actions can have their associated pages
+	  When they have it the viewPage/viewAnyAdminPage event is triggered
+	  You can override this behaviour in the constructor (last parameter false)
+[Bugs]
+ * Add startup warnings when their are problems with config.php and database
+ * Fixed a bug when translating an error that doesn't have params
+ * Removed the XMLSQL backend from the list (it is incomplete) 
+ * Deleting a page shows a javascript alert "... %p?" but should be "... Home?"
+ * GetAllUsers in UserGroup doesn't work
+ * Fixed a bug whith executePreviousAction and with 2 tabs open
+ * Fixed a bug in BoolInput (return false for checkboxes didn't work)
+ * Some fixed error/notice reporting to the user (i18n,...)
+
+Version 0.2 5 November 2006
+===========
+ * First working release
+ * It is only a "working hack"
+ * No default layout
+ * It was planned as base for a school website
