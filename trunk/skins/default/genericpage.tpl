@@ -13,5 +13,4 @@
 
 {include file='sidebar.tpl'}
 </div>
-
 {include file='footer.tpl'}

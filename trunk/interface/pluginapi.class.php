@@ -41,14 +41,16 @@ class BasePluginAPI {
 	
 	function BasePluginAPI (&$morgos) {
 		$this->_morgos = &$morgos;
-		$this->_systemMessagesQueue = array ();
+		$this->_internalSystemMessagesQueue = 
+			array (ERROR=>array(), WARNING=>array(), NOTICE=>array());
 		foreach ($_COOKIE as $key=>$type) {
 			if (strpos ($key, 'system_message_type_') !== false) {
 				$sys_mes_name = substr ($key, strlen ('system_message_type_'));
 				$short = $_COOKIE['system_message_short_'.$sys_mes_name];
 				$long = $_COOKIE['system_message_long_'.$sys_mes_name];
 				
-				$this->_systemMessagesQueue[] = array ($short, $long, $type);
+				$this->_internalSystemMessagesQueue[$type][] = 
+					array ('Short'=>$short, 'Long'=>$long);
 				setcookie ('system_message_short_'.$sys_mes_name, false);
 				setcookie ('system_message_long_'.$sys_mes_name, false);
 				setcookie ('system_message_type_'.$sys_mes_name, false);
@@ -64,11 +66,14 @@ class BasePluginAPI {
 	*/
 	function shutdown () {
 		$i = 0;
-		foreach ($this->_systemMessagesQueue as $sysMess) {
-			setcookie ('system_message_type_'.$i, $sysMess[2]);
-			setcookie ('system_message_short_'.$i, $sysMess[0]);
-			setcookie ('system_message_long_'.$i, $sysMess[1]);
-			$i++;
+		foreach ($this->getAllSystemMessages () as $type => $sysGroup) {
+			foreach ($sysGroup as $sysMess) {
+				setcookie ('system_message_type_'.$i, $type);
+				setcookie ('system_message_short_'.$i, $sysMess['Short']);
+				setcookie ('system_message_long_'.$i, $sysMess['Long']);
+				$i++;
+				var_dump ($sysMess['Long']);
+			}
 		}
 	}
 
@@ -90,7 +95,10 @@ class BasePluginAPI {
 	}
 	function &getActionManager () {return $this->_actionManager;}
 	
-	function setSmarty (&$smarty) {$this->_smarty = &$smarty;}
+	function setSmarty (&$smarty) {
+		$this->_smarty = &$smarty;
+		$this->_smarty->_systemMessages = $this->_internalSystemMessagesQueue;
+	}
 	function &getSmarty () {return $this->_smarty;}
 	
 	function setSkinManager (&$skinManager) {$this->_skinManager = &$skinManager;}
@@ -136,38 +144,19 @@ class BasePluginAPI {
 		}
 		$tShort = $this->_i18nManager->translate ($short);
 		$tLong = $this->_i18nManager->translate ($long);
-		$this->_systemMessagesQueue[] = array ($tShort, $tLong, $type);
+		$this->_smarty->_systemMessages[$type][] = 
+			array ('Short'=>$tShort, 'Long'=>$tLong);
 	}
 	
 	/**
-	 * Returns all system messages from the queue, and removes them
+	 * Returns all system messages from the queue
 	 *
 	 * @public
 	 * @since 0.4
 	 * @returns (array string array) with keys 'Short', 'Long'
 	*/
 	function getAllSystemMessages () {
-		$sMessagesError = array ();
-		$sMessagesWarning = array ();
-		$sMessagesNotice = array ();
-		while ($m = array_shift ($this->_systemMessagesQueue)) {
-			if ($m[2] == ERROR) {
-				$sMessagesError[] = array (
-									'Short' => $m[0],
-									'Long'  => $m[1]);
-			} elseif ($m[2] == WARNING) {
-				$sMessagesWarning[] = array (
-									'Short' => $m[0],
-									'Long'  => $m[1]);
-			} else {
-				$sMessagesNotice[] = array (
-									'Short' => $m[0],
-									'Long'  => $m[1]);
-			}
-		}
-		return array ( ERROR	=> $sMessagesError,
-					WARNING	=> $sMessagesWarning,
-					NOTICE	=> $sMessagesNotice );
+		return $this->_smarty->_systemMessages;
 	}
 	
 	/**

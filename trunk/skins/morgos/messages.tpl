@@ -18,3 +18,4 @@
 		<p>{$notice.Long}</p>
 	</div>
 {/foreach}
+{clean_sys_messages}

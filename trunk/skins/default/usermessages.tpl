@@ -9,3 +9,4 @@
 {foreach from=$MorgOS_Notices item='notice'}
 	{$notice.Long}
 {/foreach}
+{clean_sys_messages}

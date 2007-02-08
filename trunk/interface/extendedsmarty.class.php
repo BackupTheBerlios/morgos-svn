@@ -167,11 +167,19 @@ class ExtendedSmarty extends Smarty {
 	function ExtendedSmarty () {
 		parent::Smarty ();
 		$this->template_dir = array ();
+		$this->register_function ('clean_sys_messages', 
+			array (&$this, 'cleanSys'));
 		$this->register_block ('table', array (&$this, 'table'));
 		$this->register_block ('table_custom_header', 
 				array (&$this, 'table_custom_header'));
 		$this->register_block ('table_data_element', 
 				array (&$this, 'table_data_element'));
+	}	
+	
+	function cleanSys ($smarty, $params) {
+		$this->_systemMessages[ERROR] = array ();
+		$this->_systemMessages[WARNING] = array ();
+		$this->_systemMessages[NOTICE] = array ();
 	}	
 	
 	/**
