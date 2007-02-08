@@ -653,8 +653,11 @@ class ActionManager {
 		}*/
 		
 		//return 'index.php?action='.$this->_previousActionName.$paramString;
-		//var_dump ($_SERVER);
-		return $_SERVER['HTTP_REFERER'];
+		if (! array_key_exists ('HTTP_REFERER', $_SERVER)) {
+			return 'index.php'; // always return something
+		} else {
+			return $_SERVER['HTTP_REFERER'];
+		}
 	}
 	
 	function saveLastAction () {
@@ -671,5 +674,4 @@ class ActionManager {
 		}*/
 	}
 }
-
 ?>
