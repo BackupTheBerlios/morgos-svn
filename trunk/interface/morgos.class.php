@@ -240,7 +240,7 @@ class BaseMorgos extends NoGUIMorgOS {
 	 * @protected
 	*/
 	function assignErrors () {
-		$allMessages = $this->_pluginAPI->getAllMessages ();
+		$allMessages = $this->_pluginAPI->getAllSystemMessages ();
 		$sm = &$this->_pluginAPI->getSmarty ();
 		$sm->assign ('MorgOS_Errors', $allMessages[ERROR]);
 		$sm->assign ('MorgOS_Warnings', $allMessages[WARNING]);

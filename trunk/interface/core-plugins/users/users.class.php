@@ -97,15 +97,13 @@ class userCorePlugin extends InstallablePlugin {
 		if (isError ($a)) {
 			if ($a->is ('LOGIN_FAILED_INCORRECT_VALUES')) {
 				$sm = &$this->_pluginAPI->getSmarty ();
-				$this->_pluginAPI->addMessage (
-					$t->translate ('You may have mistyped your login credentials. Please try logging in again.'), ERROR);
+				$this->_pluginAPI->systemMessage (ERROR, 'You have mistyped your login/password. You could try again.', 'You are not logged in.');
 				$this->_pluginAPI->executePreviousAction ();
 			} else {
 				return $a;
 			}
 		} else {
-			$this->_pluginAPI->addMessage ($t->translate 
-				('You have been logged in.'), NOTICE);
+			$this->_pluginAPI->systemMessage (NOTICE, 'You have been logged in.');
 			$this->_pluginAPI->executePreviousAction ();
 		}
 	}

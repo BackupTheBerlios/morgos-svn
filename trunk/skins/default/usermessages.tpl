@@ -1,11 +1,11 @@
 {foreach from=$MorgOS_Errors item='error'}
-	{$error}
+	{$error.Long}
 {/foreach}
 
 {foreach from=$MorgOS_Warnings item='warning'}
-	{$warning}
+	{$warning.Long}
 {/foreach}
 	
 {foreach from=$MorgOS_Notices item='notice'}
-	{$notice}
+	{$notice.Long}
 {/foreach}

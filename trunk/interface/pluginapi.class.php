@@ -43,20 +43,15 @@ class BasePluginAPI {
 		$this->_morgos = &$morgos;
 		$this->_systemMessagesQueue = array ();
 		foreach ($_COOKIE as $key=>$type) {
-			if (strpos ($key, 'system_message_type_')) {
-				$sys_mes_name = substr ($key, 0, 
-					strlen ('system_message_type_'));				
+			if (strpos ($key, 'system_message_type_') !== false) {
+				$sys_mes_name = substr ($key, strlen ('system_message_type_'));
 				$short = $_COOKIE['system_message_short_'.$sys_mes_name];
 				$long = $_COOKIE['system_message_long_'.$sys_mes_name];
 				
-				$this->_systemMessagesQueue[$type][] = array (
-							'Short' => $short,
-							'Long'  => $long);
-							
-				// empty cookies
-				addcookie ('system_message_short_'.$sys_mes_name);
-				addcookie ('system_message_long_'.$sys_mes_name);
-				addcookie ('system_message_type_'.$sys_mes_name);
+				$this->_systemMessagesQueue[] = array ($short, $long, $type);
+				setcookie ('system_message_short_'.$sys_mes_name, false);
+				setcookie ('system_message_long_'.$sys_mes_name, false);
+				setcookie ('system_message_type_'.$sys_mes_name, false);
 			}
 		}
 	}
@@ -69,13 +64,11 @@ class BasePluginAPI {
 	*/
 	function shutdown () {
 		$i = 0;
-		foreach ($this->_systemMessagesQueue as $type => $sysMessages) {
-			foreach ($sysMessages as $m) {
-				addcookie ('system_message_type_'.$i, $type);
-				addcookie ('system_message_short_'.$i, $m[0]);
-				addcookie ('system_message_long_'.$i, $m[1]);
-				$i++;
-			}
+		foreach ($this->_systemMessagesQueue as $sysMess) {
+			setcookie ('system_message_type_'.$i, $sysMess[2]);
+			setcookie ('system_message_short_'.$i, $sysMess[0]);
+			setcookie ('system_message_long_'.$i, $sysMess[1]);
+			$i++;
 		}
 	}
 
@@ -114,9 +107,7 @@ class BasePluginAPI {
 	 * @public
 	*/
 	function addMessage ($tMessage, $type) {
-		$newKey = 'message_'.$type.'_'.count ($this->_messages[$type]);
-		$this->_messages[$type][] = $tMessage;
-		setcookie ($newKey, $tMessage);
+		$this->systemMessage ($type, $tMessage);
 	}
 	
 	/**
@@ -125,7 +116,7 @@ class BasePluginAPI {
 	 * @public
 	 * @since 0.4
 	 * @$param $type (Message type) ERROR|WARNING|NOTICE
-	 * @param $long (array string) the first item is the long message, 
+	 * @param $long (array string|string) the first item is the long message, 
 	 * 		other items are parameters for the translation
 	 * @param $short (string) the untranslated short message, defaults
 	 *	Notice, Warning and Error for Notice, Warning, and error
@@ -143,9 +134,9 @@ class BasePluginAPI {
 					$short = 'Error';
 			}
 		}
-		$tShort = $this->_i18NManager->translate ($short);
-		$tLong = $this->_i18NManager->translate ($long);
-		$this->_systemMessageQueue[] = array ($tShort, $tLong, $type);
+		$tShort = $this->_i18nManager->translate ($short);
+		$tLong = $this->_i18nManager->translate ($long);
+		$this->_systemMessagesQueue[] = array ($tShort, $tLong, $type);
 	}
 	
 	/**
@@ -155,11 +146,11 @@ class BasePluginAPI {
 	 * @since 0.4
 	 * @returns (array string array) with keys 'Short', 'Long'
 	*/
-	function getAllSystemMessage () {
+	function getAllSystemMessages () {
 		$sMessagesError = array ();
 		$sMessagesWarning = array ();
 		$sMessagesNotice = array ();
-		while ($m = array_shift ($this->_systeMessageQueue)) {
+		while ($m = array_shift ($this->_systemMessagesQueue)) {
 			if ($m[2] == ERROR) {
 				$sMessagesError[] = array (
 									'Short' => $m[0],
@@ -174,44 +165,27 @@ class BasePluginAPI {
 									'Long'  => $m[1]);
 			}
 		}
-		return array ( ERROR     => $sMessagerError,
-					WARNINING => $sMessagesWarning,
-					NOTICE    => $sMessagesNotice);
+		return array ( ERROR	=> $sMessagesError,
+					WARNING	=> $sMessagesWarning,
+					NOTICE	=> $sMessagesNotice );
 	}
 	
 	/**
 	 * Returns all messages, AND removes them from the queue
 	 *
+	 * @deprecated since 0.4
+	 *
 	 * @return (string array array)
 	*/
 	function getAllMessages () {
-		$messages = array (ERROR=>array(), WARNING=>array(), NOTICE=>array());
-		foreach ($_COOKIE as $key=>$value) {
-			if (substr ($key, 0, strlen ('message_')) == 'message_') {
-				$type = (int) substr ($key, strlen ('message_'), 1);
-				$messages[$type][] = stripslashes ($value);
-				setcookie ($key, '');
-			}
-		}
-		return $messages;
+		return $this->getAllSystemMessages ();
 	}
 	
 	/*	 
 	 * @depreacted since 0.4
 	*/
 	function addRuntimeMessage ($tMessage, $type) {
-		$sm = &$this->getSmarty ();
-		switch ($type) {
-			case ERROR: 
-				$sm->append ('MorgOS_Errors', $tMessage);
-				break;
-			case WARNING:
-				$sm->append ('MorgOS_Warnings', $tMessage);
-				break;
-			case NOTICE:
-				$sm->append ('MorgOS_Notices', $tMessage);
-				break;
-		}
+		$this->systemMessage ($type, $tMessage);
 	}
 	
 	/**
