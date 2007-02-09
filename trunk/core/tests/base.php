@@ -55,6 +55,8 @@ function loadSuite (&$suite) {
 	$dbModule = MorgOSTests::loadModuleFromConfig ($config['defaultModule'], $config);
 	MorgOSTests::removeAllTablesForModule ($dbModule);
 	$suite->addTestFile ('core/tests/sqlwrapper.class.test.php');
+	include_once ('core/tests/sqlwrapperng.class.test.php');
+	$suite->addTestSuite (new SqlWrapperNGTestSuite ());
 	$suite->addTestFile ('core/tests/pagemanager.class.test.php');
 	$suite->addTestFile ('core/tests/usermanager.class.test.php');
 	//$suite->addTestFile ('core/tests/xmlsql.class.test.php');
