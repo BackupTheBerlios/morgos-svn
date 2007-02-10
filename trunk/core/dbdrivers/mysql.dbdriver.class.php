@@ -25,6 +25,7 @@
  * @author Nathan Samson
 */
 
+include_once ('core/dbdrivers/mysql.sqlcreator.class.php');
 if (! class_exists ('MySQLDatabaseDriver')) {
 	isset ($t); // trick documentor
 	

@@ -16,22 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 /**
- * File that take care of testing the new generation (ng) sqlwrapper classes.
+ * File that take care of the base SQL wrapper
  *
  * @since 0.4
  * @author Nathan Samson
 */
 
-include_once ('core/sqlwrapperng/sqlwrapper.class.php');
-include_once ('core/sqlwrapperng/base.sqlcreator.class.php');
-
-class SqlWrapperNGTestSuite extends TestSuite {
-	function SqlWrapperNGTestSuite () {
-		parent::TestSuite ();
-		$this->addTestFile ('core/tests/sqlwrapperng/datafield.class.test.php');
-		$this->addTestFile ('core/tests/sqlwrapperng/base.sqlcreator.class.test.php');
-		$this->addTestFile ('core/tests/sqlwrapperng/mysql.sqlcreator.class.test.php');
+class DataMySQLCompatLayerTest extends DataSQLCreatorTest {
+	function testCreateDatabaseSQL () {
+		$this->assertFalse (false);
 	}
 }
-
-?>

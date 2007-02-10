@@ -15,23 +15,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
-/**
- * File that take care of testing the new generation (ng) sqlwrapper classes.
+/** 
+ * The base layer for the creation of SQL for the sqlwrapper
  *
+ * @ingroup database core sqlwrapperng
  * @since 0.4
  * @author Nathan Samson
 */
 
-include_once ('core/sqlwrapperng/sqlwrapper.class.php');
-include_once ('core/sqlwrapperng/base.sqlcreator.class.php');
-
-class SqlWrapperNGTestSuite extends TestSuite {
-	function SqlWrapperNGTestSuite () {
-		parent::TestSuite ();
-		$this->addTestFile ('core/tests/sqlwrapperng/datafield.class.test.php');
-		$this->addTestFile ('core/tests/sqlwrapperng/base.sqlcreator.class.test.php');
-		$this->addTestFile ('core/tests/sqlwrapperng/mysql.sqlcreator.class.test.php');
+class DataSQLCreator {
+	
+	/**
+	 * Returns the SQL for a table creation
+	 *
+	 * @public
+	 * @return (string)
+	*/
+	function CreateTableSQL ($table) {
+		
 	}
+	
+	/**
+	 * Returns the SQL for a field definition for ex. (NAME type(length) NOT NULL)
+	 *
+	 * @protected
+	 * @return (string)
+	*/
+	function CreateFieldSQL ($field) {
+	}
+	
 }
-
-?>

@@ -16,22 +16,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 */
 /**
- * File that take care of testing the new generation (ng) sqlwrapper classes.
+ * A compatability layer for the SQL creation of the SQLWrapper
  *
+ * @ingroup database core sqlwrapperng
  * @since 0.4
  * @author Nathan Samson
 */
 
-include_once ('core/sqlwrapperng/sqlwrapper.class.php');
-include_once ('core/sqlwrapperng/base.sqlcreator.class.php');
+if (class_exists ('DataMySQLCompatLayer')) {
+	return; // for one reason include_once doesn't work
+} else {
 
-class SqlWrapperNGTestSuite extends TestSuite {
-	function SqlWrapperNGTestSuite () {
-		parent::TestSuite ();
-		$this->addTestFile ('core/tests/sqlwrapperng/datafield.class.test.php');
-		$this->addTestFile ('core/tests/sqlwrapperng/base.sqlcreator.class.test.php');
-		$this->addTestFile ('core/tests/sqlwrapperng/mysql.sqlcreator.class.test.php');
-	}
+class DataMySQLCompatLayer extends DataSQLCreator {
+
 }
 
-?>
+}
