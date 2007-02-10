@@ -45,8 +45,8 @@ if (version_compare (PHP_VERSION, '5', '<=')) {
 	require_once 'PHPUnit/TextUI/TestRunner.php';
 	
 	class TestSuite extends PHPUnit_Framework_TestSuite  {
-		function TestSuite () {
-			$this->__construct ();
+		function TestSuite ($name) {
+			$this->__construct ($name);
 		}		
 	}
 	

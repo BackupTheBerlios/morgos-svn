@@ -204,6 +204,16 @@ class DatabaseDriver {
 	 * @public
 	*/
 	function getType () {return $this->_type;}
+	
+	/**
+	 * Returns the SQL creator class name
+	 *
+	 * @return (string)
+	 * @public
+	*/
+	function getSQLCreator () {
+		return 'DataSQLCreator';
+	}
 }
 
 ?>

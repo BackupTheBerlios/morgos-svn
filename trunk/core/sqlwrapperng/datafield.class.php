@@ -29,6 +29,11 @@ define ('DATATYPE_INT', 3);
 define ('DATATYPE_REAL', 4);
 define ('DATATYPE_ENUM', 5);
 
+/**
+ * The data field class. It defines a field with its name and type.
+ * It is only used as a base class for the real types (String, text, int, ...)
+ * @since 0.4 
+*/
 class DataField {
 	var $_dataType;
 	var $_fieldName;
@@ -52,6 +57,7 @@ class DataField {
 	 *
 	 * @param $value (string) The value to check
 	 * @return bool
+	 * @public
 	*/
 	function isValidValue ($value) {
 		return true;
@@ -61,9 +67,20 @@ class DataField {
 	 * Returns the type
 	 *
 	 * @return (DATATYPE_ENUL)
+	 * @public
 	*/
 	function getDataType () {
 		return $this->_dataType;
+	}
+	
+	/**
+	 * Returns the name of the field
+	 *
+	 * @return (string)
+	 * @public
+	*/
+	function getName () {
+		return $this->_fieldName;
 	}
 }
 
@@ -88,15 +105,30 @@ class DataFieldString extends DataField {
 	function isValidValue ($value) {
 		return (strlen ($value) <= $this->_maxLength);
 	}
+	
+	/**
+	 * Returns the maxlength of the string
+	 *	 
+	 * @public
+	 * @return (string)
+	*/
+	function getMaxLength () {
+		return $this->_maxLength;
+	}
 }
 
 class DataFieldInt extends DataField {
+	var $_maxBytes;
+	var $_signed;
+	var $_maxValue;
+	var $_minValue;
+
 	/**
 	 * The constructor
 	 *
 	 * @param $name (string) the field name
 	 * @param $table (DataTable) the DataTable
-	 * @param $maxBits (int) the maximal number of bits. 
+	 * @param $maxBytes (int) the maximal number of bits. 
 	 *	Default , will reach from -2147483648 to  2147483647 (signed)
 	 * @param $signed (bool) if the value is signed (default true)
 	 * @warning bits higher than 4 are converted to floats (on some systems). 
@@ -126,6 +158,26 @@ class DataFieldInt extends DataField {
 			return false;
 		}
 	}
+	
+	/**
+	 * Returns the maxbytes for the int
+	 *
+	 * @public
+	 * @return (int)
+	*/
+	function getMaxBytes () {
+		return $this->_maxBytes;
+	}
+	
+	/**
+	 * Returns if the int is signed
+	 *
+	 * @public
+	 * @return (bool)
+	*/
+	function isSigned () {
+		return $this->_signed;
+	}
 }
 
 class DataFieldEnum extends DataField {
@@ -145,5 +197,15 @@ class DataFieldEnum extends DataField {
 	
 	function isValidValue ($value) {
 		return (in_array ($value, $this->_optionArrays));
+	}
+	
+	/**
+	 * Returns the options for the enum
+	 *
+	 * @public
+	 * @return (string array)
+	*/
+	function getOptions () {
+		return $this->_optionArrays;
 	}
 }

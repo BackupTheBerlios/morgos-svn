@@ -32,7 +32,66 @@
 include_once ('core/sqlwrapperng/datarow.class.php');
 include_once ('core/sqlwrapperng/datafield.class.php');
 
+/**
+ * A data table defines a table in a database. You can request a datatable for rows,
+ * adding fields to the table and so on.
+ * It is only used as a base type for the derived DataTables (users, newsitems, ...)
+ * 
+ * @since 0.4
+*/
 class DataTable {
+	var $_dbDriver;
+	var $_tableName;
+	var $_baseFields;
+	var $_optionalFields;
+	var $_sqlCreator;
+	
+	/**
+	 * The constructor of the DataTable.
+	 *
+	 * @param $tableName (string)
+	 * @param $fields (DataField array) the basic fields fot the table
+	 * @param &$dbDriver (DBDriver) the dbdriver which connects to the database
+	*/
+	function DataTable ($tableName, $fields, &$dbDriver) {
+		$this->_dbDriver = &$dbDriver;
+		$this->_tableName = $tableName;		
+		$this->_baseFields = array ();
+		$this->_optionalFields = array ();
+		foreach ($fields as $field) {
+			$this->_baseFields[$field->getName ()] = $field;
+		}
+		$this->_sqlCreator = $this->_dbDriver->getSQLCreator ();
+	}
+	
+	/**
+	 * This creates the database
+	 *
+	 * @public
+	*/
+	function createTable () {
+		$this->_dbDriver->query ($this->_sqlCreator->CreateTableSQL ($this));
+	}
+	
+	/**
+	 * Return all fields for this table
+	 *
+	 * @public
+	 * @return (DataField array)
+	*/
+	function getFields () {
+		return array_merge ($this->_baseFields, $this->_optionalFields);
+	}
+	
+	/**
+	 * Returns the name of the table
+	 *
+	 * @public
+	 * @return (string)
+	*/
+	function getTableName () {
+		return $this->_tableName;
+	}
 }
 
 ?>

@@ -43,6 +43,8 @@ class DataFieldTest extends TestCase {
 		$this->assertFalse ($int->isValidValue (''));
 		$this->assertFalse ($int->isValidValue ('01234'));
 		$this->assertFalse ($int->isValidValue ('1234'));
+		$this->assertEquals (4, $int->getMaxBytes ());
+		$this->assertTrue ($int->isSigned ());
 		
 		$int = new DataFieldInt ('name', $a, 1);
 		$this->assertTrue ($int->isValidValue (127));
@@ -58,29 +60,37 @@ class DataFieldTest extends TestCase {
 		
 		$this->assertFalse ($int->isValidValue (-128));
 		$this->assertFalse ($int->isValidValue (256));
+		$this->assertEquals (1, $int->getMaxBytes ());
+		$this->assertFalse ($int->isSigned ());
 		
 		$int = new DataFieldInt ('name', $a, 8);
 		$this->assertTrue ($int->isValidValue (9223372036854775807));
 		// shouldn't be true, but float is to inprecise
 		// difference of 1025
 		$this->assertTrue ($int->isValidValue (9223372036854776832));		
+		$this->assertEquals (8, $int->getMaxBytes ());
 		
 		$this->assertEquals (DATATYPE_INT, $int->getDataType ());
+		$this->assertEquals ('name', $int->getName ());
 	}
 	
 	function testString () {
 		$a = null;
-		$int = new DataFieldString ('name', $a);
-		$this->assertTrue ($int->isValidValue (0));
-		$this->assertTrue ($int->isValidValue ('test'));
-		$this->assertTrue ($int->isValidValue ('azerty^ä, bcde{}#'));
-		$int = new DataFieldString ('name', $a, 10);
-		$this->assertTrue ($int->isValidValue ('123456789'));
-		$this->assertFalse ($int->isValidValue ('12345678910'));
-		$int = new DataFieldString ('name', $a, -1); 
+		$string = new DataFieldString ('name', $a);
+		$this->assertTrue ($string->isValidValue (0));
+		$this->assertTrue ($string->isValidValue ('test'));
+		$this->assertTrue ($string->isValidValue ('azerty^ä, bcde{}#'));
+		$this->assertEquals (255, $string->getMaxLength ());		
+		
+		$string = new DataFieldString ('name', $a, 10);
+		$this->assertTrue ($string->isValidValue ('123456789'));
+		$this->assertFalse ($string->isValidValue ('12345678910'));
+		$this->assertEquals (10, $string->getMaxLength ());
+		
+		$string = new DataFieldString ('string', $a, -1); 
 		// negative values are not allowed, and set to default value
-		$this->assertTrue ($int->isValidValue ('12345678910'));
-		$this->assertFalse ($int->isValidValue ('azertyuiopazertyuiopazertyuiop
+		$this->assertTrue ($string->isValidValue ('12345678910'));
+		$this->assertFalse ($string->isValidValue ('azertyuiopazertyuiopazertyuiop
 			azertyuiopazertyuiopazertyuiopazertyuiopazertyuiop
 			azertyuiopazertyuiopazertyuiopazertyuiopazertyuiop
 			azertyuiopazertyuiopazertyuiopazertyuiopazertyuiop
@@ -89,12 +99,15 @@ class DataFieldTest extends TestCase {
 			azertyuiopazertyuiopazertyuiopazertyuiopazertyuiop
 			azertyuiopazertyuiopazertyuiopazertyuiopazertyuiop
 		'));
-		$this->assertEquals (DATATYPE_STRING, $int->getDataType ());
+		$this->assertEquals (255, $string->getMaxLength ());
+		
+		$this->assertEquals (DATATYPE_STRING, $string->getDataType ());
+		$this->assertEquals ('string', $string->getName ());
 	}
 	
 	function testEnum () {
 		$a = null;
-		$enum = new DataFieldEnum ('name', $a, array ('a', 'b', 'C'));
+		$enum = new DataFieldEnum ('enumtype', $a, array ('a', 'b', 'C'));
 		$this->assertTrue ($enum->isValidValue ('a'));
 		$this->assertTrue ($enum->isValidValue ('b'));
 		$this->assertTrue ($enum->isValidValue ('C'));
@@ -103,5 +116,7 @@ class DataFieldTest extends TestCase {
 		$this->assertFalse ($enum->isValidValue ('B'));
 		$this->assertFalse ($enum->isValidValue ('c'));
 		$this->assertEquals (DATATYPE_ENUM, $enum->getDataType ());
+		$this->assertEquals (array ('a', 'b', 'C'), $enum->getOptions ());
+		$this->assertEquals ('enumtype', $enum->getName ());
 	}
 }

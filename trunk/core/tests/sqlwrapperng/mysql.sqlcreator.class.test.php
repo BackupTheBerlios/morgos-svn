@@ -24,6 +24,9 @@
 
 class DataMySQLCompatLayerTest extends DataSQLCreatorTest {
 	function testCreateDatabaseSQL () {
-		$this->assertFalse (false);
+		$sqlfac = new DataMySQLCompatLayer ();
+		$actual = $sqlfac->createTableSQL ($this->_testTable);
+		$exp = "CREATE TABLE SomeTable (field1 TINYINT UNSIGNED NOT NULL,field2 SMALLINT NOT NULL,field3 MEDIUMINT UNSIGNED NOT NULL,field4 INT NOT NULL,field5 INT(6) NOT NULL,field6 BIGINT UNSIGNED NOT NULL,stringfield1 varchar(10) NOT NULL,stringfield2 varchar(1) NOT NULL,stringfield3 varchar(255) NOT NULL,enum1 ENUM('Y','N') NOT NULL,enum2 ENUM('Yes \' sir','No, pa') NOT NULL )";
+		$this->assertEquals ($exp, $actual);
 	}
 }

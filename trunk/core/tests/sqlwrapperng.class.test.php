@@ -27,10 +27,11 @@ include_once ('core/sqlwrapperng/base.sqlcreator.class.php');
 
 class SqlWrapperNGTestSuite extends TestSuite {
 	function SqlWrapperNGTestSuite () {
-		parent::TestSuite ();
-		$this->addTestFile ('core/tests/sqlwrapperng/datafield.class.test.php');
+		parent::TestSuite ("SQLWrapper New Generation");
 		$this->addTestFile ('core/tests/sqlwrapperng/base.sqlcreator.class.test.php');
 		$this->addTestFile ('core/tests/sqlwrapperng/mysql.sqlcreator.class.test.php');
+		$this->addTestFile ('core/tests/sqlwrapperng/datafield.class.test.php');
+		$this->addTestFile ('core/tests/sqlwrapperng/datatable.class.test.php');
 	}
 }
 

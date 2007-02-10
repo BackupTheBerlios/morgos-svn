@@ -10,6 +10,7 @@ foreach ($availableModulesINI as $value) {
 	$installedDrivers[] = $value;
 }
 
+echo 'TEST';
 include_once ('core/sqlwrapperng/base.sqlcreator.class.php');
 include_once ('core/varia.functions.php');
 //include_once ('core/databasemanager.functions.php');

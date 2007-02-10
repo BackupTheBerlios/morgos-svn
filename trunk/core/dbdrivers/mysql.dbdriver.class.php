@@ -202,7 +202,10 @@ if (! class_exists ('MySQLDatabaseDriver')) {
 				return in_array (strtolower ($this->getPrefix().$tableName), $allTables);
 			}
 		}
-	
+		
+		function getSQLCreator () {
+			return 'DataMySQLCompatLayer';
+		}
 	}
 }
 DatabaseDriverManager::AddDriver ('MySQL', 'MySQLDatabaseDriver', 

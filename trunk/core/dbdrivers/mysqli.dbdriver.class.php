@@ -192,6 +192,10 @@ if (! class_exists ('MySQLIDatabaseDriver')) {
 				return in_array (strtolower ($this->getPrefix().$tableName), $allTables);
 			}
 		}
+		
+		function getSQLCreator () {
+			return 'DataMySQLCompatLayer';
+		}
 	}
 }
 

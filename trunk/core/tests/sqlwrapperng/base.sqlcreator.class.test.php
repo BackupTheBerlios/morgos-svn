@@ -22,8 +22,41 @@
  * @author Nathan Samson
 */
 
+class MockDBDriver {
+	function getSQLCreator () {
+		return 'DataSQLCreator';
+	}
+}
+
 class DataSQLCreatorTest extends TestCase {
+	function setUp () {
+		$dbDriver = new MockDBDriver ();
+		$table = null;
+		$fields = array ();
+		// INT types
+		$fields[] = new DataFieldInt ('field1', $table, 1, false);
+		$fields[] = new DataFieldInt ('field2', $table, 2);
+		$fields[] = new DataFieldInt ('field3', $table, 3, false);
+		$fields[] = new DataFieldInt ('field4', $table);
+		$fields[] = new DataFieldInt ('field5', $table, 6);
+		$fields[] = new DataFieldInt ('field6', $table, 8, false);
+		
+		// STRING types
+		$fields[] = new DataFieldString ('stringfield1', $table, 10);
+		$fields[] = new DataFieldString ('stringfield2', $table, 1);
+		$fields[] = new DataFieldString ('stringfield3', $table);	
+	
+		// ENUM types
+		$fields[] = new DataFieldEnum ('enum1', $table, array ('Y', 'N'));
+		$fields[] = new DataFieldEnum ('enum2', $table, 
+			array ('Yes \' sir', 'No, pa'));
+		$this->_testTable = new DataTable ('SomeTable', $fields, $dbDriver); 
+	}
+
 	function testCreateDatabaseSQL () {
-		$this->assertTrue (false);
+		$sqlfac = new DataSQLCreator ();
+		$actual = $sqlfac->createTableSQL ($this->_testTable);
+		$exp = "CREATE TABLE SomeTable (field1 INT(1) UNSIGNED NOT NULL,field2 INT(2) NOT NULL,field3 INT(3) UNSIGNED NOT NULL,field4 INT(4) NOT NULL,field5 INT(6) NOT NULL,field6 INT(8) UNSIGNED NOT NULL,stringfield1 varchar(10) NOT NULL,stringfield2 varchar(1) NOT NULL,stringfield3 varchar(255) NOT NULL,enum1 ENUM('Y','N') NOT NULL,enum2 ENUM('Yes \' sir','No, pa') NOT NULL )";
+		$this->assertEquals ($exp, $actual);
 	}
 }

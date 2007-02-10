@@ -31,8 +31,15 @@ class DataSQLCreator {
 	 * @public
 	 * @return (string)
 	*/
-	function CreateTableSQL ($table) {
-		
+	function createTableSQL ($table) {
+		$sql =  "CREATE TABLE {$table->getTableName ()} (";
+		$fieldSQL = array ();
+		foreach ($table->getFields () as $field) {
+			$fieldSQL[] = $this->createFieldSQL ($field);
+		}
+		$sql .= implode (',', $fieldSQL);
+		$sql .= ' )';
+		return $sql;
 	}
 	
 	/**
@@ -41,7 +48,26 @@ class DataSQLCreator {
 	 * @protected
 	 * @return (string)
 	*/
-	function CreateFieldSQL ($field) {
+	function createFieldSQL ($field) {
+		switch ($field->getDataType ()) {
+			case DATATYPE_STRING:
+				$fieldType = 'varchar('.$field->getMaxLength ().')';
+				break;
+			case DATATYPE_INT:
+				$fieldType = 
+					'INT('.$field->getMaxBytes ().')';
+				if (! $field->isSigned ()) {
+					$fieldType .= ' UNSIGNED';
+				}
+				break;
+			case DATATYPE_ENUM:
+				$options = $field->getOptions ();
+				foreach ($options as $key=>$option) {
+					$options[$key] = '\''.addslashes ($option).'\'';
+				}
+				$fieldType = 'ENUM('.implode (',', $options).')';
+		}
+		return "{$field->getName ()} $fieldType NOT NULL";
 	}
 	
 }

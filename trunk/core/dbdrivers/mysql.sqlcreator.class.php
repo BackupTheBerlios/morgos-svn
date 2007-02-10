@@ -26,9 +26,48 @@
 if (class_exists ('DataMySQLCompatLayer')) {
 	return; // for one reason include_once doesn't work
 } else {
-
 class DataMySQLCompatLayer extends DataSQLCreator {
 
+	function createFieldSQL ($field) {
+		switch ($field->getDataType ()) {
+			case DATATYPE_STRING:
+				$fieldType = 'varchar('.$field->getMaxLength ().')';
+				break;
+			case DATATYPE_INT:
+				switch ($field->getMaxBytes ()) {
+					case 1:
+						$fieldType = 'TINYINT';
+						break;
+					case 2:
+						$fieldType = 'SMALLINT';
+						break;
+					case 3:
+						$fieldType = 'MEDIUMINT';
+						break;
+					case 4:
+						$fieldType = 'INT';
+						break;
+					case 8:
+						$fieldType = 'BIGINT';
+						break;
+					default:
+						$fieldType = 
+							'INT('.$field->getMaxBytes ().')';
+						break;
+				}
+				if (! $field->isSigned ()) {
+					$fieldType .= ' UNSIGNED';
+				}
+				break;
+			case DATATYPE_ENUM:
+				$options = $field->getOptions ();
+				foreach ($options as $key=>$option) {
+					$options[$key] = '\''.addslashes ($option).'\'';
+				}
+				$fieldType = 'ENUM('.implode (',', $options).')';
+		}
+		return "{$field->getName ()} $fieldType NOT NULL";
+	}
 }
 
 }
