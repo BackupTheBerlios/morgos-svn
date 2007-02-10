@@ -10,6 +10,7 @@ foreach ($availableModulesINI as $value) {
 	$installedDrivers[] = $value;
 }
 
+include_once ('core/sqlwrapperng/base.sqlcreator.class.php');
 include_once ('core/varia.functions.php');
 //include_once ('core/databasemanager.functions.php');
 include_once ('core/dbdrivermanager.class.php');
@@ -33,7 +34,7 @@ function loadSuite (&$suite) {
 	$config = parse_ini_file ('core/tests/options.ini', true);
 	foreach ($installedDrivers as $driverName) {
 		$driver = MorgOSTests::loadModuleFromConfig ($driverName, $config);
-		if (isError ($mod)) {
+		if (isError ($driver)) {
 			continue;
 		}
 		MorgOSTests::removeAllTablesForModule ($driver);
